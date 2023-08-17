@@ -1,0 +1,55 @@
+#pragma once
+#include "build.h"
+#include "Component.h"
+#include "Transform.h"
+
+namespace K
+{
+	struct Triangle 
+	{
+		std::vector<K::Vector3> vertices[3];
+		K::Vector3 GetMidPoint() 
+		{
+			K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
+			temp.x = (vertices->data()[0].x + vertices->data()[1].x + vertices->data()[2].x) / 3.0f;
+			temp.y = (vertices->data()[0].y + vertices->data()[1].y + vertices->data()[2].y) / 3.0f;
+			temp.z = (vertices->data()[0].z + vertices->data()[1].z + vertices->data()[2].z) / 3.0f;
+			return temp;
+		}
+
+		Triangle(K::Vector3 a, K::Vector3 b, K::Vector3 c)
+		{
+			vertices->push_back(a);
+			vertices->push_back(b);
+			vertices->push_back(c);
+		}
+	};
+
+	class K_API Collider : public K::Component
+	{
+	private:
+		std::vector<K::Triangle> triangles;
+	public:
+		Collider();
+
+		virtual ~Collider();
+
+		bool IsCollidingWithTriangle(K::Vector3 A, K::Vector3 B, K::Vector3 C, K::Vector2 P);
+
+		bool IsCollidingAtPoint(K::Vector2 P);
+
+		void FormTriangles();
+
+		void Init() override;
+
+		void Update() override;
+
+		void UpdateEditor() override;
+
+		void Bind() override;
+
+		void Unbind()  override;
+
+		const char* GetName() override;
+	};
+}

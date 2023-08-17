@@ -1,0 +1,27 @@
+#pragma once
+#include "build.h"
+
+namespace K 
+{
+	class K_API GameObject;
+
+	class K_API Component
+	{
+	public:
+		K::GameObject* parent = nullptr;
+
+		virtual void Init() = 0;
+
+		virtual void UpdateEditor() = 0;
+
+		virtual void Update() = 0;
+
+		virtual void Bind() = 0;
+
+		virtual void Unbind() = 0;
+
+		void SetParent(K::GameObject* newParent);
+
+		virtual const char* GetName() = 0;
+	};
+}
