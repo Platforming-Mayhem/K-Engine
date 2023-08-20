@@ -11,6 +11,6 @@ namespace K
 	public:
 		static void Attach(K::Collider* col);
 		static void Remove(K::Collider* col);
-		static bool IsColliding(K::Vector2 pos);
+		static bool IsColliding(K::Vector3 pos);
 	};
 }

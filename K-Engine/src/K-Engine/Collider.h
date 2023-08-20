@@ -17,6 +17,19 @@ namespace K
 			return temp;
 		}
 
+		float CalculateArea() 
+		{
+			K::Vector3 A = vertices->data()[0];
+			K::Vector3 B = vertices->data()[1];
+			K::Vector3 C = vertices->data()[2];
+			float a = (B - A).magnitude();
+			float b = (C - B).magnitude();
+			float c = (C - A).magnitude();
+			float s = (a + b + c) / 2.0f;
+			float area = sqrtf(s * (s - a) * (s - b) * (s - c));
+			return area;
+		}
+
 		Triangle(K::Vector3 a, K::Vector3 b, K::Vector3 c)
 		{
 			vertices->push_back(a);
@@ -34,9 +47,9 @@ namespace K
 
 		virtual ~Collider();
 
-		bool IsCollidingWithTriangle(K::Vector3 A, K::Vector3 B, K::Vector3 C, K::Vector2 P);
+		bool IsCollidingWithTriangle(K::Vector3 A, K::Vector3 B, K::Vector3 C, K::Vector3 P);
 
-		bool IsCollidingAtPoint(K::Vector2 P);
+		bool IsCollidingAtPoint(K::Vector3 P);
 
 		void FormTriangles();
 

@@ -133,7 +133,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>K_WINDOWS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)K-Engine\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)K-Engine\src;$(SolutionDir)K-Engine\vendors\GLEW\include;$(SolutionDir)K-Engine\vendors\GLFW\include;$(SolutionDir)K-Engine\vendors\ASSIMP\include;$(SolutionDir)K-Engine\vendors\STB;$(SolutionDir)K-Engine\vendors\IMGUI\examples;$(SolutionDir)K-Engine\vendors\IMGUI</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

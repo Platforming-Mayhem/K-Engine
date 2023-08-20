@@ -27,7 +27,9 @@ namespace K
 
 		K::Camera* camera = new K::Camera(shader);
 
-		K::Editor* editor = new K::Editor(window, newScene, shader);
+		#if _DEBUG
+			K::Editor* editor = new K::Editor(window, newScene, shader);
+		#endif
 
 		camera->SetWindowSize(*window);
 		cam->AddComponent(camera);
@@ -53,7 +55,9 @@ namespace K
 
 			newScene->Render();
 
-			editor->Render();
+			#if _DEBUG
+				editor->Render();
+			#endif
 
 			K::Time::endTime = K::Time::startTime;
 

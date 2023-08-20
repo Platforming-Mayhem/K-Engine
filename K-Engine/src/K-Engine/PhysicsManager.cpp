@@ -10,7 +10,7 @@ namespace K
 	{
 		delete col;
 	}
-	bool PhysicsManager::IsColliding(K::Vector2 pos) 
+	bool PhysicsManager::IsColliding(K::Vector3 pos) 
 	{
 		for (K::Collider* col : K::PhysicsManager::colliders) 
 		{

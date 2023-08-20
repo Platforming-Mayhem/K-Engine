@@ -83,7 +83,7 @@ namespace K
 
 	float K::Vector3::magnitude()
 	{
-		return sqrtf(K::Vector3::DotProduct(*this, *this));
+		return sqrtf(powf(x, 2) + powf(y, 2) + powf(z, 2));
 	}
 
 	K::Transform::Transform(K::Vector3* newPos, K::Vector3* newRot, K::Vector3* newScale)

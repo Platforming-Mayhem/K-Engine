@@ -25,6 +25,10 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
+			if (PhysicsManager::IsColliding(K::Vector3(this->parent->GetTransform()->position->x, this->parent->GetTransform()->position->y, this->parent->GetTransform()->position->z)))
+			{
+				ImGui::Text("Colliding");
+			}
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
 		}
 	}
@@ -38,10 +42,6 @@ namespace K
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT, window->window))
 		{
 			*(this->parent->GetTransform()->position) += new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
-		}
-		if (PhysicsManager::IsColliding(K::Vector2(this->parent->GetTransform()->position->x, this->parent->GetTransform()->position->z))) 
-		{
-			*(this->parent->GetTransform()->position) += new K::Vector3(0.0f, 0.0f, K::Time::deltaTime());
 		}
 	}
 
