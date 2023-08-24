@@ -10,11 +10,11 @@ namespace K
 	{
 		delete col;
 	}
-	bool PhysicsManager::IsColliding(K::Vector3 pos) 
+	bool PhysicsManager::IsColliding(K::Vector3 pos)
 	{
 		for (K::Collider* col : K::PhysicsManager::colliders) 
 		{
-			if (col->IsCollidingAtPoint(pos)) 
+			if (col->IsCollidingWithTriangle(pos)) 
 			{
 				return true;
 			}

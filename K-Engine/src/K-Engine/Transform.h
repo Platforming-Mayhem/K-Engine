@@ -132,6 +132,16 @@ namespace K
 			float dot = a.x * b.x + a.y * b.y + a.z * b.z;
 			return dot;
 		}
+
+		static float AngleBetweenVectors(K::Vector3& a, K::Vector3& b) 
+		{
+			float theta = acosf(DotProduct(a, b) / (a.magnitude() * b.magnitude()));
+			if (isnan(theta))
+			{
+				return 0.0f;
+			}
+			return theta * 57.2958f;
+		}
 	};
 
 	struct K_API Quaternion

@@ -25,7 +25,7 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
-			if (PhysicsManager::IsColliding(K::Vector3(this->parent->GetTransform()->position->x, this->parent->GetTransform()->position->y, this->parent->GetTransform()->position->z)))
+			if (PhysicsManager::IsColliding(*this->parent->GetTransform()->position))
 			{
 				ImGui::Text("Colliding");
 			}

@@ -47,9 +47,7 @@ namespace K
 
 		virtual ~Collider();
 
-		bool IsCollidingWithTriangle(K::Vector3 A, K::Vector3 B, K::Vector3 C, K::Vector3 P);
-
-		bool IsCollidingAtPoint(K::Vector3 P);
+		bool IsCollidingWithTriangle(K::Vector3 P);
 
 		void FormTriangles();
 

@@ -23,7 +23,7 @@ namespace K
 		PhysicsManager::Attach(this);
 	}
 
-	bool Collider::IsCollidingWithTriangle(K::Vector3 A, K::Vector3 B, K::Vector3 C, K::Vector3 P)
+	bool Collider::IsCollidingWithTriangle(K::Vector3 P)
 	{
 		//Check Desmos https://www.desmos.com/calculator/3c3j6yj6ld
 		//https://youtu.be/4K-Jx914NcQ?t=724
@@ -41,8 +41,7 @@ namespace K
 		float collatedArea = tri1.CalculateArea() + tri2.CalculateArea() + tri3.CalculateArea();
 
 		return collatedArea == tri.CalculateArea();*/
-
-		if (A.z == C.z)
+		/*if (A.z == C.z)
 			C.z -= 1 / 120;
 
 		float s1 = C.z - A.z;
@@ -53,7 +52,7 @@ namespace K
 		float w1 = (A.x * s1 + s4 * s2 - P.x * s1) / (s3 * s2 - (B.x - A.x) * s1);
 		float w2 = (s4 - w1 * s3) / s1;
 
-		return w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1;
+		return w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1;*/
 		/*K::Triangle tri = K::Triangle(A, B, C);
 		K::Vector3 AB = B - A;
 		K::Vector3 AC = C - A;
@@ -77,20 +76,23 @@ namespace K
 		}*/
 		//std::cout << POnTri.x << " " << POnTri.y << " " << POnTri.z << std::endl;
 		//https://www.youtube.com/watch?v=3MJ-k15te_k&t=222s
-	}
-
-	bool Collider::IsCollidingAtPoint(K::Vector3 P)
-	{
-		for (int i = 0; i < this->triangles.size(); i++)
+		//NOTE(JAWAD): USE ANGLES, IF ANGLE IS GREATER THAN OR EQUAL TO 180 DEGREES THEN NOT COLLIDING ELSE IS COLLIDING
+		for (int i = 0; i < this->triangles.size(); i++) 
 		{
-			K::Vector3 out1 = K::Vector3(0.0f, 0.0f, 0.0f);
-			MultiplyMatrixVector(this->triangles[i].vertices->data()[0], out1, this->parent->GetTransform()->modelMatrix);
-			K::Vector3 out2 = K::Vector3(0.0f, 0.0f, 0.0f);
-			MultiplyMatrixVector(this->triangles[i].vertices->data()[1], out2, this->parent->GetTransform()->modelMatrix);
-			K::Vector3 out3 = K::Vector3(0.0f, 0.0f, 0.0f);
-			MultiplyMatrixVector(this->triangles[i].vertices->data()[2], out3, this->parent->GetTransform()->modelMatrix);
+			K::Vector3 A = this->triangles[i].vertices->data()[0];
+			K::Vector3 B = this->triangles[i].vertices->data()[1];
+			K::Vector3 C = this->triangles[i].vertices->data()[2];
 
-			if (IsCollidingWithTriangle(out1, out2, out3, P))
+
+			K::Vector3 AP = P - A;
+			K::Vector3 BP = P - B;
+			K::Vector3 CP = P - C;
+
+			//ImGui::Text("%f, %f, %f", K::Vector3::AngleBetweenVectors(AP, BP), K::Vector3::AngleBetweenVectors(BP, CP), K::Vector3::AngleBetweenVectors(CP, AP));
+
+			float angle = K::Vector3::AngleBetweenVectors(AP, BP) + K::Vector3::AngleBetweenVectors(BP, CP) + K::Vector3::AngleBetweenVectors(CP, AP);
+
+			if (roundf(angle * 100.0f) / 100.0f == 360.0f || roundf(angle * 100.0f) / 100.0f == 180.0f)
 			{
 				return true;
 			}
