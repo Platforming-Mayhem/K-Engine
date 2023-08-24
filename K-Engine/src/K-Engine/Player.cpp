@@ -25,10 +25,6 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
-			if (PhysicsManager::IsColliding(*this->parent->GetTransform()->position))
-			{
-				ImGui::Text("Colliding");
-			}
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
 		}
 	}
@@ -42,6 +38,21 @@ namespace K
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT, window->window))
 		{
 			*(this->parent->GetTransform()->position) += new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+		}
+		if (InputManager::IsKeyPressed(GLFW_KEY_UP, window->window))
+		{
+			*(this->parent->GetTransform()->position) += new K::Vector3(0.0f, 0.0f, K::Time::deltaTime() * this->movementSpeed);
+		}
+		else if (InputManager::IsKeyPressed(GLFW_KEY_DOWN, window->window))
+		{
+			*(this->parent->GetTransform()->position) += new K::Vector3(0.0f, 0.0f, -K::Time::deltaTime() * this->movementSpeed);
+		}
+		for (int i = 0; i < this->parent->GetMesh()->vertices.size(); i++)
+		{
+			if (PhysicsManager::IsColliding(this->parent->GetMesh()->vertices.data()[i].position + *this->parent->GetTransform()->position))
+			{
+				
+			}
 		}
 	}
 
