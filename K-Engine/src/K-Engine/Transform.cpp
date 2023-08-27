@@ -95,17 +95,17 @@ namespace K
 
 	void K::Transform::PassModelMatrix() 
 	{
-		//Translation Matrix
 		this->modelMatrix = this->modelMatrix.IdentityMatrix();
-		this->modelMatrix.m[3][0] = this->position->x;
-		this->modelMatrix.m[3][1] = this->position->y;
-		this->modelMatrix.m[3][2] = this->position->z;
 		//Rotation Matrix
-		this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(modelMatrix, *K::Quaternion::Euler(new K::Vector3(this->rotation->x, this->rotation->y, this->rotation->z))->QuaternionToMatrix());
+		this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->modelMatrix, *K::Quaternion::Euler(new K::Vector3(this->rotation->x, this->rotation->y, this->rotation->z))->QuaternionToMatrix());
 		//Scaling Matrix
 		this->modelMatrix.m[0][0] *= this->scale->x;
 		this->modelMatrix.m[1][1] *= this->scale->y;
 		this->modelMatrix.m[2][2] *= this->scale->z;
+		//Translation Matrix
+		this->modelMatrix.m[3][0] = this->position->x;
+		this->modelMatrix.m[3][1] = this->position->y;
+		this->modelMatrix.m[3][2] = this->position->z;
 	}
 
 	K::Quaternion::Quaternion(float x, float y, float z, float w)

@@ -14,7 +14,7 @@ namespace K
 		K::Shader* shader;
 		float screenWidth = 1920.0f;
 		float screenHeight = 1080.0f;
-		float nearPlane = 0.1f;
+		float nearPlane = 0.9f;
 		float farPlane = 1000.0f;
 		float FOV = 60.0f;
 		float orthoSize = 1.0f;

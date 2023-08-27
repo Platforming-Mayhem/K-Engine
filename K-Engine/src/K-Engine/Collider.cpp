@@ -56,13 +56,19 @@ namespace K
 		std::vector<K::Triangle> temp;
 		for (int i = 0; i < this->parent->GetMesh()->indices.size(); i++) 
 		{
+			K::Vector3 Atemp = K::Vector3(0.0f, 0.0f, 0.0f);
 			K::Vector3 A = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
+			K::MultiplyMatrixVector(A, Atemp, this->parent->GetTransform()->modelMatrix);
 			i++;
+			K::Vector3 Btemp = K::Vector3(0.0f, 0.0f, 0.0f);
 			K::Vector3 B = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
+			K::MultiplyMatrixVector(B, Btemp, this->parent->GetTransform()->modelMatrix);
 			i++;
+			K::Vector3 Ctemp = K::Vector3(0.0f, 0.0f, 0.0f);
 			K::Vector3 C = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
+			K::MultiplyMatrixVector(C, Ctemp, this->parent->GetTransform()->modelMatrix);
 
-			temp.push_back(K::Triangle(A, B, C));
+			temp.push_back(K::Triangle(Atemp, Btemp, Ctemp));
 		}
 		this->triangles = temp;
 	}
