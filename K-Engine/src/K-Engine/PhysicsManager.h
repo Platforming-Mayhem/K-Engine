@@ -1,6 +1,7 @@
 #pragma once
 #include "build.h"
 #include "Collider.h"
+#include "GameObject.h"
 
 namespace K 
 {
@@ -11,6 +12,6 @@ namespace K
 	public:
 		static void Attach(K::Collider* col);
 		static void Remove(K::Collider* col);
-		static bool IsColliding(K::Vector3 pos);
+		static bool IsColliding(K::Collider* other);
 	};
 }

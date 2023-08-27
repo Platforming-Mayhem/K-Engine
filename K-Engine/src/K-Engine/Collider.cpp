@@ -87,14 +87,9 @@ namespace K
 			ImGui::Text("Triangles: %i", this->triangles.size());
 			if (!this->isStatic) 
 			{
-				for (int i = 0; i < this->parent->GetMesh()->vertices.size(); i++)
+				if (PhysicsManager::IsColliding(this))
 				{
-					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
-					K::MultiplyMatrixVector(this->parent->GetMesh()->vertices.data()[i].position, temp, this->parent->GetTransform()->modelMatrix);
-					if (PhysicsManager::IsColliding(temp))
-					{
-						ImGui::Text("Colliding");
-					}
+					ImGui::Text("Colliding");
 				}
 			}
 		}
