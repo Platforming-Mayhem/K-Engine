@@ -7,11 +7,9 @@ namespace K
 {
 	class K_API PhysicsManager
 	{
-	private:
-		inline static std::vector<K::Collider*> colliders;
 	public:
+		inline static std::vector<K::Collider*> colliders;
 		static void Attach(K::Collider* col);
 		static void Remove(K::Collider* col);
-		static bool IsColliding(K::Collider* other);
 	};
 }

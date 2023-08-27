@@ -42,12 +42,13 @@ namespace K
 	{
 	private:
 		std::vector<K::Triangle> triangles;
-		bool isStatic = true;
 		int id;
 	public:
 		Collider();
 
 		virtual ~Collider();
+
+		bool IsColliding();
 
 		bool IsCollidingWithTriangle(K::Vector3 P);
 

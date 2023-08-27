@@ -57,6 +57,38 @@ namespace K
 		return false;
 	}
 
+	bool Collider::IsColliding()
+	{
+		for (K::Collider* col : K::PhysicsManager::colliders)
+		{
+			for (int i = 0; i < this->parent->GetMesh()->vertices.size(); i++)
+			{
+				if (this->GetID() != col->GetID())
+				{
+					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
+					K::MultiplyMatrixVector(this->parent->GetMesh()->vertices[i].position, temp, this->parent->GetTransform()->modelMatrix);
+					if (col->IsCollidingWithTriangle(temp))
+					{
+						return true;
+					}
+				}
+			}
+			for (int i = 0; i < col->parent->GetMesh()->vertices.size(); i++)
+			{
+				if (col->GetID() != this->GetID())
+				{
+					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
+					K::MultiplyMatrixVector(col->parent->GetMesh()->vertices[i].position, temp, col->parent->GetTransform()->modelMatrix);
+					if (this->IsCollidingWithTriangle(temp))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	void Collider::FormTriangles() 
 	{
 		std::vector<K::Triangle> temp;
@@ -83,14 +115,10 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Collider Settings")) 
 		{
-			ImGui::Checkbox("Static", &this->isStatic);
 			ImGui::Text("Triangles: %i", this->triangles.size());
-			if (!this->isStatic) 
+			if (IsColliding())
 			{
-				if (PhysicsManager::IsColliding(this))
-				{
-					ImGui::Text("Colliding");
-				}
+				ImGui::Text("Colliding");
 			}
 		}
 	}
