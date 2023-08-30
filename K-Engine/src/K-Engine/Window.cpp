@@ -28,7 +28,7 @@ namespace K
 			std::cout << "Failed to create window" << std::endl;
 		}
 		glfwMakeContextCurrent(this->window);
-		glfwSwapInterval(0);
+		glfwSwapInterval(1);
 
 		if (glewInit() != GLEW_OK)
 		{

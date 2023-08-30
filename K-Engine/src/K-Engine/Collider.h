@@ -42,6 +42,7 @@ namespace K
 	{
 	private:
 		std::vector<K::Triangle> triangles;
+		bool isStatic = true;
 		int id;
 	public:
 		Collider();

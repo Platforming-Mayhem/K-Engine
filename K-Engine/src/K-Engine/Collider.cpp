@@ -43,9 +43,10 @@ namespace K
 			K::Vector3 C = this->triangles[i].vertices->data()[2];
 
 
-			K::Vector3 AP = P - A;
-			K::Vector3 BP = P - B;
-			K::Vector3 CP = P - C;
+			K::Vector3 AP = (P - A);
+			K::Vector3 BP = (P - B);
+			K::Vector3 CP = (P - C);
+			K::Vector3 MP = (P - this->triangles[i].GetMidPoint());
 
 			float angle = K::Vector3::AngleBetweenVectors(AP, BP) + K::Vector3::AngleBetweenVectors(BP, CP) + K::Vector3::AngleBetweenVectors(CP, AP);
 
@@ -115,8 +116,9 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Collider Settings")) 
 		{
+			ImGui::Checkbox("Is Static", &this->isStatic);
 			ImGui::Text("Triangles: %i", this->triangles.size());
-			if (IsColliding())
+			if (this->IsColliding() && !this->isStatic)
 			{
 				ImGui::Text("Colliding");
 			}
@@ -125,7 +127,7 @@ namespace K
 
 	void Collider::Update()
 	{
-		
+		FormTriangles();
 	}
 
 	void Collider::Unbind()
@@ -135,7 +137,7 @@ namespace K
 
 	void Collider::Bind()
 	{
-		FormTriangles();
+		
 	}
 
 	const char* Collider::GetName()
