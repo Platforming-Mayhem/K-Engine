@@ -52,6 +52,11 @@ namespace K
 
 			if (roundf(angle * 100.0f) / 100.0f == 360.0f || roundf(angle * 100.0f) / 100.0f == 180.0f)
 			{
+				if (!this->isStatic) 
+				{
+					K::Vector3 temp = (AP + BP + CP) * (1.0f / 3.0f);
+					this->offset -= temp;
+				}
 				return true;
 			}
 		}
@@ -118,16 +123,17 @@ namespace K
 		{
 			ImGui::Checkbox("Is Static", &this->isStatic);
 			ImGui::Text("Triangles: %i", this->triangles.size());
-			if (this->IsColliding() && !this->isStatic)
-			{
-				ImGui::Text("Colliding");
-			}
 		}
 	}
 
 	void Collider::Update()
 	{
 		FormTriangles();
+		if (this->IsColliding() && !this->isStatic)
+		{
+			*this->parent->GetTransform()->position += this->offset;
+			this->offset = K::Vector3(0.0f, 0.0f, 0.0f);
+		}
 	}
 
 	void Collider::Unbind()

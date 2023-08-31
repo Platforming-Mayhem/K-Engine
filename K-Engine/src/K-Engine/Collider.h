@@ -42,6 +42,7 @@ namespace K
 	{
 	private:
 		std::vector<K::Triangle> triangles;
+		K::Vector3 offset = K::Vector3(0.0f, 0.0f, 0.0f);
 		bool isStatic = true;
 		int id;
 	public:
