@@ -26,10 +26,11 @@ namespace K
 		return this->id;
 	}
 
-	bool Collider::IsTriangleCollidingWithTriangleSAT(K::Triangle* shape1, K::Triangle* shape2)
+	float Collider::IsTriangleCollidingWithTriangleSAT(K::Triangle* shape1, K::Triangle* shape2)
 	{
 		K::Triangle* pointer1 = shape1;
 		K::Triangle* pointer2 = shape2;
+		float overlap = INFINITY;
 		for (int shape = 0; shape < 2; shape++)
 		{
 			if (shape == 1)
@@ -55,11 +56,14 @@ namespace K
 					minR2 = min(minR2, dot);
 					maxR2 = max(maxR2, dot);
 				}
+
+				overlap = min(min(maxR1, maxR2) - max(minR1, minR2), overlap);
+
 				if (!(maxR2 >= minR1 && maxR1 >= minR2))
-					return false;
+					return 0.0f;
 			}
 		}
-		return true;
+		return overlap;
 	}
 
 	bool Collider::IsCollidingWithTriangleBarycentric(K::Vector3 P, float &u, float &v, float &w)
@@ -165,8 +169,34 @@ namespace K
 
 						K::Triangle tri2 = K::Triangle(Atemp, Btemp, Ctemp);
 
-						if (IsTriangleCollidingWithTriangleSAT(&tri1, &tri2))
+						float overlap = IsTriangleCollidingWithTriangleSAT(&tri1, &tri2);
+
+						if (overlap != 0.0f)
 						{
+							if (!this->isStatic) 
+							{
+								K::Vector3 dir = (*this->parent->GetTransform()->position - *col->parent->GetTransform()->position).normalise() * overlap;
+								if (!std::isnan(dir.magnitude())) 
+								{
+									*this->parent->GetTransform()->position += dir;
+								}
+								else 
+								{
+									*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, 1.0f * overlap);
+								}
+							}
+							if (!col->isStatic) 
+							{
+								K::Vector3 dir = (*col->parent->GetTransform()->position - *this->parent->GetTransform()->position).normalise() * overlap;
+								if (!std::isnan(dir.magnitude()))
+								{
+									*col->parent->GetTransform()->position += dir;
+								}
+								else 
+								{
+									*col->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, 1.0f * overlap);
+								}
+							}
 							return true;
 						}
 					}
@@ -221,7 +251,7 @@ namespace K
 
 	void Collider::Update()
 	{
-		this->isColliding = IsCollidingTriangle();
+		IsCollidingTriangle();
 	}
 
 	void Collider::Unbind()

@@ -58,7 +58,7 @@ namespace K
 
 		bool IsCollidingWithTriangleBarycentric(K::Vector3 P, float& u, float& v, float& w);
 
-		bool IsTriangleCollidingWithTriangleSAT(K::Triangle* shape1, K::Triangle* shape2);
+		float IsTriangleCollidingWithTriangleSAT(K::Triangle* shape1, K::Triangle* shape2);
 
 		int GetID();
 
