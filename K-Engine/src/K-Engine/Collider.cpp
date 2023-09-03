@@ -1,7 +1,6 @@
 #include "Collider.h"
 #include "Time.h"
 #include "InputManager.h"
-#include "Camera.h"
 #include "PhysicsManager.h"
 
 namespace K 
@@ -13,14 +12,12 @@ namespace K
 
 	Collider::~Collider()
 	{
-		this->triangles.clear();
 		PhysicsManager::Remove(this);
 	}
 
 	void Collider::Init()
 	{
 		this->id = std::chrono::system_clock::now().time_since_epoch().count();
-		FormTriangles();
 		PhysicsManager::Attach(this);
 	}
 
@@ -29,34 +26,127 @@ namespace K
 		return this->id;
 	}
 
-	bool Collider::IsCollidingWithTriangle(K::Vector3 P)
+	bool Collider::IsTriangleCollidingWithTriangleSAT(K::Collider* shape1, K::Collider* shape2) 
+	{
+		K::Collider* pointer1 = shape1;
+		K::Collider* pointer2 = shape2;
+		for (int shape = 0; shape < 2; shape++)
+		{
+			if (shape == 1)
+			{
+				pointer1 = shape2;
+				pointer2 = shape1;
+			}
+			for (int a = 0; a < pointer1->parent->GetMesh()->vertices.size(); a++) 
+			{
+				int b = (a + 1) % pointer1->parent->GetMesh()->vertices.size();
+				K::Vector3 tempA = K::Vector3(0.0f, 0.0f, 0.0f);
+				K::Vector3 tempB = K::Vector3(0.0f, 0.0f, 0.0f);
+				K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[a].position, tempA, pointer1->parent->GetTransform()->modelMatrix);
+				K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[b].position, tempB, pointer1->parent->GetTransform()->modelMatrix);
+				K::Vector3 axisProj = K::Vector3(-(tempB.z - tempA.z), 0.0f, tempB.x - tempA.x).normalise();
+				float minR1 = INFINITY;
+				float maxR1 = -INFINITY;
+				for (int p = 0; p < pointer1->parent->GetMesh()->vertices.size(); p++) 
+				{
+					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
+					K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[p].position, temp, pointer1->parent->GetTransform()->modelMatrix);
+					float dot = K::Vector3::DotProduct(temp, axisProj);
+					minR1 = min(minR1, dot);
+					maxR1 = max(maxR1, dot);
+				}
+				float minR2 = INFINITY;
+				float maxR2 = -INFINITY;
+				for (int p = 0; p < pointer2->parent->GetMesh()->vertices.size(); p++)
+				{
+					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
+					K::MultiplyMatrixVector(pointer2->parent->GetMesh()->vertices[p].position, temp, pointer2->parent->GetTransform()->modelMatrix);
+					float dot = K::Vector3::DotProduct(temp, axisProj);
+					minR2 = min(minR2, dot);
+					maxR2 = max(maxR2, dot);
+				}
+				if (!(maxR2 >= minR1 && maxR1 >= minR2))
+					return false;
+			}
+		}
+		return true;
+	}
+
+	bool Collider::IsCollidingWithTriangleBarycentric(K::Vector3 P, float &u, float &v, float &w)
+	{
+		for (int i = 0; i < this->parent->GetMesh()->indices.size(); i++)
+		{
+			K::Vector3 Atemp = K::Vector3(0.0f, 0.0f, 0.0f);
+			K::Vector3 A = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
+			K::MultiplyMatrixVector(A, Atemp, this->parent->GetTransform()->modelMatrix);
+			i++;
+			K::Vector3 Btemp = K::Vector3(0.0f, 0.0f, 0.0f);
+			K::Vector3 B = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
+			K::MultiplyMatrixVector(B, Btemp, this->parent->GetTransform()->modelMatrix);
+			i++;
+			K::Vector3 Ctemp = K::Vector3(0.0f, 0.0f, 0.0f);
+			K::Vector3 C = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
+			K::MultiplyMatrixVector(C, Ctemp, this->parent->GetTransform()->modelMatrix);
+			//Temp Values are the final values
+			K::Vector3 v0 = Btemp - Atemp;
+			K::Vector3 v1 = Ctemp - Atemp;
+			K::Vector3 v2 = P - Atemp;
+			float d00 = K::Vector3::DotProduct(v0, v0);
+			float d01 = K::Vector3::DotProduct(v0, v1);
+			float d11 = K::Vector3::DotProduct(v1, v1);
+			float d20 = K::Vector3::DotProduct(v2, v0);
+			float d21 = K::Vector3::DotProduct(v2, v1);
+			float denom = d00 * d11 - d01 * d01;
+			v = (d11 * d20 - d01 * d21) / denom;
+			w = (d00 * d21 - d01 * d20) / denom;
+			u = 1.0f - v - w;
+			return v >= 0.0f && w >= 0.0f && (v + w) <= 1.0f;
+		}
+		return false;
+	}
+
+	bool Collider::IsCollidingWithTriangleAngle(K::Vector3 P)
 	{
 		//Check Desmos https://www.desmos.com/calculator/3c3j6yj6ld
 		//https://youtu.be/4K-Jx914NcQ?t=724
 		//https://www.youtube.com/watch?v=HYAgJN3x4GA
 		//https://www.youtube.com/watch?v=3MJ-k15te_k&t=222s
 		//NOTE(JAWAD): USE ANGLES, IF ANGLE IS GREATER THAN OR EQUAL TO 180 DEGREES THEN NOT COLLIDING ELSE IS COLLIDING
-		for (int i = 0; i < this->triangles.size(); i++) 
+		for (int i = 0; i < this->parent->GetMesh()->indices.size(); i++)
 		{
-			K::Vector3 A = this->triangles[i].vertices->data()[0];
-			K::Vector3 B = this->triangles[i].vertices->data()[1];
-			K::Vector3 C = this->triangles[i].vertices->data()[2];
+			K::Vector3 Atemp = K::Vector3(0.0f, 0.0f, 0.0f);
+			K::Vector3 A = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
+			K::MultiplyMatrixVector(A, Atemp, this->parent->GetTransform()->modelMatrix);
+			i++;
+			K::Vector3 Btemp = K::Vector3(0.0f, 0.0f, 0.0f);
+			K::Vector3 B = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
+			K::MultiplyMatrixVector(B, Btemp, this->parent->GetTransform()->modelMatrix);
+			i++;
+			K::Vector3 Ctemp = K::Vector3(0.0f, 0.0f, 0.0f);
+			K::Vector3 C = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
+			K::MultiplyMatrixVector(C, Ctemp, this->parent->GetTransform()->modelMatrix);
 
-
-			K::Vector3 AP = (P - A);
-			K::Vector3 BP = (P - B);
-			K::Vector3 CP = (P - C);
-			K::Vector3 MP = (P - this->triangles[i].GetMidPoint());
+			K::Vector3 AP = (P - Atemp);
+			K::Vector3 BP = (P - Btemp);
+			K::Vector3 CP = (P - Ctemp);
 
 			float angle = K::Vector3::AngleBetweenVectors(AP, BP) + K::Vector3::AngleBetweenVectors(BP, CP) + K::Vector3::AngleBetweenVectors(CP, AP);
 
 			if (roundf(angle * 100.0f) / 100.0f == 360.0f || roundf(angle * 100.0f) / 100.0f == 180.0f)
 			{
-				if (!this->isStatic) 
-				{
-					K::Vector3 temp = (AP + BP + CP) * (1.0f / 3.0f);
-					this->offset -= temp;
-				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool Collider::IsCollidingTriangle() 
+	{
+		for (int a = 0; a < K::PhysicsManager::colliders.size(); a++) 
+		{
+			int b = (a + 1) % K::PhysicsManager::colliders.size();
+			if (IsTriangleCollidingWithTriangleSAT(K::PhysicsManager::colliders[a], K::PhysicsManager::colliders[b]) && a != b)
+			{
 				return true;
 			}
 		}
@@ -73,19 +163,21 @@ namespace K
 				{
 					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
 					K::MultiplyMatrixVector(this->parent->GetMesh()->vertices[i].position, temp, this->parent->GetTransform()->modelMatrix);
-					if (col->IsCollidingWithTriangle(temp))
+					float u, v, w;
+					if (col->IsCollidingWithTriangleBarycentric(temp, u, v, w))
 					{
 						return true;
 					}
 				}
 			}
-			for (int i = 0; i < col->parent->GetMesh()->vertices.size(); i++)
+			for (int j = 0; j < col->parent->GetMesh()->vertices.size(); j++)
 			{
 				if (col->GetID() != this->GetID())
 				{
 					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
-					K::MultiplyMatrixVector(col->parent->GetMesh()->vertices[i].position, temp, col->parent->GetTransform()->modelMatrix);
-					if (this->IsCollidingWithTriangle(temp))
+					K::MultiplyMatrixVector(col->parent->GetMesh()->vertices[j].position, temp, col->parent->GetTransform()->modelMatrix);
+					float u, v, w;
+					if (this->IsCollidingWithTriangleBarycentric(temp, u, v, w))
 					{
 						return true;
 					}
@@ -95,45 +187,18 @@ namespace K
 		return false;
 	}
 
-	void Collider::FormTriangles() 
-	{
-		std::vector<K::Triangle> temp;
-		for (int i = 0; i < this->parent->GetMesh()->indices.size(); i++) 
-		{
-			K::Vector3 Atemp = K::Vector3(0.0f, 0.0f, 0.0f);
-			K::Vector3 A = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
-			K::MultiplyMatrixVector(A, Atemp, this->parent->GetTransform()->modelMatrix);
-			i++;
-			K::Vector3 Btemp = K::Vector3(0.0f, 0.0f, 0.0f);
-			K::Vector3 B = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
-			K::MultiplyMatrixVector(B, Btemp, this->parent->GetTransform()->modelMatrix);
-			i++;
-			K::Vector3 Ctemp = K::Vector3(0.0f, 0.0f, 0.0f);
-			K::Vector3 C = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[i]].position);
-			K::MultiplyMatrixVector(C, Ctemp, this->parent->GetTransform()->modelMatrix);
-
-			temp.push_back(K::Triangle(Atemp, Btemp, Ctemp));
-		}
-		this->triangles = temp;
-	}
-
 	void Collider::UpdateEditor()
 	{
 		if (ImGui::CollapsingHeader("Collider Settings")) 
 		{
+			ImGui::Checkbox("Is Colliding", &this->isColliding);
 			ImGui::Checkbox("Is Static", &this->isStatic);
-			ImGui::Text("Triangles: %i", this->triangles.size());
 		}
 	}
 
 	void Collider::Update()
 	{
-		FormTriangles();
-		if (this->IsColliding() && !this->isStatic)
-		{
-			*this->parent->GetTransform()->position += this->offset;
-			this->offset = K::Vector3(0.0f, 0.0f, 0.0f);
-		}
+		this->isColliding = this->IsCollidingTriangle();
 	}
 
 	void Collider::Unbind()

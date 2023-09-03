@@ -41,8 +41,8 @@ namespace K
 	class K_API Collider : public K::Component
 	{
 	private:
-		std::vector<K::Triangle> triangles;
 		K::Vector3 offset = K::Vector3(0.0f, 0.0f, 0.0f);
+		bool isColliding = false;
 		bool isStatic = true;
 		int id;
 	public:
@@ -52,11 +52,15 @@ namespace K
 
 		bool IsColliding();
 
-		bool IsCollidingWithTriangle(K::Vector3 P);
+		bool IsCollidingTriangle();
+
+		bool IsCollidingWithTriangleAngle(K::Vector3 P);
+
+		bool IsCollidingWithTriangleBarycentric(K::Vector3 P, float& u, float& v, float& w);
+
+		bool IsTriangleCollidingWithTriangleSAT(K::Collider* shape1, K::Collider* shape2);
 
 		int GetID();
-
-		void FormTriangles();
 
 		void Init() override;
 
