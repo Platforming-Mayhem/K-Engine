@@ -26,10 +26,10 @@ namespace K
 		return this->id;
 	}
 
-	bool Collider::IsTriangleCollidingWithTriangleSAT(K::Collider* shape1, K::Collider* shape2) 
+	bool Collider::IsTriangleCollidingWithTriangleSAT(K::Triangle* shape1, K::Triangle* shape2)
 	{
-		K::Collider* pointer1 = shape1;
-		K::Collider* pointer2 = shape2;
+		K::Triangle* pointer1 = shape1;
+		K::Triangle* pointer2 = shape2;
 		for (int shape = 0; shape < 2; shape++)
 		{
 			if (shape == 1)
@@ -37,30 +37,21 @@ namespace K
 				pointer1 = shape2;
 				pointer2 = shape1;
 			}
-			for (int a = 0; a < pointer1->parent->GetMesh()->indices.size(); a++)
+			for (int a = 0; a < pointer1->vertices->size(); a++)
 			{
-				int b = (a + 1) % pointer1->parent->GetMesh()->indices.size();
-				K::Vector3 tempA = K::Vector3(0.0f, 0.0f, 0.0f);
-				K::Vector3 tempB = K::Vector3(0.0f, 0.0f, 0.0f);
-				K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[pointer1->parent->GetMesh()->indices[a]].position, tempA, pointer1->parent->GetTransform()->modelMatrix);
-				K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[pointer1->parent->GetMesh()->indices[b]].position, tempB, pointer1->parent->GetTransform()->modelMatrix);
-				K::Vector3 axisProj = K::Vector3(-(tempB.z - tempA.z), 0.0f, tempB.x - tempA.x);
-				axisProj.normalise();
+				int b = (a + 1) % pointer1->vertices->size();
+				K::Vector3 axisProj = K::Vector3(-(pointer1->vertices->data()[b].z - pointer1->vertices->data()[a].z), 0.0f, pointer1->vertices->data()[b].x - pointer1->vertices->data()[a].x).normalise();
 				float minR1 = INFINITY, maxR1 = -INFINITY;
-				for (int p : pointer1->parent->GetMesh()->indices)
+				for (int p = 0; p < 3; p++)
 				{
-					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
-					K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[p].position, temp, pointer1->parent->GetTransform()->modelMatrix);
-					float dot = K::Vector3::DotProduct(temp, axisProj);
+					float dot = K::Vector3::DotProduct(pointer1->vertices->data()[p], axisProj);
 					minR1 = min(minR1, dot);
 					maxR1 = max(maxR1, dot);
 				}
 				float minR2 = INFINITY, maxR2 = -INFINITY;
-				for (int p : pointer2->parent->GetMesh()->indices)
+				for (int p = 0; p < 3; p++)
 				{
-					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
-					K::MultiplyMatrixVector(pointer2->parent->GetMesh()->vertices[p].position, temp, pointer2->parent->GetTransform()->modelMatrix);
-					float dot = K::Vector3::DotProduct(temp, axisProj);
+					float dot = K::Vector3::DotProduct(pointer2->vertices->data()[p], axisProj);
 					minR2 = min(minR2, dot);
 					maxR2 = max(maxR2, dot);
 				}
@@ -141,12 +132,45 @@ namespace K
 
 	bool Collider::IsCollidingTriangle() 
 	{
-		for (int a = 0; a < K::PhysicsManager::colliders.size(); a++) 
+		for (K::Collider* col : K::PhysicsManager::colliders)
 		{
-			int b = (a + 1) % K::PhysicsManager::colliders.size();
-			if (IsTriangleCollidingWithTriangleSAT(K::PhysicsManager::colliders[a], K::PhysicsManager::colliders[b]) && a != b)
+			if (col->GetID() != this->GetID()) 
 			{
-				return true;
+				for (int a = 0; a < col->parent->GetMesh()->indices.size(); a++)
+				{
+					K::Vector3 Atemp = K::Vector3(0.0f, 0.0f, 0.0f);
+					K::Vector3 A = K::Vector3(col->parent->GetMesh()->vertices[col->parent->GetMesh()->indices[a]].position);
+					K::MultiplyMatrixVector(A, Atemp, col->parent->GetTransform()->modelMatrix);
+					a++;
+					K::Vector3 Btemp = K::Vector3(0.0f, 0.0f, 0.0f);
+					K::Vector3 B = K::Vector3(col->parent->GetMesh()->vertices[col->parent->GetMesh()->indices[a]].position);
+					K::MultiplyMatrixVector(B, Btemp, col->parent->GetTransform()->modelMatrix);
+					a++;
+					K::Vector3 Ctemp = K::Vector3(0.0f, 0.0f, 0.0f);
+					K::Vector3 C = K::Vector3(col->parent->GetMesh()->vertices[col->parent->GetMesh()->indices[a]].position);
+					K::MultiplyMatrixVector(C, Ctemp, col->parent->GetTransform()->modelMatrix);
+
+					K::Triangle tri1 = K::Triangle(Atemp, Btemp, Ctemp);
+
+					for (int b = 0; b < this->parent->GetMesh()->indices.size(); b++)
+					{
+						A = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[b]].position);
+						K::MultiplyMatrixVector(A, Atemp, this->parent->GetTransform()->modelMatrix);
+						b++;
+						K::Vector3 B = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[b]].position);
+						K::MultiplyMatrixVector(B, Btemp, this->parent->GetTransform()->modelMatrix);
+						b++;
+						K::Vector3 C = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[b]].position);
+						K::MultiplyMatrixVector(C, Ctemp, this->parent->GetTransform()->modelMatrix);
+
+						K::Triangle tri2 = K::Triangle(Atemp, Btemp, Ctemp);
+
+						if (IsTriangleCollidingWithTriangleSAT(&tri1, &tri2))
+						{
+							return true;
+						}
+					}
+				}
 			}
 		}
 		return false;
@@ -197,7 +221,7 @@ namespace K
 
 	void Collider::Update()
 	{
-		
+		this->isColliding = IsCollidingTriangle();
 	}
 
 	void Collider::Unbind()
