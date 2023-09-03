@@ -37,17 +37,17 @@ namespace K
 				pointer1 = shape2;
 				pointer2 = shape1;
 			}
-			for (int a = 0; a < pointer1->parent->GetMesh()->vertices.size(); a++) 
+			for (int a = 0; a < pointer1->parent->GetMesh()->indices.size(); a++)
 			{
-				int b = (a + 1) % pointer1->parent->GetMesh()->vertices.size();
+				int b = (a + 1) % pointer1->parent->GetMesh()->indices.size();
 				K::Vector3 tempA = K::Vector3(0.0f, 0.0f, 0.0f);
 				K::Vector3 tempB = K::Vector3(0.0f, 0.0f, 0.0f);
-				K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[a].position, tempA, pointer1->parent->GetTransform()->modelMatrix);
-				K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[b].position, tempB, pointer1->parent->GetTransform()->modelMatrix);
-				K::Vector3 axisProj = K::Vector3(-(tempB.z - tempA.z), 0.0f, tempB.x - tempA.x).normalise();
-				float minR1 = INFINITY;
-				float maxR1 = -INFINITY;
-				for (int p = 0; p < pointer1->parent->GetMesh()->vertices.size(); p++) 
+				K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[pointer1->parent->GetMesh()->indices[a]].position, tempA, pointer1->parent->GetTransform()->modelMatrix);
+				K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[pointer1->parent->GetMesh()->indices[b]].position, tempB, pointer1->parent->GetTransform()->modelMatrix);
+				K::Vector3 axisProj = K::Vector3(-(tempB.z - tempA.z), 0.0f, tempB.x - tempA.x);
+				axisProj.normalise();
+				float minR1 = INFINITY, maxR1 = -INFINITY;
+				for (int p : pointer1->parent->GetMesh()->indices)
 				{
 					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
 					K::MultiplyMatrixVector(pointer1->parent->GetMesh()->vertices[p].position, temp, pointer1->parent->GetTransform()->modelMatrix);
@@ -55,9 +55,8 @@ namespace K
 					minR1 = min(minR1, dot);
 					maxR1 = max(maxR1, dot);
 				}
-				float minR2 = INFINITY;
-				float maxR2 = -INFINITY;
-				for (int p = 0; p < pointer2->parent->GetMesh()->vertices.size(); p++)
+				float minR2 = INFINITY, maxR2 = -INFINITY;
+				for (int p : pointer2->parent->GetMesh()->indices)
 				{
 					K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
 					K::MultiplyMatrixVector(pointer2->parent->GetMesh()->vertices[p].position, temp, pointer2->parent->GetTransform()->modelMatrix);
@@ -198,7 +197,7 @@ namespace K
 
 	void Collider::Update()
 	{
-		this->isColliding = this->IsCollidingTriangle();
+		
 	}
 
 	void Collider::Unbind()
