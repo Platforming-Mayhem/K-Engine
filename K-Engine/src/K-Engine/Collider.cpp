@@ -42,14 +42,14 @@ namespace K
 				int b = (a + 1) % pointer1->vertices->size();
 				K::Vector3 axisProj = K::Vector3(-(pointer1->vertices->data()[b].z - pointer1->vertices->data()[a].z), 0.0f, pointer1->vertices->data()[b].x - pointer1->vertices->data()[a].x).normalise();
 				float minR1 = INFINITY, maxR1 = -INFINITY;
-				for (int p = 0; p < 3; p++)
+				for (int p = 0; p < pointer1->vertices->size(); p++)
 				{
 					float dot = K::Vector3::DotProduct(pointer1->vertices->data()[p], axisProj);
 					minR1 = min(minR1, dot);
 					maxR1 = max(maxR1, dot);
 				}
 				float minR2 = INFINITY, maxR2 = -INFINITY;
-				for (int p = 0; p < 3; p++)
+				for (int p = 0; p < pointer2->vertices->size(); p++)
 				{
 					float dot = K::Vector3::DotProduct(pointer2->vertices->data()[p], axisProj);
 					minR2 = min(minR2, dot);
@@ -157,10 +157,10 @@ namespace K
 						A = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[b]].position);
 						K::MultiplyMatrixVector(A, Atemp, this->parent->GetTransform()->modelMatrix);
 						b++;
-						K::Vector3 B = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[b]].position);
+						B = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[b]].position);
 						K::MultiplyMatrixVector(B, Btemp, this->parent->GetTransform()->modelMatrix);
 						b++;
-						K::Vector3 C = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[b]].position);
+						C = K::Vector3(this->parent->GetMesh()->vertices[this->parent->GetMesh()->indices[b]].position);
 						K::MultiplyMatrixVector(C, Ctemp, this->parent->GetTransform()->modelMatrix);
 
 						K::Triangle tri2 = K::Triangle(Atemp, Btemp, Ctemp);
