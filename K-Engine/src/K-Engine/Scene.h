@@ -33,7 +33,6 @@ namespace K
 			for (auto i : gameObjects)
 			{
 				i->Update();
-				i->Render();
 				number++;
 			}
 			this->numberOfGameObjects = number;

@@ -20,10 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\K-Engine\Camera.h" />
-    <ClInclude Include="src\K-Engine\Collider.h" />
     <ClInclude Include="src\K-Engine\Component.h" />
     <ClInclude Include="src\K-Engine\InputManager.h" />
-    <ClInclude Include="src\K-Engine\PhysicsManager.h" />
+    <ClInclude Include="src\K-Engine\Material.h" />
     <ClInclude Include="src\K-Engine\Player.h" />
     <ClInclude Include="src\K-Engine\Scene.h" />
     <ClInclude Include="src\K-Engine\Editor.h" />
@@ -60,12 +59,12 @@
   <ItemGroup>
     <ClCompile Include="src\K-Engine\Application.cpp" />
     <ClCompile Include="src\K-Engine\Camera.cpp" />
-    <ClCompile Include="src\K-Engine\Collider.cpp" />
     <ClCompile Include="src\K-Engine\Component.cpp" />
     <ClCompile Include="src\K-Engine\Editor.cpp" />
     <ClCompile Include="src\K-Engine\GameObject.cpp" />
     <ClCompile Include="src\K-Engine\InputManager.cpp" />
-    <ClCompile Include="src\K-Engine\PhysicsManager.cpp" />
+    <ClCompile Include="src\K-Engine\Material.cpp" />
+    <ClCompile Include="src\K-Engine\Mesh.cpp" />
     <ClCompile Include="src\K-Engine\Player.cpp" />
     <ClCompile Include="src\K-Engine\Shader.cpp" />
     <ClCompile Include="src\K-Engine\Sprite.cpp" />

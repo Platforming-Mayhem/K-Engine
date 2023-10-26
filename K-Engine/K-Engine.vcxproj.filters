@@ -120,10 +120,7 @@
     <ClInclude Include="src\K-Engine\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Collider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\K-Engine\PhysicsManager.h">
+    <ClInclude Include="src\K-Engine\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -191,10 +188,10 @@
     <ClCompile Include="src\K-Engine\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Collider.cpp">
+    <ClCompile Include="src\K-Engine\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\PhysicsManager.cpp">
+    <ClCompile Include="src\K-Engine\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

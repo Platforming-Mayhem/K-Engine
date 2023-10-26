@@ -1,6 +1,6 @@
 #pragma once
 #include "build.h"
-#include "Shader.h"
+#include "Material.h"
 #include "Mesh.h"
 #include "Component.h"
 #include "Window.h"
@@ -10,28 +10,20 @@ namespace K
 	class K_API GameObject
 	{
 	private:
-		unsigned int VAO;
-		unsigned int VBO;
-		unsigned int EBO;
 		std::string name;
-		K::Shader* shader;
-		K::Mesh* mesh;
 		K::Transform* transform;
 		std::vector<K::Component*> components;
-		ImGui::FileBrowser file;
 	public:
 
-		bool meshUpdate = false;
-
-		GameObject(const char* name, Transform* transform, K::Shader* shader);
+		GameObject(const char* name, Transform* transform);
 
 		virtual ~GameObject();
-
-		void PassTransformationMatrix();
 
 		void Update();
 
 		void UpdateEditor();
+
+		void PassTransformationMatrix(K::Material mat);
 
 		const char* GetName() 
 		{
@@ -41,11 +33,6 @@ namespace K
 		void SetName(std::string name) 
 		{
 			this->name = name;
-		}
-
-		K::Mesh* GetMesh() 
-		{
-			return this->mesh;
 		}
 
 		K::Transform* GetTransform() 
@@ -88,8 +75,6 @@ namespace K
 		void Bind();
 
 		void Unbind();
-
-		void Render();
 
 		bool IsSelected(K::Window* window);
 	};

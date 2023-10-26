@@ -3,7 +3,7 @@
 #include <K-Engine/Application.h>
 #include <K-Engine/Window.h>
 #include <K-Engine/GameObject.h>
-#include <K-Engine/Shader.h>
+#include <K-Engine/Material.h>
 #include <K-Engine/Editor.h>
 #include <K-Engine/Scene.h>
 #include <K-Engine/Time.h>

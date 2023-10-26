@@ -1,6 +1,8 @@
 #pragma once
 #include "build.h"
 #include "Transform.h"
+#include "Material.h"
+#include "Component.h"
 
 namespace K 
 {
@@ -28,9 +30,17 @@ namespace K
 										 K::Vertex(K::Vector3(-1.0f, 0.0f, 1.0f), K::Vector2(0.0f, 1.0f)),
 										 K::Vertex(K::Vector3(-1.0f, 0.0f, -1.0f), K::Vector2(0.0f, 0.0f))};
 
-	class K_API Mesh
+	class K_API Mesh : public K::Component
 	{
+	private:
+		K::Material material;
+		ImGui::FileBrowser file;
+		unsigned int VAO;
+		unsigned int VBO;
+		unsigned int EBO;
 	public:
+		bool meshUpdate = false;
+
 		//Model Vertices
 		std::vector<K::Vertex> vertices;
 		std::vector<K::Vector3> normals;
@@ -41,20 +51,11 @@ namespace K
 			0, 2, 3
 		};
 
-		//Model Shader
-		K::Shader* shader;
-
 		//Constructor
-		Mesh()
-		{
-			this->vertices = K::Quad;
-		}
+		Mesh();
 
 		//Destructor
-		~Mesh()
-		{
-
-		}
+		virtual ~Mesh();
 
 		//Operators
 
@@ -93,47 +94,20 @@ namespace K
 			return this->vertices[0];
 		}
 
-		bool LoadModelsAssimp(std::string File)
-		{
-			Assimp::Importer importer;
-			const aiScene* scene = importer.ReadFile(File, aiProcess_Triangulate | aiProcess_GenNormals);
-			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-			{
-				std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
-				return false;
-			}
-			for (int j = 0; j < (scene->mNumMeshes); j++)
-			{
-				aiMesh* mesh = scene->mMeshes[j];
-				this->vertices.clear();
-				this->indices.clear();
-				for (int i = 0; i < mesh->mNumVertices; i++)
-				{
-					float u, v;
-					if (mesh->HasTextureCoords(0))
-					{
-						u = mesh->mTextureCoords[0][i].x;
-						v = mesh->mTextureCoords[0][i].y;
-					}
-					else
-					{
-						u = 0.0f;
-						v = 0.0f;
-					}
-					this->normals.push_back(K::Vector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z));
-					this->vertices.push_back(K::Vertex(K::Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z), K::Vector2(u, v)));
-				}
-				for (int i = 0; i < mesh->mNumFaces; i++)
-				{
-					aiFace face = mesh->mFaces[i];
-					for (int j = 0; j < face.mNumIndices; j++)
-					{
-						int index = face.mIndices[j];
-						this->indices.push_back(index);
-					}
-				}
-			}
-			return true;
-		}
+		bool LoadModelsAssimp(std::string File);
+
+		void PassTransformationMatrix();
+
+		void Init() override;
+
+		void Update() override;
+
+		void UpdateEditor() override;
+
+		void Bind() override;
+
+		void Unbind()  override;
+
+		const char* GetName() override;
 	};
 }

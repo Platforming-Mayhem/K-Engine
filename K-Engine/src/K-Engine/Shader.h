@@ -9,7 +9,7 @@ namespace K
 		std::string shaderCode[2];
 		unsigned int shader;
 
-		Shader(int resource);
+		Shader(int resource = CORE_SHADER);
 
 		Shader(std::string file);
 

@@ -17,18 +17,18 @@ namespace K
 	{
 		window = new K::Window(windowName);
 
-		K::Shader* shader = new K::Shader(CORE_SHADER);
+		K::Material material = K::Material();
 
 		K::Scene* newScene = new Scene();
 
 		K::Transform* camPosition = new K::Transform(new Vector3(0.0f, -10.0f, 0.0f), new K::Vector3(90.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
 
-		K::GameObject* cam = new K::GameObject("Camera", camPosition, shader);
+		K::GameObject* cam = new K::GameObject("Camera", camPosition);
 
-		K::Camera* camera = new K::Camera(shader);
+		K::Camera* camera = new K::Camera(material.GetShader());
 
 		#if _DEBUG
-			K::Editor* editor = new K::Editor(window, newScene, shader);
+			K::Editor* editor = new K::Editor(window, newScene, material.GetShader());
 		#endif
 
 		camera->SetWindowSize(*window);
@@ -48,8 +48,6 @@ namespace K
 			glClearColor(29.0f / 255.0f, 143.0f / 255.0f, 224.0f / 255.0f, 1.0f);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-			glUseProgram(shader->shader);
 
 			K::Time::startTime = glfwGetTime();
 

@@ -16,7 +16,7 @@ namespace K
 		this->shader = shader;
 		this->lst.push_back(new K::Factory<K::Sprite>);
 		this->lst.push_back(new K::Factory<K::Player>);
-		this->lst.push_back(new K::Factory<K::Collider>);
+		this->lst.push_back(new K::Factory<K::Mesh>);
 	}
 
 	Editor::~Editor()
@@ -65,7 +65,7 @@ namespace K
 		}
 		if (ImGui::Button("Create new GameObject")) 
 		{
-			K::GameObject* temp = new K::GameObject("Name", new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f)), this->shader);
+			K::GameObject* temp = new K::GameObject("Name", new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f)));
 			this->currentScene->Attach(temp);
 			this->selectedGameObject = temp;
 		}

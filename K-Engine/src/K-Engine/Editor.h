@@ -3,7 +3,7 @@
 #include "Scene.h"
 #include "Sprite.h"
 #include "Player.h"
-#include "Collider.h"
+#include "Mesh.h"
 
 namespace K 
 {
