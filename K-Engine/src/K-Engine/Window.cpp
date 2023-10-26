@@ -15,6 +15,9 @@ namespace K
 		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+		#if _DEBUG
+			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+		#endif
 		this->width = mode->width;
 		this->height = mode->height;
 		//Set fullscreen: window = glfwCreateWindow(screenWidth, screenHeight, "Rasterizer", monitor, NULL);
