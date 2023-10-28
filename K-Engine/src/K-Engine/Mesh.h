@@ -96,8 +96,6 @@ namespace K
 
 		bool LoadModelsAssimp(std::string File);
 
-		void PassTransformationMatrix();
-
 		void Init() override;
 
 		void Update() override;

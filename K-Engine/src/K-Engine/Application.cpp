@@ -17,7 +17,7 @@ namespace K
 	{
 		window = new K::Window(windowName);
 
-		K::Material material = K::Material();
+		K::Material* material = new K::Material();
 
 		K::Scene* newScene = new Scene();
 
@@ -25,10 +25,10 @@ namespace K
 
 		K::GameObject* cam = new K::GameObject("Camera", camPosition);
 
-		K::Camera* camera = new K::Camera(material.GetShader());
+		K::Camera* camera = new K::Camera(material->GetShader());
 
 		#if _DEBUG
-			K::Editor* editor = new K::Editor(window, newScene, material.GetShader());
+			K::Editor* editor = new K::Editor(window, newScene, material->GetShader());
 		#endif
 
 		camera->SetWindowSize(*window);
@@ -49,9 +49,11 @@ namespace K
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+			glUseProgram(material->GetShader()->shader);
+
 			K::Time::startTime = glfwGetTime();
 
-			newScene->Render();
+			newScene->Render(material);
 
 			#if _DEBUG
 				editor->Render();

@@ -23,7 +23,7 @@ namespace K
 
 		void UpdateEditor();
 
-		void PassTransformationMatrix(K::Material mat);
+		void PassTransformationMatrix(K::Material* mat);
 
 		const char* GetName() 
 		{

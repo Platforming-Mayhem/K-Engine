@@ -41,10 +41,10 @@ namespace K
 		}
 	}
 
-	void GameObject::PassTransformationMatrix(K::Material mat)
+	void GameObject::PassTransformationMatrix(K::Material* mat)
 	{
 		K::GameObject::GetTransform()->PassModelMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(mat.GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &K::GameObject::GetTransform()->modelMatrix.m[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(mat->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &K::GameObject::GetTransform()->modelMatrix.m[0][0]);
 	}
 
 	void GameObject::Bind() 

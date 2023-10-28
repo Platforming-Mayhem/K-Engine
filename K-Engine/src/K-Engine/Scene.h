@@ -27,11 +27,12 @@ namespace K
 			return gameObjects;
 		}
 
-		void Render() 
+		void Render(K::Material* mat) 
 		{
 			int number = 0;
 			for (auto i : gameObjects)
 			{
+				i->PassTransformationMatrix(mat);
 				i->Update();
 				number++;
 			}

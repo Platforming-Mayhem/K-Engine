@@ -61,15 +61,8 @@ namespace K
 		glDeleteBuffers(1, &this->VBO);
 	}
 
-	void Mesh::PassTransformationMatrix()
-	{
-		this->parent->PassTransformationMatrix(this->material);
-	}
-
 	void Mesh::Init() 
 	{
-		this->material = K::Material();
-
 		this->vertices = K::Quad;
 		glCreateVertexArrays(1, &this->VAO);
 		glGenBuffers(1, &this->VBO);
@@ -93,15 +86,12 @@ namespace K
 
 	void Mesh::Bind() 
 	{
-		glUseProgram(this->material.GetShader()->shader);
-
 		glBindVertexArray(this->VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(int), &this->indices[0], GL_DYNAMIC_DRAW);
 		glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(K::Vertex), &this->vertices[0], GL_DYNAMIC_DRAW);
-		this->PassTransformationMatrix();
 		//Debugging?
-		/*int flags;
+		int flags;
 		glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 		if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
 		{
@@ -109,7 +99,7 @@ namespace K
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 			glDebugMessageCallback(glDebugOutput, nullptr);
 			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-		}*/
+		}
 	}
 
 	void Mesh::Update() 
