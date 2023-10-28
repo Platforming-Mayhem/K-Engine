@@ -32,8 +32,10 @@ namespace K
 			int number = 0;
 			for (auto i : gameObjects)
 			{
+				i->Bind();
 				i->PassTransformationMatrix(mat);
 				i->Update();
+				i->Unbind();
 				number++;
 			}
 			this->numberOfGameObjects = number;
