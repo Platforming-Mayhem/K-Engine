@@ -9,7 +9,7 @@ namespace K
 
 	Sprite::~Sprite() 
 	{
-
+		this->texture->~Texture();
 	}
 
 	const char* Sprite::GetName() 

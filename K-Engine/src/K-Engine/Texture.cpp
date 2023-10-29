@@ -98,13 +98,11 @@ namespace K
 	{
 		glActiveTexture(GL_TEXTURE0 + texture_unit);
 		glBindTexture(this->type, this->id);
-		glEnable(GL_TEXTURE_2D);
 	}
 
 	void Texture::Unbind() 
 	{
 		glActiveTexture(0);
 		glBindTexture(this->type, 0);
-		glDisable(GL_TEXTURE_2D);
 	}
 }
