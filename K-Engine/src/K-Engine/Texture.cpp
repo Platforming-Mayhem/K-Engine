@@ -11,19 +11,19 @@ namespace K
 		unsigned char* image = stbi_load(filename, &this->width, &this->height, &this->c, 0);
 		glGenTextures(1, &this->id);
 		glBindTexture(type, this->id);
-		glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		if (image)
 		{
 			if (this->c >= 4) 
 			{
-				glTexImage2D(type, 0, GL_RGBA8, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+				glTexImage2D(type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 			}
 			else 
 			{
-				glTexImage2D(type, 0, GL_RGB8, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+				glTexImage2D(type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 			}
 			glGenerateTextureMipmap(type);
 		}
@@ -59,8 +59,8 @@ namespace K
 				glBindTexture(type, this->id);
 				glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				if (image)
 				{
 					if (this->c > 3)
