@@ -15,3 +15,4 @@
 #include <K-Engine/InputManager.h>
 #include <K-Engine/Camera.h>
 #include <K-Engine/Player.h>
+#include <K-Engine/Serializer.h>

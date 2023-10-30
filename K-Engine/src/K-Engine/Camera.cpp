@@ -1,10 +1,14 @@
 #include "Camera.h"
+#if _DEBUG
+	#include "InputManager.h"
+	#include "Time.h"
+#endif
 
 namespace K 
 {
-	Camera::Camera(K::Shader* shader)
+	Camera::Camera(K::Material* material)
 	{
-		this->shader = shader;
+		this->material = material;
 	}
 
 	Camera::~Camera() 
@@ -34,7 +38,7 @@ namespace K
 
 	K::Shader* Camera::GetShader() 
 	{
-		return this->shader;
+		return this->material->GetShader();
 	}
 
 	void Camera::SetFOV(float newFOV) 
@@ -61,9 +65,6 @@ namespace K
 		return worldPosition;
 	}
 
-	K::Matrix4x4 K::Camera::projectionMatrix;
-	K::Matrix4x4 K::Camera::viewMatrix;
-
 	void Camera::Bind()
 	{
 		//Projection Matrix
@@ -73,22 +74,28 @@ namespace K
 		deltaZ = this->farPlane - this->nearPlane;
 		aspect = this->screenWidth / this->screenHeight;
 
-		/*float t = this->orthoSize, b = -this->orthoSize, l = -this->orthoSize * aspect, r = this->orthoSize * aspect;
-		K::Camera::projectionMatrix = K::Camera::projectionMatrix.IdentityMatrix();
-		K::Camera::projectionMatrix.m[0][0] = 2.0f / (r - l);
-		K::Camera::projectionMatrix.m[1][1] = 2.0f / (t - b);
-		K::Camera::projectionMatrix.m[2][2] = -2.0f / (this->farPlane - this->nearPlane);
-		K::Camera::projectionMatrix.m[3][0] = -(r+l)/ (r-l);
-		K::Camera::projectionMatrix.m[3][1] = -(t + b) / (t - b);
-		K::Camera::projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);*/
-		K::Camera::projectionMatrix.m[0][0] = 1.0f / (aspect * fFovRad);
-		K::Camera::projectionMatrix.m[1][1] = 1.0f / fFovRad;
-		K::Camera::projectionMatrix.m[2][2] = -((this->farPlane + this->nearPlane) / deltaZ);
-		K::Camera::projectionMatrix.m[3][2] = -((2.0f * this->farPlane * this->nearPlane) / deltaZ);
-		K::Camera::projectionMatrix.m[2][3] = -1.0f;
-		K::Camera::projectionMatrix.m[3][3] = 0.0f;
+		if (this->cameraType == CameraType::Perspective) 
+		{
+			K::Camera::projectionMatrix.m[0][0] = 1.0f / (aspect * fFovRad);
+			K::Camera::projectionMatrix.m[1][1] = 1.0f / fFovRad;
+			K::Camera::projectionMatrix.m[2][2] = -((this->farPlane + this->nearPlane) / deltaZ);
+			K::Camera::projectionMatrix.m[3][2] = -((2.0f * this->farPlane * this->nearPlane) / deltaZ);
+			K::Camera::projectionMatrix.m[2][3] = -1.0f;
+			K::Camera::projectionMatrix.m[3][3] = 0.0f;
+		}
+		else if (this->cameraType == CameraType::Orthographic) 
+		{
+			float t = this->orthoSize, b = -this->orthoSize, l = -this->orthoSize * aspect, r = this->orthoSize * aspect;
+			K::Camera::projectionMatrix = K::Camera::projectionMatrix.IdentityMatrix();
+			K::Camera::projectionMatrix.m[0][0] = 2.0f / (r - l);
+			K::Camera::projectionMatrix.m[1][1] = 2.0f / (t - b);
+			K::Camera::projectionMatrix.m[2][2] = -2.0f / (this->farPlane - this->nearPlane);
+			K::Camera::projectionMatrix.m[3][0] = -(r + l) / (r - l);
+			K::Camera::projectionMatrix.m[3][1] = -(t + b) / (t - b);
+			K::Camera::projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
+		}
 
-		glUniformMatrix4fv(glGetUniformLocation(this->shader->shader, "projectionMatrix"), 1, GL_FALSE, &K::Camera::projectionMatrix.m[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
 
 		//View Matrix
 		K::Vector3 forward = K::Vector3(0.0f, 0.0f, 1.0f);
@@ -106,7 +113,7 @@ namespace K
 		K::Vector3 target = pos + rotatedForward;
 		K::Matrix4x4* lookAtMatrix = K::LookAt(pos, target, rotatedUp);
 		K::Camera::viewMatrix = K::QuickInverse(*lookAtMatrix);
-		glUniformMatrix4fv(glGetUniformLocation(this->shader->shader, "viewMatrix"), 1, GL_FALSE, &K::Camera::viewMatrix.m[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
 	}
 
 	void Camera::Init() 
@@ -121,66 +128,43 @@ namespace K
 
 	void Camera::Update() 
 	{
-		if (canMove) 
+		//Camera Move WASD
+		#if _DEBUG
+		K::Quaternion* quat = K::Quaternion::Euler(new K::Vector3(90.0f, 0.0f, this->parent->GetTransform()->rotation->z));
+		if (InputManager::IsKeyPressed(GLFW_KEY_D, window->window))
 		{
-			/*if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT, window->window))
-			{
-				*(this->parent->GetTransform()->rotation) += new K::Vector3(0.0f, 0.0f, -K::Time::deltaTime() * this->rotationSpeed);
-			}
-			else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT, window->window))
-			{
-				*(this->parent->GetTransform()->rotation) += new K::Vector3(0.0f, 0.0f, K::Time::deltaTime() * this->rotationSpeed);
-			}
-			if (InputManager::IsKeyPressed(GLFW_KEY_UP, window->window) && this->parent->GetTransform()->rotation->x < 135.0f)
-			{
-				*(this->parent->GetTransform()->rotation) += new K::Vector3(K::Time::deltaTime() * this->rotationSpeed, 0.0f, 0.0f);
-			}
-			else if (InputManager::IsKeyPressed(GLFW_KEY_DOWN, window->window) && this->parent->GetTransform()->rotation->x > 45.0f)
-			{
-				*(this->parent->GetTransform()->rotation) += new K::Vector3(-K::Time::deltaTime() * this->rotationSpeed, 0.0f, 0.0f);
-			}*/
-			K::Quaternion* quat = K::Quaternion::Euler(new K::Vector3(90.0f, 0.0f, this->parent->GetTransform()->rotation->z));
-			/*if (InputManager::IsKeyPressed(GLFW_KEY_D, window->window))
-			{
-				K::Vector3* right = new K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
-				K::Vector3* rotatedRight = new K::Vector3(0.0f, 0.0f, 0.0f);
-				MultiplyMatrixVector(*right, *rotatedRight, *quat->QuaternionToMatrix());
-				*(this->parent->GetTransform()->position) += rotatedRight;
-			}
-			else if (InputManager::IsKeyPressed(GLFW_KEY_A, window->window))
-			{
-				K::Vector3* left = new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
-				K::Vector3* rotatedLeft = new K::Vector3(0.0f, 0.0f, 0.0f);
-				MultiplyMatrixVector(*left, *rotatedLeft, *quat->QuaternionToMatrix());
-				*(this->parent->GetTransform()->position) += rotatedLeft;
-			}
-			if (InputManager::IsKeyPressed(GLFW_KEY_W, window->window))
-			{
-				K::Vector3* forward = new K::Vector3(0.0f, 0.0f, -K::Time::deltaTime() * this->movementSpeed);
-				K::Vector3* rotatedForward = new K::Vector3(0.0f, 0.0f, 0.0f);
-				MultiplyMatrixVector(*forward, *rotatedForward, *quat->QuaternionToMatrix());
-				*(this->parent->GetTransform()->position) += rotatedForward;
-			}
-			else if (InputManager::IsKeyPressed(GLFW_KEY_S, window->window))
-			{
-				K::Vector3* back = new K::Vector3(0.0f, 0.0f, K::Time::deltaTime() * this->movementSpeed);
-				K::Vector3* rotatedBack = new K::Vector3(0.0f, 0.0f, 0.0f);
-				MultiplyMatrixVector(*back, *rotatedBack, *quat->QuaternionToMatrix());
-				*(this->parent->GetTransform()->position) += rotatedBack;
-			}*/
+			K::Vector3* right = new K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+			K::Vector3* rotatedRight = new K::Vector3(0.0f, 0.0f, 0.0f);
+			MultiplyMatrixVector(*right, *rotatedRight, *quat->QuaternionToMatrix());
+			*(this->parent->GetTransform()->position) += rotatedRight;
 		}
+		else if (InputManager::IsKeyPressed(GLFW_KEY_A, window->window))
+		{
+			K::Vector3* left = new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+			K::Vector3* rotatedLeft = new K::Vector3(0.0f, 0.0f, 0.0f);
+			MultiplyMatrixVector(*left, *rotatedLeft, *quat->QuaternionToMatrix());
+			*(this->parent->GetTransform()->position) += rotatedLeft;
+		}
+		if (InputManager::IsKeyPressed(GLFW_KEY_W, window->window))
+		{
+			K::Vector3* forward = new K::Vector3(0.0f, 0.0f, -K::Time::deltaTime() * this->movementSpeed);
+			K::Vector3* rotatedForward = new K::Vector3(0.0f, 0.0f, 0.0f);
+			MultiplyMatrixVector(*forward, *rotatedForward, *quat->QuaternionToMatrix());
+			*(this->parent->GetTransform()->position) += rotatedForward;
+		}
+		else if (InputManager::IsKeyPressed(GLFW_KEY_S, window->window))
+		{
+			K::Vector3* back = new K::Vector3(0.0f, 0.0f, K::Time::deltaTime() * this->movementSpeed);
+			K::Vector3* rotatedBack = new K::Vector3(0.0f, 0.0f, 0.0f);
+			MultiplyMatrixVector(*back, *rotatedBack, *quat->QuaternionToMatrix());
+			*(this->parent->GetTransform()->position) += rotatedBack;
+		}
+		#endif
 	}
 
 	void Camera::UpdateEditor()
 	{
-		if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootWindow)) 
-		{
-			this->canMove = false;
-		}
-		else 
-		{
-			this->canMove = true;
-		}
+		//IMGUI
 		if (ImGui::CollapsingHeader("Camera Settings")) 
 		{
 			ImGui::Text("These are the Camera settings");
@@ -190,6 +174,36 @@ namespace K
 			ImGui::SliderFloat("Camera Size", &this->orthoSize, 1.0f, 100.0f);
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
 			ImGui::DragFloat("Rotation Speed", &this->rotationSpeed);
+			if (this->cameraType == CameraType::Perspective) 
+			{
+				if (ImGui::BeginCombo("Camera Type", "Perspective"))
+				{
+					if (ImGui::Selectable("Perspective"))
+					{
+						this->cameraType = CameraType::Perspective;
+					}
+					else if (ImGui::Selectable("Orthographic"))
+					{
+						this->cameraType = CameraType::Orthographic;
+					}
+					ImGui::EndCombo();
+				}
+			}
+			else if (this->cameraType == CameraType::Orthographic) 
+			{
+				if (ImGui::BeginCombo("Camera Type", "Orthographic"))
+				{
+					if (ImGui::Selectable("Perspective"))
+					{
+						this->cameraType = CameraType::Perspective;
+					}
+					else if (ImGui::Selectable("Orthographic"))
+					{
+						this->cameraType = CameraType::Orthographic;
+					}
+					ImGui::EndCombo();
+				}
+			}
 		}
 	}
 }

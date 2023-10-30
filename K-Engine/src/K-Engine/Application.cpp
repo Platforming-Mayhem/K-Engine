@@ -19,22 +19,22 @@ namespace K
 
 		K::Material* material = new K::Material();
 
-		K::Scene* newScene = new Scene();
-
-		K::Transform* camPosition = new K::Transform(new Vector3(0.0f, -10.0f, 0.0f), new K::Vector3(90.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
-
-		K::GameObject* cam = new K::GameObject("Camera", camPosition);
-
-		K::Camera* camera = new K::Camera(material->GetShader());
+		K::Scene* newScene = new Scene("Test");
 
 		#if _DEBUG
-			K::Editor* editor = new K::Editor(window, newScene, material->GetShader());
+			K::Transform* camPosition = new K::Transform(new Vector3(0.0f, -10.0f, 0.0f), new K::Vector3(90.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
+
+			K::GameObject* cam = new K::GameObject("Editor Camera", camPosition);
+
+			K::Camera* camera = new K::Camera(material);
+
+			K::Editor* editor = new K::Editor(window, newScene, material);
+
+			camera->SetWindowSize(*window);
+			cam->AddComponent(camera);
+
+			newScene->Attach(cam);
 		#endif
-
-		camera->SetWindowSize(*window);
-		cam->AddComponent(camera);
-
-		newScene->Attach(cam);
 
 		while (!glfwWindowShouldClose(window->window))
 		{

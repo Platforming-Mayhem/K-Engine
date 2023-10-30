@@ -7,10 +7,16 @@ namespace K
 	class K_API Scene
 	{
 	private:
+		std::string sceneName;
 		std::vector<K::GameObject*> gameObjects;
 		int numberOfGameObjects = 0;
 	public:
 		K::Matrix4x4 cameraMatrix;
+
+		Scene(std::string newSceneName) 
+		{
+			this->sceneName = newSceneName;
+		}
 
 		void Attach(K::GameObject* gameObject)
 		{
@@ -25,6 +31,11 @@ namespace K
 		std::vector <K::GameObject*> GetGameObjects()
 		{
 			return gameObjects;
+		}
+
+		std::string* GetSceneName() 
+		{
+			return &this->sceneName;
 		}
 
 		void Render(K::Material* mat) 

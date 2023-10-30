@@ -11,24 +11,24 @@ namespace K
 
 	class K_API Camera : public K::Component
 	{
-		K::Shader* shader;
+		K::Material* material;
 		float screenWidth = 1920.0f;
 		float screenHeight = 1080.0f;
 		float nearPlane = 0.9f;
 		float farPlane = 1000.0f;
 		float FOV = 60.0f;
 		float orthoSize = 1.0f;
+		enum CameraType { Perspective, Orthographic };
+		CameraType cameraType = CameraType::Perspective;
+		K::Matrix4x4 projectionMatrix;
+		K::Matrix4x4 viewMatrix;
 	public:
-		static K::Matrix4x4 projectionMatrix;
-		static K::Matrix4x4 viewMatrix;
-
 		float movementSpeed = 10.0f;
 		float rotationSpeed = 100.0f;
-		bool canMove = true;
 
 		K::Vector3 GetMousePosition(K::Window* window);
 
-		Camera(K::Shader* shader);
+		Camera(K::Material* material);
 
 		virtual ~Camera();
 

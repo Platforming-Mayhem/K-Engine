@@ -2,7 +2,7 @@
 
 namespace K 
 {
-	Editor::Editor(K::Window* window, K::Scene* scene, K::Shader* shader)
+	Editor::Editor(K::Window* window, K::Scene* scene, K::Material* material)
 	{
 		//IMGUI Setup Stuffs
 		IMGUI_CHECKVERSION();
@@ -13,10 +13,11 @@ namespace K
 		ImGui_ImplOpenGL3_Init("#version 460");
 		this->currentScene = scene;
 		this->window = window;
-		this->shader = shader;
+		this->material = material;
 		this->lst.push_back(new K::Factory<K::Sprite>);
 		this->lst.push_back(new K::Factory<K::Player>);
 		this->lst.push_back(new K::Factory<K::Mesh>);
+		//this->lst.push_back(new K::Factory<K::Camera>);
 	}
 
 	Editor::~Editor()
@@ -41,7 +42,34 @@ namespace K
 		ImGui::NewFrame();
 
 		{
-			ImGui::Begin("K-Engine Properties");
+			ImGui::Begin("K-Engine Properties", NULL, ImGuiWindowFlags_MenuBar);
+
+			if (ImGui::BeginMenuBar())
+			{
+				if (ImGui::BeginMenu("File"))
+				{
+					if (ImGui::MenuItem("Open..."))
+					{
+						file.SetTitle("Load Scene");
+						file.SetTypeFilters({ ".JAWS" });
+						file.Open();
+					}
+					if (ImGui::MenuItem("Save..."))
+					{
+						K::Serializer serialize = K::Serializer(this->currentScene);
+					}
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenuBar();
+			}
+
+			file.Display();
+			if (file.HasSelected())
+			{
+				std::string location = file.GetSelected().string();
+				K::Deserializer deserialize = K::Deserializer(this->currentScene, location);
+				file.ClearSelected();
+			}
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / (ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
 
@@ -51,30 +79,36 @@ namespace K
 
 			ImGui::End();
 
+			ImGuiHierarchy();
+
 			ImGui::Render();
 
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
 	}
 
+	void Editor::ImGuiHierarchy()
+	{
+		ImGui::Begin("Hierarchy");
+
+		for (int i = 0; i < this->currentScene->GetNumberOfObjects(); i++) 
+		{
+			if (ImGui::Selectable(this->currentScene->GetGameObjects()[i]->GetName())) 
+			{
+				this->selectedGameObject = this->currentScene->GetGameObjects()[i];
+			}
+		}
+
+		ImGui::End();
+	}
+
 	void Editor::ImGuiExtra() 
 	{
-		if (ImGui::Button("Locate Camera")) 
-		{
-			this->selectedGameObject = this->currentScene->GetGameObjects()[0];
-		}
 		if (ImGui::Button("Create new GameObject")) 
 		{
 			K::GameObject* temp = new K::GameObject("Name", new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f)));
 			this->currentScene->Attach(temp);
 			this->selectedGameObject = temp;
-		}
-		for (int i = 0; i < this->currentScene->GetNumberOfObjects(); i++)
-		{
-			if (this->currentScene->GetGameObjects()[i]->IsSelected(this->window))
-			{
-				this->selectedGameObject = this->currentScene->GetGameObjects()[i];
-			}
 		}
 		if (this->selectedGameObject != NULL)
 		{

@@ -75,7 +75,5 @@ namespace K
 		void Bind();
 
 		void Unbind();
-
-		bool IsSelected(K::Window* window);
 	};
 }
