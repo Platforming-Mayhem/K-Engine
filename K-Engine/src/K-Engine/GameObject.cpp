@@ -7,7 +7,7 @@ namespace K
 	GameObject::GameObject(const char* name, Transform* transform)
 	{
 		this->name = (char*)name;
-		this->transform = transform;
+		this->transform = *transform;
 	}
 
 	GameObject::~GameObject() 

@@ -1,7 +1,6 @@
 #pragma once
 #include "build.h"
 #include "Scene.h"
-#include "Serializer.h"
 #include "Material.h"
 #include "Window.h"
 #include "Sprite.h"
@@ -23,11 +22,12 @@ namespace K
 	private:
 		K::Scene* currentScene;
 		K::Material* material;
-		std::vector<IFactory*> lst;
 		K::Window* window;
 		ImGui::FileBrowser file;
 		static K::GameObject* selectedGameObject;
 	public:
+
+		std::vector<IFactory*> lst;
 
 		Editor(K::Window* window, K::Scene* scene, K::Material* material);
 

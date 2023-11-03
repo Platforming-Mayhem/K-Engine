@@ -29,5 +29,7 @@ namespace K
 		void Unbind()  override;
 
 		const char* GetName() override;
+
+		const char* GetPropertyValues() override;
 	};
 }

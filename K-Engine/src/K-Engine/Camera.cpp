@@ -36,6 +36,11 @@ namespace K
 		return typeid(K::Camera).name();
 	}
 
+	const char* Camera::GetPropertyValues()
+	{
+		return (char*)this;
+	}
+
 	K::Shader* Camera::GetShader() 
 	{
 		return this->material->GetShader();

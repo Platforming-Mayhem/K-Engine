@@ -23,5 +23,7 @@ namespace K
 		void SetParent(K::GameObject* newParent);
 
 		virtual const char* GetName() = 0;
+
+		virtual const char* GetPropertyValues() = 0;
 	};
 }

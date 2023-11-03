@@ -17,6 +17,11 @@ namespace K
 		return typeid(K::Sprite).name();
 	}
 
+	const char* Sprite::GetPropertyValues()
+	{
+		return (char*)this;
+	}
+
 	void Sprite::SetTexture(K::Texture* newTexture) 
 	{
 		this->texture = newTexture;

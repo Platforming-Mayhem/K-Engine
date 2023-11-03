@@ -62,4 +62,9 @@ namespace K
 	{
 		return typeid(K::Player).name();
 	}
+
+	const char* Player::GetPropertyValues() 
+	{
+		return (char*)this;
+	}
 }

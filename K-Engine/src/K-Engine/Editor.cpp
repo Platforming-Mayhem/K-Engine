@@ -1,4 +1,5 @@
 #include "Editor.h"
+#include "Serializer.h"
 
 namespace K 
 {
@@ -67,7 +68,7 @@ namespace K
 			if (file.HasSelected())
 			{
 				std::string location = file.GetSelected().string();
-				K::Deserializer deserialize = K::Deserializer(this->currentScene, location);
+				K::Deserializer deserialize = K::Deserializer(this->currentScene, location, this);
 				file.ClearSelected();
 			}
 

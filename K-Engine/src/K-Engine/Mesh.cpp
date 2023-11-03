@@ -88,6 +88,11 @@ namespace K
 		return typeid(K::Mesh).name();
 	}
 
+	const char* Mesh::GetPropertyValues()
+	{
+		return (char*)this;
+	}
+
 	bool Mesh::LoadModelsAssimp(std::string File)
 	{
 		Assimp::Importer importer;
