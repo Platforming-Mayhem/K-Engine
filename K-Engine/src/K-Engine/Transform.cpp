@@ -93,6 +93,11 @@ namespace K
 		this->scale = newScale;
 	}
 
+	K::Transform::~Transform() 
+	{
+
+	}
+
 	void K::Transform::PassModelMatrix() 
 	{
 		this->modelMatrix = this->modelMatrix.IdentityMatrix();

@@ -168,6 +168,8 @@ namespace K
 
 		Transform(Vector3* newPos, Vector3* newRot, Vector3* newScale);
 
+		virtual ~Transform();
+
 		void PassModelMatrix();
 	};
 
