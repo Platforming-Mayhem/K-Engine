@@ -30,9 +30,10 @@ namespace K
 				for (int i = 0; i < g->GetNumberOfComponents(); i++)
 				{
 					K::Component* component = g->GetComponent(i);
-					outFile << "," << component->GetName() << ",";
-					//outFile << "," << component->GetPropertyValues();
+					outFile << "," << component->GetName();
+					outFile << "," << component->GetPropertyValues();
 				}
+				outFile << ",";
 				outFile << "\n";
 			}
 			count++;
