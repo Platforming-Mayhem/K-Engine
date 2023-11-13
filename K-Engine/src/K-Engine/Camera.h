@@ -54,6 +54,8 @@ namespace K
 
 		void Unbind()  override;
 
+		void SetPropertyValues() override;
+
 		const char* GetName() override;
 
 		const char* GetPropertyValues() override;

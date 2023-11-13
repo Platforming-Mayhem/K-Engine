@@ -11,7 +11,7 @@ namespace K
 	public:
 		Player();
 
-		virtual ~Player();
+		~Player();
 
 		void Init() override;
 
@@ -22,6 +22,8 @@ namespace K
 		void Bind() override;
 
 		void Unbind()  override;
+
+		void SetPropertyValues() override;
 
 		const char* GetName() override;
 

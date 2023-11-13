@@ -9,7 +9,6 @@ namespace K
 	private:
 		std::string sceneName;
 		std::vector<K::GameObject*> gameObjects;
-		int numberOfGameObjects = 0;
 	public:
 		K::Matrix4x4 cameraMatrix;
 
@@ -18,19 +17,46 @@ namespace K
 			this->sceneName = newSceneName;
 		}
 
+		~Scene() 
+		{
+
+		}
+
 		void Attach(K::GameObject* gameObject)
 		{
 			this->gameObjects.push_back(gameObject);
 		}
 
+		void Delete(K::GameObject* gameObject) 
+		{
+			for (int i = 1; i < this->GetNumberOfObjects(); i++) 
+			{
+				if (gameObject == this->gameObjects[i]) 
+				{
+					this->gameObjects.erase(this->gameObjects.begin() + i);
+					delete gameObject;
+				}
+			}
+		}
+
+		void CreateEmptyScene() 
+		{
+			for (int i = 0; i < this->GetNumberOfObjects() - 1; i++) 
+			{
+				K::GameObject* g = this->gameObjects.back();
+				this->gameObjects.pop_back();
+				delete g;
+			}
+		}
+
 		int GetNumberOfObjects() 
 		{
-			return this->numberOfGameObjects;
+			return this->gameObjects.size();
 		}
 
 		std::vector <K::GameObject*> GetGameObjects()
 		{
-			return gameObjects;
+			return this->gameObjects;
 		}
 
 		std::string* GetSceneName() 
@@ -40,16 +66,13 @@ namespace K
 
 		void Render(K::Material* mat) 
 		{
-			int number = 0;
-			for (auto i : gameObjects)
+			for (auto i : this->gameObjects)
 			{
 				i->Bind();
 				i->PassTransformationMatrix(mat);
 				i->Update();
 				i->Unbind();
-				number++;
 			}
-			this->numberOfGameObjects = number;
 		}
 	};
 }

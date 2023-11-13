@@ -22,6 +22,11 @@ namespace K
 		return (char*)this;
 	}
 
+	void Sprite::SetPropertyValues() 
+	{
+
+	}
+
 	void Sprite::SetTexture(K::Texture* newTexture) 
 	{
 		this->texture = newTexture;

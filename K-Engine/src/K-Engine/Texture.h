@@ -6,7 +6,7 @@ namespace K
 	class K_API Texture
 	{
 	private:
-		GLuint id;
+		unsigned int id;
 		int width;
 		int height;
 		int c;
@@ -17,7 +17,7 @@ namespace K
 
 		Texture(unsigned int resource, GLenum type);
 
-		virtual ~Texture();
+		~Texture();
 
 		int GetWidth() 
 		{

@@ -83,6 +83,11 @@ namespace K
 		glBindVertexArray(0);
 	}
 
+	void Mesh::SetPropertyValues()
+	{
+
+	}
+
 	const char* Mesh::GetName()
 	{
 		return typeid(K::Mesh).name();

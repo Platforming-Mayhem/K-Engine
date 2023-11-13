@@ -49,6 +49,11 @@ namespace K
 			{
 				if (ImGui::BeginMenu("File"))
 				{
+					if (ImGui::MenuItem("New Scene"))
+					{
+						this->currentScene->CreateEmptyScene();
+						this->selectedGameObject = nullptr;
+					}
 					if (ImGui::MenuItem("Open..."))
 					{
 						file.SetTitle("Load Scene");
@@ -114,6 +119,13 @@ namespace K
 		if (this->selectedGameObject != NULL)
 		{
 			this->selectedGameObject->UpdateEditor();
+
+			if (ImGui::Button("Delete")) 
+			{
+				this->currentScene->Delete(this->selectedGameObject);
+				this->selectedGameObject = nullptr;
+			}
+			ImGui::SameLine();
 			if (ImGui::Button("Add Component"))
 			{
 				ImGui::OpenPopup("Components");

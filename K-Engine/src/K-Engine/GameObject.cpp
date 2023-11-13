@@ -12,7 +12,10 @@ namespace K
 
 	GameObject::~GameObject() 
 	{
-		
+		for (int i = 0; i < this->GetNumberOfComponents(); i++) 
+		{
+			this->components.pop_back();
+		}
 	}
 
 	void GameObject::Update()

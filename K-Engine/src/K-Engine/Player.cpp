@@ -58,6 +58,11 @@ namespace K
 		
 	}
 
+	void Player::SetPropertyValues() 
+	{
+
+	}
+
 	const char* Player::GetName()
 	{
 		return typeid(K::Player).name();

@@ -121,6 +121,11 @@ namespace K
 		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
 	}
 
+	void Camera::SetPropertyValues()
+	{
+
+	}
+
 	void Camera::Init() 
 	{
 

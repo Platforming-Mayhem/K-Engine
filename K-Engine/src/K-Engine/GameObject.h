@@ -17,7 +17,7 @@ namespace K
 
 		GameObject(const char* name, Transform* transform);
 
-		virtual ~GameObject();
+		~GameObject();
 
 		void Update();
 

@@ -150,6 +150,8 @@ namespace K
 
 		Quaternion(float x, float y, float z, float w);
 
+		~Quaternion();
+
 		K::Quaternion* Normalize();
 
 		K::Matrix4x4* QuaternionToMatrix();
@@ -168,7 +170,7 @@ namespace K
 
 		Transform(Vector3* newPos, Vector3* newRot, Vector3* newScale);
 
-		virtual ~Transform();
+		~Transform();
 
 		void PassModelMatrix();
 	};

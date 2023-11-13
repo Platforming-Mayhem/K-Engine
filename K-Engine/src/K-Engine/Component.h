@@ -10,6 +10,8 @@ namespace K
 	public:
 		K::GameObject* parent = nullptr;
 
+		virtual ~Component();
+
 		virtual void Init() = 0;
 
 		virtual void UpdateEditor() = 0;
@@ -20,10 +22,12 @@ namespace K
 
 		virtual void Unbind() = 0;
 
-		void SetParent(K::GameObject* newParent);
-
 		virtual const char* GetName() = 0;
 
 		virtual const char* GetPropertyValues() = 0;
+
+		virtual void SetPropertyValues() = 0;
+
+		void SetParent(K::GameObject* newParent);
 	};
 }

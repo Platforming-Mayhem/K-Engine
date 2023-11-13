@@ -6,4 +6,9 @@ namespace K
 	{
 		this->parent = newParent;
 	}
+
+	Component::~Component() 
+	{
+		this->parent = nullptr;
+	}
 }

@@ -14,7 +14,7 @@ namespace K
 
 		Sprite(K::Texture* newTexture = new K::Texture(WATERMARK, GL_TEXTURE_2D));
 
-		virtual ~Sprite();
+		~Sprite();
 
 		void SetTexture(K::Texture* newTexture);
 
@@ -27,6 +27,8 @@ namespace K
 		void Bind() override;
 
 		void Unbind()  override;
+
+		void SetPropertyValues() override;
 
 		const char* GetName() override;
 

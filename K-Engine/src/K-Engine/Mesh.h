@@ -55,7 +55,7 @@ namespace K
 		Mesh();
 
 		//Destructor
-		virtual ~Mesh();
+		~Mesh();
 
 		//Operators
 
@@ -105,6 +105,8 @@ namespace K
 		void Bind() override;
 
 		void Unbind()  override;
+
+		void SetPropertyValues() override;
 
 		const char* GetName() override;
 

@@ -113,6 +113,11 @@ namespace K
 		this->modelMatrix.m[3][2] = this->position->z;
 	}
 
+	K::Quaternion::~Quaternion() 
+	{
+
+	}
+
 	K::Quaternion::Quaternion(float x, float y, float z, float w)
 	{
 		this->x = x;
