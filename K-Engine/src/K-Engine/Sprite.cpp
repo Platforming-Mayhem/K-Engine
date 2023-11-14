@@ -19,12 +19,16 @@ namespace K
 
 	const char* Sprite::GetPropertyValues()
 	{
-		return (char*)this;
+		return this->texture->GetFilePath();
 	}
 
-	void Sprite::SetPropertyValues() 
+	void Sprite::SetPropertyValues(const char* value)
 	{
-
+		if (value[0] != '\0' && value != nullptr)
+		{
+			K::Texture* temp = new K::Texture(value, GL_TEXTURE_2D);
+			this->SetTexture(temp);
+		}
 	}
 
 	void Sprite::SetTexture(K::Texture* newTexture) 

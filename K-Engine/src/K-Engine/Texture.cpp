@@ -6,6 +6,7 @@ namespace K
 {
 	Texture::Texture(const char* filename, GLenum type)
 	{
+		this->filename = filename;
 		stbi_set_flip_vertically_on_load(true);
 		this->type = type;
 		unsigned char* image = stbi_load(filename, &this->width, &this->height, &this->c, 0);
@@ -92,6 +93,11 @@ namespace K
 	Texture::~Texture() 
 	{
 		glDeleteTextures(1, &this->id);
+	}
+
+	const char* Texture::GetFilePath() 
+	{
+		return this->filename.c_str();
 	}
 
 	void Texture::Bind(const GLint texture_unit)

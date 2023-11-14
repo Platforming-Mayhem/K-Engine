@@ -58,7 +58,7 @@ namespace K
 		
 	}
 
-	void Player::SetPropertyValues() 
+	void Player::SetPropertyValues(const char* value)
 	{
 
 	}

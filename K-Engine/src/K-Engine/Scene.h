@@ -41,7 +41,8 @@ namespace K
 
 		void CreateEmptyScene() 
 		{
-			for (int i = 0; i < this->GetNumberOfObjects() - 1; i++) 
+			int size = this->GetNumberOfObjects();
+			for (int i = 1; i < size; i++)
 			{
 				K::GameObject* g = this->gameObjects.back();
 				this->gameObjects.pop_back();

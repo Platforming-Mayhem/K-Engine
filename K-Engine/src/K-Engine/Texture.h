@@ -11,6 +11,7 @@ namespace K
 		int height;
 		int c;
 		unsigned int type;
+		std::string filename;
 
 	public:
 		Texture(const char* filename, GLenum type);
@@ -28,6 +29,8 @@ namespace K
 		{
 			return this->height;
 		}
+
+		const char* GetFilePath();
 
 		void Bind(const GLint texture_unit);
 

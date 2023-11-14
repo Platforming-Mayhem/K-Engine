@@ -50,7 +50,9 @@ namespace K
 			std::cerr << "Error - unable to open input file " << location << std::endl;
 			exit(1);
 		}
+		newScene->CreateEmptyScene();
 		std::string line;
+		K::Component* currentComponent = nullptr;
 		while (std::getline(inFile, line))
 		{
 			std::string name = "";
@@ -101,14 +103,21 @@ namespace K
 					}
 					if (number > 9) 
 					{
+						bool found = false;
 						for (K::IFactory* comp : editor->lst)
 						{
 							K::Component* tempCo = comp->create();
 							if (val == tempCo->GetName())
 							{
 								temp->AddComponent(tempCo);
+								currentComponent = tempCo;
+								found = true;
 								break;
 							}
+						}
+						if (!found) 
+						{
+							currentComponent->SetPropertyValues(val.c_str());
 						}
 					}
 					line.erase(0, i);

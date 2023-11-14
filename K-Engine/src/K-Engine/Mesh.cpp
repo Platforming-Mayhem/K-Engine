@@ -83,7 +83,7 @@ namespace K
 		glBindVertexArray(0);
 	}
 
-	void Mesh::SetPropertyValues()
+	void Mesh::SetPropertyValues(const char* value)
 	{
 
 	}
