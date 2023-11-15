@@ -1,2 +1,1 @@
-Map,-1,0,0,0,0,0,1,1,1,class K::Mesh,,class K::Sprite,E:\K-Engine\Application\MapTexture.png,
-Name,3,0,0,0,0,0,1,1,1,class K::Mesh,,class K::Sprite,,
+Map,0,0,0,0,0,0,1,1,1,class K::Sprite,E:\K-Engine\Application\MapTexture.png,class K::Mesh,E:\K-Engine\Application\Map.fbx,

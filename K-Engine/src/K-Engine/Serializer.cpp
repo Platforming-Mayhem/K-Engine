@@ -50,7 +50,6 @@ namespace K
 			std::cerr << "Error - unable to open input file " << location << std::endl;
 			exit(1);
 		}
-		newScene->CreateEmptyScene();
 		std::string line;
 		K::Component* currentComponent = nullptr;
 		while (std::getline(inFile, line))

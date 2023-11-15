@@ -35,6 +35,7 @@ namespace K
 	private:
 		K::Material material;
 		ImGui::FileBrowser file;
+		std::string filename;
 		unsigned int VAO;
 		unsigned int VBO;
 		unsigned int EBO;
@@ -108,8 +109,10 @@ namespace K
 
 		void SetPropertyValues(const char* value) override;
 
+		const char* GetPropertyValues() override;
+
 		const char* GetName() override;
 
-		const char* GetPropertyValues() override;
+		const char* GetFilePath();
 	};
 }

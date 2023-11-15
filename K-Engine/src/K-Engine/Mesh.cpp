@@ -69,8 +69,8 @@ namespace K
 				std::string location = file.GetSelected().string();
 				if (this->LoadModelsAssimp(location))
 				{
-					std::cout << "Found model" << std::endl;
 					this->meshUpdate = true;
+					this->filename = location;
 				}
 				file.ClearSelected();
 			}
@@ -85,17 +85,29 @@ namespace K
 
 	void Mesh::SetPropertyValues(const char* value)
 	{
+		if (value[0] != '\0' && value != nullptr)
+		{
+			if (this->LoadModelsAssimp(value))
+			{
+				this->meshUpdate = true;
+				this->filename = value;
+			}
+		}
+	}
 
+	const char* Mesh::GetPropertyValues()
+	{
+		return this->GetFilePath();
+	}
+
+	const char* Mesh::GetFilePath() 
+	{
+		return this->filename.c_str();
 	}
 
 	const char* Mesh::GetName()
 	{
 		return typeid(K::Mesh).name();
-	}
-
-	const char* Mesh::GetPropertyValues()
-	{
-		return (char*)this;
 	}
 
 	bool Mesh::LoadModelsAssimp(std::string File)

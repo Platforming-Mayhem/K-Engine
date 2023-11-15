@@ -72,6 +72,8 @@ namespace K
 			file.Display();
 			if (file.HasSelected())
 			{
+				this->currentScene->CreateEmptyScene();
+				this->selectedGameObject = nullptr;
 				std::string location = file.GetSelected().string();
 				K::Deserializer deserialize = K::Deserializer(this->currentScene, location, this);
 				file.ClearSelected();
