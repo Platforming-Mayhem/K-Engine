@@ -7,12 +7,35 @@ namespace K
 {
 	Player::Player()
 	{
-		
+		this->properties = std::to_string(GetMovementSpeed());
 	}
 
 	Player::~Player() 
 	{
 		
+	}
+
+	const char* Player::GetPropertyValues()
+	{
+		return this->properties.c_str();
+	}
+
+	const char* Player::GetName()
+	{
+		return typeid(K::Player).name();
+	}
+
+	float Player::GetMovementSpeed() 
+	{
+		return this->movementSpeed;
+	}
+
+	void Player::SetPropertyValues(const char* value)
+	{
+		if (value[0] != '\0' && value != nullptr)
+		{
+			this->movementSpeed = std::stof(value);
+		}
 	}
 
 	void Player::Init() 
@@ -24,7 +47,10 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
-			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
+			if (ImGui::DragFloat("Movement Speed", &this->movementSpeed)) 
+			{
+				this->properties = std::to_string(GetMovementSpeed());
+			}
 		}
 	}
 
@@ -56,20 +82,5 @@ namespace K
 	void Player::Bind() 
 	{
 		
-	}
-
-	void Player::SetPropertyValues(const char* value)
-	{
-
-	}
-
-	const char* Player::GetName()
-	{
-		return typeid(K::Player).name();
-	}
-
-	const char* Player::GetPropertyValues() 
-	{
-		return (char*)this;
 	}
 }

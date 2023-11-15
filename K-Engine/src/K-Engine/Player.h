@@ -8,10 +8,13 @@ namespace K
 	{
 	private:
 		float movementSpeed = 1.0f;
+		std::string properties;
 	public:
 		Player();
 
 		~Player();
+
+		float GetMovementSpeed();
 
 		void Init() override;
 
@@ -25,8 +28,8 @@ namespace K
 
 		void SetPropertyValues(const char* value) override;
 
-		const char* GetName() override;
-
 		const char* GetPropertyValues() override;
+
+		const char* GetName() override;
 	};
 }

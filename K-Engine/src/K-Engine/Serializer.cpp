@@ -18,7 +18,7 @@ namespace K
 		{
 			if (count == 0) 
 			{
-
+				std::cout << "Saving..." << std::endl;
 			}
 			else 
 			{
@@ -27,14 +27,21 @@ namespace K
 				outFile << "," << transform.position->x << "," << transform.position->y << "," << transform.position->z;
 				outFile << "," << transform.rotation->x << "," << transform.rotation->y << "," << transform.rotation->z;
 				outFile << "," << transform.scale->x << "," << transform.scale->y << "," << transform.scale->z;
-				for (int i = 0; i < g->GetNumberOfComponents(); i++)
+				std::cout << g->GetName();
+				std::cout << " " << transform.position->x << "," << transform.position->y << "," << transform.position->z;
+				std::cout << " " << transform.rotation->x << "," << transform.rotation->y << "," << transform.rotation->z;
+				std::cout << " " << transform.scale->x << "," << transform.scale->y << "," << transform.scale->z << " ";
+				int numberOfComponents = g->GetNumberOfComponents();
+				for (int i = 0; i < numberOfComponents; i++)
 				{
 					K::Component* component = g->GetComponent(i);
 					outFile << "," << component->GetName();
 					outFile << "," << component->GetPropertyValues();
+					std::cout << component->GetName() << " " << component->GetPropertyValues() << " ";
 				}
 				outFile << ",";
 				outFile << "\n";
+				std::cout << std::endl;
 			}
 			count++;
 		}
