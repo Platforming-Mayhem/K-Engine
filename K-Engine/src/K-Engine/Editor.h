@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "Sprite.h"
 #include "Player.h"
+#include "Camera.h"
 #include "Component.h"
 
 namespace K 

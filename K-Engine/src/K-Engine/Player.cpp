@@ -7,7 +7,7 @@ namespace K
 {
 	Player::Player()
 	{
-		this->properties = std::to_string(GetMovementSpeed());
+		//this->properties = std::to_string(GetMovementSpeed());
 	}
 
 	Player::~Player() 
@@ -17,6 +17,7 @@ namespace K
 
 	const char* Player::GetPropertyValues()
 	{
+		this->properties = std::to_string(this->movementSpeed);
 		return this->properties.c_str();
 	}
 
@@ -32,9 +33,14 @@ namespace K
 
 	void Player::SetPropertyValues(const char* value)
 	{
-		if (value[0] != '\0' && value != nullptr)
+		std::string temp = value;
+		int propertyNumber = temp.back();
+		temp.pop_back();
+		switch (propertyNumber)
 		{
-			this->movementSpeed = std::stof(value);
+		case 0:
+			this->movementSpeed = std::stof(temp);
+			break;
 		}
 	}
 
@@ -47,10 +53,7 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
-			if (ImGui::DragFloat("Movement Speed", &this->movementSpeed)) 
-			{
-				this->properties = std::to_string(GetMovementSpeed());
-			}
+			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
 		}
 	}
 

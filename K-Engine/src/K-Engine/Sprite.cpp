@@ -26,8 +26,17 @@ namespace K
 	{
 		if (value[0] != '\0' && value != nullptr)
 		{
-			K::Texture* temp = new K::Texture(value, GL_TEXTURE_2D);
-			this->SetTexture(temp);
+			std::string temp = value;
+			std::string a(1, temp.back());
+			int propertyNumber = std::stoi(a);
+			temp.pop_back();
+			switch (propertyNumber)
+			{
+			case 0:
+				K::Texture * tempTex = new K::Texture(temp.c_str(), GL_TEXTURE_2D);
+				this->SetTexture(tempTex);
+				break;
+			}
 		}
 	}
 

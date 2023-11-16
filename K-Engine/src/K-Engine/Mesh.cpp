@@ -87,10 +87,19 @@ namespace K
 	{
 		if (value[0] != '\0' && value != nullptr)
 		{
-			if (this->LoadModelsAssimp(value))
+			std::string temp = value;
+			std::string a(1, temp.back());
+			int propertyNumber = std::stoi(a);
+			temp.pop_back();
+			switch (propertyNumber)
 			{
-				this->meshUpdate = true;
-				this->filename = value;
+			case 0:
+				if (this->LoadModelsAssimp(temp.c_str()))
+				{
+					this->meshUpdate = true;
+					this->filename = temp.c_str();
+				}
+				break;
 			}
 		}
 	}

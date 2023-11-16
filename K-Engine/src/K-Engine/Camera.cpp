@@ -36,11 +36,6 @@ namespace K
 		return typeid(K::Camera).name();
 	}
 
-	const char* Camera::GetPropertyValues()
-	{
-		return (char*)this;
-	}
-
 	K::Shader* Camera::GetShader() 
 	{
 		return this->material->GetShader();
@@ -121,9 +116,58 @@ namespace K
 		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
 	}
 
+	const char* Camera::GetPropertyValues()
+	{
+		this->properties = std::to_string(this->nearPlane) + ",";
+		this->properties += std::to_string(this->farPlane) + ",";
+		this->properties += std::to_string(this->FOV) + ",";
+		this->properties += std::to_string(this->orthoSize) + ",";
+		this->properties += std::to_string(this->movementSpeed) + ",";
+		this->properties += std::to_string(this->rotationSpeed) + ",";
+		this->properties += typeid(this->cameraType).name();
+		return this->properties.c_str();
+	}
+
 	void Camera::SetPropertyValues(const char* value)
 	{
-
+		if (value[0] != '\0' && value != nullptr) 
+		{
+			std::string temp = value;
+			std::string a(1, temp.back());
+			int propertyNumber = std::stoi(a);
+			temp.pop_back();
+			switch (propertyNumber)
+			{
+			case 0:
+				this->nearPlane = std::stof(temp);
+				break;
+			case 1:
+				this->farPlane = std::stof(temp);
+				break;
+			case 2:
+				this->FOV = std::stof(temp);
+				break;
+			case 3:
+				this->orthoSize = std::stof(temp);
+				break;
+			case 4:
+				this->movementSpeed = std::stof(temp);
+				break;
+			case 5:
+				this->rotationSpeed = std::stof(temp);
+				break;
+			case 6:
+				if (temp == typeid(CameraType::Perspective).name()) 
+				{
+					this->cameraType = CameraType::Perspective;
+				}
+				else if (temp == typeid(CameraType::Orthographic).name()) 
+				{
+					this->cameraType = CameraType::Orthographic;
+				}
+				break;
+			}
+		}
 	}
 
 	void Camera::Init() 

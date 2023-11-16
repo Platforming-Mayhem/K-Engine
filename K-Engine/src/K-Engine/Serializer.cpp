@@ -68,6 +68,7 @@ namespace K
 			K::Transform* transform = new K::Transform(position, rotation, scale);
 			std::string val = "";
 			K::GameObject* temp = nullptr;
+			int componentCount = 0;
 			int number = 0;
 			for (int i = 0; i < line.size(); i++) 
 			{
@@ -117,13 +118,15 @@ namespace K
 							{
 								temp->AddComponent(tempCo);
 								currentComponent = tempCo;
+								componentCount = 0;
 								found = true;
 								break;
 							}
 						}
 						if (!found) 
 						{
-							currentComponent->SetPropertyValues(val.c_str());
+							currentComponent->SetPropertyValues((val + std::to_string(componentCount)).c_str());
+							componentCount++;
 						}
 					}
 					line.erase(0, i);

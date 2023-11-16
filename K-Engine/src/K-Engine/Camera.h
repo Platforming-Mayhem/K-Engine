@@ -22,6 +22,7 @@ namespace K
 		CameraType cameraType = CameraType::Perspective;
 		K::Matrix4x4 projectionMatrix;
 		K::Matrix4x4 viewMatrix;
+		std::string properties;
 	public:
 		float movementSpeed = 10.0f;
 		float rotationSpeed = 100.0f;
