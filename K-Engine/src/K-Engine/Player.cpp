@@ -34,7 +34,8 @@ namespace K
 	void Player::SetPropertyValues(const char* value)
 	{
 		std::string temp = value;
-		int propertyNumber = temp.back();
+		std::string a(1, temp.back());
+		int propertyNumber = std::stoi(a);
 		temp.pop_back();
 		switch (propertyNumber)
 		{

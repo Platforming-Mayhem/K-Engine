@@ -56,7 +56,10 @@ namespace K
 			newScene->Render(material);
 
 			#if _DEBUG
-				editor->Render();
+			if (editor->Render()) 
+			{
+				break;
+			}
 			#endif
 
 			K::Time::endTime = K::Time::startTime;

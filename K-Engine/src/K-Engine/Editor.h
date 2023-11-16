@@ -38,7 +38,7 @@ namespace K
 
 		void ImGuiExtra();
 
-		void Render();
+		bool Render();
 
 		static K::GameObject* GetSelectedGameObject();
 	};

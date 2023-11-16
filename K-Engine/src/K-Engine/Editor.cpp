@@ -35,7 +35,7 @@ namespace K
 
 	K::GameObject* K::Editor::selectedGameObject;
 
-	void Editor::Render() 
+	bool Editor::Render() 
 	{
 		//IMGUI Panel Stuff
 		ImGui_ImplOpenGL3_NewFrame();
@@ -63,6 +63,10 @@ namespace K
 					if (ImGui::MenuItem("Save..."))
 					{
 						K::Serializer serialize = K::Serializer(this->currentScene);
+					}
+					if (ImGui::MenuItem("Exit"))
+					{
+						return true;
 					}
 					ImGui::EndMenu();
 				}
@@ -92,6 +96,8 @@ namespace K
 			ImGui::Render();
 
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+			return false;
 		}
 	}
 
