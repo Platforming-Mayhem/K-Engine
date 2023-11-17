@@ -2,9 +2,9 @@
 
 namespace K 
 {
-	bool InputManager::IsKeyPressed(int key, GLFWwindow* window)
+	bool InputManager::IsKeyPressed(int key)
 	{
-		if (glfwGetKey(window, key) == GLFW_PRESS || glfwGetKey(window, key) == GLFW_REPEAT)
+		if (glfwGetKey(window->window, key) == GLFW_PRESS || glfwGetKey(window->window, key) == GLFW_REPEAT)
 		{
 			return true;
 		}
@@ -14,7 +14,7 @@ namespace K
 		}
 	}
 
-	K::Vector3 InputManager::GetMousePosition(K::Window* window)
+	K::Vector3 InputManager::GetMousePosition()
 	{
 		double x, y;
 		glfwGetCursorPos(window->window, &x, &y);

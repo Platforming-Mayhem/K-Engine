@@ -1,13 +1,13 @@
 #include "Player.h"
 #include "InputManager.h"
-#include "Camera.h"
 #include "Time.h"
+#include "GameObject.h"
 
 namespace K 
 {
 	Player::Player()
 	{
-		//this->properties = std::to_string(GetMovementSpeed());
+		
 	}
 
 	Player::~Player() 
@@ -60,19 +60,19 @@ namespace K
 
 	void Player::Update() 
 	{
-		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT, window->window))
+		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
 			*(this->parent->GetTransform()->position) += new K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
 		}
-		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT, window->window))
+		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 		{
 			*(this->parent->GetTransform()->position) += new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
 		}
-		if (InputManager::IsKeyPressed(GLFW_KEY_UP, window->window))
+		if (InputManager::IsKeyPressed(GLFW_KEY_UP))
 		{
 			*(this->parent->GetTransform()->position) += new K::Vector3(0.0f, 0.0f, K::Time::deltaTime() * this->movementSpeed);
 		}
-		else if (InputManager::IsKeyPressed(GLFW_KEY_DOWN, window->window))
+		else if (InputManager::IsKeyPressed(GLFW_KEY_DOWN))
 		{
 			*(this->parent->GetTransform()->position) += new K::Vector3(0.0f, 0.0f, -K::Time::deltaTime() * this->movementSpeed);
 		}

@@ -160,12 +160,12 @@ namespace K
 
 	K::Quaternion* K::Quaternion::Euler(K::Vector3* rotation)
 	{
-		float cy = cos(rotation->z * 0.5 / 57.2958);
-		float sy = sin(rotation->z * 0.5 / 57.2958);
-		float cp = cos(rotation->y * 0.5 / 57.2958);
-		float sp = sin(rotation->y * 0.5 / 57.2958);
-		float cr = cos(rotation->x * 0.5 / 57.2958);
-		float sr = sin(rotation->x * 0.5 / 57.2958);
+		float cy = cosf(rotation->z * 0.5 / 57.2958);
+		float sy = sinf(rotation->z * 0.5 / 57.2958);
+		float cp = cosf(rotation->y * 0.5 / 57.2958);
+		float sp = sinf(rotation->y * 0.5 / 57.2958);
+		float cr = cosf(rotation->x * 0.5 / 57.2958);
+		float sr = sinf(rotation->x * 0.5 / 57.2958);
 
 		K::Quaternion* q = new K::Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 		q->w = cr * cp * cy + sr * sp * sy;

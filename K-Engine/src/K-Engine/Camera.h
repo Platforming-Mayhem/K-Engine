@@ -7,18 +7,16 @@
 
 namespace K
 {
-	extern K::Window* window;
-
 	class K_API Camera : public K::Component
 	{
-		K::Material* material;
-		float screenWidth = 1920.0f;
-		float screenHeight = 1080.0f;
+		bool isActive = false;
+		K::Material* material = nullptr;
+		K::Window* window = nullptr;
 		float nearPlane = 0.9f;
 		float farPlane = 1000.0f;
 		float FOV = 60.0f;
 		float orthoSize = 1.0f;
-		enum CameraType { Perspective, Orthographic };
+		enum class CameraType { Perspective = 0, Orthographic = 1 };
 		CameraType cameraType = CameraType::Perspective;
 		K::Matrix4x4 projectionMatrix;
 		K::Matrix4x4 viewMatrix;
@@ -29,7 +27,7 @@ namespace K
 
 		K::Vector3 GetMousePosition(K::Window* window);
 
-		Camera(K::Material* material);
+		Camera();
 
 		virtual ~Camera();
 
@@ -41,9 +39,13 @@ namespace K
 
 		K::Shader* GetShader();
 
+		void SetActiveState(bool state);
+
+		void SetMaterial(K::Material* material);
+
 		void SetFOV(float newFOV);
 
-		void SetWindowSize(K::Window window);
+		void SetWindow(K::Window window);
 
 		void Init() override;
 

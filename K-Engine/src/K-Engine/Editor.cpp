@@ -18,7 +18,7 @@ namespace K
 		this->lst.push_back(new K::Factory<K::Sprite>);
 		this->lst.push_back(new K::Factory<K::Player>);
 		this->lst.push_back(new K::Factory<K::Mesh>);
-		//this->lst.push_back(new K::Factory<K::Camera>);
+		this->lst.push_back(new K::Factory<K::Camera>);
 	}
 
 	Editor::~Editor()

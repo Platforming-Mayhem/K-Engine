@@ -1,2 +1,3 @@
 Map,0,0,0,0,0,0,1,1,1,class K::Mesh,E:\K-Engine\Application\Map.fbx,class K::Sprite,E:\K-Engine\Application\MapTexture.png,
-Player,0.0151145,0,-1.94947,90,0,0,1,1,1,class K::Mesh,E:\K-Engine\Application\Character.fbx,class K::Sprite,E:\Game Week 3\Assets\Textures\BodyTexture.png,class K::Player,5.000000,
+Player,0,0,-2,90,0,0,1,1,1,class K::Mesh,E:\K-Engine\Application\Character.fbx,class K::Sprite,E:\Game Week 3\Assets\Textures\BodyTexture.png,class K::Player,5.000000,
+Camera,0,0,0,0,0,0,1,1,1,class K::Camera,0.900000,1000.000000,60.000000,1.000000,10.000000,100.000000,false,0,

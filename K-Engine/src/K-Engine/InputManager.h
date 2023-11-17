@@ -5,11 +5,12 @@
 
 namespace K 
 {
+	extern K::Window* window;
 	class K_API InputManager 
 	{
 	public:
-		static bool IsKeyPressed(int key, GLFWwindow* window);
+		static bool IsKeyPressed(int key);
 		//GET THIS WORKING ASAP!!!
-		static K::Vector3 GetMousePosition(K::Window* window);
+		static K::Vector3 GetMousePosition();
 	};
 }
