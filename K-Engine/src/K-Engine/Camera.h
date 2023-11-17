@@ -46,7 +46,7 @@ namespace K
 
 		void SetFOV(float newFOV);
 
-		void SetWindow(K::Window window);
+		void SetWindow(K::Window* window);
 
 		void Init() override;
 

@@ -1,6 +1,6 @@
 #include "Camera.h"
-#if _DEBUG
 #include "InputManager.h"
+#if _DEBUG
 #include "Time.h"
 #endif
 
@@ -8,7 +8,7 @@ namespace K
 {
 	Camera::Camera()
 	{
-		
+		SetWindow(K::window);
 	}
 
 	Camera::~Camera() 
@@ -51,9 +51,9 @@ namespace K
 		this->FOV = newFOV;
 	}
 
-	void Camera::SetWindow(K::Window window)
+	void Camera::SetWindow(K::Window* window)
 	{
-		this->window = &window;
+		this->window = window;
 	}
 	
 	void Camera::SetActiveState(bool state) 

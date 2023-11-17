@@ -28,9 +28,7 @@ namespace K
 
 			K::Editor* editor = new K::Editor(window, newScene, material);
 
-			//camera->SetMaterial(material);
 			K::Camera* camera = new K::Camera();
-			camera->SetWindow(*window);
 			camera->SetActiveState(true);
 			cam->AddComponent(camera);
 
