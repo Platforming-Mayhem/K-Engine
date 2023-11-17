@@ -40,6 +40,8 @@ namespace K
 
 		bool Render();
 
+		K::Material* GetMaterial();
+
 		static K::GameObject* GetSelectedGameObject();
 	};
 }

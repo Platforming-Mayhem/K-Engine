@@ -51,7 +51,7 @@ namespace K
 		this->FOV = newFOV;
 	}
 
-	void Camera::SetWindow(K::Window window) 
+	void Camera::SetWindow(K::Window window)
 	{
 		this->window = &window;
 	}
@@ -180,21 +180,21 @@ namespace K
 				this->rotationSpeed = std::stof(temp);
 				break;
 			case 6:
-				if (temp == "0")
+				if (temp == "true")
 				{
 					this->SetActiveState(true);
 				}
-				else if (temp == "1")
+				else if (temp == "false")
 				{
 					this->SetActiveState(false);
 				}
 				break;
 			case 7:
-				if (temp == typeid(CameraType::Perspective).name()) 
+				if (temp == std::to_string((int)CameraType::Perspective)) 
 				{
 					this->cameraType = CameraType::Perspective;
 				}
-				else if (temp == typeid(CameraType::Orthographic).name()) 
+				else if (temp == std::to_string((int)CameraType::Orthographic))
 				{
 					this->cameraType = CameraType::Orthographic;
 				}
@@ -205,7 +205,8 @@ namespace K
 
 	void Camera::Init() 
 	{
-		
+		SetMaterial(this->parent->GetMaterial());
+		std::cout << this->parent->GetMaterial() << std::endl;
 	}
 
 	void Camera::Unbind()

@@ -13,9 +13,10 @@ namespace K
 		std::string name;
 		K::Transform transform = K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
 		std::vector<K::Component*> components;
+		K::Material* material;
 	public:
 
-		GameObject(const char* name, Transform* transform);
+		GameObject(const char* name, K::Transform* transform, K::Material* material);
 
 		~GameObject();
 
@@ -23,7 +24,7 @@ namespace K
 
 		void UpdateEditor();
 
-		void PassTransformationMatrix(K::Material* mat);
+		void PassTransformationMatrix();
 
 		const char* GetName() 
 		{
@@ -43,8 +44,8 @@ namespace K
 		void AddComponent(K::Component* component)
 		{
 			component->SetParent(this);
-			component->Init();
 			this->components.push_back(component);
+			component->Init();
 		}
 
 		void SetPosition(K::Vector3 position)
@@ -62,9 +63,19 @@ namespace K
 			GetTransform()->scale = &scale;
 		}
 
+		void SetMaterial(K::Material* material) 
+		{
+			this->material = material;
+		}
+
 		K::Component* GetComponent(int index) 
 		{
 			return this->components[index];
+		}
+
+		K::Material* GetMaterial() 
+		{
+			return this->material;
 		}
 
 		int GetNumberOfComponents() 

@@ -65,12 +65,12 @@ namespace K
 			return &this->sceneName;
 		}
 
-		void Render(K::Material* mat) 
+		void Render() 
 		{
 			for (auto i : this->gameObjects)
 			{
 				i->Bind();
-				i->PassTransformationMatrix(mat);
+				i->PassTransformationMatrix();
 				i->Update();
 				i->Unbind();
 			}

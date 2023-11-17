@@ -78,7 +78,7 @@ namespace K
 					{
 					case 0:
 						name = val;
-						temp = new K::GameObject(name.c_str(), transform);
+						temp = new K::GameObject(name.c_str(), transform, editor->GetMaterial());
 						break;
 					case 1:
 						position->x = std::stof(val);

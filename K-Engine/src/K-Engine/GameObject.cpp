@@ -4,10 +4,11 @@
 
 namespace K 
 {
-	GameObject::GameObject(const char* name, Transform* transform)
+	GameObject::GameObject(const char* name, K::Transform* transform, K::Material* material)
 	{
 		this->name = (char*)name;
 		this->transform = *transform;
+		this->material = material;
 	}
 
 	GameObject::~GameObject() 
@@ -45,10 +46,10 @@ namespace K
 		}
 	}
 
-	void GameObject::PassTransformationMatrix(K::Material* mat)
+	void GameObject::PassTransformationMatrix()
 	{
 		K::GameObject::GetTransform()->PassModelMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(mat->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &K::GameObject::GetTransform()->modelMatrix.m[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &K::GameObject::GetTransform()->modelMatrix.m[0][0]);
 	}
 
 	void GameObject::Bind() 

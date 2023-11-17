@@ -24,13 +24,12 @@ namespace K
 		#if _DEBUG
 			K::Transform* camPosition = new K::Transform(new Vector3(0.0f, -10.0f, 0.0f), new K::Vector3(90.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
 
-			K::GameObject* cam = new K::GameObject("Editor Camera", camPosition);
-
-			K::Camera* camera = new K::Camera();
+			K::GameObject* cam = new K::GameObject("Editor Camera", camPosition, material);
 
 			K::Editor* editor = new K::Editor(window, newScene, material);
 
-			camera->SetMaterial(material);
+			//camera->SetMaterial(material);
+			K::Camera* camera = new K::Camera();
 			camera->SetWindow(*window);
 			camera->SetActiveState(true);
 			cam->AddComponent(camera);
@@ -55,7 +54,7 @@ namespace K
 
 			K::Time::startTime = glfwGetTime();
 
-			newScene->Render(material);
+			newScene->Render();
 
 			#if _DEBUG
 			if (editor->Render()) 

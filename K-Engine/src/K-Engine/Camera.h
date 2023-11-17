@@ -21,9 +21,10 @@ namespace K
 		K::Matrix4x4 projectionMatrix;
 		K::Matrix4x4 viewMatrix;
 		std::string properties;
-	public:
+
 		float movementSpeed = 10.0f;
 		float rotationSpeed = 100.0f;
+	public:
 
 		K::Vector3 GetMousePosition(K::Window* window);
 
