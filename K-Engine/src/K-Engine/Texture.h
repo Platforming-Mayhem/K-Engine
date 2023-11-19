@@ -7,8 +7,11 @@ namespace K
 	{
 	private:
 		unsigned int id;
+		unsigned char* image;
 		int width;
 		int height;
+		int frames;
+		int* delay;
 		int c;
 		unsigned int type;
 		std::string filename;
@@ -35,5 +38,7 @@ namespace K
 		void Bind(const GLint texture_unit);
 
 		void Unbind();
+
+		void LoadAnimation();
 	};
 }

@@ -206,7 +206,6 @@ namespace K
 	void Camera::Init() 
 	{
 		SetMaterial(this->parent->GetMaterial());
-		std::cout << this->parent->GetMaterial() << std::endl;
 	}
 
 	void Camera::Unbind()

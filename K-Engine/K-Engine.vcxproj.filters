@@ -126,6 +126,9 @@
     <ClInclude Include="src\K-Engine\Serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vendors\STB\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\K-Engine\Window.cpp">

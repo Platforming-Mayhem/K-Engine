@@ -47,7 +47,7 @@ namespace K
 
 	void Sprite::Init() 
 	{
-
+		
 	}
 
 	void Sprite::Bind() 
@@ -62,7 +62,7 @@ namespace K
 
 	void Sprite::Update()
 	{
-
+		
 	}
 
 	void Sprite::UpdateEditor()

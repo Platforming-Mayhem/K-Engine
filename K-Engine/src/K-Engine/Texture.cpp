@@ -7,34 +7,35 @@ namespace K
 	Texture::Texture(const char* filename, GLenum type)
 	{
 		this->filename = filename;
-		stbi_set_flip_vertically_on_load(true);
 		this->type = type;
-		unsigned char* image = stbi_load(filename, &this->width, &this->height, &this->c, 0);
+		stbi_set_flip_vertically_on_load(true);
+		this->image = stbi_load(filename, &this->width, &this->height, &this->c, 0);
 		glGenTextures(1, &this->id);
-		glBindTexture(type, this->id);
-		glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		if (image)
+		glBindTexture(this->type, this->id);
+		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		if (this->image)
 		{
 			if (this->c >= 4) 
 			{
-				glTexImage2D(type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+				glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			}
 			else 
 			{
-				glTexImage2D(type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+				glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 			}
-			glGenerateTextureMipmap(type);
+			glGenerateTextureMipmap(this->type);
 		}
 		else
 		{
 			std::cout << "Failed to load texture" << std::endl;
 		}
-		stbi_image_free(image);
+		stbi_image_free(this->image);
 		glActiveTexture(0);
-		glBindTexture(type, 0);
+		glBindTexture(this->type, 0);
+		this->LoadAnimation();
 	}
 
 	Texture::Texture(unsigned int resource, GLenum type) {
@@ -55,22 +56,22 @@ namespace K
 			{
 				HGLOBAL temp = LoadResource(hModule, hr);
 				LPVOID lp = LockResource(temp);
-				unsigned char* image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
+				this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
 				glGenTextures(1, &this->id);
-				glBindTexture(type, this->id);
-				glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				if (image)
+				glBindTexture(this->type, this->id);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				if (this->image)
 				{
 					if (this->c > 3)
 					{
-						glTexImage2D(type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+						glTexImage2D(type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 					}
 					else
 					{
-						glTexImage2D(type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+						glTexImage2D(type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 					}
 					glGenerateTextureMipmap(type);
 				}
@@ -79,8 +80,8 @@ namespace K
 					std::cout << "Failed to load texture" << std::endl;
 				}
 				glActiveTexture(0);
-				glBindTexture(type, 0);
-				stbi_image_free(image);
+				glBindTexture(this->type, 0);
+				stbi_image_free(this->image);
 				UnlockResource(temp);
 			}
 		}
@@ -110,5 +111,18 @@ namespace K
 	{
 		glActiveTexture(0);
 		glBindTexture(this->type, 0);
+	}
+
+	void Texture::LoadAnimation() 
+	{
+		this->Bind(0);
+		unsigned char* image01 = stbi_xload_file(this->GetFilePath(), &this->width, &this->height, &this->frames, &this->delay);
+		if (this->frames > 1)
+		{
+			glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image01);
+			std::cout << "Number Of Frames: " << this->frames << " Delay: " << this->delay << std::endl;
+		}
+		stbi_image_free(image01);
+		this->Unbind();
 	}
 }

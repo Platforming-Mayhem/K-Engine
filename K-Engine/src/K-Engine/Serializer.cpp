@@ -36,7 +36,10 @@ namespace K
 				{
 					K::Component* component = g->GetComponent(i);
 					outFile << "," << component->GetName();
-					outFile << "," << component->GetPropertyValues();
+					if (component->GetPropertyValues()[0] != '\0')
+					{
+						outFile << "," << component->GetPropertyValues();
+					}
 					std::cout << component->GetName() << " " << component->GetPropertyValues() << " ";
 				}
 				outFile << ",";
