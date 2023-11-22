@@ -3,6 +3,24 @@
 
 namespace K 
 {
+	class K_API Image 
+	{
+	private:
+		unsigned char* imageData;
+		int delay;
+	public:
+		Image(unsigned char* data, int delay) 
+		{
+			this->imageData = data;
+			this->delay = delay;
+		}
+
+		unsigned char* GetData() 
+		{
+			return this->imageData;
+		}
+	};
+
 	class K_API Texture
 	{
 	private:
@@ -14,6 +32,7 @@ namespace K
 		int* delay;
 		int c;
 		unsigned int type;
+		std::vector<Image> images;
 		std::string filename;
 
 	public:
@@ -33,11 +52,22 @@ namespace K
 			return this->height;
 		}
 
+		int GetNumberOfFrames() 
+		{
+			return this->frames;
+		}
+
 		const char* GetFilePath();
+
+		unsigned char* GetFrameImage(int frameIndex);
+
+		int GetFrameDelay(int frame);
 
 		void Bind(const GLint texture_unit);
 
 		void Unbind();
+
+		void LoadFrame(int frame);
 
 		void LoadAnimation();
 	};

@@ -93,6 +93,7 @@ namespace K
 
 	Texture::~Texture() 
 	{
+		stbi_image_free(this->image);
 		glDeleteTextures(1, &this->id);
 	}
 
@@ -113,16 +114,38 @@ namespace K
 		glBindTexture(this->type, 0);
 	}
 
-	void Texture::LoadAnimation() 
+	unsigned char* Texture::GetFrameImage(int frame) 
+	{
+		return this->image + (this->width * this->height * 4 * frame);
+	}
+
+	int Texture::GetFrameDelay(int frame) 
+	{
+		return this->delay[frame] / 10;
+	}
+
+	void Texture::LoadFrame(int frame) 
 	{
 		this->Bind(0);
-		unsigned char* image01 = stbi_xload_file(this->GetFilePath(), &this->width, &this->height, &this->frames, &this->delay);
+
+		glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->images[frame].GetData());
+
+		this->Unbind();
+	}
+
+	void Texture::LoadAnimation() 
+	{
+		this->images.clear();
+		this->Bind(0);
+		this->image = stbi_xload_file(this->GetFilePath(), &this->width, &this->height, &this->frames, &this->delay);
 		if (this->frames > 1)
 		{
-			glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image01);
-			std::cout << "Number Of Frames: " << this->frames << " Delay: " << this->delay << std::endl;
+			for (int i = 0; i < this->frames; i++) 
+			{
+				K::Image image = K::Image(this->GetFrameImage(i), this->GetFrameDelay(i));
+				images.push_back(image);
+			}
 		}
-		stbi_image_free(image01);
 		this->Unbind();
 	}
 }

@@ -6,6 +6,7 @@
 #include "Sprite.h"
 #include "Player.h"
 #include "Camera.h"
+#include "Collider.h"
 #include "Component.h"
 
 namespace K 

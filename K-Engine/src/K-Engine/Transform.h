@@ -45,6 +45,8 @@ namespace K
 
 		K::Vector3 normalise();
 
+		K::Vector3();
+
 		K::Vector3(float x, float y, float z);
 
 		K::Vector3 operator - (const K::Vector3 other)

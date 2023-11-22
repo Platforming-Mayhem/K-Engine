@@ -7670,10 +7670,6 @@ STBIDEF int stbi_is_16_bit_from_callbacks(stbi_io_callbacks const *c, void *user
 
 #endif 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
     STBIDEF unsigned char* stbi_xload(stbi__context* s, int* x, int* y, int* frames, int** delays);
     STBIDEF unsigned char* stbi_xload_mem(unsigned char* buffer, int len, int* x, int* y, int* frames, int** delays);
     STBIDEF unsigned char* stbi_xload_file(char const* filename, int* x, int* y, int* frames, int** delays);
@@ -7697,6 +7693,10 @@ extern "C" {
         stbi__start_file(&s, f);
         result = stbi_xload(&s, x, y, frames, delays);
         fclose(f);
+
+        if (stbi__vertically_flip_on_load) {
+            stbi__vertical_flip_slices(result, *x, *y, *frames, 4);
+        }
 
         return result;
     }
@@ -7722,9 +7722,6 @@ extern "C" {
         return result;
     }
 
-#ifdef __cplusplus
-}
-#endif
 // STB_IMAGE_IMPLEMENTATION
 
 /*

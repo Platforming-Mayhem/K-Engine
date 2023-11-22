@@ -1,66 +1,50 @@
 #pragma once
 #include "build.h"
 #include "Component.h"
+#include "GameObject.h"
 #include "Transform.h"
 
 namespace K
 {
 	struct Triangle 
 	{
-		std::vector<K::Vector3> vertices[3];
+		K::Vector3* vertices[3];
 		K::Vector3 GetMidPoint() 
 		{
 			K::Vector3 temp = K::Vector3(0.0f, 0.0f, 0.0f);
-			temp.x = (vertices->data()[0].x + vertices->data()[1].x + vertices->data()[2].x) / 3.0f;
-			temp.y = (vertices->data()[0].y + vertices->data()[1].y + vertices->data()[2].y) / 3.0f;
-			temp.z = (vertices->data()[0].z + vertices->data()[1].z + vertices->data()[2].z) / 3.0f;
+			temp.x = ((*this->vertices[0]).x + (*this->vertices[1]).x + (*this->vertices[2]).x) / 3.0f;
+			temp.y = ((*this->vertices[0]).y + (*this->vertices[1]).y + (*this->vertices[2]).y) / 3.0f;
+			temp.z = ((*this->vertices[0]).z + (*this->vertices[1]).z + (*this->vertices[2]).z) / 3.0f;
 			return temp;
 		}
 
 		float CalculateArea() 
 		{
-			K::Vector3 A = vertices->data()[0];
-			K::Vector3 B = vertices->data()[1];
-			K::Vector3 C = vertices->data()[2];
-			float a = (B - A).magnitude();
-			float b = (C - B).magnitude();
-			float c = (C - A).magnitude();
+			float a = (*this->vertices[1] - *this->vertices[0]).magnitude();
+			float b = (*this->vertices[2] - *this->vertices[1]).magnitude();
+			float c = (*this->vertices[2] - *this->vertices[0]).magnitude();
 			float s = (a + b + c) / 2.0f;
 			float area = sqrtf(s * (s - a) * (s - b) * (s - c));
 			return area;
 		}
 
-		Triangle(K::Vector3 a, K::Vector3 b, K::Vector3 c)
+		Triangle(K::Vector3* a, K::Vector3* b, K::Vector3* c)
 		{
-			vertices->push_back(a);
-			vertices->push_back(b);
-			vertices->push_back(c);
+			this->vertices[0] = a;
+			this->vertices[1] = b;
+			this->vertices[2] = c;
 		}
 	};
 
 	class K_API Collider : public K::Component
 	{
 	private:
-		K::Vector3 offset = K::Vector3(0.0f, 0.0f, 0.0f);
-		bool isColliding = false;
 		bool isStatic = true;
-		int id;
+		std::string properties;
 	public:
 		Collider();
 
-		virtual ~Collider();
-
-		bool IsColliding();
-
-		bool IsCollidingTriangle();
-
-		bool IsCollidingWithTriangleAngle(K::Vector3 P);
-
-		bool IsCollidingWithTriangleBarycentric(K::Vector3 P, float& u, float& v, float& w);
-
-		float IsTriangleCollidingWithTriangleSAT(K::Triangle* shape1, K::Triangle* shape2);
-
-		int GetID();
+		~Collider();
 
 		void Init() override;
 
@@ -72,6 +56,12 @@ namespace K
 
 		void Unbind()  override;
 
+		void SetPropertyValues(const char* value) override;
+
+		void SetStaticState(bool state);
+
 		const char* GetName() override;
+
+		const char* GetPropertyValues() override;
 	};
 }

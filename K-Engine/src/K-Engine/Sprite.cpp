@@ -58,11 +58,33 @@ namespace K
 	void Sprite::Unbind()
 	{
 		this->texture->Unbind();
+		this->internalClock += K::Time::deltaTime();
+	}
+
+	void Sprite::NextFrame() 
+	{
+		if (this->texture->GetNumberOfFrames() > 1)
+		{
+			if (this->frame < this->texture->GetNumberOfFrames() - 1)
+			{
+				this->frame++;
+			}
+			else
+			{
+				this->frame = 0;
+			}
+			this->texture->LoadFrame(this->frame);
+		}
 	}
 
 	void Sprite::Update()
 	{
-		
+		int time = this->internalClock * 60;
+		int fps = (1.0f / 24.0f) * 60;
+		if (time % fps == 0)
+		{
+			this->NextFrame();
+		}
 	}
 
 	void Sprite::UpdateEditor()

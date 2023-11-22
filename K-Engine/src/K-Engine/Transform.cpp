@@ -61,6 +61,13 @@ namespace K
 		this->y = y;
 	}
 
+	K::Vector3::Vector3() 
+	{
+		this->x = 0.0f;
+		this->y = 0.0f;
+		this->z = 0.0f;
+	}
+
 	K::Vector3::Vector3(float x, float y, float z)
 	{
 		this->x = x;
@@ -101,12 +108,12 @@ namespace K
 	void K::Transform::PassModelMatrix() 
 	{
 		this->modelMatrix = this->modelMatrix.IdentityMatrix();
-		//Rotation Matrix
-		this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->modelMatrix, *K::Quaternion::Euler(new K::Vector3(this->rotation->x, this->rotation->y, this->rotation->z))->QuaternionToMatrix());
 		//Scaling Matrix
 		this->modelMatrix.m[0][0] *= this->scale->x;
 		this->modelMatrix.m[1][1] *= this->scale->y;
 		this->modelMatrix.m[2][2] *= this->scale->z;
+		//Rotation Matrix
+		this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->modelMatrix, *K::Quaternion::Euler(new K::Vector3(this->rotation->x, this->rotation->y, this->rotation->z))->QuaternionToMatrix());
 		//Translation Matrix
 		this->modelMatrix.m[3][0] = this->position->x;
 		this->modelMatrix.m[3][1] = this->position->y;

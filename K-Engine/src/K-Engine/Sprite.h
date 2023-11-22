@@ -2,6 +2,7 @@
 #include "build.h"
 #include "Component.h"
 #include "Texture.h"
+#include "Time.h"
 
 namespace K 
 {
@@ -9,6 +10,8 @@ namespace K
 	{
 	private:
 		K::Texture* texture;
+		float internalClock = 0.0f;
+		int frame = 0;
 	public:
 		ImGui::FileBrowser file;
 
@@ -17,6 +20,8 @@ namespace K
 		~Sprite();
 
 		void SetTexture(K::Texture* newTexture);
+
+		void NextFrame();
 
 		void Init() override;
 
