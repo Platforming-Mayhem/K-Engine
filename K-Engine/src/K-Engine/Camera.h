@@ -9,6 +9,7 @@ namespace K
 {
 	class K_API Camera : public K::Component
 	{
+		bool isEditorCamera = false;
 		bool isActive = false;
 		K::Material* material = nullptr;
 		K::Window* window = nullptr;
@@ -41,6 +42,8 @@ namespace K
 		K::Shader* GetShader();
 
 		void SetActiveState(bool state);
+
+		void SetEditorState(bool state);
 
 		void SetMaterial(K::Material* material);
 

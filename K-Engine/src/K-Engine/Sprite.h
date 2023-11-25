@@ -3,6 +3,8 @@
 #include "Component.h"
 #include "Texture.h"
 #include "Time.h"
+#include "InputManager.h"
+#include "GameObject.h"
 
 namespace K 
 {
@@ -11,7 +13,10 @@ namespace K
 	private:
 		K::Texture* texture;
 		float internalClock = 0.0f;
+		float chromaKeyColour[3];
 		int frame = 0;
+		bool canChromaKey = false;
+		std::string properties;
 	public:
 		ImGui::FileBrowser file;
 

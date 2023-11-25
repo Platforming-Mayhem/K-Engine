@@ -61,6 +61,11 @@ namespace K
 		this->isActive = state;
 	}
 
+	void Camera::SetEditorState(bool state) 
+	{
+		this->isEditorCamera = state;
+	}
+
 	K::Vector3 Camera::GetMousePosition(K::Window* window)
 	{
 		double x, y;
@@ -217,34 +222,37 @@ namespace K
 	{
 		//Camera Move WASD
 		#if _DEBUG
-		K::Quaternion* quat = K::Quaternion::Euler(new K::Vector3(90.0f, 0.0f, this->parent->GetTransform()->rotation->z));
-		if (InputManager::IsKeyPressed(GLFW_KEY_D))
+		if (this->isActive && this->isEditorCamera) 
 		{
-			K::Vector3* right = new K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
-			K::Vector3* rotatedRight = new K::Vector3(0.0f, 0.0f, 0.0f);
-			MultiplyMatrixVector(*right, *rotatedRight, *quat->QuaternionToMatrix());
-			*(this->parent->GetTransform()->position) += rotatedRight;
-		}
-		else if (InputManager::IsKeyPressed(GLFW_KEY_A))
-		{
-			K::Vector3* left = new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
-			K::Vector3* rotatedLeft = new K::Vector3(0.0f, 0.0f, 0.0f);
-			MultiplyMatrixVector(*left, *rotatedLeft, *quat->QuaternionToMatrix());
-			*(this->parent->GetTransform()->position) += rotatedLeft;
-		}
-		if (InputManager::IsKeyPressed(GLFW_KEY_W))
-		{
-			K::Vector3* forward = new K::Vector3(0.0f, 0.0f, -K::Time::deltaTime() * this->movementSpeed);
-			K::Vector3* rotatedForward = new K::Vector3(0.0f, 0.0f, 0.0f);
-			MultiplyMatrixVector(*forward, *rotatedForward, *quat->QuaternionToMatrix());
-			*(this->parent->GetTransform()->position) += rotatedForward;
-		}
-		else if (InputManager::IsKeyPressed(GLFW_KEY_S))
-		{
-			K::Vector3* back = new K::Vector3(0.0f, 0.0f, K::Time::deltaTime() * this->movementSpeed);
-			K::Vector3* rotatedBack = new K::Vector3(0.0f, 0.0f, 0.0f);
-			MultiplyMatrixVector(*back, *rotatedBack, *quat->QuaternionToMatrix());
-			*(this->parent->GetTransform()->position) += rotatedBack;
+			K::Quaternion* quat = K::Quaternion::Euler(new K::Vector3(90.0f, 0.0f, this->parent->GetTransform()->rotation->z));
+			if (InputManager::IsKeyPressed(GLFW_KEY_D))
+			{
+				K::Vector3* right = new K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+				K::Vector3* rotatedRight = new K::Vector3(0.0f, 0.0f, 0.0f);
+				MultiplyMatrixVector(*right, *rotatedRight, *quat->QuaternionToMatrix());
+				*(this->parent->GetTransform()->position) += rotatedRight;
+			}
+			else if (InputManager::IsKeyPressed(GLFW_KEY_A))
+			{
+				K::Vector3* left = new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+				K::Vector3* rotatedLeft = new K::Vector3(0.0f, 0.0f, 0.0f);
+				MultiplyMatrixVector(*left, *rotatedLeft, *quat->QuaternionToMatrix());
+				*(this->parent->GetTransform()->position) += rotatedLeft;
+			}
+			if (InputManager::IsKeyPressed(GLFW_KEY_W))
+			{
+				K::Vector3* forward = new K::Vector3(0.0f, 0.0f, -K::Time::deltaTime() * this->movementSpeed);
+				K::Vector3* rotatedForward = new K::Vector3(0.0f, 0.0f, 0.0f);
+				MultiplyMatrixVector(*forward, *rotatedForward, *quat->QuaternionToMatrix());
+				*(this->parent->GetTransform()->position) += rotatedForward;
+			}
+			else if (InputManager::IsKeyPressed(GLFW_KEY_S))
+			{
+				K::Vector3* back = new K::Vector3(0.0f, 0.0f, K::Time::deltaTime() * this->movementSpeed);
+				K::Vector3* rotatedBack = new K::Vector3(0.0f, 0.0f, 0.0f);
+				MultiplyMatrixVector(*back, *rotatedBack, *quat->QuaternionToMatrix());
+				*(this->parent->GetTransform()->position) += rotatedBack;
+			}
 		}
 		#endif
 	}

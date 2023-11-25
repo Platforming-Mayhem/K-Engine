@@ -17,6 +17,7 @@ namespace K
 		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 		this->width = mode->width;
 		this->height = mode->height;
+		this->refreshRate = mode->refreshRate;
 		//Set fullscreen: window = glfwCreateWindow(screenWidth, screenHeight, "Rasterizer", monitor, NULL);
 		//glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 		glViewport(0, 0, this->width, this->height);

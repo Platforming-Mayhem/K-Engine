@@ -30,6 +30,8 @@ layout(location = 0) out vec4 colour;
 in vec2 TexCoord;
 
 uniform sampler2D tex;
+uniform bool canChromaKey = false;
+uniform vec3 chromaKey = vec3(0.0f, 0.0f, 0.0f);
 
 float LinearizeDepth(float depth)
 {
@@ -40,6 +42,16 @@ float LinearizeDepth(float depth)
 void main()
 {
 	colour = texture(tex, TexCoord);
+	if (canChromaKey) 
+	{
+		float r = abs(colour.r - chromaKey.r);
+		float g = abs(colour.g - chromaKey.g);
+		float b = abs(colour.b - chromaKey.b);
+		if (r < 0.1f && g < 0.1f && b < 0.1f) 
+		{
+			discard;
+		}
+	}
 	if (colour.a < 0.5) 
 	{
 		discard;

@@ -9,6 +9,7 @@ namespace K
 		GLFWwindow* window;
 		float width = 1920.0f;
 		float height = 1080.0f;
+		int refreshRate = 60;
 		Window(const char* windowName);
 		virtual ~Window();
 	};

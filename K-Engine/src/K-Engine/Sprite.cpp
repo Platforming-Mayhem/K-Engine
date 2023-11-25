@@ -19,7 +19,19 @@ namespace K
 
 	const char* Sprite::GetPropertyValues()
 	{
-		return this->texture->GetFilePath();
+		this->properties = this->texture->GetFilePath();
+		if (this->canChromaKey) 
+		{
+			this->properties += ",true";
+			this->properties += "," + std::to_string(this->chromaKeyColour[0]);
+			this->properties += "," + std::to_string(this->chromaKeyColour[1]);
+			this->properties += "," + std::to_string(this->chromaKeyColour[2]);
+		}
+		else 
+		{
+			this->properties += ",false";
+		}
+		return this->properties.c_str();
 	}
 
 	void Sprite::SetPropertyValues(const char* value)
@@ -33,9 +45,38 @@ namespace K
 			switch (propertyNumber)
 			{
 			case 0:
-				K::Texture * tempTex = new K::Texture(temp.c_str(), GL_TEXTURE_2D);
+			{
+				K::Texture* tempTex = new K::Texture(temp.c_str(), GL_TEXTURE_2D);
 				this->SetTexture(tempTex);
-				break;
+			}
+			break;
+			case 1:
+			{
+				if (temp == "true")
+				{
+					this->canChromaKey = true;
+				}
+				else if (temp == "false")
+				{
+					this->canChromaKey = false;
+				}
+			}
+			break;
+			case 2:
+			{
+				this->chromaKeyColour[0] = std::stof(temp);
+			}
+			break;
+			case 3:
+			{
+				this->chromaKeyColour[1] = std::stof(temp);
+			}
+			break;
+			case 4:
+			{
+				this->chromaKeyColour[2] = std::stof(temp);
+			}
+			break;
 			}
 		}
 	}
@@ -53,12 +94,13 @@ namespace K
 	void Sprite::Bind() 
 	{
 		this->texture->Bind(0);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), this->canChromaKey);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "chromaKey"), this->chromaKeyColour[0], this->chromaKeyColour[1], this->chromaKeyColour[2]);
 	}
 
 	void Sprite::Unbind()
 	{
 		this->texture->Unbind();
-		this->internalClock += K::Time::deltaTime();
 	}
 
 	void Sprite::NextFrame() 
@@ -79,12 +121,13 @@ namespace K
 
 	void Sprite::Update()
 	{
-		int time = this->internalClock * 60;
-		int fps = (1.0f / 24.0f) * 60;
+		int time = this->internalClock * 60.0f;
+		int fps = (1.0f / 24.0f) * 60.0f;
 		if (time % fps == 0)
 		{
 			this->NextFrame();
 		}
+		this->internalClock += K::Time::deltaTime();
 	}
 
 	void Sprite::UpdateEditor()
@@ -97,6 +140,11 @@ namespace K
 				file.SetTitle("Load Sprite");
 				file.SetTypeFilters({ ".PNG", ".JPG", ".GIF"});
 				file.Open();
+			}
+			ImGui::Checkbox("Can Chroma Key", &this->canChromaKey);
+			if (this->canChromaKey) 
+			{
+				ImGui::ColorPicker3("Chroma Key Colour", this->chromaKeyColour);
 			}
 			file.Display();
 			if (file.HasSelected())

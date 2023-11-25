@@ -81,7 +81,7 @@ namespace K
 		{
 			temp = "false";
 		}
-		this->properties += temp + ",";
+		this->properties = temp;
 		return this->properties.c_str();
 	}
 

@@ -30,6 +30,7 @@ namespace K
 
 			K::Camera* camera = new K::Camera();
 			camera->SetActiveState(true);
+			camera->SetEditorState(true);
 			cam->AddComponent(camera);
 
 			newScene->Attach(cam);
