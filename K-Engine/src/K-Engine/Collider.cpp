@@ -128,7 +128,7 @@ namespace K
 	void Collider::LineColliderStatic() 
 	{
 		this->LineVisualDebug();
-		if (this->linePoints.size() > 0) 
+		/*if (K::Physics::CanGetClosestPoint())
 		{
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
@@ -156,12 +156,23 @@ namespace K
 			glVertex3f(1.0f, 0.0f, 1.0f);
 			glEnd();
 			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
-		}
+		}*/
 	}
 
 	void Collider::CircleCollider() 
 	{
-
+		if (K::Physics::CanGetClosestPoint()) 
+		{
+			K::Vector3 J = *K::Physics::GetClosestPoint(K::Vector3(this->parent->GetTransform()->position->x, 0.0f, this->parent->GetTransform()->position->z));
+			K::Vector3 originToJ = J - K::Vector3(this->parent->GetTransform()->position->x, 0.0f, this->parent->GetTransform()->position->z);
+			K::Vector3 jToOrigin = K::Vector3(this->parent->GetTransform()->position->x, 0.0f, this->parent->GetTransform()->position->z) - J;
+			if (originToJ.magnitude() <= this->radius)
+			{
+				jToOrigin.normalise();
+				K::Vector3 contactResolution = originToJ + (jToOrigin * this->radius);
+				*this->parent->GetTransform()->position += contactResolution;
+			}
+		}
 	}
 
 	K::Vector3* Collider::ClosestPointLineCollider(K::Vector3 P) 
@@ -186,7 +197,7 @@ namespace K
 		float C = (N.x*P.y) - (N.y*P.x);
 		float p = (-((A.x * B.y - B.x * A.y) * N.x) - ((B.x - A.x) * C))/(((B.x - A.x) * N.y) + ((A.y - B.y) * N.x));
 		float q = (C * (A.y - B.y) - N.y * (A.x * B.y - B.x * A.y)) / (N.y * (B.x - A.x) + (A.y - B.y) * (N.x));
-		K::Vector3 J = K::Vector3(p, q, 0.0f);
+		K::Vector3 J = K::Vector3(p, 0.0f, q);
 		float AJMag = (J - A).magnitude();
 		float BJMag = (J - B).magnitude();
 		K::Vector3 AJ = (J - A).normalise();
@@ -206,6 +217,11 @@ namespace K
 		{
 			return &J;
 		}
+	}
+
+	int Collider::GetNumberOfPoints() 
+	{
+		return this->linePoints.size();
 	}
 
 	void Collider::LineCollider() 
