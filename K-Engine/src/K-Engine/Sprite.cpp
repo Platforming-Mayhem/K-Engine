@@ -93,9 +93,10 @@ namespace K
 
 	void Sprite::Bind() 
 	{
-		this->texture->Bind(0);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), this->canChromaKey);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "chromaKey"), this->chromaKeyColour[0], this->chromaKeyColour[1], this->chromaKeyColour[2]);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), true);
+		this->texture->Bind(0);
 	}
 
 	void Sprite::Unbind()

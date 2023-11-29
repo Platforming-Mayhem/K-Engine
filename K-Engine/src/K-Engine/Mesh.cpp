@@ -46,11 +46,7 @@ namespace K
 
 	void Mesh::Update() 
 	{
-		this->Bind();
-
 		glDrawElements(GL_TRIANGLES, this->indices.size() * sizeof(int), GL_UNSIGNED_INT, nullptr);
-
-		this->Unbind();
 	}
 
 	void Mesh::UpdateEditor()

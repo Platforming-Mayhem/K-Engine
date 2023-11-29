@@ -24,6 +24,7 @@
     <ClInclude Include="src\K-Engine\Component.h" />
     <ClInclude Include="src\K-Engine\InputManager.h" />
     <ClInclude Include="src\K-Engine\Material.h" />
+    <ClInclude Include="src\K-Engine\PhysicsEngine.h" />
     <ClInclude Include="src\K-Engine\Player.h" />
     <ClInclude Include="src\K-Engine\Scene.h" />
     <ClInclude Include="src\K-Engine\Editor.h" />
@@ -69,6 +70,7 @@
     <ClCompile Include="src\K-Engine\InputManager.cpp" />
     <ClCompile Include="src\K-Engine\Material.cpp" />
     <ClCompile Include="src\K-Engine\Mesh.cpp" />
+    <ClCompile Include="src\K-Engine\PhysicsEngine.cpp" />
     <ClCompile Include="src\K-Engine\Player.cpp" />
     <ClCompile Include="src\K-Engine\Serializer.cpp" />
     <ClCompile Include="src\K-Engine\Shader.cpp" />
