@@ -12,6 +12,8 @@ namespace K
 	public:
 		static void Attach(K::Collider* col);
 
+		static bool CanGetClosestPoint();
+
 		static K::Vector3* GetClosestPoint(K::Vector3 position);
 	};
 }
