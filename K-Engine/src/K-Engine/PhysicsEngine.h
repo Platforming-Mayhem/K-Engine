@@ -14,6 +14,10 @@ namespace K
 
 		static bool CanGetClosestPoint();
 
+		static std::vector<K::Vector3> GetClosestPoints(K::Vector3 position);
+
+		static K::Vector3* GetCollisionResolution(K::Collider* col);
+
 		static K::Vector3* GetClosestPoint(K::Vector3 position);
 	};
 }

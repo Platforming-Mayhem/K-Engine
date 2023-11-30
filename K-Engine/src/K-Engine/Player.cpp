@@ -60,21 +60,28 @@ namespace K
 
 	void Player::Update() 
 	{
+		K::Vector3* direction = new K::Vector3();
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
-			*(this->parent->GetTransform()->position) += new K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+			*direction += new K::Vector3(1.0f, 0.0f, 0.0f);
 		}
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 		{
-			*(this->parent->GetTransform()->position) += new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+			*direction += new K::Vector3(-1.0f, 0.0f, 0.0f);
 		}
 		if (InputManager::IsKeyPressed(GLFW_KEY_UP))
 		{
-			*(this->parent->GetTransform()->position) += new K::Vector3(0.0f, 0.0f, K::Time::deltaTime() * this->movementSpeed);
+			*direction += new K::Vector3(0.0f, 0.0f, 1.0f);
 		}
 		else if (InputManager::IsKeyPressed(GLFW_KEY_DOWN))
 		{
-			*(this->parent->GetTransform()->position) += new K::Vector3(0.0f, 0.0f, -K::Time::deltaTime() * this->movementSpeed);
+			*direction += new K::Vector3(0.0f, 0.0f, -1.0f);
+		}
+		if (direction->magnitude() > 0.0f) 
+		{
+			direction->normalise();
+			*direction = *direction * (K::Time::deltaTime() * this->movementSpeed);
+			*(this->parent->GetTransform()->position) += *direction;
 		}
 	}
 

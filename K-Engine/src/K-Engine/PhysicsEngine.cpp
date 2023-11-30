@@ -26,6 +26,40 @@ namespace K
 		}
 	}
 
+	std::vector<K::Vector3> Physics::GetClosestPoints(K::Vector3 position)
+	{
+		std::vector<K::Vector3> points;
+		for (int i = 0; i < Physics::colliders.size(); i++)
+		{
+			if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Line && Physics::colliders[i]->GetNumberOfPoints() > 0)
+			{
+				points.push_back(*Physics::colliders[i]->ClosestPointLineCollider(position));
+			}
+		}
+		return points;
+	}
+
+	K::Vector3* Physics::GetCollisionResolution(K::Collider* col) 
+	{
+		K::Vector3* offsetAmount = new K::Vector3();
+		if (col->colliderType == K::Collider::ColliderType::Circle) 
+		{
+			for (K::Vector3 p1 : K::Physics::GetClosestPoints(*col->parent->GetTransform()->position)) 
+			{
+				K::Vector3 J = p1;
+				K::Vector3 originToJ = J - *col->parent->GetTransform()->position;
+				K::Vector3 jToOrigin = *col->parent->GetTransform()->position - J;
+				if (originToJ.magnitude() < col->GetRadius())
+				{
+					jToOrigin.normalise();
+					K::Vector3 contactResolution = originToJ + (jToOrigin * col->GetRadius());
+					*offsetAmount += new K::Vector3(contactResolution);
+				}
+			}
+		}
+		return offsetAmount;
+	}
+
 	K::Vector3* Physics::GetClosestPoint(K::Vector3 position) 
 	{
 		int closestIndex = 0;

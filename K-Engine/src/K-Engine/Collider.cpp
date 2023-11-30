@@ -39,6 +39,7 @@ namespace K
 					}
 					ImGui::EndCombo();
 				}
+				this->CircleVisualDebug();
 				this->CircleEditor();
 			}
 			else if (this->colliderType == ColliderType::Line)
@@ -55,6 +56,7 @@ namespace K
 					}
 					ImGui::EndCombo();
 				}
+				this->LineVisualDebug();
 				this->LineEditor();
 			}
 		}
@@ -103,6 +105,16 @@ namespace K
 		
 	}
 
+	void Collider::CircleVisualDebug() 
+	{
+
+	}
+
+	float Collider::GetRadius() 
+	{
+		return this->radius;
+	}
+
 	void Collider::LineVisualDebug()
 	{
 		if (this->linePoints.size() > 0)
@@ -127,7 +139,6 @@ namespace K
 
 	void Collider::LineColliderStatic() 
 	{
-		this->LineVisualDebug();
 		/*if (K::Physics::CanGetClosestPoint())
 		{
 			glClear(GL_DEPTH_BUFFER_BIT);
@@ -163,17 +174,9 @@ namespace K
 	{
 		if (K::Physics::CanGetClosestPoint()) 
 		{
-			K::Vector3 J = *K::Physics::GetClosestPoint(K::Vector3(this->parent->GetTransform()->position->x, 0.0f, this->parent->GetTransform()->position->z));
-			K::Vector3 originToJ = J - K::Vector3(this->parent->GetTransform()->position->x, 0.0f, this->parent->GetTransform()->position->z);
-			K::Vector3 jToOrigin = K::Vector3(this->parent->GetTransform()->position->x, 0.0f, this->parent->GetTransform()->position->z) - J;
-			if (originToJ.magnitude() <= this->radius)
-			{
-				jToOrigin.normalise();
-				K::Vector3 contactResolution = originToJ + (jToOrigin * this->radius);
-				*this->parent->GetTransform()->position += contactResolution;
-			}
+			*this->parent->GetTransform()->position += K::Physics::GetCollisionResolution(this);
 			//DEBUGGING
-			glClear(GL_DEPTH_BUFFER_BIT);
+			/*glClear(GL_DEPTH_BUFFER_BIT);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
@@ -197,7 +200,7 @@ namespace K
 			glVertex3f(1.0f, 0.0f, -1.0f);
 			glVertex3f(1.0f, 0.0f, 1.0f);
 			glEnd();
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
+			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);*/
 		}
 	}
 
@@ -254,14 +257,19 @@ namespace K
 
 	void Collider::LineCollider() 
 	{
-		this->LineVisualDebug();
+		
 	}
 
 	void Collider::Update()
 	{
-		if (this->isStatic) 
+		
+	}
+
+	void Collider::Unbind()
+	{
+		if (this->isStatic)
 		{
-			switch (this->colliderType) 
+			switch (this->colliderType)
 			{
 			case ColliderType::Circle:
 				CircleColliderStatic();
@@ -271,7 +279,7 @@ namespace K
 				break;
 			}
 		}
-		else 
+		else
 		{
 			switch (this->colliderType)
 			{
@@ -283,11 +291,6 @@ namespace K
 				break;
 			}
 		}
-	}
-
-	void Collider::Unbind()
-	{
-		
 	}
 
 	void Collider::Bind()

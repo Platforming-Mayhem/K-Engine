@@ -39,6 +39,10 @@ namespace K
 
 		void CircleCollider();
 
+		void CircleVisualDebug();
+
+		float GetRadius();
+
 		void LineEditor();
 
 		K::Vector3* PointOnLine(K::Vector3 A, K::Vector3 B, K::Vector3 P);
