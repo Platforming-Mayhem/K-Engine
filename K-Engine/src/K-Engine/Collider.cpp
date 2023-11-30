@@ -172,6 +172,32 @@ namespace K
 				K::Vector3 contactResolution = originToJ + (jToOrigin * this->radius);
 				*this->parent->GetTransform()->position += contactResolution;
 			}
+			//DEBUGGING
+			glClear(GL_DEPTH_BUFFER_BIT);
+			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
+			K::Vector3* pointOnLine = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position);
+			K::Transform* transform = new K::Transform(pointOnLine, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
+			transform->PassModelMatrix();
+			glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &transform->modelMatrix.m[0][0]);
+			glBegin(GL_QUADS);
+			glVertex3f(-1.0f, 0.0f, 1.0f);
+			glVertex3f(-1.0f, 0.0f, -1.0f);
+			glVertex3f(1.0f, 0.0f, -1.0f);
+			glVertex3f(1.0f, 0.0f, 1.0f);
+			glEnd();
+			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
+			K::Transform* actualPoint = new K::Transform(this->parent->GetTransform()->position, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
+			actualPoint->PassModelMatrix();
+			glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &actualPoint->modelMatrix.m[0][0]);
+			glBegin(GL_QUADS);
+			glVertex3f(-1.0f, 0.0f, 1.0f);
+			glVertex3f(-1.0f, 0.0f, -1.0f);
+			glVertex3f(1.0f, 0.0f, -1.0f);
+			glVertex3f(1.0f, 0.0f, 1.0f);
+			glEnd();
+			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 		}
 	}
 
@@ -188,16 +214,17 @@ namespace K
 				closestIndex = i;
 			}
 		}
-		return this->PointOnLine(this->linePoints[closestIndex].point[0], this->linePoints[closestIndex].point[1], P);
+		K::Vector3 J = K::Vector3(this->PointOnLine(this->linePoints[closestIndex].point[0], this->linePoints[closestIndex].point[1], P)->x, 0.0f, this->PointOnLine(this->linePoints[closestIndex].point[0], this->linePoints[closestIndex].point[1], P)->y);
+		return &J;
 	}
 
 	K::Vector3* Collider::PointOnLine(K::Vector3 A, K::Vector3 B, K::Vector3 P)
 	{
 		K::Vector3 N = K::Vector3(-(B.y - A.y), B.x - A.x, 0.0f);
-		float C = (N.x*P.y) - (N.y*P.x);
+		float C = (N.x*P.z) - (N.y*P.x);
 		float p = (-((A.x * B.y - B.x * A.y) * N.x) - ((B.x - A.x) * C))/(((B.x - A.x) * N.y) + ((A.y - B.y) * N.x));
 		float q = (C * (A.y - B.y) - N.y * (A.x * B.y - B.x * A.y)) / (N.y * (B.x - A.x) + (A.y - B.y) * (N.x));
-		K::Vector3 J = K::Vector3(p, 0.0f, q);
+		K::Vector3 J = K::Vector3(p, q, 0.0f);
 		float AJMag = (J - A).magnitude();
 		float BJMag = (J - B).magnitude();
 		K::Vector3 AJ = (J - A).normalise();
