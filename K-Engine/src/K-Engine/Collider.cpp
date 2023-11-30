@@ -207,7 +207,8 @@ namespace K
 		float distance = INFINITY;
 		for (int i = 0; i < this->linePoints.size(); i++) 
 		{
-			K::Vector3 PJ = *this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P) - P;
+			K::Vector3 J = K::Vector3(this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->x, 0.0f, this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->y);
+			K::Vector3 PJ = J - P;
 			if (PJ.magnitude() < distance) 
 			{
 				distance = PJ.magnitude();
