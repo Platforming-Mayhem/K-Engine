@@ -52,6 +52,7 @@ namespace K
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
+			ImGui::Checkbox("Has Gravity", &this->hasGravity);
 		}
 	}
 
@@ -66,25 +67,22 @@ namespace K
 		{
 			*direction += new K::Vector3(-1.0f, 0.0f, 0.0f);
 		}
-		if (InputManager::IsKeyPressed(GLFW_KEY_UP))
-		{
-			*direction += new K::Vector3(0.0f, 0.0f, 1.0f);
-		}
-		else if (InputManager::IsKeyPressed(GLFW_KEY_DOWN))
-		{
-			*direction += new K::Vector3(0.0f, 0.0f, -1.0f);
-		}
 		if (direction->magnitude() > 0.0f) 
 		{
 			direction->normalise();
 			*direction = *direction * (K::Time::deltaTime() * this->movementSpeed);
 			*(this->parent->GetTransform()->position) += *direction;
 		}
+		if (!K::Physics::IsColliding(this->parent) && this->hasGravity)
+		{
+			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -K::Time::deltaTime());
+		}
 	}
 
 	void Player::Unbind() 
 	{
-		
+		if(!this->hasGravity)
+			this->hasGravity = true;
 	}
 
 	void Player::Bind() 

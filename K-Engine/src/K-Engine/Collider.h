@@ -18,6 +18,7 @@ namespace K
 	class K_API Collider : public K::Component
 	{
 	private:
+		bool isColliding = false;
 		bool isStatic = true;
 		K::Vector3* pointOnLine;
 		float radius = 1.0f;
@@ -42,6 +43,10 @@ namespace K
 		void CircleVisualDebug();
 
 		float GetRadius();
+
+		bool IsColliding();
+
+		void SetIsColliding(bool value);
 
 		void LineEditor();
 

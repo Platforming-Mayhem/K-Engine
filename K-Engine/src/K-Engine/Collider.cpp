@@ -174,7 +174,8 @@ namespace K
 	{
 		if (K::Physics::CanGetClosestPoint()) 
 		{
-			*this->parent->GetTransform()->position += K::Physics::GetCollisionResolution(this);
+			K::Vector3* temp = K::Physics::GetCollisionResolution(this);
+			*this->parent->GetTransform()->position += temp;
 			//DEBUGGING
 			/*glClear(GL_DEPTH_BUFFER_BIT);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
@@ -255,17 +256,22 @@ namespace K
 		return this->linePoints.size();
 	}
 
+	void Collider::SetIsColliding(bool value) 
+	{
+		this->isColliding = value;
+	}
+
+	bool Collider::IsColliding() 
+	{
+		return this->isColliding;
+	}
+
 	void Collider::LineCollider() 
 	{
 		
 	}
 
 	void Collider::Update()
-	{
-		
-	}
-
-	void Collider::Unbind()
 	{
 		if (this->isStatic)
 		{
@@ -291,6 +297,11 @@ namespace K
 				break;
 			}
 		}
+	}
+
+	void Collider::Unbind()
+	{
+		
 	}
 
 	void Collider::Bind()

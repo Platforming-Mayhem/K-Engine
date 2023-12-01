@@ -26,6 +26,27 @@ namespace K
 		}
 	}
 
+	bool Physics::IsColliding(K::GameObject* parent) 
+	{
+		int index = -1;
+		for (int i = 0; i < Physics::colliders.size(); i++) 
+		{
+			if (Physics::colliders[i]->parent == parent) 
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index >= 0) 
+		{
+			return Physics::colliders[index]->IsColliding();
+		}
+		else 
+		{
+			return false;
+		}
+	}
+
 	std::vector<K::Vector3> Physics::GetClosestPoints(K::Vector3 position)
 	{
 		std::vector<K::Vector3> points;
@@ -54,8 +75,13 @@ namespace K
 					jToOrigin.normalise();
 					K::Vector3 contactResolution = originToJ + (jToOrigin * col->GetRadius());
 					*offsetAmount += new K::Vector3(contactResolution);
+					col->SetIsColliding(true);
 				}
 			}
+		}
+		if (offsetAmount->magnitude() <= 0.0f) 
+		{
+			col->SetIsColliding(false);
 		}
 		return offsetAmount;
 	}

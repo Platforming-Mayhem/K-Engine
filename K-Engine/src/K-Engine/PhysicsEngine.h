@@ -12,6 +12,8 @@ namespace K
 	public:
 		static void Attach(K::Collider* col);
 
+		static bool IsColliding(K::GameObject* parent);
+
 		static bool CanGetClosestPoint();
 
 		static std::vector<K::Vector3> GetClosestPoints(K::Vector3 position);

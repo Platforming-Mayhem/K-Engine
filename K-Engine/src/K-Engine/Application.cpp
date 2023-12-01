@@ -51,8 +51,6 @@ namespace K
 
 			glUseProgram(material->GetShader()->shader);
 
-			K::Time::startTime = glfwGetTime();
-
 			newScene->Render();
 
 			#if _DEBUG
@@ -61,8 +59,6 @@ namespace K
 				break;
 			}
 			#endif
-
-			K::Time::endTime = K::Time::startTime;
 
 			glFlush();
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "build.h"
 #include "GameObject.h"
+#include "Time.h"
 
 namespace K 
 {
@@ -67,6 +68,7 @@ namespace K
 
 		void Render() 
 		{
+			K::Time::startTime = glfwGetTime();
 			for (auto i : this->gameObjects)
 			{
 				i->Bind();
@@ -74,6 +76,7 @@ namespace K
 				i->Update();
 				i->Unbind();
 			}
+			K::Time::endTime = K::Time::startTime;
 		}
 	};
 }
