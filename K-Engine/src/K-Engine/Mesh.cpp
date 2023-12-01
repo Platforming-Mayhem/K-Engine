@@ -79,15 +79,13 @@ namespace K
 		glBindVertexArray(0);
 	}
 
-	void Mesh::SetPropertyValues(const char* value)
+	void Mesh::SetPropertyValues(const char* value, int valueIndex)
 	{
 		if (value[0] != '\0' && value != nullptr)
 		{
 			std::string temp = value;
-			std::string a(1, temp.back());
-			int propertyNumber = std::stoi(a);
 			temp.pop_back();
-			switch (propertyNumber)
+			switch (valueIndex)
 			{
 			case 0:
 				if (this->LoadModelsAssimp(temp.c_str()))

@@ -107,7 +107,7 @@ namespace K
 
 		void Unbind()  override;
 
-		void SetPropertyValues(const char* value) override;
+		void SetPropertyValues(const char* value, int valueIndex) override;
 
 		const char* GetPropertyValues() override;
 

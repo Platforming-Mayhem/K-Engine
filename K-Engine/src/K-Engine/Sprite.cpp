@@ -34,15 +34,12 @@ namespace K
 		return this->properties.c_str();
 	}
 
-	void Sprite::SetPropertyValues(const char* value)
+	void Sprite::SetPropertyValues(const char* value, int valueIndex)
 	{
 		if (value[0] != '\0' && value != nullptr)
 		{
 			std::string temp = value;
-			std::string a(1, temp.back());
-			int propertyNumber = std::stoi(a);
-			temp.pop_back();
-			switch (propertyNumber)
+			switch (valueIndex)
 			{
 			case 0:
 			{

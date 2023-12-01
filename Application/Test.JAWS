@@ -1,2 +1,2 @@
-Player,-0.6,0,0.17,0,0,0,1,1,1.08,class K::Mesh,class K::Sprite,E:\K-Engine\Application\Player_Idle.gif,true,0.266667,1.000000,0.000000,class K::Player,1.000000,class K::Collider,false,0,1.000000,
-Map,0,1,-0.5,0,0,0,6,3,3,class K::Mesh,class K::Sprite,E:\Animations\Pre-Vis.gif,false,class K::Collider,true,1,1.000000,
+Player,-1.85078,0,1,0,0,0,1,1,1.08,class K::Mesh,class K::Sprite,E:\K-Engine\Application\Player_Idle.gif,true,0.266667,1.000000,0.000000,class K::Player,1.000000,class K::Collider,false,0,1.000000,
+Map,0,1,-0.5,0,0,0,6,3,3,class K::Mesh,class K::Sprite,E:\Animations\Pre-Vis.gif,false,class K::Collider,true,1,-4.000000,-1.000000,4.000000,-1.000000,-4.000000,-1.000000,-4.000000,3.000000,4.000000,-1.000000,4.000000,3.000000,-4.000000,3.000000,4.000000,3.000000,

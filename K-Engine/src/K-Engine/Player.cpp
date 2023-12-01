@@ -31,13 +31,10 @@ namespace K
 		return this->movementSpeed;
 	}
 
-	void Player::SetPropertyValues(const char* value)
+	void Player::SetPropertyValues(const char* value, int valueIndex)
 	{
 		std::string temp = value;
-		std::string a(1, temp.back());
-		int propertyNumber = std::stoi(a);
-		temp.pop_back();
-		switch (propertyNumber)
+		switch (valueIndex)
 		{
 		case 0:
 			this->movementSpeed = std::stof(temp);

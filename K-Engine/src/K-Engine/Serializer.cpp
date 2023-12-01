@@ -128,7 +128,7 @@ namespace K
 						}
 						if (!found) 
 						{
-							currentComponent->SetPropertyValues((val + std::to_string(componentCount)).c_str());
+							currentComponent->SetPropertyValues(val.c_str(), componentCount);
 							componentCount++;
 						}
 					}

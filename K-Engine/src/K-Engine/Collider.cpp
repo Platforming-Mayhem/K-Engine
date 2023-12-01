@@ -298,15 +298,36 @@ namespace K
 		
 	}
 
-	void Collider::SetPropertyValues(const char* value)
+	int pointNumber = 0;
+
+	void Collider::SetPoints(std::string value) 
+	{
+		pointNumber++;
+		if (pointNumber % 2 == 0) 
+		{
+			//EVEN
+			if ((pointNumber - 1) % 4 == 0) 
+			{
+				this->linePoints.push_back(K::Line(K::Vector3(), K::Vector3()));
+				this->selectedLine = this->linePoints.size() - 1;
+			}
+			else 
+			{
+				
+			}
+		}
+		else 
+		{
+			//ODD
+		}
+	}
+
+	void Collider::SetPropertyValues(const char* value, int valueIndex)
 	{
 		if (value[0] != '\0' && value != nullptr)
 		{
 			std::string temp = value;
-			std::string a(1, temp.back());
-			int propertyNumber = std::stoi(a);
-			temp.pop_back();
-			switch (propertyNumber)
+			switch (valueIndex)
 			{
 			case 0:
 				if (temp == "true")
@@ -328,9 +349,18 @@ namespace K
 					this->colliderType = ColliderType::Line;
 				}
 				break;
-			case 2:
-				this->radius = std::stof(temp);
-				break;
+			}
+
+			if (valueIndex > 1)
+			{
+				if (this->colliderType == ColliderType::Circle) 
+				{
+					this->radius = std::stof(temp);
+				}
+				else if (this->colliderType == ColliderType::Line) 
+				{
+					this->SetPoints(temp);
+				}
 			}
 		}
 	}
@@ -353,16 +383,20 @@ namespace K
 		}
 		this->properties = temp;
 		this->properties += "," + std::to_string((int)this->colliderType);
-		this->properties += "," + std::to_string(this->radius);
-		this->properties += ",{";
-		for (K::Line l : this->linePoints) 
+		if (this->colliderType == ColliderType::Circle)
 		{
-			this->properties += "," + std::to_string(l.point[0].x);
-			this->properties += "," + std::to_string(l.point[0].y);
-			this->properties += "," + std::to_string(l.point[1].x);
-			this->properties += "," + std::to_string(l.point[1].y);
+			this->properties += "," + std::to_string(this->radius);
 		}
-		this->properties += "}";
+		else if (this->colliderType == ColliderType::Line) 
+		{
+			for (K::Line l : this->linePoints)
+			{
+				this->properties += "," + std::to_string(l.point[0].x);
+				this->properties += "," + std::to_string(l.point[0].y);
+				this->properties += "," + std::to_string(l.point[1].x);
+				this->properties += "," + std::to_string(l.point[1].y);
+			}
+		}
 		return this->properties.c_str();
 	}
 
