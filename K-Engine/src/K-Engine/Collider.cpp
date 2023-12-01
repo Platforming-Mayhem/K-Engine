@@ -300,25 +300,36 @@ namespace K
 
 	int pointNumber = 0;
 
-	void Collider::SetPoints(std::string value) 
+	void Collider::SetPoints(const char* value)
 	{
+		float temp = std::stof(value);
 		pointNumber++;
 		if (pointNumber % 2 == 0) 
 		{
 			//EVEN
-			if ((pointNumber - 1) % 4 == 0) 
+			if (pointNumber % 4 == 0) 
 			{
-				this->linePoints.push_back(K::Line(K::Vector3(), K::Vector3()));
-				this->selectedLine = this->linePoints.size() - 1;
+				this->linePoints[this->selectedLine].point[1].y = temp;
 			}
 			else 
 			{
-				
+				this->linePoints[this->selectedLine].point[0].y = temp;
 			}
 		}
 		else 
 		{
 			//ODD
+			if ((pointNumber - 1) % 4 == 0) 
+			{
+				this->linePoints.push_back(K::Line(K::Vector3(), K::Vector3()));
+				this->selectedLine = this->linePoints.size() - 1;
+				//Set Value
+				this->linePoints[this->selectedLine].point[0].x = temp;
+			}
+			else 
+			{
+				this->linePoints[this->selectedLine].point[1].x = temp;
+			}
 		}
 	}
 
@@ -359,7 +370,7 @@ namespace K
 				}
 				else if (this->colliderType == ColliderType::Line) 
 				{
-					this->SetPoints(temp);
+					this->SetPoints(temp.c_str());
 				}
 			}
 		}

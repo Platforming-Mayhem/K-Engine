@@ -67,7 +67,7 @@ namespace K
 
 		void Unbind()  override;
 
-		void SetPoints(std::string value);
+		void SetPoints(const char* value);
 
 		void SetPropertyValues(const char* value, int valueIndex) override;
 
