@@ -84,7 +84,6 @@ namespace K
 		if (value[0] != '\0' && value != nullptr)
 		{
 			std::string temp = value;
-			temp.pop_back();
 			switch (valueIndex)
 			{
 			case 0:
