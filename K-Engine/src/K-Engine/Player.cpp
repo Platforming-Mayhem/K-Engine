@@ -52,7 +52,6 @@ namespace K
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
-			ImGui::Checkbox("Has Gravity", &this->hasGravity);
 		}
 	}
 
