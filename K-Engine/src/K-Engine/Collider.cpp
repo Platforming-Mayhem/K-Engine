@@ -122,6 +122,26 @@ namespace K
 			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
 		}
 		glEnd();
+		if (K::Physics::CanGetClosestPoint()) 
+		{
+			//DEBUGGING
+			glClear(GL_DEPTH_BUFFER_BIT);
+			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
+			for (K::Vector3 pointOnLine : K::Physics::GetClosestPoints(*this->parent->GetTransform()->position))
+			{
+				K::Transform* transform = new K::Transform(&pointOnLine, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
+				transform->PassModelMatrix();
+				glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &transform->modelMatrix.m[0][0]);
+				glBegin(GL_QUADS);
+				glVertex3f(-1.0f, 0.0f, 1.0f);
+				glVertex3f(-1.0f, 0.0f, -1.0f);
+				glVertex3f(1.0f, 0.0f, -1.0f);
+				glVertex3f(1.0f, 0.0f, 1.0f);
+				glEnd();
+			}
+		}
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 	}
 
@@ -161,35 +181,7 @@ namespace K
 
 	void Collider::LineColliderStatic() 
 	{
-		/*if (K::Physics::CanGetClosestPoint())
-		{
-			glClear(GL_DEPTH_BUFFER_BIT);
-			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
-			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
-			K::Vector3 point = K::Vector3();
-			K::Vector3* pointOnLine = K::Physics::GetClosestPoint(point);
-			K::Transform* transform = new K::Transform(new K::Vector3(pointOnLine->x, 0.0f, pointOnLine->y), new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
-			transform->PassModelMatrix();
-			glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &transform->modelMatrix.m[0][0]);
-			glBegin(GL_QUADS);
-			glVertex3f(-1.0f, 0.0f, 1.0f);
-			glVertex3f(-1.0f, 0.0f, -1.0f);
-			glVertex3f(1.0f, 0.0f, -1.0f);
-			glVertex3f(1.0f, 0.0f, 1.0f);
-			glEnd();
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
-			K::Transform* actualPoint = new K::Transform(&point, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
-			actualPoint->PassModelMatrix();
-			glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &actualPoint->modelMatrix.m[0][0]);
-			glBegin(GL_QUADS);
-			glVertex3f(-1.0f, 0.0f, 1.0f);
-			glVertex3f(-1.0f, 0.0f, -1.0f);
-			glVertex3f(1.0f, 0.0f, -1.0f);
-			glVertex3f(1.0f, 0.0f, 1.0f);
-			glEnd();
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
-		}*/
+		
 	}
 
 	void Collider::CircleCollider() 
@@ -198,32 +190,6 @@ namespace K
 		{
 			K::Vector3* temp = K::Physics::GetCollisionResolution(this);
 			*this->parent->GetTransform()->position += temp;
-			//DEBUGGING
-			/*glClear(GL_DEPTH_BUFFER_BIT);
-			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
-			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
-			K::Vector3* pointOnLine = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position);
-			K::Transform* transform = new K::Transform(pointOnLine, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
-			transform->PassModelMatrix();
-			glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &transform->modelMatrix.m[0][0]);
-			glBegin(GL_QUADS);
-			glVertex3f(-1.0f, 0.0f, 1.0f);
-			glVertex3f(-1.0f, 0.0f, -1.0f);
-			glVertex3f(1.0f, 0.0f, -1.0f);
-			glVertex3f(1.0f, 0.0f, 1.0f);
-			glEnd();
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
-			K::Transform* actualPoint = new K::Transform(this->parent->GetTransform()->position, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
-			actualPoint->PassModelMatrix();
-			glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &actualPoint->modelMatrix.m[0][0]);
-			glBegin(GL_QUADS);
-			glVertex3f(-1.0f, 0.0f, 1.0f);
-			glVertex3f(-1.0f, 0.0f, -1.0f);
-			glVertex3f(1.0f, 0.0f, -1.0f);
-			glVertex3f(1.0f, 0.0f, 1.0f);
-			glEnd();
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);*/
 		}
 	}
 
@@ -233,7 +199,7 @@ namespace K
 		float distance = INFINITY;
 		for (int i = 0; i < this->linePoints.size(); i++) 
 		{
-			K::Vector3 J = K::Vector3(this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->x, 0.0f, this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->y);
+			K::Vector3 J = K::Vector3(this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->x, P.y, this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->y);
 			K::Vector3 PJ = J - P;
 			if (PJ.magnitude() < distance && PJ.magnitude() > 0.0f) 
 			{
@@ -277,6 +243,11 @@ namespace K
 		{
 			return &J;
 		}
+	}
+
+	K::Line* Collider::GetLine(int index) 
+	{
+		return &this->linePoints[index];
 	}
 
 	int Collider::GetNumberOfPoints() 

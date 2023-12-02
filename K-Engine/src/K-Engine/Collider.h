@@ -54,6 +54,8 @@ namespace K
 
 		K::Vector3* ClosestPointLineCollider(K::Vector3 P);
 
+		K::Line* GetLine(int index);
+
 		int GetNumberOfPoints();
 
 		void LineColliderStatic();

@@ -54,7 +54,11 @@ namespace K
 		{
 			if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Line && Physics::colliders[i]->GetNumberOfPoints() > 0)
 			{
-				points.push_back(*Physics::colliders[i]->ClosestPointLineCollider(position));
+				for (int j = 0; j < Physics::colliders[i]->GetNumberOfPoints(); j++) 
+				{
+					K::Vector3 J = *Physics::colliders[i]->PointOnLine(Physics::colliders[i]->GetLine(j)->point[0], Physics::colliders[i]->GetLine(j)->point[1], position);
+					points.push_back(K::Vector3(J.x, J.z, J.y));
+				}
 			}
 		}
 		return points;
@@ -65,17 +69,24 @@ namespace K
 		K::Vector3* offsetAmount = new K::Vector3();
 		if (col->colliderType == K::Collider::ColliderType::Circle) 
 		{
-			for (K::Vector3 p1 : K::Physics::GetClosestPoints(*col->parent->GetTransform()->position)) 
+			for (K::Vector3 J : K::Physics::GetClosestPoints(*col->parent->GetTransform()->position)) 
 			{
-				K::Vector3 J = p1;
 				K::Vector3 originToJ = J - *col->parent->GetTransform()->position;
 				K::Vector3 jToOrigin = *col->parent->GetTransform()->position - J;
 				if (originToJ.magnitude() < col->GetRadius())
 				{
 					jToOrigin.normalise();
+					K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
 					K::Vector3 contactResolution = originToJ + (jToOrigin * col->GetRadius());
 					*offsetAmount += new K::Vector3(contactResolution);
-					col->SetIsColliding(true);
+					if (K::Vector3::DotProduct(up, jToOrigin) == 0) 
+					{
+						col->SetIsColliding(false);
+					}
+					else
+					{
+						col->SetIsColliding(true);
+					}
 				}
 			}
 		}
