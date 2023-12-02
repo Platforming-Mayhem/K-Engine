@@ -60,9 +60,9 @@ namespace K
 		K::Vector3* direction = new K::Vector3();
 		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
 		{
-			this->jumpTime += K::Time::deltaTime() * 10.0f;
+			this->jumpTime += K::Time::deltaTime();
 			this->time = 0.0f;
-			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, this->jumpTime);
+			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, this->jumpTime * 0.1f);
 		}
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{

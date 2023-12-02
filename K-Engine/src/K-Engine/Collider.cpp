@@ -137,12 +137,19 @@ namespace K
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
 			K::Transform transform = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
 			transform.PassModelMatrix();
 			glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &transform.modelMatrix.m[0][0]);
 			for (int i = 0; i < this->linePoints.size(); i++)
 			{
+				if (i == this->selectedLine) 
+				{
+					glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
+				}
+				else 
+				{
+					glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
+				}
 				glBegin(GL_LINES);
 				glVertex3f(this->linePoints[i].point[0].x, 0.0f, this->linePoints[i].point[0].y);
 				glVertex3f(this->linePoints[i].point[1].x, 0.0f, this->linePoints[i].point[1].y);
@@ -228,10 +235,16 @@ namespace K
 		{
 			K::Vector3 J = K::Vector3(this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->x, 0.0f, this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->y);
 			K::Vector3 PJ = J - P;
-			if (PJ.magnitude() < distance) 
+			if (PJ.magnitude() < distance && PJ.magnitude() > 0.0f) 
 			{
 				distance = PJ.magnitude();
 				closestIndex = i;
+			}
+			else if (PJ.magnitude() <= 0.0f) 
+			{
+				distance = 0.0f;
+				closestIndex = i;
+				break;
 			}
 		}
 		K::Vector3 J = K::Vector3(this->PointOnLine(this->linePoints[closestIndex].point[0], this->linePoints[closestIndex].point[1], P)->x, 0.0f, this->PointOnLine(this->linePoints[closestIndex].point[0], this->linePoints[closestIndex].point[1], P)->y);
