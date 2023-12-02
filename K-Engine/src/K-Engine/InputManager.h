@@ -10,6 +10,10 @@ namespace K
 	{
 	public:
 		static bool IsKeyPressed(int key);
+
+		static bool IsKeyPressedDown(int key);
+
+		static bool IsKeyReleased(int key);
 		//GET THIS WORKING ASAP!!!
 		static K::Vector3 GetMousePosition();
 	};

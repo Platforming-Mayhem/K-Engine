@@ -14,6 +14,30 @@ namespace K
 		}
 	}
 
+	bool InputManager::IsKeyPressedDown(int key) 
+	{
+		if (glfwGetKey(window->window, key) == GLFW_PRESS)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool InputManager::IsKeyReleased(int key)
+	{
+		if (glfwGetKey(window->window, key) == GLFW_RELEASE)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	K::Vector3 InputManager::GetMousePosition()
 	{
 		double x, y;
