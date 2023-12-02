@@ -107,7 +107,22 @@ namespace K
 
 	void Collider::CircleVisualDebug() 
 	{
-
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
+		K::Transform transform = K::Transform(this->parent->GetTransform()->position, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		transform.PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &transform.modelMatrix.m[0][0]);
+		float theta = 360.0f / 16.0f;
+		//Draw Circle
+		glBegin(GL_LINE_LOOP);
+		for (int i = 0; i < 16; i++)
+		{
+			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
+		}
+		glEnd();
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 	}
 
 	float Collider::GetRadius() 
