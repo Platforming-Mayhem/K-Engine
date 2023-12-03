@@ -10,7 +10,13 @@ namespace K
 	private:
 		static std::vector<K::Collider*> colliders;
 	public:
+		static void Remove(K::Collider* col);
+
+		static void RemoveAll();
+
 		static void Attach(K::Collider* col);
+
+		static bool RemoveDuplicatesFromVectorArray(K::Vector3 a, K::Vector3 b);
 
 		static bool IsColliding(K::GameObject* parent);
 

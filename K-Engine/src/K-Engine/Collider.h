@@ -20,7 +20,8 @@ namespace K
 	private:
 		bool isColliding = false;
 		bool isStatic = true;
-		K::Vector3* pointOnLine;
+		K::Vector3* pointOnLine = nullptr;
+		K::Vector3 offset = K::Vector3();
 		float radius = 1.0f;
 		int selectedLine = 0;
 		std::vector<K::Line> linePoints;
@@ -55,6 +56,10 @@ namespace K
 		K::Vector3* ClosestPointLineCollider(K::Vector3 P);
 
 		K::Line* GetLine(int index);
+
+		K::Vector3* GetOffset();
+
+		K::Vector3* GetPosition();
 
 		int GetNumberOfPoints();
 

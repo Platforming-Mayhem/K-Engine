@@ -15,8 +15,9 @@ namespace K
 	{
 		for (int i = 0; i < this->GetNumberOfComponents(); i++) 
 		{
-			this->components.pop_back();
+			delete this->components[i];
 		}
+		delete this->material;
 	}
 
 	void GameObject::Update()

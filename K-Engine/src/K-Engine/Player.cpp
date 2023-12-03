@@ -72,12 +72,6 @@ namespace K
 		{
 			*direction += new K::Vector3(-1.0f, 0.0f, 0.0f);
 		}
-		if (direction->magnitude() > 0.0f) 
-		{
-			direction->normalise();
-			*direction = *direction * (K::Time::deltaTime() * this->movementSpeed);
-			*(this->parent->GetTransform()->position) += *direction;
-		}
 		if (K::Physics::IsColliding(this->parent))
 		{
 			this->time = 0.0f;
@@ -87,6 +81,12 @@ namespace K
 		{
 			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
 			this->time += 1.0f / 120.0f;
+		}
+		if (direction->magnitude() > 0.0f)
+		{
+			direction->normalise();
+			*direction = *direction * (K::Time::deltaTime() * this->movementSpeed);
+			*(this->parent->GetTransform()->position) += *direction;
 		}
 	}
 

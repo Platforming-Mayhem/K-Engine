@@ -2,6 +2,7 @@
 #include "build.h"
 #include "GameObject.h"
 #include "Time.h"
+#include "PhysicsEngine.h"
 
 namespace K 
 {
@@ -49,6 +50,7 @@ namespace K
 				this->gameObjects.pop_back();
 				delete g;
 			}
+			K::Physics::RemoveAll();
 		}
 
 		int GetNumberOfObjects() 

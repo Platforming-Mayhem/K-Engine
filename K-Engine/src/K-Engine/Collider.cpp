@@ -12,7 +12,7 @@ namespace K
 
 	Collider::~Collider()
 	{
-		
+		K::Physics::Remove(this);
 	}
 
 	void Collider::Init()
@@ -98,6 +98,7 @@ namespace K
 	void Collider::CircleEditor()
 	{
 		ImGui::DragFloat("Circle Radius", &this->radius);
+		ImGui::DragFloat3("Offset", (float*)&this->offset);
 	}
 
 	void Collider::CircleColliderStatic() 
@@ -107,30 +108,39 @@ namespace K
 
 	void Collider::CircleVisualDebug() 
 	{
+		//Draw Circle
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
-		K::Transform transform = K::Transform(this->parent->GetTransform()->position, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		K::Vector3 position = *this->GetPosition();
+		K::Transform transform = K::Transform(&position, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
 		transform.PassModelMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &transform.modelMatrix.m[0][0]);
 		float theta = 360.0f / 16.0f;
-		//Draw Circle
 		glBegin(GL_LINE_LOOP);
 		for (int i = 0; i < 16; i++)
 		{
 			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
 		}
 		glEnd();
+		//Draw contact points
 		if (K::Physics::CanGetClosestPoint()) 
 		{
 			//DEBUGGING
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
-			for (K::Vector3 pointOnLine : K::Physics::GetClosestPoints(*this->parent->GetTransform()->position))
+			for (K::Vector3 pointOnLine : K::Physics::GetClosestPoints(position))
 			{
+				if ((pointOnLine - position).magnitude() < this->GetRadius())
+				{
+					glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 0.0f, 0.0f);
+				}
+				else 
+				{
+					glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
+				}
 				K::Transform* transform = new K::Transform(&pointOnLine, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
 				transform->PassModelMatrix();
 				glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &transform->modelMatrix.m[0][0]);
@@ -228,7 +238,7 @@ namespace K
 		float BJMag = (J - B).magnitude();
 		K::Vector3 AJ = (J - A).normalise();
 		K::Vector3 BJ = (J - B).normalise();
-		if (roundf(K::Vector3::DotProduct(AJ, BJ)) > 0.0f) 
+		if (K::Vector3::DotProduct(AJ, BJ) == 1.0f) 
 		{
 			if (AJMag > BJMag) 
 			{
@@ -239,7 +249,7 @@ namespace K
 				return &A;
 			}
 		}
-		else 
+		else if(K::Vector3::DotProduct(AJ, BJ) == -1.0f)
 		{
 			return &J;
 		}
@@ -248,6 +258,18 @@ namespace K
 	K::Line* Collider::GetLine(int index) 
 	{
 		return &this->linePoints[index];
+	}
+
+	K::Vector3* Collider::GetOffset() 
+	{
+		return &this->offset;
+	}
+
+	K::Vector3* Collider::GetPosition() 
+	{
+		K::Vector3 pos = *this->parent->GetTransform()->position;
+		pos += this->offset;
+		return &pos;
 	}
 
 	int Collider::GetNumberOfPoints() 

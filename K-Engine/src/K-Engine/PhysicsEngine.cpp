@@ -4,6 +4,25 @@ namespace K
 {
 	std::vector<K::Collider*> K::Physics::colliders;
 
+	void Physics::Remove(K::Collider* col) 
+	{
+		int i = 0;
+		for (K::Collider* other : K::Physics::colliders) 
+		{
+			if (other == col) 
+			{
+				break;
+			}
+			i++;
+		}
+		K::Physics::colliders.erase(K::Physics::colliders.begin() + i);
+	}
+
+	void Physics::RemoveAll() 
+	{
+		Physics::colliders.clear();
+	}
+
 	void Physics::Attach(K::Collider* col)
 	{
 		Physics::colliders.push_back(col);
@@ -14,16 +33,12 @@ namespace K
 		int points = 0;
 		for (int i = 0; i < Physics::colliders.size(); i++) 
 		{
-			points += Physics::colliders[i]->GetNumberOfPoints();
+			if (Physics::colliders[i]->GetNumberOfPoints() > 0) 
+			{
+				return true;
+			}
 		}
-		if (points == 0)
-		{
-			return false;
-		}
-		else 
-		{
-			return true;
-		}
+		return false;
 	}
 
 	bool Physics::IsColliding(K::GameObject* parent) 
@@ -47,6 +62,18 @@ namespace K
 		}
 	}
 
+	bool Physics::RemoveDuplicatesFromVectorArray(K::Vector3 a, K::Vector3 b) 
+	{
+		if (a.x == b.x && a.y == b.y && a.z == b.z) 
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
+
 	std::vector<K::Vector3> Physics::GetClosestPoints(K::Vector3 position)
 	{
 		std::vector<K::Vector3> points;
@@ -61,6 +88,8 @@ namespace K
 				}
 			}
 		}
+		//auto it = std::unique(points.begin(), points.end(), RemoveDuplicatesFromVectorArray);
+		//points.resize(std::distance(points.begin(), it));
 		return points;
 	}
 
@@ -69,30 +98,28 @@ namespace K
 		K::Vector3* offsetAmount = new K::Vector3();
 		if (col->colliderType == K::Collider::ColliderType::Circle) 
 		{
-			for (K::Vector3 J : K::Physics::GetClosestPoints(*col->parent->GetTransform()->position)) 
+			K::Vector3 position = *col->GetPosition();
+			for (K::Vector3 J : K::Physics::GetClosestPoints(position))
 			{
-				K::Vector3 originToJ = J - *col->parent->GetTransform()->position;
-				K::Vector3 jToOrigin = *col->parent->GetTransform()->position - J;
+				K::Vector3 originToJ = J - position;
+				K::Vector3 jToOrigin = position - J;
 				if (originToJ.magnitude() < col->GetRadius())
 				{
 					jToOrigin.normalise();
 					K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
 					K::Vector3 contactResolution = originToJ + (jToOrigin * col->GetRadius());
-					*offsetAmount += new K::Vector3(contactResolution);
-					if (K::Vector3::DotProduct(up, jToOrigin) == 0) 
-					{
-						col->SetIsColliding(false);
-					}
-					else
-					{
-						col->SetIsColliding(true);
-					}
+					*offsetAmount += contactResolution;
+					col->SetIsColliding(true);
 				}
 			}
 		}
-		if (offsetAmount->magnitude() <= 0.0f) 
+		if (offsetAmount->magnitude() == 0.0f) 
 		{
 			col->SetIsColliding(false);
+		}
+		else
+		{
+			//std::cout << offsetAmount->x << " " << offsetAmount->y << " " << offsetAmount->z << std::endl;
 		}
 		return offsetAmount;
 	}
