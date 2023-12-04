@@ -97,6 +97,10 @@ namespace K
 
 		bool LoadModelsAssimp(std::string File);
 
+		void processMesh(aiMesh* mesh, const aiScene* scene);
+		
+		void processNode(aiNode* node, const aiScene* scene);
+
 		void Init() override;
 
 		void Update() override;

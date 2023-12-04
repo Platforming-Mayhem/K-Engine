@@ -80,6 +80,8 @@ namespace K
 				}
 				file.ClearSelected();
 			}
+			ImGui::Text("Vertices: %i", this->vertices.size());
+			ImGui::Text("Indices: %i", this->indices.size());
 		}
 	}
 
@@ -122,8 +124,44 @@ namespace K
 		return typeid(K::Mesh).name();
 	}
 
+	void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
+	{
+		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+		{
+			
+		}
+		// process indices
+
+		// process material
+		if (mesh->mMaterialIndex >= 0)
+		{
+			
+		}
+	}
+
+	void Mesh::processNode(aiNode* node, const aiScene* scene)
+	{
+		// process all the node's meshes (if any)
+		for (unsigned int i = 0; i < node->mNumMeshes; i++)
+		{
+			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+			processMesh(mesh, scene);
+		}
+		// then do the same for each of its children
+		for (unsigned int i = 0; i < node->mNumChildren; i++)
+		{
+			processNode(node->mChildren[i], scene);
+		}
+	}
+
 	bool Mesh::LoadModelsAssimp(std::string File)
 	{
+		this->vertices.clear();
+		this->vertices.shrink_to_fit();
+		this->normals.clear();
+		this->normals.shrink_to_fit();
+		this->indices.clear();
+		this->indices.shrink_to_fit();
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(File, aiProcess_Triangulate | aiProcess_GenNormals);
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -131,23 +169,17 @@ namespace K
 			std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
 			return false;
 		}
-		for (int j = 0; j < (scene->mNumMeshes); j++)
+		for (int j = 0; j < scene->mNumMeshes; j++)
 		{
 			aiMesh* mesh = scene->mMeshes[j];
-			this->vertices.clear();
-			this->indices.clear();
 			for (int i = 0; i < mesh->mNumVertices; i++)
 			{
-				float u, v;
+				float u = 0.0f;
+				float v = 0.0f;
 				if (mesh->HasTextureCoords(0))
 				{
 					u = mesh->mTextureCoords[0][i].x;
 					v = mesh->mTextureCoords[0][i].y;
-				}
-				else
-				{
-					u = 0.0f;
-					v = 0.0f;
 				}
 				this->normals.push_back(K::Vector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z));
 				this->vertices.push_back(K::Vertex(K::Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z), K::Vector2(u, v)));
