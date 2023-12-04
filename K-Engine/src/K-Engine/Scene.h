@@ -35,10 +35,11 @@ namespace K
 			{
 				if (gameObject == this->gameObjects[i]) 
 				{
+					delete this->gameObjects[i];
 					this->gameObjects.erase(this->gameObjects.begin() + i);
-					delete gameObject;
 				}
 			}
+			this->gameObjects.shrink_to_fit();
 		}
 
 		void CreateEmptyScene() 
@@ -46,10 +47,10 @@ namespace K
 			int size = this->GetNumberOfObjects();
 			for (int i = 1; i < size; i++)
 			{
-				K::GameObject* g = this->gameObjects.back();
+				delete this->gameObjects[i];
 				this->gameObjects.pop_back();
-				delete g;
 			}
+			this->gameObjects.shrink_to_fit();
 			K::Physics::RemoveAll();
 		}
 

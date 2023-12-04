@@ -9,7 +9,8 @@ namespace K
 
 	Sprite::~Sprite() 
 	{
-		this->texture->~Texture();
+		std::cout << "Sprite Destructor" << std::endl;
+		delete this->texture;
 	}
 
 	const char* Sprite::GetName() 

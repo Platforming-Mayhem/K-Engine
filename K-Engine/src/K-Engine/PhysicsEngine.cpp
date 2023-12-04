@@ -4,7 +4,7 @@ namespace K
 {
 	std::vector<K::Collider*> K::Physics::colliders;
 
-	void Physics::Remove(K::Collider* col) 
+	void Physics::Remove(K::Collider* col)
 	{
 		int i = 0;
 		for (K::Collider* other : K::Physics::colliders) 
@@ -16,11 +16,13 @@ namespace K
 			i++;
 		}
 		K::Physics::colliders.erase(K::Physics::colliders.begin() + i);
+		K::Physics::colliders.shrink_to_fit();
 	}
 
-	void Physics::RemoveAll() 
+	void Physics::RemoveAll()
 	{
-		Physics::colliders.clear();
+		K::Physics::colliders.clear();
+		K::Physics::colliders.shrink_to_fit();
 	}
 
 	void Physics::Attach(K::Collider* col)

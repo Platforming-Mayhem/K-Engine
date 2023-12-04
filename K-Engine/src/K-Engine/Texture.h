@@ -15,6 +15,11 @@ namespace K
 			this->delay = delay;
 		}
 
+		~Image() 
+		{
+			
+		}
+
 		unsigned char* GetData() 
 		{
 			return this->imageData;

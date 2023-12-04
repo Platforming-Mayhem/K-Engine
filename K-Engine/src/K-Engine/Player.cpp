@@ -12,7 +12,7 @@ namespace K
 
 	Player::~Player() 
 	{
-		
+		std::cout << "Player Destructor" << std::endl;
 	}
 
 	const char* Player::GetPropertyValues()

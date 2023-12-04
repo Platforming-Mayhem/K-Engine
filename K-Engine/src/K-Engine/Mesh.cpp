@@ -10,6 +10,7 @@ namespace K
 
 	Mesh::~Mesh() 
 	{
+		std::cout << "Mesh Destructor" << std::endl;
 		glDeleteVertexArrays(1, &this->VAO);
 		glDeleteBuffers(1, &this->VBO);
 	}

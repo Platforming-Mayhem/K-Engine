@@ -13,9 +13,14 @@ namespace K
 
 	GameObject::~GameObject() 
 	{
-		for (int i = 0; i < this->GetNumberOfComponents(); i++) 
+		std::cout << "GameObject Destructor" << std::endl;
+		if (this->GetNumberOfComponents() > 0) 
 		{
-			delete this->components[i];
+			for (int i = 0; i < this->components.size(); i++)
+			{
+				delete this->components[i];
+			}
+			this->components.clear();
 		}
 		delete this->material;
 	}

@@ -24,6 +24,9 @@ namespace K
 
 	Editor::~Editor()
 	{
+		delete this->currentScene;
+		delete this->material;
+		delete this->window;
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();

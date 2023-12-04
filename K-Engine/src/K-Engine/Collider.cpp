@@ -12,6 +12,8 @@ namespace K
 
 	Collider::~Collider()
 	{
+		std::cout << "Collider Destructor" << std::endl;
+		this->linePoints.clear();
 		K::Physics::Remove(this);
 	}
 

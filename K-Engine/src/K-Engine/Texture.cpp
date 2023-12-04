@@ -93,8 +93,15 @@ namespace K
 
 	Texture::~Texture() 
 	{
+		std::cout << "Texture Destructor" << std::endl;
 		stbi_image_free(this->image);
 		glDeleteTextures(1, &this->id);
+		for (int i = 0; i < this->images.size(); i++) 
+		{
+			delete &this->images[i];
+		}
+		this->images.clear();
+		this->images.shrink_to_fit();
 	}
 
 	const char* Texture::GetFilePath() 
@@ -135,7 +142,6 @@ namespace K
 
 	void Texture::LoadAnimation() 
 	{
-		this->images.clear();
 		this->Bind(0);
 		this->image = stbi_xload_file(this->GetFilePath(), &this->width, &this->height, &this->frames, &this->delay);
 		if (this->frames > 1)
