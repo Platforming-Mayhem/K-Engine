@@ -48,9 +48,9 @@ namespace K
 			int size = this->GetNumberOfObjects();
 			for (int i = 1; i < size; i++)
 			{
-				std::cout << i << std::endl;
-				this->gameObjects.pop_back();
+				delete this->gameObjects[i];
 			}
+			this->gameObjects.erase(this->gameObjects.begin() + 1, this->gameObjects.end());
 			this->gameObjects.shrink_to_fit();
 		}
 
