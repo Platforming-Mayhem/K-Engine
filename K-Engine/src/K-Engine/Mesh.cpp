@@ -10,7 +10,7 @@ namespace K
 
 	Mesh::~Mesh() 
 	{
-		std::cout << "Mesh Destructor" << std::endl;
+		std::cout << "Begin Mesh Destruction..." << std::endl;
 		this->vertices.clear();
 		this->vertices.shrink_to_fit();
 		this->normals.clear();
@@ -20,6 +20,7 @@ namespace K
 		glDeleteVertexArrays(1, &this->VAO);
 		glDeleteBuffers(1, &this->VBO);
 		glDeleteBuffers(1, &this->EBO);
+		std::cout << "End Mesh Destruction..." << std::endl;
 	}
 
 	void Mesh::Init() 
@@ -124,6 +125,7 @@ namespace K
 		return typeid(K::Mesh).name();
 	}
 
+	//IMPLEMENT THIS LATER
 	void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -139,6 +141,7 @@ namespace K
 		}
 	}
 
+	//IMPLEMENT THIS LATER
 	void Mesh::processNode(aiNode* node, const aiScene* scene)
 	{
 		// process all the node's meshes (if any)
@@ -163,7 +166,7 @@ namespace K
 		this->indices.clear();
 		this->indices.shrink_to_fit();
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(File, aiProcess_Triangulate | aiProcess_GenNormals);
+		const aiScene* scene = importer.ReadFile(File, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_OptimizeMeshes);
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
 			std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;

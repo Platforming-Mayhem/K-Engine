@@ -31,7 +31,8 @@ namespace K
 
 		void Delete(K::GameObject* gameObject) 
 		{
-			for (int i = 1; i < this->GetNumberOfObjects(); i++) 
+			int size = this->GetNumberOfObjects();
+			for (int i = 1; i < size; i++)
 			{
 				if (gameObject == this->gameObjects[i]) 
 				{
@@ -47,11 +48,10 @@ namespace K
 			int size = this->GetNumberOfObjects();
 			for (int i = 1; i < size; i++)
 			{
-				delete this->gameObjects[i];
+				std::cout << i << std::endl;
 				this->gameObjects.pop_back();
 			}
 			this->gameObjects.shrink_to_fit();
-			K::Physics::RemoveAll();
 		}
 
 		int GetNumberOfObjects() 

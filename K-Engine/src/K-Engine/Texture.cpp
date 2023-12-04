@@ -95,18 +95,15 @@ namespace K
 
 	Texture::~Texture() 
 	{
-		std::cout << "Texture Destructor" << std::endl;
+		std::cout << "Begin Texture Destruction..." << std::endl;
+		this->images.clear();
+		this->images.shrink_to_fit();
 		if (this->image != nullptr) 
 		{
 			stbi_image_free(this->image);
 		}
 		glDeleteTextures(1, &this->id);
-		for (int i = 0; i < this->images.size(); i++) 
-		{
-			delete &this->images[i];
-		}
-		this->images.clear();
-		this->images.shrink_to_fit();
+		std::cout << "End Texture Destruction..." << std::endl;
 	}
 
 	const char* Texture::GetFilePath() 

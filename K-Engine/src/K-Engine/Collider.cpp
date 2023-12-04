@@ -12,12 +12,13 @@ namespace K
 
 	Collider::~Collider()
 	{
-		std::cout << "Collider Destructor" << std::endl;
+		std::cout << "Begin Collider Destruction..." << std::endl;
+		K::Physics::Remove(this);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 		this->linePoints.clear();
-		K::Physics::Remove(this);
+		std::cout << "End Collider Destruction..." << std::endl;
 	}
 
 	void Collider::Init()

@@ -13,7 +13,7 @@ namespace K
 
 	GameObject::~GameObject() 
 	{
-		std::cout << "GameObject Destructor" << std::endl;
+		std::cout << "Begin GameObject Destruction..." << std::endl;
 		if (this->GetNumberOfComponents() > 0) 
 		{
 			for (int i = 0; i < this->components.size(); i++)
@@ -22,6 +22,7 @@ namespace K
 			}
 			this->components.clear();
 		}
+		std::cout << "End GameObject Destruction..." << std::endl;
 	}
 
 	void GameObject::Update()
