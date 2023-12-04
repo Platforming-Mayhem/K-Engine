@@ -76,6 +76,27 @@ namespace K
 		}
 	}
 
+	bool Physics::IsStatic(K::GameObject* parent) 
+	{
+		int index = -1;
+		for (int i = 0; i < Physics::colliders.size(); i++)
+		{
+			if (Physics::colliders[i]->parent == parent)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index >= 0)
+		{
+			return Physics::colliders[index]->IsStatic();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	std::vector<K::Vector3> Physics::GetClosestPoints(K::Vector3 position)
 	{
 		std::vector<K::Vector3> points;

@@ -47,6 +47,8 @@ namespace K
 
 		bool IsColliding();
 
+		bool IsStatic();
+
 		void SetIsColliding(bool value);
 
 		void LineEditor();

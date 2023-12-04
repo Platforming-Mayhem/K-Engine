@@ -22,7 +22,6 @@ namespace K
 			}
 			this->components.clear();
 		}
-		delete this->material;
 	}
 
 	void GameObject::Update()

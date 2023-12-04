@@ -72,15 +72,18 @@ namespace K
 		{
 			*direction += new K::Vector3(-1.0f, 0.0f, 0.0f);
 		}
-		if (K::Physics::IsColliding(this->parent))
+		if (!K::Physics::IsStatic(this->parent)) 
 		{
-			this->time = 0.0f;
-			this->jumpTime = 0.0f;
-		}
-		else 
-		{
-			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
-			this->time += 1.0f / 120.0f;
+			if (K::Physics::IsColliding(this->parent))
+			{
+				this->time = 0.0f;
+				this->jumpTime = 0.0f;
+			}
+			else
+			{
+				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
+				this->time += 1.0f / 120.0f;
+			}
 		}
 		if (direction->magnitude() > 0.0f)
 		{

@@ -13,6 +13,9 @@ namespace K
 	Collider::~Collider()
 	{
 		std::cout << "Collider Destructor" << std::endl;
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 		this->linePoints.clear();
 		K::Physics::Remove(this);
 	}
@@ -287,6 +290,11 @@ namespace K
 	bool Collider::IsColliding() 
 	{
 		return this->isColliding;
+	}
+
+	bool Collider::IsStatic() 
+	{
+		return this->isStatic;
 	}
 
 	void Collider::LineCollider() 

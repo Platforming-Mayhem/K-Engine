@@ -22,6 +22,8 @@ namespace K
 
 		static bool CanGetClosestPoint();
 
+		static bool IsStatic(K::GameObject* parent);
+
 		static std::vector<K::Vector3> GetClosestPoints(K::Vector3 position);
 
 		static K::Vector3* GetCollisionResolution(K::Collider* col);

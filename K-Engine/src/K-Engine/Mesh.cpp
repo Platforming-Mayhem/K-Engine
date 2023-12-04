@@ -5,18 +5,27 @@ namespace K
 {
 	Mesh::Mesh() 
 	{
-		this->vertices = K::Quad;
+		
 	}
 
 	Mesh::~Mesh() 
 	{
 		std::cout << "Mesh Destructor" << std::endl;
+		this->vertices.clear();
+		this->vertices.shrink_to_fit();
+		this->normals.clear();
+		this->normals.shrink_to_fit();
+		this->indices.clear();
+		this->indices.shrink_to_fit();
 		glDeleteVertexArrays(1, &this->VAO);
 		glDeleteBuffers(1, &this->VBO);
+		glDeleteBuffers(1, &this->EBO);
 	}
 
 	void Mesh::Init() 
 	{
+		this->vertices = K::Quad;
+
 		glCreateVertexArrays(1, &this->VAO);
 		glGenBuffers(1, &this->VBO);
 		glGenBuffers(1, &this->EBO);

@@ -33,6 +33,7 @@ namespace K
 			std::cout << "Failed to load texture" << std::endl;
 		}
 		stbi_image_free(this->image);
+		this->image = nullptr;
 		glActiveTexture(0);
 		glBindTexture(this->type, 0);
 		this->LoadAnimation();
@@ -82,6 +83,7 @@ namespace K
 				glActiveTexture(0);
 				glBindTexture(this->type, 0);
 				stbi_image_free(this->image);
+				this->image = nullptr;
 				UnlockResource(temp);
 			}
 		}
@@ -94,7 +96,10 @@ namespace K
 	Texture::~Texture() 
 	{
 		std::cout << "Texture Destructor" << std::endl;
-		stbi_image_free(this->image);
+		if (this->image != nullptr) 
+		{
+			stbi_image_free(this->image);
+		}
 		glDeleteTextures(1, &this->id);
 		for (int i = 0; i < this->images.size(); i++) 
 		{

@@ -10,6 +10,9 @@ namespace K
 	Sprite::~Sprite() 
 	{
 		std::cout << "Sprite Destructor" << std::endl;
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 		delete this->texture;
 	}
 
