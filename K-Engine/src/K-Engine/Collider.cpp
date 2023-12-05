@@ -259,6 +259,12 @@ namespace K
 		}
 	}
 
+	K::Vector3* Collider::GetNormal(K::Vector3 A, K::Vector3 B) 
+	{
+		K::Vector3 N = K::Vector3(-(B.y - A.y), 0.0f, B.x - A.x);
+		return &N;
+	}
+
 	K::Line* Collider::GetLine(int index) 
 	{
 		return &this->linePoints[index];

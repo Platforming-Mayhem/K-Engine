@@ -125,11 +125,10 @@ namespace K
 			for (K::Vector3 J : K::Physics::GetClosestPoints(position))
 			{
 				K::Vector3 originToJ = J - position;
-				K::Vector3 jToOrigin = position - J;
+				K::Vector3 normal = (position - J).normalise();
 				if (originToJ.magnitude() < col->GetRadius())
 				{
-					jToOrigin.normalise();
-					K::Vector3 contactResolution = originToJ + (jToOrigin * col->GetRadius());
+					K::Vector3 contactResolution = originToJ + (normal * col->GetRadius());
 					*offsetAmount += contactResolution;
 				}
 			}
