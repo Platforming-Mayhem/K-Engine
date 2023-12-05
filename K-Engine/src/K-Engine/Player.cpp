@@ -57,22 +57,7 @@ namespace K
 
 	void Player::Update() 
 	{
-		K::Vector3* direction = new K::Vector3();
-		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
-		{
-			this->time = 0.0f;
-			this->jumpTime += K::Time::deltaTime();
-			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.1f);
-		}
-		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
-		{
-			*direction += new K::Vector3(1.0f, 0.0f, 0.0f);
-		}
-		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
-		{
-			*direction += new K::Vector3(-1.0f, 0.0f, 0.0f);
-		}
-		if (!K::Physics::IsStatic(this->parent)) 
+		if (!K::Physics::IsStatic(this->parent))
 		{
 			if (K::Physics::IsColliding(this->parent))
 			{
@@ -85,12 +70,30 @@ namespace K
 				this->time += 1.0f / 120.0f;
 			}
 		}
-		if (direction->magnitude() > 0.0f)
+		else
 		{
-			direction->normalise();
-			*direction = *direction * (K::Time::deltaTime() * this->movementSpeed);
-			*(this->parent->GetTransform()->position) += *direction;
+			this->time = 0.0f;
 		}
+		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
+		{
+			this->time = 0.0f;
+			this->jumpTime += K::Time::deltaTime();
+			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.1f);
+		}
+		else if (InputManager::IsKeyReleased(GLFW_KEY_SPACE) && !K::Physics::IsColliding(this->parent))
+		{
+			this->jumpTime = 1.0f;
+		}
+		K::Vector3* direction = new K::Vector3();
+		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
+		{
+			direction = new K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+		}
+		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
+		{
+			direction = new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+		}
+		*(this->parent->GetTransform()->position) += *direction;
 	}
 
 	void Player::Unbind() 

@@ -107,12 +107,12 @@ namespace K
 				for (int j = 0; j < Physics::colliders[i]->GetNumberOfPoints(); j++) 
 				{
 					K::Vector3 J = *Physics::colliders[i]->PointOnLine(Physics::colliders[i]->GetLine(j)->point[0], Physics::colliders[i]->GetLine(j)->point[1], position);
-					points.push_back(K::Vector3(J.x, J.z, J.y));
+					points.push_back(K::Vector3(J.x, 0.0f, J.y));
 				}
 			}
 		}
-		//auto it = std::unique(points.begin(), points.end(), RemoveDuplicatesFromVectorArray);
-		//points.resize(std::distance(points.begin(), it));
+		auto it = std::unique(points.begin(), points.end(), RemoveDuplicatesFromVectorArray);
+		points.resize(std::distance(points.begin(), it));
 		return points;
 	}
 
@@ -129,20 +129,18 @@ namespace K
 				if (originToJ.magnitude() < col->GetRadius())
 				{
 					jToOrigin.normalise();
-					K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
 					K::Vector3 contactResolution = originToJ + (jToOrigin * col->GetRadius());
 					*offsetAmount += contactResolution;
-					col->SetIsColliding(true);
 				}
 			}
 		}
-		if (offsetAmount->magnitude() == 0.0f) 
+		if (offsetAmount->magnitude() <= 0.0f)
 		{
 			col->SetIsColliding(false);
 		}
-		else
+		else 
 		{
-			//std::cout << offsetAmount->x << " " << offsetAmount->y << " " << offsetAmount->z << std::endl;
+			col->SetIsColliding(true);
 		}
 		return offsetAmount;
 	}

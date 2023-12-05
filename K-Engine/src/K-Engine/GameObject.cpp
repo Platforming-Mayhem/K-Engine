@@ -48,7 +48,14 @@ namespace K
 		}
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
-			this->GetComponent(i)->UpdateEditor();
+			this->components[i]->UpdateEditor();
+			if (ImGui::Button(("Delete Component##" + std::to_string(i)).c_str()))
+			{
+				std::cout << "Delete Component..." << std::endl;
+				delete this->GetComponent(i);
+				this->components.erase(this->components.begin() + i);
+				this->components.shrink_to_fit();
+			}
 		}
 	}
 

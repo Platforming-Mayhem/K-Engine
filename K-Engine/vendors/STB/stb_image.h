@@ -7706,8 +7706,10 @@ STBIDEF int stbi_is_16_bit_from_callbacks(stbi_io_callbacks const *c, void *user
         int comp;
         unsigned char* result = 0;
 
-        if (stbi__gif_test(s))
+        if (stbi__gif_test(s)) 
+        {
             return (unsigned char*)stbi__load_gif_main(s, delays, x, y, frames, &comp, 4);
+        }
 
         stbi__result_info ri;
         result = (unsigned char*)stbi__load_main(s, x, y, &comp, 4, &ri, 8);

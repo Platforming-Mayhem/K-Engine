@@ -240,22 +240,20 @@ namespace K
 		float p = (-((A.x * B.y - B.x * A.y) * N.x) - ((B.x - A.x) * C))/(((B.x - A.x) * N.y) + ((A.y - B.y) * N.x));
 		float q = (C * (A.y - B.y) - N.y * (A.x * B.y - B.x * A.y)) / (N.y * (B.x - A.x) + (A.y - B.y) * (N.x));
 		K::Vector3 J = K::Vector3(p, q, 0.0f);
-		float AJMag = (J - A).magnitude();
-		float BJMag = (J - B).magnitude();
-		K::Vector3 AJ = (J - A).normalise();
-		K::Vector3 BJ = (J - B).normalise();
-		if (K::Vector3::DotProduct(AJ, BJ) == 1.0f) 
+		K::Vector3 AJ = J - A;
+		K::Vector3 BJ = J - B;
+		K::Vector3 AB = A - B;
+		float U = K::Vector3::DotProduct(BJ, AB);
+		float V = K::Vector3::DotProduct(AJ, AB);
+		if (V >= 0.0f) 
 		{
-			if (AJMag > BJMag) 
-			{
-				return &B;
-			}
-			else 
-			{
-				return &A;
-			}
+			return &A;
 		}
-		else if(K::Vector3::DotProduct(AJ, BJ) == -1.0f)
+		else if (U <= 0.0f) 
+		{
+			return &B;
+		}
+		else if (U > 0.0f && V < 0.0f)
 		{
 			return &J;
 		}
