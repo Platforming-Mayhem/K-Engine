@@ -64,18 +64,6 @@ namespace K
 		}
 	}
 
-	bool Physics::RemoveDuplicatesFromVectorArray(K::Vector3 a, K::Vector3 b) 
-	{
-		if (a.x == b.x && a.y == b.y && a.z == b.z) 
-		{
-			return true;
-		}
-		else 
-		{
-			return false;
-		}
-	}
-
 	bool Physics::IsStatic(K::GameObject* parent) 
 	{
 		int index = -1;
@@ -97,9 +85,9 @@ namespace K
 		}
 	}
 
-	std::vector<K::Vector3> Physics::GetClosestPoints(K::Vector3 position)
+	std::vector<K::ContactPoint> Physics::GetClosestPoints(K::Vector3 position)
 	{
-		std::vector<K::Vector3> points;
+		std::vector<K::ContactPoint> points;
 		for (int i = 0; i < Physics::colliders.size(); i++)
 		{
 			if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Line && Physics::colliders[i]->GetNumberOfPoints() > 0)
@@ -107,12 +95,12 @@ namespace K
 				for (int j = 0; j < Physics::colliders[i]->GetNumberOfPoints(); j++) 
 				{
 					K::Vector3 J = *Physics::colliders[i]->PointOnLine(Physics::colliders[i]->GetLine(j)->point[0], Physics::colliders[i]->GetLine(j)->point[1], position);
-					points.push_back(K::Vector3(J.x, 0.0f, J.y));
+					K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
+					K::Vector3 Normal = *Physics::colliders[i]->GetNormal(Physics::colliders[i]->GetLine(j)->point[0], Physics::colliders[i]->GetLine(j)->point[1]);
+					points.push_back(K::ContactPoint(J2, Normal));
 				}
 			}
 		}
-		auto it = std::unique(points.begin(), points.end(), RemoveDuplicatesFromVectorArray);
-		points.resize(std::distance(points.begin(), it));
 		return points;
 	}
 
@@ -122,10 +110,10 @@ namespace K
 		if (col->colliderType == K::Collider::ColliderType::Circle) 
 		{
 			K::Vector3 position = *col->GetPosition();
-			for (K::Vector3 J : K::Physics::GetClosestPoints(position))
+			for (K::ContactPoint J : K::Physics::GetClosestPoints(position))
 			{
-				K::Vector3 originToJ = J - position;
-				K::Vector3 normal = (position - J).normalise();
+				K::Vector3 originToJ = J.normal * -(J.position - position).magnitude();
+				K::Vector3 normal = J.normal;
 				if (originToJ.magnitude() < col->GetRadius())
 				{
 					K::Vector3 contactResolution = originToJ + (normal * col->GetRadius());

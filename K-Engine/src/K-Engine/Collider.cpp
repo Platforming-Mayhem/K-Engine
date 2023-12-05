@@ -137,9 +137,9 @@ namespace K
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
-			for (K::Vector3 pointOnLine : K::Physics::GetClosestPoints(position))
+			for (K::ContactPoint pointOnLine : K::Physics::GetClosestPoints(position))
 			{
-				if ((pointOnLine - position).magnitude() < this->GetRadius())
+				if ((pointOnLine.position - position).magnitude() < this->GetRadius())
 				{
 					glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 0.0f, 0.0f);
 				}
@@ -147,7 +147,7 @@ namespace K
 				{
 					glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
 				}
-				K::Transform* transform = new K::Transform(&pointOnLine, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
+				K::Transform* transform = new K::Transform(&pointOnLine.position, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
 				transform->PassModelMatrix();
 				glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &transform->modelMatrix.m[0][0]);
 				glBegin(GL_QUADS);
@@ -261,7 +261,7 @@ namespace K
 
 	K::Vector3* Collider::GetNormal(K::Vector3 A, K::Vector3 B) 
 	{
-		K::Vector3 N = K::Vector3(-(B.y - A.y), 0.0f, B.x - A.x);
+		K::Vector3 N = K::Vector3(-(B.y - A.y), 0.0f, B.x - A.x).normalise();
 		return &N;
 	}
 

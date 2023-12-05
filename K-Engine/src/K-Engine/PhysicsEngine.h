@@ -5,6 +5,17 @@
 
 namespace K 
 {
+	struct ContactPoint
+	{
+		K::Vector3 position = K::Vector3();
+		K::Vector3 normal = K::Vector3();
+		ContactPoint(K::Vector3 newPos, K::Vector3 newNorm)
+		{
+			this->position = newPos;
+			this->normal = newNorm;
+		}
+	};
+
 	class K_API Physics
 	{
 	private:
@@ -16,15 +27,13 @@ namespace K
 
 		static void Attach(K::Collider* col);
 
-		static bool RemoveDuplicatesFromVectorArray(K::Vector3 a, K::Vector3 b);
-
 		static bool IsColliding(K::GameObject* parent);
 
 		static bool CanGetClosestPoint();
 
 		static bool IsStatic(K::GameObject* parent);
 
-		static std::vector<K::Vector3> GetClosestPoints(K::Vector3 position);
+		static std::vector<K::ContactPoint> GetClosestPoints(K::Vector3 position);
 
 		static K::Vector3* GetCollisionResolution(K::Collider* col);
 
