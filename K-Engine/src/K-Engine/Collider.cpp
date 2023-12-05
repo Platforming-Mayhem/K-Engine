@@ -407,18 +407,51 @@ namespace K
 					this->colliderType = ColliderType::Line;
 				}
 				break;
-			}
-
-			if (valueIndex > 1)
-			{
-				if (this->colliderType == ColliderType::Circle) 
+			case 2:
+				if (this->colliderType == ColliderType::Circle)
 				{
 					this->radius = std::stof(temp);
 				}
-				else if (this->colliderType == ColliderType::Line) 
+				else 
 				{
-					this->SetPoints(temp.c_str());
+					break;
 				}
+				break;
+			case 3:
+				if (this->colliderType == ColliderType::Circle)
+				{
+					this->offset.x = std::stof(temp);
+				}
+				else
+				{
+					break;
+				}
+				break;
+			case 4:
+				if (this->colliderType == ColliderType::Circle)
+				{
+					this->offset.y = std::stof(temp);
+				}
+				else
+				{
+					break;
+				}
+				break;
+			case 5:
+				if (this->colliderType == ColliderType::Circle)
+				{
+					this->offset.z = std::stof(temp);
+				}
+				else
+				{
+					break;
+				}
+				break;
+			}
+
+			if (valueIndex > 1 && this->colliderType == ColliderType::Line)
+			{
+				this->SetPoints(temp.c_str());
 			}
 		}
 	}
@@ -444,6 +477,9 @@ namespace K
 		if (this->colliderType == ColliderType::Circle)
 		{
 			this->properties += "," + std::to_string(this->radius);
+			this->properties += "," + std::to_string(this->offset.x);
+			this->properties += "," + std::to_string(this->offset.y);
+			this->properties += "," + std::to_string(this->offset.z);
 		}
 		else if (this->colliderType == ColliderType::Line) 
 		{

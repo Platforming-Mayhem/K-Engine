@@ -127,7 +127,15 @@ namespace K
 		}
 		else 
 		{
-			col->SetIsColliding(true);
+			K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
+			if (K::Vector3::DotProduct(*offsetAmount, up) != 0.0f) 
+			{
+				col->SetIsColliding(true);
+			}
+			else 
+			{
+				col->SetIsColliding(false);
+			}
 		}
 		return offsetAmount;
 	}

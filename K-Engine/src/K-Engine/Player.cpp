@@ -13,6 +13,7 @@ namespace K
 	Player::~Player() 
 	{
 		std::cout << "Player Destructor" << std::endl;
+		delete this->direction;
 	}
 
 	const char* Player::GetPropertyValues()
@@ -40,6 +41,16 @@ namespace K
 			this->movementSpeed = std::stof(temp);
 			break;
 		}
+	}
+
+	float easeOutQuint(float time, float power)
+	{
+		return 1 - powf(1 - time, power);
+	}
+
+	float decelerateEaseOutQuint(float time, float power)
+	{
+		return 1 - powf(1 - time - 1, power);
 	}
 
 	void Player::Init() 
@@ -84,16 +95,67 @@ namespace K
 		{
 			this->jumpTime = 1.0f;
 		}
-		K::Vector3* direction = new K::Vector3();
+		float accelerationSpeed = (easeOutQuint(this->accelerationTime, 4.0f) * this->movementSpeed);
+		float decelerationSpeed = (decelerateEaseOutQuint(this->decelerationTime, 2.0f) * this->movementSpeed);
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
-			direction = new K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+			if (this->accelerationTime < 1.0f)
+			{
+				this->accelerationTime += K::Time::deltaTime();
+			}
+			else 
+			{
+				this->accelerationTime = 1.0f;
+			}
+			this->decelerationTime = 0.0f;
+			this->direction = new K::Vector3(accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 		}
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 		{
-			direction = new K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+			if (this->accelerationTime < 1.0f)
+			{
+				this->accelerationTime += K::Time::deltaTime();
+			}
+			else
+			{
+				this->accelerationTime = 1.0f;
+			}
+			this->decelerationTime = 0.0f;
+			this->direction = new K::Vector3(-accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 		}
-		*(this->parent->GetTransform()->position) += *direction;
+		else 
+		{
+			if (this->direction->x > 0.0f) 
+			{
+				if (this->decelerationTime < 1.0f)
+				{
+					this->decelerationTime += K::Time::deltaTime() * 3.0f;
+				}
+				else
+				{
+					this->decelerationTime = 1.0f;
+				}
+				this->direction = new K::Vector3(decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			}
+			else if (this->direction->x < 0.0f) 
+			{
+				if (this->decelerationTime < 1.0f)
+				{
+					this->decelerationTime += K::Time::deltaTime() * 3.0f;
+				}
+				else
+				{
+					this->decelerationTime = 1.0f;
+				}
+				this->direction = new K::Vector3(-decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			}
+			if (this->accelerationTime > 0.0f) 
+			{
+				this->decelerationTime = 1.0f - this->accelerationTime;
+				this->accelerationTime = 0.0f;
+			}
+		}
+		*(this->parent->GetTransform()->position) += this->direction;
 	}
 
 	void Player::Unbind() 

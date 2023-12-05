@@ -12,6 +12,9 @@ namespace K
 		float movementSpeed = 1.0f;
 		float time = 0.0f;
 		float jumpTime = 0.0f;
+		float accelerationTime = 0.0f;
+		float decelerationTime = 0.0f;
+		K::Vector3* direction = new K::Vector3();
 		std::string properties;
 	public:
 		Player();
