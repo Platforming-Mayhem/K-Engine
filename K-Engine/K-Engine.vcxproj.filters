@@ -234,6 +234,7 @@
     <None Include="src\K-Engine\models1.bin">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\Application\Test.JAWS" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="vendors\GLEW\lib\Release\x64\glew32.lib" />

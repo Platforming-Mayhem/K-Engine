@@ -88,7 +88,7 @@ namespace K
 		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
 		{
 			this->time = 0.0f;
-			this->jumpTime += K::Time::deltaTime();
+			this->jumpTime += K::Time::deltaTime() * 2.0f;
 			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.1f);
 		}
 		else if (InputManager::IsKeyReleased(GLFW_KEY_SPACE) && !K::Physics::IsColliding(this->parent))
@@ -101,7 +101,7 @@ namespace K
 		{
 			if (this->accelerationTime < 1.0f)
 			{
-				this->accelerationTime += K::Time::deltaTime();
+				this->accelerationTime += K::Time::deltaTime() * 0.5f;
 			}
 			else 
 			{
@@ -114,7 +114,7 @@ namespace K
 		{
 			if (this->accelerationTime < 1.0f)
 			{
-				this->accelerationTime += K::Time::deltaTime();
+				this->accelerationTime += K::Time::deltaTime() * 0.5f;
 			}
 			else
 			{
@@ -129,7 +129,7 @@ namespace K
 			{
 				if (this->decelerationTime < 1.0f)
 				{
-					this->decelerationTime += K::Time::deltaTime() * 3.0f;
+					this->decelerationTime += K::Time::deltaTime() * 4.0f;
 				}
 				else
 				{
@@ -141,7 +141,7 @@ namespace K
 			{
 				if (this->decelerationTime < 1.0f)
 				{
-					this->decelerationTime += K::Time::deltaTime() * 3.0f;
+					this->decelerationTime += K::Time::deltaTime() * 4.0f;
 				}
 				else
 				{

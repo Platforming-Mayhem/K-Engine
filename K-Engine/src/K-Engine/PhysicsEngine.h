@@ -5,7 +5,7 @@
 
 namespace K 
 {
-	struct ContactPoint
+	struct K_API ContactPoint
 	{
 		K::Vector3 position = K::Vector3();
 		K::Vector3 normal = K::Vector3();

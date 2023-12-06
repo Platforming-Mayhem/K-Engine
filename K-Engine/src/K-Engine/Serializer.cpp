@@ -146,4 +146,110 @@ namespace K
 		}
 		inFile.close();
 	}
+
+	Deserializer::Deserializer(K::Scene* newScene, unsigned int resource, K::Editor* editor)
+	{
+		HMODULE hModule;
+		GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
+		HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(resource), "SCENE");
+		int size = SizeofResource(hModule, hr);
+		if (hr == NULL)
+		{
+			std::cout << "Failed to find resource" << std::endl;
+			std::cout << size << std::endl;
+			exit(1);
+		}
+		else 
+		{
+			HGLOBAL temp = LoadResource(hModule, hr);
+			LPVOID lp = LockResource(temp);
+			char* data = static_cast<char*>(lp);
+			std::stringstream inFile;
+			inFile << data;
+			std::string line;
+			K::Component* currentComponent = nullptr;
+			while (std::getline(inFile, line))
+			{
+				std::string name = "";
+				K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
+				K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
+				K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
+				K::Transform* transform = new K::Transform(position, rotation, scale);
+				std::string val = "";
+				K::GameObject* temp = nullptr;
+				int componentCount = 0;
+				int number = 0;
+				for (int i = 0; i < line.size(); i++)
+				{
+					if (line[i] == ',')
+					{
+						switch (number)
+						{
+						case 0:
+							name = val;
+							temp = new K::GameObject(name.c_str(), transform, editor->GetMaterial());
+							break;
+						case 1:
+							position->x = std::stof(val);
+							break;
+						case 2:
+							position->y = std::stof(val);
+							break;
+						case 3:
+							position->z = std::stof(val);
+							break;
+						case 4:
+							rotation->x = std::stof(val);
+							break;
+						case 5:
+							rotation->y = std::stof(val);
+							break;
+						case 6:
+							rotation->z = std::stof(val);
+							break;
+						case 7:
+							scale->x = std::stof(val);
+							break;
+						case 8:
+							scale->y = std::stof(val);
+							break;
+						case 9:
+							scale->z = std::stof(val);
+							break;
+						}
+						if (number > 9)
+						{
+							bool found = false;
+							for (K::IFactory* comp : editor->lst)
+							{
+								K::Component* tempCo = comp->create();
+								if (val == tempCo->GetName())
+								{
+									temp->AddComponent(tempCo);
+									currentComponent = tempCo;
+									componentCount = 0;
+									found = true;
+									break;
+								}
+							}
+							if (!found)
+							{
+								currentComponent->SetPropertyValues(val.c_str(), componentCount);
+								componentCount++;
+							}
+						}
+						line.erase(0, i);
+						i = 0;
+						val = "";
+						number++;
+					}
+					else
+					{
+						val += line[i];
+					}
+				}
+				newScene->Attach(temp);
+			}
+		}
+	}
 }

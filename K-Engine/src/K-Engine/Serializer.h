@@ -15,5 +15,7 @@ namespace K
 	{
 	public:
 		Deserializer(K::Scene* newScene, std::string location, K::Editor* editor);
+
+		Deserializer(K::Scene* newScene, unsigned int resource, K::Editor* editor);
 	};
 }

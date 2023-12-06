@@ -6,6 +6,7 @@ namespace K
 
 	void Physics::Remove(K::Collider* col)
 	{
+		std::cout << "Removing Collider..." << std::endl;
 		int i = 0;
 		for (K::Collider* other : K::Physics::colliders) 
 		{
@@ -21,6 +22,7 @@ namespace K
 
 	void Physics::RemoveAll()
 	{
+		std::cout << "Removing All Colliders..." << std::endl;
 		K::Physics::colliders.clear();
 		K::Physics::colliders.shrink_to_fit();
 	}

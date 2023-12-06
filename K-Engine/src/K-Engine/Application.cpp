@@ -21,12 +21,12 @@ namespace K
 
 		K::Scene* newScene = new Scene("Test");
 
+		K::Editor* editor = new K::Editor(window, newScene, material);
+
 		#if _DEBUG
 			K::Transform* camPosition = new K::Transform(new Vector3(0.0f, -10.0f, 0.0f), new K::Vector3(90.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
 
 			K::GameObject* cam = new K::GameObject("Editor Camera", camPosition, material);
-
-			K::Editor* editor = new K::Editor(window, newScene, material);
 
 			K::Camera* camera = new K::Camera();
 			camera->SetActiveState(true);
@@ -35,6 +35,8 @@ namespace K
 
 			newScene->Attach(cam);
 		#endif
+
+		K::Deserializer deserialize = K::Deserializer(newScene, TEST_SCENE, editor);
 
 		while (!glfwWindowShouldClose(window->window))
 		{
@@ -52,7 +54,6 @@ namespace K
 			glUseProgram(material->GetShader()->shader);
 
 			newScene->Render();
-
 			#if _DEBUG
 			if (editor->Render()) 
 			{

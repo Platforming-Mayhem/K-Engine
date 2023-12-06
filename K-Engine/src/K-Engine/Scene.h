@@ -2,7 +2,6 @@
 #include "build.h"
 #include "GameObject.h"
 #include "Time.h"
-#include "PhysicsEngine.h"
 
 namespace K 
 {
@@ -46,11 +45,14 @@ namespace K
 		void CreateEmptyScene() 
 		{
 			int size = this->GetNumberOfObjects();
-			for (int i = 1; i < size; i++)
+			if (size > 0) 
 			{
-				delete this->gameObjects[i];
+				for (int i = 1; i < size; i++)
+				{
+					delete this->gameObjects[i];
+				}
+				this->gameObjects.erase(this->gameObjects.begin() + 1, this->gameObjects.end());
 			}
-			this->gameObjects.erase(this->gameObjects.begin() + 1, this->gameObjects.end());
 			this->gameObjects.shrink_to_fit();
 		}
 
