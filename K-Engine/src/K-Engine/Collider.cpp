@@ -96,7 +96,14 @@ namespace K
 			if (ImGui::Button("Delete Line")) 
 			{
 				this->linePoints.erase(this->linePoints.begin() + this->selectedLine);
-				this->selectedLine = 0;
+				if (this->linePoints.size() > 0)
+				{
+					this->selectedLine = this->linePoints.size() - 1;
+				}
+				else 
+				{
+					this->selectedLine = 0;
+				}
 			}
 		}
 	}

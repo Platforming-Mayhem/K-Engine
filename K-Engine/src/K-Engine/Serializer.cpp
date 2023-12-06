@@ -14,6 +14,7 @@ namespace K
 			exit(1);
 		}
 		int count = 0;
+		int nOGameObjects = scene->GetNumberOfObjects() - 1;
 		for (K::GameObject* g : scene->GetGameObjects()) 
 		{
 			if (count == 0) 
@@ -43,6 +44,10 @@ namespace K
 					std::cout << component->GetName() << " " << component->GetPropertyValues() << " ";
 				}
 				outFile << ",";
+				if (count < nOGameObjects)
+				{
+					outFile << '\n';
+				}
 				std::cout << std::endl;
 			}
 			count++;
