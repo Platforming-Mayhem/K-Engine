@@ -43,7 +43,6 @@ namespace K
 					std::cout << component->GetName() << " " << component->GetPropertyValues() << " ";
 				}
 				outFile << ",";
-				outFile << "\n";
 				std::cout << std::endl;
 			}
 			count++;
@@ -163,7 +162,7 @@ namespace K
 		{
 			HGLOBAL temp = LoadResource(hModule, hr);
 			LPVOID lp = LockResource(temp);
-			char* data = static_cast<char*>(lp);
+			char* data = (char*)lp;
 			std::stringstream inFile;
 			inFile << data;
 			std::string line;
