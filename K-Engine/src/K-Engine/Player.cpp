@@ -88,7 +88,7 @@ namespace K
 		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
 		{
 			this->time = 0.0f;
-			this->jumpTime += K::Time::deltaTime() * 2.0f;
+			this->jumpTime += K::Time::deltaTime();
 			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.1f);
 		}
 		else if (InputManager::IsKeyReleased(GLFW_KEY_SPACE) && !K::Physics::IsColliding(this->parent))
