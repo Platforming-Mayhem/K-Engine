@@ -73,6 +73,10 @@ namespace K
 
 		void LineVisualDebug();
 
+		void SetPoints(const char* value);
+
+		void SetStaticState(bool state);
+
 		void Init() override;
 
 		void Update() override;
@@ -83,11 +87,7 @@ namespace K
 
 		void Unbind()  override;
 
-		void SetPoints(const char* value);
-
 		void SetPropertyValues(const char* value, int valueIndex) override;
-
-		void SetStaticState(bool state);
 
 		const char* GetName() override;
 

@@ -41,6 +41,8 @@ namespace K
 		std::string filename;
 
 	public:
+		bool isLooping = true;
+
 		Texture(const char* filename, GLenum type);
 
 		Texture(unsigned int resource, GLenum type);

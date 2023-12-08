@@ -25,6 +25,7 @@ namespace K
 	const char* Sprite::GetPropertyValues()
 	{
 		this->properties = this->texture->GetFilePath();
+
 		if (this->canChromaKey) 
 		{
 			this->properties += ",true";
@@ -66,26 +67,72 @@ namespace K
 			break;
 			case 2:
 			{
-				this->chromaKeyColour[0] = std::stof(temp);
+				if (this->canChromaKey) 
+				{
+					this->chromaKeyColour[0] = std::stof(temp);
+				}
+				else 
+				{
+					if (temp == "true")
+					{
+						this->texture->isLooping = true;
+					}
+					else if (temp == "false")
+					{
+						this->texture->isLooping = false;
+					}
+				}
 			}
 			break;
 			case 3:
 			{
-				this->chromaKeyColour[1] = std::stof(temp);
+				if (this->canChromaKey)
+				{
+					this->chromaKeyColour[1] = std::stof(temp);
+				}
+				else
+				{
+
+				}
 			}
 			break;
 			case 4:
 			{
-				this->chromaKeyColour[2] = std::stof(temp);
+				if (this->canChromaKey)
+				{
+					this->chromaKeyColour[2] = std::stof(temp);
+				}
+				else
+				{
+
+				}
+			}
+			break;
+			case 5:
+			{
+				if (temp == "true" && this->canChromaKey)
+				{
+					this->texture->isLooping = true;
+				}
+				else if (temp == "false" && this->canChromaKey)
+				{
+					this->texture->isLooping = false;
+				}
 			}
 			break;
 			}
 		}
 	}
 
+	K::Texture* Sprite::GetTexture() 
+	{
+		return this->texture;
+	}
+
 	void Sprite::SetTexture(K::Texture* newTexture) 
 	{
 		this->texture = newTexture;
+		this->frame = 0;
 	}
 
 	void Sprite::Init() 
@@ -110,13 +157,23 @@ namespace K
 	{
 		if (this->texture->GetNumberOfFrames() > 1)
 		{
-			if (this->frame < this->texture->GetNumberOfFrames() - 1)
+			if (this->texture->isLooping) 
 			{
-				this->frame++;
+				if (this->frame < this->texture->GetNumberOfFrames() - 1)
+				{
+					this->frame++;
+				}
+				else
+				{
+					this->frame = 0;
+				}
 			}
-			else
+			else 
 			{
-				this->frame = 0;
+				if (this->frame < this->texture->GetNumberOfFrames() - 1)
+				{
+					this->frame++;
+				}
 			}
 			this->texture->LoadFrame(this->frame);
 		}

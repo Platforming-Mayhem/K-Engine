@@ -73,6 +73,18 @@ namespace K
 			return this->components[index];
 		}
 
+		K::Component* GetComponentOfType(const char* component) 
+		{
+			for (int i = 0; i < this->GetNumberOfComponents(); i++) 
+			{
+				if (this->GetComponent(i)->GetName() == component) 
+				{
+					return this->GetComponent(i);
+				}
+			}
+			return nullptr;
+		}
+
 		K::Material* GetMaterial() 
 		{
 			return this->material;

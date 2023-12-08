@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Camera.h"
 #include "Collider.h"
+#include "Animator.h"
 #include "Component.h"
 
 namespace K 

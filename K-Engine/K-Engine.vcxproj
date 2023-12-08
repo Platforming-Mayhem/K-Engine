@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\K-Engine\Animator.h" />
     <ClInclude Include="src\K-Engine\Camera.h" />
     <ClInclude Include="src\K-Engine\Collider.h" />
     <ClInclude Include="src\K-Engine\Component.h" />
@@ -61,6 +62,7 @@
     <ClInclude Include="vendors\STB\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\K-Engine\Animator.cpp" />
     <ClCompile Include="src\K-Engine\Application.cpp" />
     <ClCompile Include="src\K-Engine\Camera.cpp" />
     <ClCompile Include="src\K-Engine\Collider.cpp" />

@@ -1,6 +1,7 @@
 #pragma once
 #include "build.h"
 #include "Component.h"
+#include "Animator.h"
 #include "PhysicsEngine.h"
 
 namespace K 
@@ -15,6 +16,7 @@ namespace K
 		float accelerationTime = 0.0f;
 		float decelerationTime = 0.0f;
 		K::Vector3* direction = new K::Vector3();
+		K::Animator* animator;
 		std::string properties;
 	public:
 		Player();
