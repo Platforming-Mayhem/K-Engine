@@ -23,14 +23,14 @@ namespace K
 	class K_API Editor
 	{
 	private:
-		K::Scene* currentScene;
 		K::Material* material;
 		K::Window* window;
 		ImGui::FileBrowser file;
+		static K::Scene* currentScene;
 		static K::GameObject* selectedGameObject;
 	public:
 
-		std::vector<IFactory*> lst;
+		std::vector<IFactory*> lst = { new K::Factory<K::Sprite> , new K::Factory<K::Player> ,new K::Factory<K::Mesh> ,new K::Factory<K::Camera> ,new K::Factory<K::Collider> ,new K::Factory<K::Animator> };
 
 		Editor(K::Window* window, K::Scene* scene, K::Material* material);
 
@@ -45,5 +45,7 @@ namespace K
 		K::Material* GetMaterial();
 
 		static K::GameObject* GetSelectedGameObject();
+
+		static K::Scene* GetScene();
 	};
 }

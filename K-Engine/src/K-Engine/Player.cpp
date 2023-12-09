@@ -161,6 +161,14 @@ namespace K
 				this->accelerationTime = 0.0f;
 			}
 		}
+		if (this->direction->x > 0.0f) 
+		{
+			this->animator->PlayAnimation(2, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+		}
+		else if (this->direction->x < 0.0f) 
+		{
+			this->animator->PlayAnimation(3, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+		}
 		*(this->parent->GetTransform()->position) += this->direction;
 	}
 

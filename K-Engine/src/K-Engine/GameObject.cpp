@@ -1,6 +1,6 @@
 #include "GameObject.h"
-#include "Editor.h"
 #include "InputManager.h"
+#include "Editor.h"
 
 namespace K 
 {

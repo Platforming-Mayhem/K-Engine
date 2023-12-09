@@ -28,6 +28,14 @@ namespace K
 			this->gameObjects.push_back(gameObject);
 		}
 
+		void Init()
+		{
+			for (K::GameObject* g : this->gameObjects) 
+			{
+				g->Init();
+			}
+		}
+
 		void Delete(K::GameObject* gameObject) 
 		{
 			int size = this->GetNumberOfObjects();
@@ -54,6 +62,7 @@ namespace K
 				this->gameObjects.erase(this->gameObjects.begin() + 1, this->gameObjects.end());
 			}
 			this->gameObjects.shrink_to_fit();
+			this->Init();
 		}
 
 		int GetNumberOfObjects() 

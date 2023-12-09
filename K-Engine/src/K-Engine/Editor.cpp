@@ -3,6 +3,9 @@
 
 namespace K 
 {
+	K::GameObject* K::Editor::selectedGameObject;
+	K::Scene* K::Editor::currentScene;
+
 	Editor::Editor(K::Window* window, K::Scene* scene, K::Material* material)
 	{
 		//IMGUI Setup Stuffs
@@ -15,12 +18,6 @@ namespace K
 		this->currentScene = scene;
 		this->window = window;
 		this->material = material;
-		this->lst.push_back(new K::Factory<K::Sprite>);
-		this->lst.push_back(new K::Factory<K::Player>);
-		this->lst.push_back(new K::Factory<K::Mesh>);
-		this->lst.push_back(new K::Factory<K::Camera>);
-		this->lst.push_back(new K::Factory<K::Collider>);
-		this->lst.push_back(new K::Factory<K::Animator>);
 	}
 
 	Editor::~Editor()
@@ -33,6 +30,11 @@ namespace K
 		ImGui::DestroyContext();
 	}
 
+	K::Scene* Editor::GetScene() 
+	{
+		return currentScene;
+	}
+
 	K::GameObject* Editor::GetSelectedGameObject() 
 	{
 		return selectedGameObject;
@@ -42,8 +44,6 @@ namespace K
 	{
 		return this->material;
 	}
-
-	K::GameObject* K::Editor::selectedGameObject;
 
 	bool Editor::Render() 
 	{

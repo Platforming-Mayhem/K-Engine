@@ -132,7 +132,10 @@ namespace K
 	void Sprite::SetTexture(K::Texture* newTexture) 
 	{
 		this->texture = newTexture;
-		this->frame = 0;
+		if (this->texture != newTexture) 
+		{
+			this->frame = 0;
+		}
 	}
 
 	void Sprite::Init() 
@@ -182,7 +185,7 @@ namespace K
 	void Sprite::Update()
 	{
 		int time = this->internalClock * 60.0f;
-		int fps = (1.0f / 24.0f) * 60.0f;
+		int fps = (1.0f / 30.0f) * 60.0f;
 		if (time % fps == 0)
 		{
 			this->NextFrame();

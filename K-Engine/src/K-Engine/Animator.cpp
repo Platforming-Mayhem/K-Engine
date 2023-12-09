@@ -26,7 +26,7 @@ namespace K
 
 	void K::Animator::PlayAnimation(int index, K::Sprite* currentSprite) 
 	{
-		if (index < this->animations.size() && currentSprite->GetTexture() != this->animations[index]) 
+		if (index < this->animations.size()) 
 		{
 			currentSprite->SetTexture(this->animations[index]);
 		}

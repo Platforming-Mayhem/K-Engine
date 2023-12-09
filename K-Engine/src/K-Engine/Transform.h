@@ -120,6 +120,12 @@ namespace K
 			return *this;
 		}
 
+		static K::Vector3 Lerp(K::Vector3& a, K::Vector3& b, float t) 
+		{
+			t = std::clamp(t, 0.0f, 1.0f);
+			return Vector3(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t);
+		}
+
 		static K::Vector3 CrossProduct(K::Vector3& a, K::Vector3& b) 
 		{
 			K::Vector3 o = K::Vector3(0.0f, 0.0f, 0.0f);

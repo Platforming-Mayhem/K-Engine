@@ -148,6 +148,7 @@ namespace K
 			}
 			newScene->Attach(temp);
 		}
+		newScene->Init();
 		inFile.close();
 	}
 
@@ -254,6 +255,7 @@ namespace K
 				}
 				newScene->Attach(temp);
 			}
+			newScene->Init();
 		}
 	}
 }

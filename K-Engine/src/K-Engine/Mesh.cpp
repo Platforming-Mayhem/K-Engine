@@ -5,7 +5,7 @@ namespace K
 {
 	Mesh::Mesh() 
 	{
-		
+		this->vertices = K::Quad;
 	}
 
 	Mesh::~Mesh() 
@@ -25,8 +25,6 @@ namespace K
 
 	void Mesh::Init() 
 	{
-		this->vertices = K::Quad;
-
 		glCreateVertexArrays(1, &this->VAO);
 		glGenBuffers(1, &this->VBO);
 		glGenBuffers(1, &this->EBO);

@@ -41,11 +41,18 @@ namespace K
 			return &this->transform;
 		}
 
+		void Init() 
+		{
+			for (K::Component* c : this->components) 
+			{
+				c->Init();
+			}
+		}
+
 		void AddComponent(K::Component* component)
 		{
 			component->SetParent(this);
 			this->components.push_back(component);
-			component->Init();
 		}
 
 		void SetPosition(K::Vector3 position)

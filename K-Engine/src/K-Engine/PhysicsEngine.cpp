@@ -130,7 +130,9 @@ namespace K
 		else 
 		{
 			K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
-			if (K::Vector3::DotProduct(*offsetAmount, up) != 0.0f) 
+			K::Vector3 offsetNormalized = *offsetAmount;
+			offsetNormalized.normalise();
+			if (K::Vector3::DotProduct(offsetNormalized, up) != 0.0f && K::Vector3::DotProduct(offsetNormalized, up) > 0.0f)
 			{
 				col->SetIsColliding(true);
 			}

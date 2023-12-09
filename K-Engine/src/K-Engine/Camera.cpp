@@ -1,8 +1,7 @@
 #include "Camera.h"
 #include "InputManager.h"
-#if _DEBUG
 #include "Time.h"
-#endif
+#include "Editor.h"
 
 namespace K 
 {
@@ -208,6 +207,21 @@ namespace K
 	void Camera::Init() 
 	{
 		SetMaterial(this->parent->GetMaterial());
+		for (int i = 0; i < Editor::GetScene()->GetNumberOfObjects(); i++)
+		{
+			if (Editor::GetScene()->GetGameObjects()[i]->GetComponentOfType(typeid(K::Player).name()) != nullptr)
+			{
+				this->target = Editor::GetScene()->GetGameObjects()[i]->GetTransform();
+				std::cout << "Found" << std::endl;
+				break;
+			}
+		}
+		if (!this->isEditorCamera) 
+		{
+			this->offset = new K::Vector3();
+			*this->offset += *this->parent->GetTransform()->position;
+			*this->offset -= *this->target->position;
+		}
 	}
 
 	void Camera::Unbind()
@@ -252,6 +266,12 @@ namespace K
 			}
 		}
 		#endif
+		if (this->target != nullptr && !this->isEditorCamera)
+		{
+			K::Vector3 finalPosition = *this->target->position + *this->offset;
+			K::Vector3 position = K::Vector3::Lerp(*this->parent->GetTransform()->position, finalPosition, K::Time::deltaTime() * 2.0f);
+			*this->parent->GetTransform()->position = position;
+		}
 	}
 
 	void Camera::UpdateEditor()
@@ -260,14 +280,7 @@ namespace K
 		if (ImGui::CollapsingHeader("Camera Settings")) 
 		{
 			ImGui::Text("These are the Camera settings");
-			ImGui::DragFloat("Camera Near Plane", &this->nearPlane);
-			ImGui::DragFloat("Camera Far Plane", &this->farPlane);
-			ImGui::SliderFloat("Camera FOV", &this->FOV, 30.0f, 180.0f);
-			ImGui::SliderFloat("Camera Size", &this->orthoSize, 1.0f, 100.0f);
-			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
-			ImGui::DragFloat("Rotation Speed", &this->rotationSpeed);
-			ImGui::Checkbox("is Active", &this->isActive);
-			if (this->cameraType == CameraType::Perspective) 
+			if (this->cameraType == CameraType::Perspective)
 			{
 				if (ImGui::BeginCombo("Camera Type", "Perspective"))
 				{
@@ -281,8 +294,11 @@ namespace K
 					}
 					ImGui::EndCombo();
 				}
+				ImGui::DragFloat("Camera Near Plane", &this->nearPlane);
+				ImGui::DragFloat("Camera Far Plane", &this->farPlane);
+				ImGui::SliderFloat("Camera FOV", &this->FOV, 30.0f, 180.0f);
 			}
-			else if (this->cameraType == CameraType::Orthographic) 
+			else if (this->cameraType == CameraType::Orthographic)
 			{
 				if (ImGui::BeginCombo("Camera Type", "Orthographic"))
 				{
@@ -296,7 +312,11 @@ namespace K
 					}
 					ImGui::EndCombo();
 				}
+				ImGui::SliderFloat("Camera Size", &this->orthoSize, 1.0f, 100.0f);
 			}
+			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
+			ImGui::DragFloat("Rotation Speed", &this->rotationSpeed);
+			ImGui::Checkbox("is Active", &this->isActive);
 		}
 	}
 }

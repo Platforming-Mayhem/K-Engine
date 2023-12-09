@@ -13,12 +13,14 @@ namespace K
 		bool isActive = false;
 		K::Material* material = nullptr;
 		K::Window* window = nullptr;
+		K::Transform* target = nullptr;
 		float nearPlane = 0.9f;
 		float farPlane = 1000.0f;
 		float FOV = 60.0f;
 		float orthoSize = 1.0f;
 		enum class CameraType { Perspective = 0, Orthographic = 1 };
 		CameraType cameraType = CameraType::Perspective;
+		K::Vector3* offset;
 		K::Matrix4x4 projectionMatrix;
 		K::Matrix4x4 viewMatrix;
 		std::string properties;
