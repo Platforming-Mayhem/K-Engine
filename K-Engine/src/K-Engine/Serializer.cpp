@@ -41,11 +41,10 @@ namespace K
 					{
 						outFile << "," << component->GetPropertyValues();
 					}
-					std::cout << component->GetName() << " " << component->GetPropertyValues() << " ";
 				}
-				outFile << ",";
 				if (count < nOGameObjects)
 				{
+					outFile << ",";
 					outFile << '\n';
 				}
 				std::cout << std::endl;
@@ -123,6 +122,7 @@ namespace K
 							K::Component* tempCo = comp->create();
 							if (val == tempCo->GetName())
 							{
+								std::cout << "Creating " << tempCo->GetName() << std::endl;
 								temp->AddComponent(tempCo);
 								currentComponent = tempCo;
 								componentCount = 0;
@@ -132,6 +132,7 @@ namespace K
 						}
 						if (!found) 
 						{
+							std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
 							currentComponent->SetPropertyValues(val.c_str(), componentCount);
 							componentCount++;
 						}
@@ -168,8 +169,8 @@ namespace K
 		{
 			HGLOBAL temp = LoadResource(hModule, hr);
 			LPVOID lp = LockResource(temp);
-			char* data = (char*)lp;
 			std::stringstream inFile;
+			const char* data = (const char*)lp;
 			inFile << data;
 			std::string line;
 			K::Component* currentComponent = nullptr;
@@ -230,6 +231,7 @@ namespace K
 								K::Component* tempCo = comp->create();
 								if (val == tempCo->GetName())
 								{
+									std::cout << "Creating " << tempCo->GetName() << std::endl;
 									temp->AddComponent(tempCo);
 									currentComponent = tempCo;
 									componentCount = 0;
@@ -239,6 +241,7 @@ namespace K
 							}
 							if (!found)
 							{
+								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
 								currentComponent->SetPropertyValues(val.c_str(), componentCount);
 								componentCount++;
 							}

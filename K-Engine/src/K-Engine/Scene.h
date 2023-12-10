@@ -32,6 +32,7 @@ namespace K
 		{
 			for (K::GameObject* g : this->gameObjects) 
 			{
+				std::cout << "Initializing " << g->GetName() << std::endl;
 				g->Init();
 			}
 		}

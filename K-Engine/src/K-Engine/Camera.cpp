@@ -212,7 +212,6 @@ namespace K
 			if (Editor::GetScene()->GetGameObjects()[i]->GetComponentOfType(typeid(K::Player).name()) != nullptr)
 			{
 				this->target = Editor::GetScene()->GetGameObjects()[i]->GetTransform();
-				std::cout << "Found" << std::endl;
 				break;
 			}
 		}

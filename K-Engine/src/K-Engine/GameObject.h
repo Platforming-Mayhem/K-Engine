@@ -45,6 +45,7 @@ namespace K
 		{
 			for (K::Component* c : this->components) 
 			{
+				std::cout << "Initializing " << c->GetName() << std::endl;
 				c->Init();
 			}
 		}

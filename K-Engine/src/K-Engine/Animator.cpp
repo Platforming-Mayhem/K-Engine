@@ -16,12 +16,12 @@ namespace K
 
 	void K::Animator::Init() 
 	{
-
+		
 	}
 
 	void K::Animator::Bind() 
 	{
-
+		
 	}
 
 	void K::Animator::PlayAnimation(int index, K::Sprite* currentSprite) 
@@ -86,8 +86,10 @@ namespace K
 
 	void K::Animator::SetPropertyValues(const char* value, int valueIndex) 
 	{
-		K::Texture* temp = new K::Texture(value, GL_TEXTURE_2D);
-		this->animations.push_back(temp);
+		if (value[0] != '\0' && value != nullptr) 
+		{
+			this->animations.push_back(new K::Texture(value, GL_TEXTURE_2D));
+		}
 	}
 
 	const char* K::Animator::GetName() 
@@ -98,12 +100,15 @@ namespace K
 	const char* K::Animator::GetPropertyValues() 
 	{
 		this->properties = "";
-		for (K::Texture* temp : this->animations)
+		if (!this->animations.empty()) 
 		{
-			this->properties += temp->GetFilePath();
-			this->properties += ",";
+			for (K::Texture* temp : this->animations)
+			{
+				this->properties += temp->GetFilePath();
+				this->properties += ",";
+			}
+			this->properties.pop_back();
 		}
-		this->properties.pop_back();
 		return this->properties.c_str();
 	}
 }

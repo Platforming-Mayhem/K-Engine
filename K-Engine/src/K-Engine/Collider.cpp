@@ -18,6 +18,7 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 		this->linePoints.clear();
+		this->linePoints.shrink_to_fit();
 		std::cout << "End Collider Destruction..." << std::endl;
 	}
 
@@ -419,19 +420,11 @@ namespace K
 				{
 					this->radius = std::stof(temp);
 				}
-				else 
-				{
-					break;
-				}
 				break;
 			case 3:
 				if (this->colliderType == ColliderType::Circle)
 				{
 					this->offset.x = std::stof(temp);
-				}
-				else
-				{
-					break;
 				}
 				break;
 			case 4:
@@ -439,19 +432,11 @@ namespace K
 				{
 					this->offset.y = std::stof(temp);
 				}
-				else
-				{
-					break;
-				}
 				break;
 			case 5:
 				if (this->colliderType == ColliderType::Circle)
 				{
 					this->offset.z = std::stof(temp);
-				}
-				else
-				{
-					break;
 				}
 				break;
 			}

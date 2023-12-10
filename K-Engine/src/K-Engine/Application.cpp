@@ -38,6 +38,8 @@ namespace K
 
 		K::Deserializer deserialize = K::Deserializer(newScene, TEST_SCENE, editor);
 
+		std::cout << "Scene has been deserialized" << std::endl;
+
 		while (!glfwWindowShouldClose(window->window))
 		{
 			int esc = glfwGetKey(window->window, GLFW_KEY_ESCAPE);

@@ -9,6 +9,7 @@ namespace K
 		this->name = (char*)name;
 		this->transform = *transform;
 		this->material = material;
+		std::cout << name << " GameObject Created" << std::endl;
 	}
 
 	GameObject::~GameObject() 
