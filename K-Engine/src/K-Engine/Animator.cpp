@@ -88,7 +88,19 @@ namespace K
 	{
 		if (value[0] != '\0' && value != nullptr) 
 		{
-			this->animations.push_back(new K::Texture(value, GL_TEXTURE_2D));
+			std::string temp = value;
+			if (temp == "true")
+			{
+				this->animations.back()->isLooping = true;
+			}
+			else if (temp == "false")
+			{
+				this->animations.back()->isLooping = false;
+			}
+			else 
+			{
+				this->animations.push_back(new K::Texture(value, GL_TEXTURE_2D));
+			}
 		}
 	}
 
@@ -106,6 +118,14 @@ namespace K
 			{
 				this->properties += temp->GetFilePath();
 				this->properties += ",";
+				if (temp->isLooping)
+				{
+					this->properties += "true,";
+				}
+				else
+				{
+					this->properties += "false,";
+				}
 			}
 			this->properties.pop_back();
 		}
