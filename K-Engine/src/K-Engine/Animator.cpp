@@ -86,7 +86,8 @@ namespace K
 
 	void K::Animator::SetPropertyValues(const char* value, int valueIndex) 
 	{
-
+		K::Texture* temp = new K::Texture(value, GL_TEXTURE_2D);
+		this->animations.push_back(temp);
 	}
 
 	const char* K::Animator::GetName() 
@@ -96,6 +97,13 @@ namespace K
 
 	const char* K::Animator::GetPropertyValues() 
 	{
+		this->properties = "";
+		for (K::Texture* temp : this->animations)
+		{
+			this->properties += temp->GetFilePath();
+			this->properties += ",";
+		}
+		this->properties.pop_back();
 		return this->properties.c_str();
 	}
 }
