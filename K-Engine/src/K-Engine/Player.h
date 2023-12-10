@@ -10,6 +10,7 @@ namespace K
 	{
 	private:
 		bool hasGravity = false;
+		bool isJumping = false;
 		float movementSpeed = 1.0f;
 		float time = 0.0f;
 		float jumpTime = 0.0f;

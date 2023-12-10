@@ -78,7 +78,7 @@ namespace K
 			{
 				this->time = 0.0f;
 				this->jumpTime = 0.0f;
-				this->animator->PlayAnimation(0, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+				this->isJumping = false;
 			}
 			else
 			{
@@ -90,11 +90,30 @@ namespace K
 		{
 			this->time = 0.0f;
 		}
+
+		if (this->direction->x > 0.0f && !this->isJumping)
+		{
+			this->animator->PlayAnimation(1, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+		}
+		else if (this->direction->x < 0.0f && !this->isJumping)
+		{
+			this->animator->PlayAnimation(2, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+		}
+		else if(this->direction->x == 0.0f && !this->isJumping)
+		{
+			this->animator->PlayAnimation(0, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+		}
+		else if (this->isJumping) 
+		{
+			this->animator->PlayAnimation(3, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+		}
+
 		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
 		{
 			this->time = 0.0f;
 			this->jumpTime += K::Time::deltaTime();
 			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.1f);
+			this->isJumping = true;
 		}
 		else if (InputManager::IsKeyReleased(GLFW_KEY_SPACE) && !K::Physics::IsColliding(this->parent))
 		{
@@ -159,14 +178,6 @@ namespace K
 				this->decelerationTime = 1.0f - this->accelerationTime;
 				this->accelerationTime = 0.0f;
 			}
-		}
-		if (this->direction->x > 0.0f) 
-		{
-			this->animator->PlayAnimation(1, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
-		}
-		else if (this->direction->x < 0.0f) 
-		{
-			this->animator->PlayAnimation(2, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
 		}
 		*(this->parent->GetTransform()->position) += this->direction;
 	}

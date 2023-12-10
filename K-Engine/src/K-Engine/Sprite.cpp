@@ -131,10 +131,11 @@ namespace K
 
 	void Sprite::SetTexture(K::Texture* newTexture) 
 	{
-		this->texture = newTexture;
 		if (this->texture != newTexture) 
 		{
 			this->frame = 0;
+			this->internalClock = 0.0f;
+			this->texture = newTexture;
 		}
 	}
 
@@ -176,6 +177,10 @@ namespace K
 				if (this->frame < this->texture->GetNumberOfFrames() - 1)
 				{
 					this->frame++;
+				}
+				else 
+				{
+					this->frame = this->texture->GetNumberOfFrames() - 1;
 				}
 			}
 			this->texture->LoadFrame(this->frame);
