@@ -18,6 +18,7 @@ namespace K
 		float decelerationTime = 0.0f;
 		K::Vector3* direction = new K::Vector3();
 		K::Animator* animator;
+		K::Sprite* sprite;
 		std::string properties;
 	public:
 		Player();

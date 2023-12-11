@@ -60,6 +60,7 @@ namespace K
 		{
 			this->animator = (K::Animator*)this->parent->GetComponentOfType(typeid(K::Animator).name());
 		}
+		this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
 	}
 
 	void Player::UpdateEditor() 
@@ -93,19 +94,19 @@ namespace K
 
 		if (this->direction->x > 0.0f && !this->isJumping)
 		{
-			this->animator->PlayAnimation(1, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+			this->animator->PlayAnimation(1, this->sprite);
 		}
 		else if (this->direction->x < 0.0f && !this->isJumping)
 		{
-			this->animator->PlayAnimation(2, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+			this->animator->PlayAnimation(2, this->sprite);
 		}
 		else if(this->direction->x == 0.0f && !this->isJumping)
 		{
-			this->animator->PlayAnimation(0, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+			this->animator->PlayAnimation(0, this->sprite);
 		}
 		else if (this->isJumping) 
 		{
-			this->animator->PlayAnimation(3, (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name()));
+			this->animator->PlayAnimation(3, this->sprite);
 		}
 
 		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)

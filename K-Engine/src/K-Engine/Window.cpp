@@ -23,6 +23,8 @@ namespace K
 		glViewport(0, 0, this->width, this->height);
 		this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
 
+		std::cout << this->width << " " << this->height << std::endl;
+
 		if (!this->window)
 		{
 			glfwTerminate();

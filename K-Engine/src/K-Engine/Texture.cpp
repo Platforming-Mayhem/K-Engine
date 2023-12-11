@@ -12,8 +12,8 @@ namespace K
 		this->image = stbi_load(filename, &this->width, &this->height, &this->c, 0);
 		glGenTextures(1, &this->id);
 		glBindTexture(this->type, this->id);
-		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		if (this->image)
@@ -60,8 +60,8 @@ namespace K
 				this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
 				glGenTextures(1, &this->id);
 				glBindTexture(this->type, this->id);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_REPEAT);
 				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				if (this->image)
