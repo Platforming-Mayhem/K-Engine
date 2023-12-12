@@ -92,21 +92,31 @@ namespace K
 			this->time = 0.0f;
 		}
 
-		if (this->direction->x > 0.0f && !this->isJumping)
+		if (this->direction->x > 0.0f && !this->isJumping && !this->isAttacking)
 		{
 			this->animator->PlayAnimation(1, this->sprite);
 		}
-		else if (this->direction->x < 0.0f && !this->isJumping)
+		else if (this->direction->x < 0.0f && !this->isJumping && !this->isAttacking)
 		{
 			this->animator->PlayAnimation(2, this->sprite);
 		}
-		else if(this->direction->x == 0.0f && !this->isJumping)
+		else if(this->direction->x == 0.0f && !this->isJumping && !this->isAttacking)
 		{
 			this->animator->PlayAnimation(0, this->sprite);
 		}
-		else if (this->isJumping) 
+		else if (this->isJumping && !this->isAttacking)
 		{
 			this->animator->PlayAnimation(3, this->sprite);
+		}
+		else if (this->isAttacking)
+		{
+			if (this->attackDirection > 0.0f) 
+				this->animator->PlayAnimation(4, this->sprite);
+			else if(this->attackDirection < 0.0f)
+				this->animator->PlayAnimation(5, this->sprite);
+
+			if (!this->sprite->IsPlaying())
+				this->isAttacking = false;
 		}
 
 		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
@@ -120,9 +130,13 @@ namespace K
 		{
 			this->jumpTime = 1.0f;
 		}
+		if (InputManager::IsKeyPressedDown(GLFW_KEY_Z) && !this->isJumping) 
+		{
+			this->isAttacking = true;
+		}
 		float accelerationSpeed = (easeOutQuint(this->accelerationTime, 4.0f) * this->movementSpeed);
 		float decelerationSpeed = (decelerateEaseOutQuint(this->decelerationTime, 2.0f) * this->movementSpeed);
-		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
+		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT) && !this->isAttacking)
 		{
 			if (this->accelerationTime < 1.0f)
 			{
@@ -133,9 +147,10 @@ namespace K
 				this->accelerationTime = 1.0f;
 			}
 			this->decelerationTime = 0.0f;
+			this->attackDirection = 1.0f;
 			this->direction = new K::Vector3(accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 		}
-		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
+		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT) && !this->isAttacking)
 		{
 			if (this->accelerationTime < 1.0f)
 			{
@@ -146,6 +161,7 @@ namespace K
 				this->accelerationTime = 1.0f;
 			}
 			this->decelerationTime = 0.0f;
+			this->attackDirection = -1.0f;
 			this->direction = new K::Vector3(-accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 		}
 		else 

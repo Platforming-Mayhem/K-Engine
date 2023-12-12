@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "Sprite.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "Camera.h"
 #include "Collider.h"
 #include "Animator.h"
@@ -30,7 +31,7 @@ namespace K
 		static K::GameObject* selectedGameObject;
 	public:
 
-		std::vector<IFactory*> lst = { new K::Factory<K::Sprite> , new K::Factory<K::Player> ,new K::Factory<K::Mesh> ,new K::Factory<K::Camera> ,new K::Factory<K::Collider> ,new K::Factory<K::Animator> };
+		std::vector<IFactory*> lst = { new K::Factory<K::Sprite> , new K::Factory<K::Player> ,new K::Factory<K::Mesh> ,new K::Factory<K::Camera> ,new K::Factory<K::Collider> ,new K::Factory<K::Animator>, new K::Factory<K::Enemy>};
 
 		Editor(K::Window* window, K::Scene* scene, K::Material* material);
 

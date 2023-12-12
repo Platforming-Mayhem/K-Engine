@@ -134,9 +134,14 @@ namespace K
 		if (this->texture != newTexture) 
 		{
 			this->frame = 0;
-			this->internalClock = 0.0f;
+			this->internalClock = 0;
 			this->texture = newTexture;
 		}
+	}
+
+	bool Sprite::IsPlaying() 
+	{
+		return this->isPlaying;
 	}
 
 	void Sprite::Init() 
@@ -171,16 +176,19 @@ namespace K
 				{
 					this->frame = 0;
 				}
+				this->isPlaying = true;
 			}
 			else 
 			{
 				if (this->frame < this->texture->GetNumberOfFrames() - 1)
 				{
 					this->frame++;
+					this->isPlaying = true;
 				}
 				else 
 				{
 					this->frame = this->texture->GetNumberOfFrames() - 1;
+					this->isPlaying = false;
 				}
 			}
 			this->texture->LoadFrame(this->frame);
@@ -189,13 +197,13 @@ namespace K
 
 	void Sprite::Update()
 	{
-		int time = this->internalClock * 60.0f;
+		int time = this->internalClock;
 		int fps = (1.0f / 30.0f) * 60.0f;
 		if (time % fps == 0)
 		{
 			this->NextFrame();
 		}
-		this->internalClock += K::Time::deltaTime();
+		this->internalClock++;
 	}
 
 	void Sprite::UpdateEditor()

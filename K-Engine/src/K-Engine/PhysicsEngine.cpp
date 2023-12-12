@@ -102,6 +102,14 @@ namespace K
 					points.push_back(K::ContactPoint(J2, Normal));
 				}
 			}
+			else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle) 
+			{
+				K::Vector3 J = position - *Physics::colliders[i]->GetPosition();
+				J.normalise();
+				K::Vector3 J2 = J * Physics::colliders[i]->GetRadius();
+				K::Vector3 Normal = J;
+				points.push_back(K::ContactPoint(J2, Normal));
+			}
 		}
 		return points;
 	}

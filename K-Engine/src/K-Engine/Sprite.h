@@ -12,10 +12,11 @@ namespace K
 	{
 	private:
 		K::Texture* texture;
-		float internalClock = 0.0f;
+		int internalClock = 0;
 		float chromaKeyColour[3];
 		int frame = 0;
 		bool canChromaKey = false;
+		bool isPlaying = true;
 		std::string properties;
 	public:
 		ImGui::FileBrowser file;
@@ -29,6 +30,8 @@ namespace K
 		void SetTexture(K::Texture* newTexture);
 
 		void NextFrame();
+
+		bool IsPlaying();
 
 		void Init() override;
 

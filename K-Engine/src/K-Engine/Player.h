@@ -11,11 +11,13 @@ namespace K
 	private:
 		bool hasGravity = false;
 		bool isJumping = false;
+		bool isAttacking = false;
 		float movementSpeed = 1.0f;
 		float time = 0.0f;
 		float jumpTime = 0.0f;
 		float accelerationTime = 0.0f;
 		float decelerationTime = 0.0f;
+		float attackDirection = 1.0f;
 		K::Vector3* direction = new K::Vector3();
 		K::Animator* animator;
 		K::Sprite* sprite;
