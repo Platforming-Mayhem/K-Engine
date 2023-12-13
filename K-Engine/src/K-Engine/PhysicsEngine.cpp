@@ -104,9 +104,10 @@ namespace K
 			}
 			else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle) 
 			{
-				K::Vector3 J = position - *Physics::colliders[i]->GetPosition();
-				J.normalise();
-				K::Vector3 J2 = J * Physics::colliders[i]->GetRadius();
+				K::Vector3 otherPosition = *Physics::colliders[i]->GetPosition();
+				K::Vector3 J = K::Vector3(position.x - otherPosition.x, 0.0f, position.z - otherPosition.z).normalise();
+				K::Vector3 Jtemp = otherPosition + (J * Physics::colliders[i]->GetRadius());
+				K::Vector3 J2 = K::Vector3(Jtemp.x, 0.0f, Jtemp.z);
 				K::Vector3 Normal = J;
 				points.push_back(K::ContactPoint(J2, Normal));
 			}
