@@ -133,7 +133,7 @@ namespace K
 					K::Vector3 right = K::Vector3(1.0f, 0.0f, 0.0f);
 					float angle = K::Vector3::DotProduct(normal, right);
 					float angle1 = K::Vector3::DotProduct(normal, up);
-					if (angle < 0.8f && angle > -0.8f && angle1 != -1.0f)
+					if (angle < 0.8f && angle > -0.8f && angle1 > 0.0f)
 					{
 						col->SetIsColliding(true);
 					}
