@@ -35,6 +35,8 @@ namespace K
 				std::cout << "Initializing " << g->GetName() << std::endl;
 				g->Init();
 			}
+			K::Time::startTime = glfwGetTime();
+			K::Time::endTime = K::Time::startTime;
 		}
 
 		void Delete(K::GameObject* gameObject) 

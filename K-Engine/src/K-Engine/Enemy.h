@@ -9,6 +9,8 @@ namespace K
 	class K_API Enemy : public K::Component
 	{
 	private:
+		float time = 0.0f;
+		K::Vector3 direction = K::Vector3(1.0f, 0.0f, 0.0f);
 		std::string properties;
 	public:
 		Enemy();

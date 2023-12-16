@@ -31,6 +31,8 @@ namespace K
 
 		static bool CanGetClosestPoint();
 
+		static bool Raycast(K::Vector3 origin, K::Vector3 direction);
+
 		static bool IsStatic(K::GameObject* parent);
 
 		static std::vector<K::ContactPoint> GetClosestPoints(K::Vector3 position);

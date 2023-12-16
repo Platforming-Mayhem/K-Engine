@@ -84,7 +84,7 @@ namespace K
 			else
 			{
 				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
-				this->time += 1.0f / 120.0f;
+				this->time += K::Time::deltaTime();
 			}
 		}
 		else
