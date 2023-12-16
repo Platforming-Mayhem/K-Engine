@@ -13,8 +13,6 @@ namespace K
 		std::cout << "Begin Mesh Destruction..." << std::endl;
 		this->vertices.clear();
 		this->vertices.shrink_to_fit();
-		this->normals.clear();
-		this->normals.shrink_to_fit();
 		this->indices.clear();
 		this->indices.shrink_to_fit();
 		glDeleteVertexArrays(1, &this->VAO);
@@ -36,11 +34,14 @@ namespace K
 
 		glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(K::Vertex), &this->vertices[0], GL_DYNAMIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
+
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+		glEnableVertexAttribArray(2);
 
 		this->Unbind();
 	}
@@ -159,8 +160,6 @@ namespace K
 	{
 		this->vertices.clear();
 		this->vertices.shrink_to_fit();
-		this->normals.clear();
-		this->normals.shrink_to_fit();
 		this->indices.clear();
 		this->indices.shrink_to_fit();
 		Assimp::Importer importer;
@@ -182,8 +181,8 @@ namespace K
 					u = mesh->mTextureCoords[0][i].x;
 					v = mesh->mTextureCoords[0][i].y;
 				}
-				this->normals.push_back(K::Vector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z));
-				this->vertices.push_back(K::Vertex(K::Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z), K::Vector2(u, v)));
+				K::Vector3 normal = K::Vector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+				this->vertices.push_back(K::Vertex(K::Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z), K::Vector2(u, v), normal));
 			}
 			for (int i = 0; i < mesh->mNumFaces; i++)
 			{

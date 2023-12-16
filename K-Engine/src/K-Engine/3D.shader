@@ -4,8 +4,10 @@
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 textureCoord;
+layout(location = 2) in vec3 normal;
 
 out vec2 TexCoord;
+out vec3 Normal;
 
 //Projection Matrix
 uniform mat4 projectionMatrix = mat4(0.0);
@@ -19,6 +21,7 @@ void main()
 	vec4 newPos = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
 	gl_Position = newPos;
 	TexCoord = textureCoord;
+	Normal = normal;
 }
 
 //Fragment
@@ -28,12 +31,14 @@ void main()
 layout(location = 0) out vec4 colour;
 
 in vec2 TexCoord;
+in vec3 Normal;
 
 uniform sampler2D tex;
 uniform bool hasTexture = false;
 uniform bool canChromaKey = false;
-uniform vec3 colorTint = vec3(1.0f, 1.0f, 1.0f);
-uniform vec3 chromaKey = vec3(0.0f, 0.0f, 0.0f);
+uniform vec3 lightDirection = vec3(0.0, 0.0, -1.0);
+uniform vec3 colorTint = vec3(1.0, 1.0, 1.0);
+uniform vec3 chromaKey = vec3(0.0, 0.0, 0.0);
 
 float LinearizeDepth(float depth)
 {
@@ -45,24 +50,25 @@ void main()
 {
 	if (hasTexture) 
 	{
-		colour = texture(tex, TexCoord) * vec4(colorTint, 1.0f);
+		colour = texture(tex, TexCoord) * vec4(colorTint, 1.0);
 	}
 	else 
 	{
-		colour = vec4(colorTint, 1.0f);
+		colour = vec4(colorTint, 1.0);
 	}
 	if (canChromaKey) 
 	{
 		float r = abs(colour.r - chromaKey.r);
 		float g = abs(colour.g - chromaKey.g);
 		float b = abs(colour.b - chromaKey.b);
-		if (r < 0.1f && g < 0.1f && b < 0.1f) 
+		if (r < 0.1 && g < 0.1 && b < 0.1) 
 		{
 			discard;
 		}
 	}
-	if (colour.a < 0.5) 
+	if (colour.a < 0.5)
 	{
 		discard;
 	}
+	//colour.rgb *= dot(normalize(Normal), normalize(lightDirection));
 }

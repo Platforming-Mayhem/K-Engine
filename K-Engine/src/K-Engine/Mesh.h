@@ -10,6 +10,14 @@ namespace K
 	{
 		K::Vector3 position = K::Vector3(0.0f, 0.0f, 0.0f);
 		K::Vector2 uv = K::Vector2(0.0f, 0.0f);
+		K::Vector3 normal = K::Vector3(0.0f, -1.0f, 0.0f);
+		Vertex(Vector3 position, Vector2 uv, Vector3 normal)
+		{
+			this->position = position;
+			this->uv = uv;
+			this->normal = normal;
+		}
+
 		Vertex(Vector3 position, Vector2 uv)
 		{
 			this->position = position;
@@ -44,7 +52,6 @@ namespace K
 
 		//Model Vertices
 		std::vector<K::Vertex> vertices;
-		std::vector<K::Vector3> normals;
 
 		//Model Indices
 		std::vector<int> indices = { 

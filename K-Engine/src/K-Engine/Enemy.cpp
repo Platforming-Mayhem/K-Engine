@@ -15,21 +15,33 @@ namespace K
 
 	void Enemy::Init() 
 	{
-
+		this->time = 0.0f;
+		if (this->parent->GetComponentOfType(typeid(K::Animator).name()) != nullptr)
+		{
+			this->animator = (K::Animator*)this->parent->GetComponentOfType(typeid(K::Animator).name());
+		}
+		this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
 	}
 
 	void Enemy::Update() 
 	{
 		if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(1.0f, 0.0f, 0.0f))) 
 		{
-			this->direction = K::Vector3(-K::Time::deltaTime(), 0.0f, 0.0f);
-			std::cout << "Go Left" << std::endl;
+			this->direction = K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
 		}
 		else if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(-1.0f, 0.0f, 0.0f)))
 		{
-			this->direction = K::Vector3(K::Time::deltaTime(), 0.0f, 0.0f);
-			std::cout << "Go Right" << std::endl;
+			this->direction = K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
 		}
+		if (this->direction.x > 0.0f) 
+		{
+			this->animator->PlayAnimation(0, this->sprite);
+		}
+		else 
+		{
+			this->animator->PlayAnimation(1, this->sprite);
+		}
+		*this->parent->GetTransform()->position += this->direction;
 		if (K::Physics::IsColliding(this->parent))
 		{
 			this->time = 0.0f;
@@ -39,14 +51,13 @@ namespace K
 			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
 			this->time += K::Time::deltaTime();
 		}
-		*this->parent->GetTransform()->position += this->direction;
 	}
 
 	void Enemy::UpdateEditor() 
 	{
 		if (ImGui::CollapsingHeader("Enemy Settings")) 
 		{
-
+			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
 		}
 	}
 
@@ -62,11 +73,18 @@ namespace K
 
 	void Enemy::SetPropertyValues(const char* value, int valueIndex) 
 	{
-
+		std::string temp = value;
+		switch (valueIndex)
+		{
+		case 0:
+			this->movementSpeed = std::stof(temp);
+			break;
+		}
 	}
 
 	const char* Enemy::GetPropertyValues() 
 	{
+		this->properties = std::to_string(this->movementSpeed);
 		return this->properties.c_str();
 	}
 
