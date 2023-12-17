@@ -92,6 +92,69 @@ namespace K
 			this->time = 0.0f;
 		}
 
+		float accelerationSpeed = (easeOutQuint(this->accelerationTime, 4.0f) * this->movementSpeed);
+		float decelerationSpeed = (decelerateEaseOutQuint(this->decelerationTime, 2.0f) * this->movementSpeed);
+		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
+		{
+			if (this->accelerationTime < 1.0f)
+			{
+				this->accelerationTime += K::Time::deltaTime() * 0.5f;
+			}
+			else
+			{
+				this->accelerationTime = 1.0f;
+			}
+			this->decelerationTime = 0.0f;
+			this->attackDirection = 1.0f;
+			this->direction = new K::Vector3(accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+		}
+		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
+		{
+			if (this->accelerationTime < 1.0f)
+			{
+				this->accelerationTime += K::Time::deltaTime() * 0.5f;
+			}
+			else
+			{
+				this->accelerationTime = 1.0f;
+			}
+			this->decelerationTime = 0.0f;
+			this->attackDirection = -1.0f;
+			this->direction = new K::Vector3(-accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+		}
+		else
+		{
+			if (this->direction->x > 0.0f)
+			{
+				if (this->decelerationTime < 1.0f)
+				{
+					this->decelerationTime += K::Time::deltaTime() * 4.0f;
+				}
+				else
+				{
+					this->decelerationTime = 1.0f;
+				}
+				this->direction = new K::Vector3(decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			}
+			else if (this->direction->x < 0.0f)
+			{
+				if (this->decelerationTime < 1.0f)
+				{
+					this->decelerationTime += K::Time::deltaTime() * 4.0f;
+				}
+				else
+				{
+					this->decelerationTime = 1.0f;
+				}
+				this->direction = new K::Vector3(-decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			}
+			if (this->accelerationTime > 0.0f)
+			{
+				this->decelerationTime = 1.0f - this->accelerationTime;
+				this->accelerationTime = 0.0f;
+			}
+		}
+
 		if (this->direction->x > 0.0f && !this->isJumping && !this->isAttacking)
 		{
 			this->animator->PlayAnimation(1, this->sprite);
@@ -134,69 +197,10 @@ namespace K
 		{
 			this->isAttacking = true;
 		}
-		float accelerationSpeed = (easeOutQuint(this->accelerationTime, 4.0f) * this->movementSpeed);
-		float decelerationSpeed = (decelerateEaseOutQuint(this->decelerationTime, 2.0f) * this->movementSpeed);
-		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT) && !this->isAttacking)
-		{
-			if (this->accelerationTime < 1.0f)
-			{
-				this->accelerationTime += K::Time::deltaTime() * 0.5f;
-			}
-			else 
-			{
-				this->accelerationTime = 1.0f;
-			}
-			this->decelerationTime = 0.0f;
-			this->attackDirection = 1.0f;
-			this->direction = new K::Vector3(accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
-		}
-		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT) && !this->isAttacking)
-		{
-			if (this->accelerationTime < 1.0f)
-			{
-				this->accelerationTime += K::Time::deltaTime() * 0.5f;
-			}
-			else
-			{
-				this->accelerationTime = 1.0f;
-			}
-			this->decelerationTime = 0.0f;
-			this->attackDirection = -1.0f;
-			this->direction = new K::Vector3(-accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
-		}
-		else 
-		{
-			if (this->direction->x > 0.0f) 
-			{
-				if (this->decelerationTime < 1.0f)
-				{
-					this->decelerationTime += K::Time::deltaTime() * 4.0f;
-				}
-				else
-				{
-					this->decelerationTime = 1.0f;
-				}
-				this->direction = new K::Vector3(decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
-			}
-			else if (this->direction->x < 0.0f) 
-			{
-				if (this->decelerationTime < 1.0f)
-				{
-					this->decelerationTime += K::Time::deltaTime() * 4.0f;
-				}
-				else
-				{
-					this->decelerationTime = 1.0f;
-				}
-				this->direction = new K::Vector3(-decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
-			}
-			if (this->accelerationTime > 0.0f) 
-			{
-				this->decelerationTime = 1.0f - this->accelerationTime;
-				this->accelerationTime = 0.0f;
-			}
-		}
-		*(this->parent->GetTransform()->position) += this->direction;
+		if(!this->isAttacking)
+			*(this->parent->GetTransform()->position) += this->direction;
+		else
+			this->accelerationTime = 0.0f;
 	}
 
 	void Player::Unbind() 

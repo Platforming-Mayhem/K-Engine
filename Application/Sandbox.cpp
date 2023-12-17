@@ -17,6 +17,6 @@ public:
 int main() 
 {
 	Sandbox* sandbox = new Sandbox();
-	sandbox->Run("K-Engine");
+	sandbox->Run("K-Engine Demo #1");
 	delete sandbox;
 }

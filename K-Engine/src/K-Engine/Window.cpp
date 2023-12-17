@@ -21,7 +21,11 @@ namespace K
 		//Set fullscreen: window = glfwCreateWindow(screenWidth, screenHeight, "Rasterizer", monitor, NULL);
 		//glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 		glViewport(0, 0, this->width, this->height);
-		this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
+		#if _DEBUG
+			this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
+		#else
+			this->window = glfwCreateWindow(this->width, this->height, windowName, monitor, NULL);
+		#endif
 
 		std::cout << this->width << " " << this->height << std::endl;
 
