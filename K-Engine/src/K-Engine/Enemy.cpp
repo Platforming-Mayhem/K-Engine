@@ -15,6 +15,7 @@ namespace K
 
 	void Enemy::Init() 
 	{
+		this->parent->layer = (int)K::Layer::LayerType::Enemy;
 		this->time = 0.0f;
 		if (this->parent->GetComponentOfType(typeid(K::Animator).name()) != nullptr)
 		{
@@ -25,11 +26,11 @@ namespace K
 
 	void Enemy::Update() 
 	{
-		if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(1.0f, 0.0f, 0.0f))) 
+		if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			this->direction = K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
 		}
-		else if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(-1.0f, 0.0f, 0.0f)))
+		else if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			this->direction = K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
 		}

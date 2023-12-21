@@ -7,6 +7,17 @@
 
 namespace K 
 {
+	struct Layer 
+	{
+		enum class LayerType { Ground = 0, Player = 1, Enemy = 2};
+
+		Layer(LayerType layer)
+		{
+			this->layer = (int)layer;
+		}
+		int layer = 0;
+	};
+
 	class K_API GameObject
 	{
 	private:
@@ -15,6 +26,8 @@ namespace K
 		std::vector<K::Component*> components;
 		K::Material* material;
 	public:
+
+		int layer = (int)K::Layer::LayerType::Ground;
 
 		GameObject(const char* name, K::Transform* transform, K::Material* material);
 

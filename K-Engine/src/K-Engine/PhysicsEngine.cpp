@@ -66,35 +66,44 @@ namespace K
 		}
 	}
 
-	bool Physics::Raycast(K::Vector3 origin, K::Vector3 direction) 
+	bool Physics::Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer)
 	{
 		K::Vector3 A = origin;
 		K::Vector3 B = origin + direction;
 		for (int i = 0; i < Physics::colliders.size(); i++) 
 		{
-			if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Line && Physics::colliders[i]->GetNumberOfPoints() > 0)
+			for (K::Layer layer : avoidLayer) 
 			{
-				for (int j = 0; j < Physics::colliders[i]->GetNumberOfPoints(); j++)
+				if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Line && Physics::colliders[i]->GetNumberOfPoints() > 0 && Physics::colliders[i]->parent->layer != layer.layer)
 				{
-					K::Vector3 E = Physics::colliders[i]->GetLine(j)->point[0];
-					K::Vector3 F = Physics::colliders[i]->GetLine(j)->point[1];
-					float y = ((A.z - B.z) * (E.x * F.y - F.x * E.y) / (B.x - A.x) * (E.y - F.y) - (((A.x * B.z) - (B.x * A.z)) / (B.x - A.x))) / (1 + ((A.z - B.z) * (-F.x + E.x))/((B.x - A.x) * (E.y - F.y)));
-					float x = (-(F.x - E.x) * y - (E.x * F.y - F.x * E.y)) / (E.y - F.y);
-					K::Vector3 J = K::Vector3(x, y, 0.0f);
-					K::Vector3 AJ = (J - A).normalise();
-					K::Vector3 BJ = (J - B).normalise();
-					K::Vector3 AB = (A - B).normalise();
-					float U = K::Vector3::DotProduct(BJ, AB);
-					float V = K::Vector3::DotProduct(AJ, AB);
-					if (U > 0.0f && V < 0.0f)
+					for (int j = 0; j < Physics::colliders[i]->GetNumberOfPoints(); j++)
+					{
+						K::Vector3 E = Physics::colliders[i]->GetLine(j)->point[0];
+						K::Vector3 F = Physics::colliders[i]->GetLine(j)->point[1];
+						float y = ((A.z - B.z) * (E.x * F.y - F.x * E.y) / (B.x - A.x) * (E.y - F.y) - (((A.x * B.z) - (B.x * A.z)) / (B.x - A.x))) / (1 + ((A.z - B.z) * (-F.x + E.x)) / ((B.x - A.x) * (E.y - F.y)));
+						float x = (-(F.x - E.x) * y - (E.x * F.y - F.x * E.y)) / (E.y - F.y);
+						K::Vector3 J = K::Vector3(x, y, 0.0f);
+						K::Vector3 AJ = (J - A).normalise();
+						K::Vector3 BJ = (J - B).normalise();
+						K::Vector3 AB = (A - B).normalise();
+						float U = K::Vector3::DotProduct(BJ, AB);
+						float V = K::Vector3::DotProduct(AJ, AB);
+						if (U > 0.0f && V < 0.0f)
+						{
+							return true;
+						}
+					}
+				}
+				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle && Physics::colliders[i]->parent->layer != layer.layer)
+				{
+					K::Vector3 position = K::Vector3(Physics::colliders[i]->GetPosition()->x, 0.0f, Physics::colliders[i]->GetPosition()->z);
+					K::Vector3 J = *Physics::colliders[i]->PointOnLine(A, B, position);
+					K::Vector3 offset = J - position;
+					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
 					{
 						return true;
 					}
 				}
-			}
-			else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle)
-			{
-				
 			}
 		}
 		return false;

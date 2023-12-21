@@ -40,6 +40,7 @@ namespace K
 		//INPUT TEXT DOESN'T WORK WHEN THE STRING IS EMPTY
 		ImGui::InputText("Name:", &(this->name));
 		ImGui::Text(Editor::GetSelectedGameObject()->GetName());
+		ImGui::Text(std::to_string(this->layer).c_str());
 		ImGui::Separator();
 		if (ImGui::CollapsingHeader("GameObject Settings"))
 		{

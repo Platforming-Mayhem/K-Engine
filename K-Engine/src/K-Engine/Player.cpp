@@ -55,6 +55,7 @@ namespace K
 
 	void Player::Init() 
 	{
+		this->parent->layer = (int)K::Layer::LayerType::Player;
 		this->time = 0.0f;
 		if (this->parent->GetComponentOfType(typeid(K::Animator).name()) != nullptr) 
 		{
@@ -174,9 +175,21 @@ namespace K
 		else if (this->isAttacking)
 		{
 			if (this->attackDirection > 0.0f) 
+			{
 				this->animator->PlayAnimation(4, this->sprite);
-			else if(this->attackDirection < 0.0f)
+				if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(1.0f, 0.0f, 0.0f), {K::Layer(K::Layer::LayerType::Player), K::Layer(K::Layer::LayerType::Ground) }))
+				{
+					std::cout << "YUM RIGHT" << std::endl;
+				}
+			}
+			else if (this->attackDirection < 0.0f) 
+			{
 				this->animator->PlayAnimation(5, this->sprite);
+				if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Player), K::Layer(K::Layer::LayerType::Ground) }))
+				{
+					std::cout << "YUM LEFT" << std::endl;
+				}
+			}
 
 			if (!this->sprite->IsPlaying())
 				this->isAttacking = false;
