@@ -20,6 +20,7 @@ namespace K
 		float attackDirection = 1.0f;
 		K::Vector3* direction = new K::Vector3();
 		K::Animator* animator;
+		K::Collider* col;
 		K::Sprite* sprite;
 		std::string properties;
 	public:

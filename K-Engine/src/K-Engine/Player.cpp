@@ -61,6 +61,10 @@ namespace K
 		{
 			this->animator = (K::Animator*)this->parent->GetComponentOfType(typeid(K::Animator).name());
 		}
+		if (this->parent->GetComponentOfType(typeid(K::Collider).name()) != nullptr) 
+		{
+			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
+		}
 		this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
 	}
 
@@ -177,7 +181,7 @@ namespace K
 			if (this->attackDirection > 0.0f) 
 			{
 				this->animator->PlayAnimation(4, this->sprite);
-				if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(1.0f, 0.0f, 0.0f), {K::Layer(K::Layer::LayerType::Player), K::Layer(K::Layer::LayerType::Ground) }))
+				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}))
 				{
 					std::cout << "YUM RIGHT" << std::endl;
 				}
@@ -185,7 +189,7 @@ namespace K
 			else if (this->attackDirection < 0.0f) 
 			{
 				this->animator->PlayAnimation(5, this->sprite);
-				if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Player), K::Layer(K::Layer::LayerType::Ground) }))
+				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}))
 				{
 					std::cout << "YUM LEFT" << std::endl;
 				}

@@ -21,16 +21,20 @@ namespace K
 		{
 			this->animator = (K::Animator*)this->parent->GetComponentOfType(typeid(K::Animator).name());
 		}
+		if (this->parent->GetComponentOfType(typeid(K::Collider).name()) != nullptr)
+		{
+			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
+		}
 		this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
 	}
 
 	void Enemy::Update() 
 	{
-		if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(1.0f, 0.0f, 0.0f), {K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player)}))
 		{
 			this->direction = K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
 		}
-		else if (Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		else if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			this->direction = K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
 		}

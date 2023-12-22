@@ -66,20 +66,33 @@ namespace K
 		}
 	}
 
+	bool Physics::IsInLayer(K::Collider* col, std::vector<K::Layer> avoidLayer)
+	{
+		bool isInLayer = true;
+		for (K::Layer layer : avoidLayer)
+		{
+			if (col->parent->layer == layer.layer)
+			{
+				isInLayer = false;
+			}
+		}
+		return isInLayer;
+	}
+
 	bool Physics::Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer)
 	{
 		K::Vector3 A = origin;
 		K::Vector3 B = origin + direction;
-		for (int i = 0; i < Physics::colliders.size(); i++) 
+		for (K::Collider* col : Physics::colliders)
 		{
-			for (K::Layer layer : avoidLayer) 
+			if (K::Physics::IsInLayer(col, avoidLayer)) 
 			{
-				if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Line && Physics::colliders[i]->GetNumberOfPoints() > 0 && Physics::colliders[i]->parent->layer != layer.layer)
+				if (col->colliderType == K::Collider::ColliderType::Line && col->GetNumberOfPoints() > 0)
 				{
-					for (int j = 0; j < Physics::colliders[i]->GetNumberOfPoints(); j++)
+					for (int j = 0; j < col->GetNumberOfPoints(); j++)
 					{
-						K::Vector3 E = Physics::colliders[i]->GetLine(j)->point[0];
-						K::Vector3 F = Physics::colliders[i]->GetLine(j)->point[1];
+						K::Vector3 E = col->GetLine(j)->point[0];
+						K::Vector3 F = col->GetLine(j)->point[1];
 						float y = ((A.z - B.z) * (E.x * F.y - F.x * E.y) / (B.x - A.x) * (E.y - F.y) - (((A.x * B.z) - (B.x * A.z)) / (B.x - A.x))) / (1 + ((A.z - B.z) * (-F.x + E.x)) / ((B.x - A.x) * (E.y - F.y)));
 						float x = (-(F.x - E.x) * y - (E.x * F.y - F.x * E.y)) / (E.y - F.y);
 						K::Vector3 J = K::Vector3(x, y, 0.0f);
@@ -94,12 +107,12 @@ namespace K
 						}
 					}
 				}
-				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle && Physics::colliders[i]->parent->layer != layer.layer)
+				else if (col->colliderType == K::Collider::ColliderType::Circle)
 				{
-					K::Vector3 position = K::Vector3(Physics::colliders[i]->GetPosition()->x, 0.0f, Physics::colliders[i]->GetPosition()->z);
-					K::Vector3 J = *Physics::colliders[i]->PointOnLine(A, B, position);
+					K::Vector3 position = K::Vector3(col->GetPosition()->x, 0.0f, col->GetPosition()->z);
+					K::Vector3 J = *col->PointOnLine(A, B, position);
 					K::Vector3 offset = J - position;
-					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
+					if (offset.magnitude() < col->GetRadius())
 					{
 						return true;
 					}
