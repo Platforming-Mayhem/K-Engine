@@ -42,15 +42,20 @@ namespace K
 		void Delete(K::GameObject* gameObject) 
 		{
 			int size = this->GetNumberOfObjects();
+			int index = -1;
 			for (int i = 1; i < size; i++)
 			{
 				if (gameObject == this->gameObjects[i]) 
 				{
 					delete this->gameObjects[i];
-					this->gameObjects.erase(this->gameObjects.begin() + i);
+					index = i;
 				}
 			}
-			this->gameObjects.shrink_to_fit();
+			if (index != -1) 
+			{
+				this->gameObjects.erase(this->gameObjects.begin() + index);
+				this->gameObjects.shrink_to_fit();
+			}
 		}
 
 		void CreateEmptyScene() 
