@@ -66,6 +66,7 @@ namespace K
 		void AddComponent(K::Component* component)
 		{
 			component->SetParent(this);
+			component->Init();
 			this->components.push_back(component);
 		}
 
