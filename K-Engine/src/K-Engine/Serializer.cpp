@@ -149,8 +149,8 @@ namespace K
 			}
 			newScene->Attach(temp);
 		}
-		newScene->Init();
 		inFile.close();
+		newScene->Init();
 	}
 
 	Deserializer::Deserializer(K::Scene* newScene, unsigned int resource, K::Editor* editor)

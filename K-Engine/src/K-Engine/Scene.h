@@ -70,7 +70,6 @@ namespace K
 				this->gameObjects.erase(this->gameObjects.begin() + 1, this->gameObjects.end());
 			}
 			this->gameObjects.shrink_to_fit();
-			this->Init();
 		}
 
 		int GetNumberOfObjects() 

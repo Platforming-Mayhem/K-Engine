@@ -156,6 +156,7 @@ namespace K
 					if (ImGui::MenuItem(temp->GetName()))
 					{
 						this->selectedGameObject->AddComponent(temp);
+						temp->Init();
 					}
 				}
 				ImGui::EndPopup();
