@@ -79,10 +79,11 @@ namespace K
 		return isInLayer;
 	}
 
+	//Direction up is K::Vector3(0.0f, 1.0f, 0.0f);
 	bool Physics::Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer)
 	{
-		K::Vector3 A = origin;
-		K::Vector3 B = origin + direction;
+		K::Vector3 A = K::Vector3(origin.x, origin.z, 0.0f);
+		K::Vector3 B = A + direction;
 		for (K::Collider* col : Physics::colliders)
 		{
 			if (K::Physics::IsInLayer(col, avoidLayer)) 
@@ -93,7 +94,7 @@ namespace K
 					{
 						K::Vector3 E = col->GetLine(j)->point[0];
 						K::Vector3 F = col->GetLine(j)->point[1];
-						float y = ((A.z - B.z) * (E.x * F.y - F.x * E.y) / (B.x - A.x) * (E.y - F.y) - (((A.x * B.z) - (B.x * A.z)) / (B.x - A.x))) / (1 + ((A.z - B.z) * (-F.x + E.x)) / ((B.x - A.x) * (E.y - F.y)));
+						float y = ((A.y - B.y) * (E.x * F.y - F.x * E.y) / (B.x - A.x) * (E.y - F.y) - (((A.x * B.y) - (B.x * A.y)) / (B.x - A.x))) / (1 + ((A.y - B.y) * (-F.x + E.x)) / ((B.x - A.x) * (E.y - F.y)));
 						float x = (-(F.x - E.x) * y - (E.x * F.y - F.x * E.y)) / (E.y - F.y);
 						K::Vector3 J = K::Vector3(x, y, 0.0f);
 						K::Vector3 AJ = (J - A).normalise();
@@ -109,9 +110,9 @@ namespace K
 				}
 				else if (col->colliderType == K::Collider::ColliderType::Circle)
 				{
-					K::Vector3 position = K::Vector3(col->GetPosition()->x, 0.0f, col->GetPosition()->z);
-					K::Vector3 J = *col->PointOnLine(A, B, position);
-					K::Vector3 offset = J - position;
+					K::Vector3 J = *col->PointOnLine(A, B, *col->GetPosition());
+					K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
+					K::Vector3 offset = J2 - *col->GetPosition();
 					if (offset.magnitude() < col->GetRadius())
 					{
 						return true;
