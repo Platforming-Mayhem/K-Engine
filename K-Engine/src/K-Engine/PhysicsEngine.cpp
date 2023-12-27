@@ -80,7 +80,7 @@ namespace K
 	}
 
 	//Direction up is K::Vector3(0.0f, 1.0f, 0.0f);
-	bool Physics::Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer)
+	bool Physics::Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer, K::Collider** hit)
 	{
 		K::Vector3 A = K::Vector3(origin.x, origin.z, 0.0f);
 		K::Vector3 B = A + direction;
@@ -104,6 +104,8 @@ namespace K
 						float V = K::Vector3::DotProduct(AJ, AB);
 						if (U > 0.0f && V < 0.0f)
 						{
+							if(hit != nullptr)
+								*hit = col;
 							return true;
 						}
 					}
@@ -115,11 +117,14 @@ namespace K
 					K::Vector3 offset = J2 - *col->GetPosition();
 					if (offset.magnitude() < col->GetRadius())
 					{
+						if (hit != nullptr)
+							*hit = col;
 						return true;
 					}
 				}
 			}
 		}
+		hit = nullptr;
 		return false;
 	}
 

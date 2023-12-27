@@ -33,7 +33,7 @@ namespace K
 
 		static bool IsInLayer(K::Collider* col, std::vector<K::Layer> avoidLayer);
 
-		static bool Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer);
+		static bool Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer, K::Collider** hit = nullptr);
 
 		static bool IsStatic(K::GameObject* parent);
 
