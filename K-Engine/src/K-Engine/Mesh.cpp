@@ -75,7 +75,6 @@ namespace K
 				std::string location = file.GetSelected().string();
 				if (this->LoadModelsAssimp(location))
 				{
-					this->meshUpdate = true;
 					this->filename = location;
 				}
 				file.ClearSelected();
@@ -101,7 +100,6 @@ namespace K
 			case 0:
 				if (this->LoadModelsAssimp(temp.c_str()))
 				{
-					this->meshUpdate = true;
 					this->filename = temp.c_str();
 				}
 				break;
@@ -159,9 +157,11 @@ namespace K
 	bool Mesh::LoadModelsAssimp(std::string File)
 	{
 		this->vertices.clear();
+		this->vertices.shrink_to_fit();
 		this->indices.clear();
+		this->indices.shrink_to_fit();
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(File, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_OptimizeMeshes);
+		const aiScene* scene = importer.ReadFile(File, aiProcess_Triangulate | aiProcess_GenNormals);
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
 			std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;

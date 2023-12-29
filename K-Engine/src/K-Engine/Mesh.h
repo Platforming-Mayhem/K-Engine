@@ -24,9 +24,9 @@ namespace K
 			this->uv = uv;
 		}
 
-		~Vertex() 
+		~Vertex()
 		{
-			
+			std::cout << "Vertex Destructor..." << std::endl;
 		}
 
 		K::Vertex &operator += (const K::Vector3 *other)
@@ -53,8 +53,6 @@ namespace K
 		unsigned int VBO;
 		unsigned int EBO;
 	public:
-		bool meshUpdate = false;
-
 		//Model Vertices
 		std::vector<K::Vertex> vertices = K::Quad;
 
