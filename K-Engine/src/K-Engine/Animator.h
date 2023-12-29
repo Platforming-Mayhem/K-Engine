@@ -10,6 +10,7 @@ namespace K
 	private:
 		std::string properties;
 		std::vector<K::Texture*> animations;
+		K::Texture* currentTexture;
 		int selectedTexture = 0;
 	public:
 		ImGui::FileBrowser file;

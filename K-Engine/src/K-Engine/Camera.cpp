@@ -13,6 +13,7 @@ namespace K
 	Camera::~Camera() 
 	{
 		std::cout << "camera Destructor" << std::endl;
+		delete this->offset;
 	}
 
 	float Camera::GetFOV() 

@@ -69,7 +69,6 @@ namespace K
 
 			glfwPollEvents();
 		}
-		glfwDestroyWindow(window->window);
-		glfwTerminate();
+		delete editor;
 	}
 }

@@ -22,6 +22,7 @@ namespace K
 				delete this->components[i];
 			}
 			this->components.clear();
+			this->components.shrink_to_fit();
 		}
 		std::cout << "End GameObject Destruction..." << std::endl;
 	}

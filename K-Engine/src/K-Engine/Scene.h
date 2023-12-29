@@ -20,7 +20,12 @@ namespace K
 
 		~Scene() 
 		{
-
+			for (K::GameObject* temp : this->gameObjects) 
+			{
+				delete temp;
+			}
+			this->gameObjects.clear();
+			this->gameObjects.shrink_to_fit();
 		}
 
 		void Attach(K::GameObject* gameObject)
@@ -30,10 +35,13 @@ namespace K
 
 		void Init()
 		{
-			for (K::GameObject* g : this->gameObjects) 
+			if (!this->gameObjects.empty()) 
 			{
-				std::cout << "Initializing " << g->GetName() << std::endl;
-				g->Init();
+				for (K::GameObject* g : this->gameObjects)
+				{
+					std::cout << "Initializing " << g->GetName() << std::endl;
+					g->Init();
+				}
 			}
 			K::Time::startTime = glfwGetTime();
 			K::Time::endTime = K::Time::startTime;
@@ -43,16 +51,28 @@ namespace K
 		{
 			int size = this->GetNumberOfObjects();
 			int index = -1;
+			#if _DEBUG
 			for (int i = 1; i < size; i++)
 			{
 				if (gameObject == this->gameObjects[i]) 
 				{
-					delete this->gameObjects[i];
 					index = i;
+					break;
 				}
 			}
+			#else
+			for (int i = 0; i < size; i++)
+			{
+				if (gameObject == this->gameObjects[i])
+				{
+					index = i;
+					break;
+				}
+			}
+			#endif
 			if (index != -1) 
 			{
+				delete this->gameObjects[index];
 				this->gameObjects.erase(this->gameObjects.begin() + index);
 				this->gameObjects.shrink_to_fit();
 			}
@@ -63,18 +83,35 @@ namespace K
 			int size = this->GetNumberOfObjects();
 			if (size > 0) 
 			{
+				#if _DEBUG
 				for (int i = 1; i < size; i++)
 				{
+					std::cout << this->gameObjects[i]->GetName() << std::endl;
 					delete this->gameObjects[i];
 				}
 				this->gameObjects.erase(this->gameObjects.begin() + 1, this->gameObjects.end());
+				#else
+				for (int i = 0; i < size; i++)
+				{
+					std::cout << this->gameObjects[i]->GetName() << std::endl;
+					delete this->gameObjects[i];
+				}
+				this->gameObjects.erase(this->gameObjects.begin(), this->gameObjects.end());
+				#endif
 			}
 			this->gameObjects.shrink_to_fit();
 		}
 
 		int GetNumberOfObjects() 
 		{
-			return this->gameObjects.size();
+			if (!this->gameObjects.empty()) 
+			{
+				return this->gameObjects.size();
+			}
+			else 
+			{
+				return 0;
+			}
 		}
 
 		std::vector <K::GameObject*> GetGameObjects()

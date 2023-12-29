@@ -24,6 +24,11 @@ namespace K
 			this->uv = uv;
 		}
 
+		~Vertex() 
+		{
+			
+		}
+
 		K::Vertex &operator += (const K::Vector3 *other)
 		{
 			this->position.x += other->x;
@@ -51,10 +56,11 @@ namespace K
 		bool meshUpdate = false;
 
 		//Model Vertices
-		std::vector<K::Vertex> vertices;
+		std::vector<K::Vertex> vertices = K::Quad;
 
 		//Model Indices
-		std::vector<int> indices = { 
+		std::vector<int> indices = 
+		{ 
 			0, 3, 1,
 			0, 2, 3
 		};

@@ -14,6 +14,7 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 		delete this->texture;
+		this->texture = nullptr;
 		std::cout << "End Sprite Destruction..." << std::endl;
 	}
 

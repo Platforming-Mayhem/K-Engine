@@ -6,6 +6,12 @@ namespace K
 	{
 		this->shader = K::Shader(CORE_SHADER);
 	}
+
+	Material::~Material() 
+	{
+
+	}
+
 	K::Shader* Material::GetShader() 
 	{
 		return &this->shader;

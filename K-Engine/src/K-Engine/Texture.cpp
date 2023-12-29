@@ -4,6 +4,18 @@
 
 namespace K 
 {
+	Image::Image(unsigned char* data, int delay)
+	{
+		this->imageData = data;
+		this->delay = delay;
+	}
+
+	Image::~Image() 
+	{
+		//stbi_image_free(this->imageData);
+		std::cout << "Image Destructor..." << std::endl;
+	}
+
 	Texture::Texture(const char* filename, GLenum type)
 	{
 		this->filename = filename;
@@ -32,10 +44,10 @@ namespace K
 		{
 			std::cout << "Failed to load texture" << std::endl;
 		}
-		stbi_image_free(this->image);
-		this->image = nullptr;
 		glActiveTexture(0);
 		glBindTexture(this->type, 0);
+		stbi_image_free(this->image);
+		this->image = nullptr;
 		this->LoadAnimation();
 	}
 
@@ -96,11 +108,15 @@ namespace K
 	Texture::~Texture() 
 	{
 		std::cout << "Begin Texture Destruction..." << std::endl;
-		this->images.clear();
-		this->images.shrink_to_fit();
-		if (this->image != nullptr) 
+		stbi_image_free(this->image);
+		if (!this->images.empty()) 
 		{
-			stbi_image_free(this->image);
+			for (K::Image* i : this->images)
+			{
+				delete i;
+			}
+			this->images.clear();
+			this->images.shrink_to_fit();
 		}
 		glDeleteTextures(1, &this->id);
 		std::cout << "End Texture Destruction..." << std::endl;
@@ -137,7 +153,7 @@ namespace K
 	{
 		this->Bind(0);
 
-		glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->images[frame].GetData());
+		glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->GetFrameImage(frame));
 
 		this->Unbind();
 	}
@@ -150,9 +166,13 @@ namespace K
 		{
 			for (int i = 0; i < this->frames; i++) 
 			{
-				K::Image image = K::Image(this->GetFrameImage(i), this->GetFrameDelay(i));
-				images.push_back(image);
+				images.push_back(new K::Image(this->GetFrameImage(i), this->GetFrameDelay(i)));
 			}
+		}
+		else
+		{
+			stbi_image_free(this->image);
+			this->image = nullptr;
 		}
 		this->Unbind();
 	}

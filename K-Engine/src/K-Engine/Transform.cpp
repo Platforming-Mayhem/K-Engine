@@ -102,7 +102,9 @@ namespace K
 
 	K::Transform::~Transform() 
 	{
-
+		delete this->position;
+		delete this->rotation;
+		delete this->scale;
 	}
 
 	void K::Transform::PassModelMatrix() 

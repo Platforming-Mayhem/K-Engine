@@ -5,7 +5,7 @@ namespace K
 {
 	Mesh::Mesh() 
 	{
-		this->vertices = K::Quad;
+		
 	}
 
 	Mesh::~Mesh() 
@@ -159,9 +159,7 @@ namespace K
 	bool Mesh::LoadModelsAssimp(std::string File)
 	{
 		this->vertices.clear();
-		this->vertices.shrink_to_fit();
 		this->indices.clear();
-		this->indices.shrink_to_fit();
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(File, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_OptimizeMeshes);
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)

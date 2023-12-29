@@ -20,7 +20,6 @@ namespace K
 	private:
 		bool isColliding = false;
 		bool isStatic = true;
-		K::Vector3* pointOnLine = nullptr;
 		K::Vector3 offset = K::Vector3();
 		float radius = 1.0f;
 		int selectedLine = 0;

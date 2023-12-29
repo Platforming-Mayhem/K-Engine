@@ -60,6 +60,7 @@ namespace K
 
 	Window::~Window()
 	{
-
+		glfwDestroyWindow(this->window);
+		glfwTerminate();
 	}
 }

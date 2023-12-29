@@ -9,9 +9,19 @@ namespace K
 
 	K::Animator::~Animator() 
 	{
-		std::cout << "Animator Destructor" << std::endl;
-		this->animations.clear();
-		this->animations.shrink_to_fit();
+		std::cout << "Begin Animator Destructor..." << std::endl;
+		if (!this->animations.empty())
+		{
+			for (int i = 0; i < this->animations.size() - 1; i++) 
+			{
+				if(this->animations[i] != this->currentTexture)
+					delete this->animations[i];
+			}
+			this->animations.clear();
+			this->animations.shrink_to_fit();
+			this->currentTexture = nullptr;
+		}
+		std::cout << "End Animator Destructor..." << std::endl;
 	}
 
 	void K::Animator::Init() 
@@ -29,6 +39,7 @@ namespace K
 		if (index < this->animations.size()) 
 		{
 			currentSprite->SetTexture(this->animations[index]);
+			this->currentTexture = this->animations[index];
 		}
 	}
 

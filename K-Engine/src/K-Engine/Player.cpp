@@ -2,6 +2,7 @@
 #include "InputManager.h"
 #include "Time.h"
 #include "GameObject.h"
+#include "Editor.h"
 
 namespace K 
 {
@@ -14,6 +15,9 @@ namespace K
 	{
 		std::cout << "Player Destructor" << std::endl;
 		delete this->direction;
+		/*delete this->animator;
+		delete this->col;
+		delete this->sprite;*/
 	}
 
 	const char* Player::GetPropertyValues()
@@ -178,20 +182,21 @@ namespace K
 		}
 		else if (this->isAttacking)
 		{
+			K::Collider* hit = nullptr;
 			if (this->attackDirection > 0.0f) 
 			{
 				this->animator->PlayAnimation(4, this->sprite);
-				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}))
+				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && hit != nullptr)
 				{
-					std::cout << "YUM RIGHT" << std::endl;
+					K::Editor::Delete(hit->parent);
 				}
 			}
 			else if (this->attackDirection < 0.0f) 
 			{
 				this->animator->PlayAnimation(5, this->sprite);
-				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}))
+				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && hit != nullptr)
 				{
-					std::cout << "YUM LEFT" << std::endl;
+					K::Editor::Delete(hit->parent);
 				}
 			}
 

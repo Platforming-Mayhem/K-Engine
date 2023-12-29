@@ -45,6 +45,8 @@ namespace K
 
 		K::Material* GetMaterial();
 
+		static void Delete(K::GameObject* temp);
+
 		static K::GameObject* GetSelectedGameObject();
 
 		static K::Scene* GetScene();

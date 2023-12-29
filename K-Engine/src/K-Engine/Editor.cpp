@@ -22,6 +22,7 @@ namespace K
 
 	Editor::~Editor()
 	{
+		//delete this->selectedGameObject;
 		delete this->currentScene;
 		delete this->material;
 		delete this->window;
@@ -111,6 +112,12 @@ namespace K
 		}
 	}
 
+	void Editor::Delete(K::GameObject* temp) 
+	{
+		K::Editor::currentScene->Delete(temp);
+		K::Editor::selectedGameObject = nullptr;
+	}
+
 	void Editor::ImGuiHierarchy()
 	{
 		ImGui::Begin("Hierarchy");
@@ -140,8 +147,7 @@ namespace K
 
 			if (ImGui::Button("Delete")) 
 			{
-				this->currentScene->Delete(this->selectedGameObject);
-				this->selectedGameObject = nullptr;
+				K::Editor::Delete(this->selectedGameObject);
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Add Component"))

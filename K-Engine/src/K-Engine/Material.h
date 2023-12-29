@@ -11,5 +11,6 @@ namespace K
 	public:
 		K::Shader* GetShader();
 		Material();
+		~Material();
 	};
 }
