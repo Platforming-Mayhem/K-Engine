@@ -24,11 +24,6 @@ namespace K
 			this->uv = uv;
 		}
 
-		~Vertex()
-		{
-			std::cout << "Vertex Destructor..." << std::endl;
-		}
-
 		K::Vertex &operator += (const K::Vector3 *other)
 		{
 			this->position.x += other->x;
