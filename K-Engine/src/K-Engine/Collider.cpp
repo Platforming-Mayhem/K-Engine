@@ -14,9 +14,6 @@ namespace K
 	{
 		std::cout << "Begin Collider Destruction..." << std::endl;
 		K::Physics::Remove(this);
-		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
-		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
-		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 		this->linePoints.clear();
 		this->linePoints.shrink_to_fit();
 		std::cout << "End Collider Destruction..." << std::endl;
@@ -286,8 +283,12 @@ namespace K
 
 	K::Vector3* Collider::GetPosition() 
 	{
-		K::Vector3 pos = *this->parent->GetTransform()->position;
-		pos += this->offset;
+		K::Vector3 pos = K::Vector3();
+		if (this != nullptr) 
+		{
+			pos = *this->parent->GetTransform()->position;
+			pos += this->offset;
+		}
 		return &pos;
 	}
 

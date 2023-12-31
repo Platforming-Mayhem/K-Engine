@@ -58,98 +58,100 @@ namespace K
 	{
 		std::ifstream inFile;
 		inFile.open(location);
-		if (!inFile)
+		if (inFile)
 		{
-			std::cerr << "Error - unable to open input file " << location << std::endl;
-			exit(1);
-		}
-		std::string line;
-		K::Component* currentComponent = nullptr;
-		while (std::getline(inFile, line))
-		{
-			std::string name = "";
-			K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
-			K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
-			K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
-			K::Transform* transform = new K::Transform(position, rotation, scale);
-			std::string val = "";
-			K::GameObject* temp = nullptr;
-			int componentCount = 0;
-			int number = 0;
-			for (int i = 0; i < line.size(); i++) 
+			std::string line;
+			K::Component* currentComponent = nullptr;
+			while (std::getline(inFile, line))
 			{
-				if (line[i] == ',') 
+				std::string name = "";
+				K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
+				K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
+				K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
+				K::Transform* transform = new K::Transform(position, rotation, scale);
+				std::string val = "";
+				K::GameObject* temp = nullptr;
+				int componentCount = 0;
+				int number = 0;
+				for (int i = 0; i < line.size(); i++)
 				{
-					switch (number) 
+					if (line[i] == ',')
 					{
-					case 0:
-						name = val;
-						temp = new K::GameObject(name.c_str(), transform, editor->GetMaterial());
-						break;
-					case 1:
-						position->x = std::stof(val);
-						break;
-					case 2:
-						position->y = std::stof(val);
-						break;
-					case 3:
-						position->z = std::stof(val);
-						break;
-					case 4:
-						rotation->x = std::stof(val);
-						break;
-					case 5:
-						rotation->y = std::stof(val);
-						break;
-					case 6:
-						rotation->z = std::stof(val);
-						break;
-					case 7:
-						scale->x = std::stof(val);
-						break;
-					case 8:
-						scale->y = std::stof(val);
-						break;
-					case 9:
-						scale->z = std::stof(val);
-						break;
-					}
-					if (number > 9) 
-					{
-						bool found = false;
-						for (K::IFactory* comp : editor->lst)
+						switch (number)
 						{
-							K::Component* tempCo = comp->create();
-							if (val == tempCo->GetName())
+						case 0:
+							name = val;
+							temp = new K::GameObject(name.c_str(), transform, editor->GetMaterial());
+							break;
+						case 1:
+							position->x = std::stof(val);
+							break;
+						case 2:
+							position->y = std::stof(val);
+							break;
+						case 3:
+							position->z = std::stof(val);
+							break;
+						case 4:
+							rotation->x = std::stof(val);
+							break;
+						case 5:
+							rotation->y = std::stof(val);
+							break;
+						case 6:
+							rotation->z = std::stof(val);
+							break;
+						case 7:
+							scale->x = std::stof(val);
+							break;
+						case 8:
+							scale->y = std::stof(val);
+							break;
+						case 9:
+							scale->z = std::stof(val);
+							break;
+						}
+						if (number > 9)
+						{
+							bool found = false;
+							for (K::IFactory* comp : editor->lst)
 							{
-								std::cout << "Creating " << tempCo->GetName() << std::endl;
-								temp->AddComponent(tempCo);
-								currentComponent = tempCo;
-								componentCount = 0;
-								found = true;
-								break;
+								K::Component* tempCo = comp->create();
+								if (val == tempCo->GetName())
+								{
+									std::cout << "Creating " << tempCo->GetName() << std::endl;
+									temp->AddComponent(tempCo);
+									currentComponent = tempCo;
+									componentCount = 0;
+									found = true;
+									break;
+								}
+								else
+								{
+									delete tempCo;
+								}
+							}
+							if (!found)
+							{
+								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
+								currentComponent->SetPropertyValues(val.c_str(), componentCount);
+								componentCount++;
 							}
 						}
-						if (!found) 
-						{
-							std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
-							currentComponent->SetPropertyValues(val.c_str(), componentCount);
-							componentCount++;
-						}
+						line.erase(0, i);
+						i = 0;
+						val = "";
+						number++;
 					}
-					line.erase(0, i);
-					i = 0;
-					val = "";
-					number++;
+					else
+					{
+						val += line[i];
+					}
 				}
-				else 
-				{
-					val += line[i];
-				}
+				newScene->Attach(temp);
 			}
-			newScene->Attach(temp);
+			inFile.close();
 		}
-		inFile.close();
 		newScene->Init();
 	}
 
@@ -161,9 +163,7 @@ namespace K
 		int size = SizeofResource(hModule, hr);
 		if (hr == NULL)
 		{
-			std::cout << "Failed to find resource" << std::endl;
-			std::cout << size << std::endl;
-			exit(1);
+			
 		}
 		else 
 		{
@@ -238,6 +238,10 @@ namespace K
 									found = true;
 									break;
 								}
+								else 
+								{
+									delete tempCo;
+								}
 							}
 							if (!found)
 							{
@@ -258,7 +262,8 @@ namespace K
 				}
 				newScene->Attach(temp);
 			}
-			newScene->Init();
+			UnlockResource(temp);
 		}
+		newScene->Init();
 	}
 }

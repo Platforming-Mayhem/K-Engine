@@ -33,7 +33,7 @@ namespace K
 
 		Camera();
 
-		virtual ~Camera();
+		~Camera();
 
 		float GetFOV();
 
@@ -42,6 +42,8 @@ namespace K
 		float GetFarPlane();
 
 		K::Shader* GetShader();
+
+		void SetTarget(K::Transform* newTarget);
 
 		void SetActiveState(bool state);
 

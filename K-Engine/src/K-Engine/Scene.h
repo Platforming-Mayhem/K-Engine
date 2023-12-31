@@ -49,33 +49,29 @@ namespace K
 
 		void Delete(K::GameObject* gameObject) 
 		{
-			int size = this->GetNumberOfObjects();
-			int index = -1;
 			#if _DEBUG
-			for (int i = 1; i < size; i++)
+			for (int i = 1; i < this->GetNumberOfObjects(); i++)
 			{
 				if (gameObject == this->gameObjects[i]) 
 				{
-					index = i;
+					delete this->gameObjects[i];
+					this->gameObjects.erase(this->gameObjects.begin() + i);
+					this->gameObjects.shrink_to_fit();
 					break;
 				}
 			}
 			#else
-			for (int i = 0; i < size; i++)
+			for (int i = 0; i < this->GetNumberOfObjects(); i++)
 			{
 				if (gameObject == this->gameObjects[i])
 				{
-					index = i;
+					delete this->gameObjects[i];
+					this->gameObjects.erase(this->gameObjects.begin() + i);
+					this->gameObjects.shrink_to_fit();
 					break;
 				}
 			}
 			#endif
-			if (index != -1) 
-			{
-				delete this->gameObjects[index];
-				this->gameObjects.erase(this->gameObjects.begin() + index);
-				this->gameObjects.shrink_to_fit();
-			}
 		}
 
 		void CreateEmptyScene() 
@@ -84,14 +80,14 @@ namespace K
 			if (size > 0) 
 			{
 				#if _DEBUG
-				for (int i = 1; i < size; i++)
+				for (int i = 1; i < this->GetNumberOfObjects(); i++)
 				{
 					std::cout << this->gameObjects[i]->GetName() << std::endl;
 					delete this->gameObjects[i];
 				}
 				this->gameObjects.erase(this->gameObjects.begin() + 1, this->gameObjects.end());
 				#else
-				for (int i = 0; i < size; i++)
+				for (int i = 0; i < this->GetNumberOfObjects(); i++)
 				{
 					std::cout << this->gameObjects[i]->GetName() << std::endl;
 					delete this->gameObjects[i];
@@ -104,14 +100,8 @@ namespace K
 
 		int GetNumberOfObjects() 
 		{
-			if (!this->gameObjects.empty()) 
-			{
-				return this->gameObjects.size();
-			}
-			else 
-			{
-				return 0;
-			}
+			int size = this->gameObjects.size();
+			return size;
 		}
 
 		std::vector <K::GameObject*> GetGameObjects()

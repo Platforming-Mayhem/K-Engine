@@ -12,12 +12,12 @@ namespace K
 		{
 			if (other == col) 
 			{
+				K::Physics::colliders.erase(K::Physics::colliders.begin() + i);
+				K::Physics::colliders.shrink_to_fit();
 				break;
 			}
 			i++;
 		}
-		K::Physics::colliders.erase(K::Physics::colliders.begin() + i);
-		K::Physics::colliders.shrink_to_fit();
 	}
 
 	void Physics::RemoveAll()
@@ -47,23 +47,14 @@ namespace K
 
 	bool Physics::IsColliding(K::GameObject* parent) 
 	{
-		int index = -1;
-		for (int i = 0; i < Physics::colliders.size(); i++) 
+		for (K::Collider* col : Physics::colliders)
 		{
-			if (Physics::colliders[i]->parent == parent) 
+			if (col->parent == parent) 
 			{
-				index = i;
-				break;
+				return col->IsColliding();
 			}
 		}
-		if (index >= 0) 
-		{
-			return Physics::colliders[index]->IsColliding();
-		}
-		else 
-		{
-			return false;
-		}
+		return false;
 	}
 
 	bool Physics::IsInLayer(K::Collider* col, std::vector<K::Layer> avoidLayer)

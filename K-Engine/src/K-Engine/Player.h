@@ -18,9 +18,10 @@ namespace K
 		float accelerationTime = 0.0f;
 		float decelerationTime = 0.0f;
 		float attackDirection = 1.0f;
-		K::Vector3* direction = new K::Vector3();
+		K::Vector3* direction;
 		K::Animator* animator;
 		K::Collider* col;
+		K::Collider* hit = nullptr;
 		K::Sprite* sprite;
 		std::string properties;
 	public:

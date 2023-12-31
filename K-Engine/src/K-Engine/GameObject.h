@@ -22,7 +22,7 @@ namespace K
 	{
 	private:
 		std::string name;
-		K::Transform transform = K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
+		K::Transform* transform = new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
 		std::vector<K::Component*> components;
 		K::Material* material;
 	public:
@@ -51,7 +51,7 @@ namespace K
 
 		K::Transform* GetTransform() 
 		{
-			return &this->transform;
+			return this->transform;
 		}
 
 		void Init() 
@@ -91,7 +91,13 @@ namespace K
 
 		K::Component* GetComponent(int index) 
 		{
-			return this->components[index];
+			if (this->components[index] != nullptr)
+				return this->components[index];
+			else 
+			{
+				std::cout << "Component no longer exists" << std::endl;
+				return nullptr;
+			}
 		}
 
 		K::Component* GetComponentOfType(const char* component) 

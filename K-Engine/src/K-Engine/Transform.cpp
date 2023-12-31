@@ -68,6 +68,11 @@ namespace K
 		this->z = 0.0f;
 	}
 
+	K::Vector3::~Vector3()
+	{
+
+	}
+
 	K::Vector3::Vector3(float x, float y, float z)
 	{
 		this->x = x;
@@ -105,6 +110,7 @@ namespace K
 		delete this->position;
 		delete this->rotation;
 		delete this->scale;
+		std::cout << "Transform Destructor..." << std::endl;
 	}
 
 	void K::Transform::PassModelMatrix() 

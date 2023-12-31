@@ -12,8 +12,8 @@ namespace K
 
 	Camera::~Camera() 
 	{
-		std::cout << "camera Destructor" << std::endl;
 		delete this->offset;
+		std::cout << "Camera Destructor..." << std::endl;
 	}
 
 	float Camera::GetFOV() 
@@ -222,6 +222,11 @@ namespace K
 			*this->offset += *this->parent->GetTransform()->position;
 			*this->offset -= *this->target->position;
 		}
+	}
+
+	void Camera::SetTarget(K::Transform* newTarget) 
+	{
+		this->target = newTarget;
 	}
 
 	void Camera::Unbind()

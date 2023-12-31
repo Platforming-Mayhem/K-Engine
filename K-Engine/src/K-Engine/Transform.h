@@ -43,11 +43,13 @@ namespace K
 
 		float magnitude();
 
-		K::Vector3 normalise();
+		Vector3 normalise();
 
-		K::Vector3();
+		Vector3();
 
-		K::Vector3(float x, float y, float z);
+		Vector3(float x, float y, float z);
+
+		~Vector3();
 
 		K::Vector3 operator - (const K::Vector3 other)
 		{

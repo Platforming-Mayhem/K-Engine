@@ -8,16 +8,24 @@ namespace K
 {
 	Player::Player()
 	{
-		
+		this->direction = new K::Vector3();
 	}
 
 	Player::~Player() 
 	{
-		std::cout << "Player Destructor" << std::endl;
 		delete this->direction;
-		/*delete this->animator;
-		delete this->col;
-		delete this->sprite;*/
+		for (K::GameObject* temp : Editor::GetScene()->GetGameObjects())
+		{
+			if (temp != this->parent) 
+			{
+				if (temp->GetComponentOfType(typeid(K::Camera).name()) != nullptr)
+				{
+					K::Camera* tempCamera = (K::Camera*)temp->GetComponentOfType(typeid(K::Camera).name());
+					tempCamera->SetTarget(nullptr);
+				}
+			}
+		}
+		std::cout << "Player Destructor" << std::endl;
 	}
 
 	const char* Player::GetPropertyValues()
@@ -59,17 +67,21 @@ namespace K
 
 	void Player::Init() 
 	{
-		this->parent->layer = (int)K::Layer::LayerType::Player;
-		this->time = 0.0f;
-		if (this->parent->GetComponentOfType(typeid(K::Animator).name()) != nullptr) 
+		if (this->parent->GetComponentOfType(typeid(K::Animator).name()) != nullptr)
 		{
 			this->animator = (K::Animator*)this->parent->GetComponentOfType(typeid(K::Animator).name());
 		}
-		if (this->parent->GetComponentOfType(typeid(K::Collider).name()) != nullptr) 
+		if (this->parent->GetComponentOfType(typeid(K::Collider).name()) != nullptr)
 		{
 			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
 		}
-		this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
+		if (this->parent->GetComponentOfType(typeid(K::Sprite).name()) != nullptr)
+		{
+			this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
+		}
+
+		this->parent->layer = (int)K::Layer::LayerType::Player;
+		this->time = 0.0f;
 	}
 
 	void Player::UpdateEditor() 
@@ -82,25 +94,6 @@ namespace K
 
 	void Player::Update() 
 	{
-		if (!K::Physics::IsStatic(this->parent))
-		{
-			if (K::Physics::IsColliding(this->parent))
-			{
-				this->time = 0.0f;
-				this->jumpTime = 0.0f;
-				this->isJumping = false;
-			}
-			else
-			{
-				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
-				this->time += K::Time::deltaTime();
-			}
-		}
-		else
-		{
-			this->time = 0.0f;
-		}
-
 		float accelerationSpeed = (easeOutQuint(this->accelerationTime, 4.0f) * this->movementSpeed);
 		float decelerationSpeed = (decelerateEaseOutQuint(this->decelerationTime, 2.0f) * this->movementSpeed);
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
@@ -182,21 +175,22 @@ namespace K
 		}
 		else if (this->isAttacking)
 		{
-			K::Collider* hit = nullptr;
 			if (this->attackDirection > 0.0f) 
 			{
 				this->animator->PlayAnimation(4, this->sprite);
-				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && hit != nullptr)
+				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &this->hit) && this->hit != nullptr)
 				{
-					K::Editor::Delete(hit->parent);
+					K::Editor::Delete(this->hit->parent);
+					this->hit = nullptr;
 				}
 			}
 			else if (this->attackDirection < 0.0f) 
 			{
 				this->animator->PlayAnimation(5, this->sprite);
-				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && hit != nullptr)
+				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &this->hit) && this->hit != nullptr)
 				{
-					K::Editor::Delete(hit->parent);
+					K::Editor::Delete(this->hit->parent);
+					this->hit = nullptr;
 				}
 			}
 
@@ -223,6 +217,26 @@ namespace K
 			*(this->parent->GetTransform()->position) += this->direction;
 		else
 			this->accelerationTime = 0.0f;
+
+		if (!K::Physics::IsStatic(this->parent))
+		{
+			if (K::Physics::IsColliding(this->parent))
+			{
+				this->time = 0.0f;
+				this->jumpTime = 0.0f;
+				this->isJumping = false;
+			}
+			else
+			{
+				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
+				this->time += K::Time::deltaTime();
+			}
+		}
+		else
+		{
+			this->time = 0.0f;
+		}
+
 	}
 
 	void Player::Unbind() 

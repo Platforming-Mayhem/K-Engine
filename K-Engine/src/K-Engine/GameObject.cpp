@@ -7,7 +7,7 @@ namespace K
 	GameObject::GameObject(const char* name, K::Transform* transform, K::Material* material)
 	{
 		this->name = (char*)name;
-		this->transform = *transform;
+		this->transform = transform;
 		this->material = material;
 		std::cout << name << " GameObject Created" << std::endl;
 	}
@@ -15,15 +15,14 @@ namespace K
 	GameObject::~GameObject() 
 	{
 		std::cout << "Begin GameObject Destruction..." << std::endl;
-		if (this->GetNumberOfComponents() > 0) 
+		for (K::Component* comp : this->components)
 		{
-			for (int i = 0; i < this->components.size(); i++)
-			{
-				delete this->components[i];
-			}
-			this->components.clear();
-			this->components.shrink_to_fit();
+			delete comp;
 		}
+		delete this->transform;
+		this->components.clear();
+		this->components.shrink_to_fit();
+		this->material = nullptr;
 		std::cout << "End GameObject Destruction..." << std::endl;
 	}
 

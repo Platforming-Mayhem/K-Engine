@@ -22,7 +22,6 @@ namespace K
 
 	Editor::~Editor()
 	{
-		//delete this->selectedGameObject;
 		delete this->currentScene;
 		delete this->material;
 		delete this->window;
@@ -124,7 +123,7 @@ namespace K
 
 		for (int i = 0; i < this->currentScene->GetNumberOfObjects(); i++) 
 		{
-			if (ImGui::Selectable(this->currentScene->GetGameObjects()[i]->GetName())) 
+			if (ImGui::Selectable(this->currentScene->GetGameObjects()[i]->GetName()))
 			{
 				this->selectedGameObject = this->currentScene->GetGameObjects()[i];
 			}

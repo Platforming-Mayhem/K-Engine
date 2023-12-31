@@ -11,9 +11,6 @@ namespace K
 	Enemy::~Enemy() 
 	{
 		std::cout << "Enemy Destructor" << std::endl;
-		/*delete this->col;
-		delete this->animator;
-		delete this->sprite;*/
 	}
 
 	void Enemy::Init() 
