@@ -262,6 +262,7 @@ namespace K
 				}
 				newScene->Attach(temp);
 			}
+			inFile.clear();
 			UnlockResource(temp);
 		}
 		newScene->Init();

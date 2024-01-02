@@ -8,7 +8,7 @@ namespace K
 {
 	Player::Player()
 	{
-		this->direction = new K::Vector3();
+		
 	}
 
 	Player::~Player() 
@@ -67,6 +67,7 @@ namespace K
 
 	void Player::Init() 
 	{
+		this->direction = new K::Vector3();
 		if (this->parent->GetComponentOfType(typeid(K::Animator).name()) != nullptr)
 		{
 			this->animator = (K::Animator*)this->parent->GetComponentOfType(typeid(K::Animator).name());

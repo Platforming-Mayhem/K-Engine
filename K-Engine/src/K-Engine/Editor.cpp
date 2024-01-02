@@ -163,6 +163,10 @@ namespace K
 						this->selectedGameObject->AddComponent(temp);
 						temp->Init();
 					}
+					else 
+					{
+						delete temp;
+					}
 				}
 				ImGui::EndPopup();
 			}

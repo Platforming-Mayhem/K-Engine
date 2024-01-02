@@ -22,7 +22,7 @@ namespace K
 	public:
 		ImGui::FileBrowser file;
 
-		Sprite(K::Texture* newTexture = new K::Texture(WATERMARK, GL_TEXTURE_2D));
+		Sprite();
 
 		~Sprite();
 

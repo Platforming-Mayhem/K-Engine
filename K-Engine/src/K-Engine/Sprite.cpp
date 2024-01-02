@@ -2,9 +2,9 @@
 
 namespace K 
 {
-	Sprite::Sprite(K::Texture* newTexture)
+	Sprite::Sprite()
 	{
-		this->SetTexture(newTexture);
+		
 	}
 
 	Sprite::~Sprite() 
@@ -142,9 +142,9 @@ namespace K
 		return this->isPlaying;
 	}
 
-	void Sprite::Init() 
+	void Sprite::Init()
 	{
-		
+		this->SetTexture(new K::Texture(WATERMARK, GL_TEXTURE_2D));
 	}
 
 	void Sprite::Bind() 

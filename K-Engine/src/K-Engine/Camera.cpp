@@ -7,7 +7,7 @@ namespace K
 {
 	Camera::Camera()
 	{
-		SetWindow(K::window);
+		
 	}
 
 	Camera::~Camera() 
@@ -207,6 +207,7 @@ namespace K
 
 	void Camera::Init() 
 	{
+		SetWindow(K::window);
 		SetMaterial(this->parent->GetMaterial());
 		for (int i = 0; i < Editor::GetScene()->GetNumberOfObjects(); i++)
 		{
