@@ -114,15 +114,12 @@ namespace K
 						if (number > 9)
 						{
 							bool found = false;
-							for (K::IFactory* comp : editor->lst)
+							for (int i = 0; i < editor->lst.size(); i++)
 							{
-								K::Component* tempCo = comp->create();
+								K::Component* tempCo = editor->lst[i]->create();
 								if (val == tempCo->GetName())
 								{
-									std::cout << "Creating " << tempCo->GetName() << std::endl;
-									temp->AddComponent(tempCo);
 									currentComponent = tempCo;
-									componentCount = 0;
 									found = true;
 									break;
 								}
@@ -136,6 +133,12 @@ namespace K
 								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
 								currentComponent->SetPropertyValues(val.c_str(), componentCount);
 								componentCount++;
+							}
+							else
+							{
+								std::cout << "Creating " << currentComponent->GetName() << std::endl;
+								temp->AddComponent(currentComponent);
+								componentCount = 0;
 							}
 						}
 						line.erase(0, i);
@@ -226,15 +229,12 @@ namespace K
 						if (number > 9)
 						{
 							bool found = false;
-							for (K::IFactory* comp : editor->lst)
+							for (int i = 0; i < editor->lst.size(); i++)
 							{
-								K::Component* tempCo = comp->create();
+								K::Component* tempCo = editor->lst[i]->create();
 								if (val == tempCo->GetName())
 								{
-									std::cout << "Creating " << tempCo->GetName() << std::endl;
-									temp->AddComponent(tempCo);
 									currentComponent = tempCo;
-									componentCount = 0;
 									found = true;
 									break;
 								}
@@ -249,6 +249,12 @@ namespace K
 								currentComponent->SetPropertyValues(val.c_str(), componentCount);
 								componentCount++;
 							}
+							else 
+							{
+								std::cout << "Creating " << currentComponent->GetName() << std::endl;
+								temp->AddComponent(currentComponent);
+								componentCount = 0;
+							}
 						}
 						line.erase(0, i);
 						i = 0;
@@ -262,8 +268,8 @@ namespace K
 				}
 				newScene->Attach(temp);
 			}
-			inFile.clear();
 			UnlockResource(temp);
+			inFile.clear();
 		}
 		newScene->Init();
 	}
