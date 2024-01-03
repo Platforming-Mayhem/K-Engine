@@ -13,16 +13,23 @@
 
 namespace K 
 {
-	struct IFactory 
+	struct K_API IFactory
 	{ 
 		virtual K::Component* create() = 0; 
+
+		virtual const char* getName() = 0;
 	};
 
-	template< typename Type > struct Factory : public IFactory 
+	template< typename Type > struct K_API Factory : public IFactory
 	{
 		virtual Type* create() 
 		{
 			return new Type();
+		}
+
+		virtual const char* getName() 
+		{
+			return typeid(Type).name();
 		}
 	};
 

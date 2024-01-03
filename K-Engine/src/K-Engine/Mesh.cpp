@@ -101,13 +101,12 @@ namespace K
 	{
 		if (value[0] != '\0' && value != nullptr)
 		{
-			std::string temp = value;
 			switch (valueIndex)
 			{
 			case 0:
-				if (this->LoadModelsAssimp(temp.c_str()))
+				if (this->LoadModelsAssimp(value))
 				{
-					this->filename = temp.c_str();
+					this->filename = value;
 				}
 				break;
 			}

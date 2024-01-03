@@ -113,32 +113,25 @@ namespace K
 						}
 						if (number > 9)
 						{
-							bool found = false;
-							for (int i = 0; i < editor->lst.size(); i++)
+							if (val.find("class") != std::string::npos)
 							{
-								K::Component* tempCo = editor->lst[i]->create();
-								if (val == tempCo->GetName())
+								for (int i = 0; i < editor->lst.size(); i++)
 								{
-									currentComponent = tempCo;
-									found = true;
-									break;
-								}
-								else
-								{
-									delete tempCo;
+									if (val == editor->lst[i]->getName())
+									{
+										currentComponent = editor->lst[i]->create();
+										std::cout << "Creating " << currentComponent->GetName() << std::endl;
+										temp->AddComponent(currentComponent);
+										componentCount = 0;
+										break;
+									}
 								}
 							}
-							if (!found)
+							else
 							{
 								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
 								currentComponent->SetPropertyValues(val.c_str(), componentCount);
 								componentCount++;
-							}
-							else
-							{
-								std::cout << "Creating " << currentComponent->GetName() << std::endl;
-								temp->AddComponent(currentComponent);
-								componentCount = 0;
 							}
 						}
 						line.erase(0, i);
@@ -228,32 +221,25 @@ namespace K
 						}
 						if (number > 9)
 						{
-							bool found = false;
-							for (int i = 0; i < editor->lst.size(); i++)
+							if (val.find("class") != std::string::npos) 
 							{
-								K::Component* tempCo = editor->lst[i]->create();
-								if (val == tempCo->GetName())
+								for (int j = 0; j < editor->lst.size(); j++)
 								{
-									currentComponent = tempCo;
-									found = true;
-									break;
-								}
-								else 
-								{
-									delete tempCo;
+									if (val == editor->lst[j]->getName())
+									{
+										currentComponent = editor->lst[j]->create();
+										std::cout << "Creating " << currentComponent->GetName() << std::endl;
+										temp->AddComponent(currentComponent);
+										componentCount = 0;
+										break;
+									}
 								}
 							}
-							if (!found)
+							else
 							{
 								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
 								currentComponent->SetPropertyValues(val.c_str(), componentCount);
 								componentCount++;
-							}
-							else 
-							{
-								std::cout << "Creating " << currentComponent->GetName() << std::endl;
-								temp->AddComponent(currentComponent);
-								componentCount = 0;
 							}
 						}
 						line.erase(0, i);
