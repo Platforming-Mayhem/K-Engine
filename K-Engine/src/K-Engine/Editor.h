@@ -13,10 +13,15 @@
 
 namespace K 
 {
-	struct IFactory { virtual K::Component* create() = 0; };
+	struct IFactory 
+	{ 
+		virtual K::Component* create() = 0; 
+	};
 
-	template< typename Type > struct Factory : public IFactory {
-		virtual Type* create() {
+	template< typename Type > struct Factory : public IFactory 
+	{
+		virtual Type* create() 
+		{
 			return new Type();
 		}
 	};

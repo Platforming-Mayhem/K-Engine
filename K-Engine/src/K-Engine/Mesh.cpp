@@ -12,9 +12,7 @@ namespace K
 	{
 		std::cout << "Begin Mesh Destruction..." << std::endl;
 		this->vertices.clear();
-		this->vertices.shrink_to_fit();
 		this->indices.clear();
-		this->indices.shrink_to_fit();
 		glDeleteVertexArrays(1, &this->VAO);
 		glDeleteBuffers(1, &this->VBO);
 		glDeleteBuffers(1, &this->EBO);
@@ -23,6 +21,15 @@ namespace K
 
 	void Mesh::Init() 
 	{
+		if (this->vertices.size() <= 0) 
+		{
+			this->vertices = K::Quad;
+		}
+		if (this->indices.size() <= 0) 
+		{
+			this->indices = { 0, 3, 1, 0, 2, 3 };
+		}
+
 		glCreateVertexArrays(1, &this->VAO);
 		glGenBuffers(1, &this->VBO);
 		glGenBuffers(1, &this->EBO);

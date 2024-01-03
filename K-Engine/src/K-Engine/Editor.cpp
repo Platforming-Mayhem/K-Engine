@@ -155,18 +155,16 @@ namespace K
 			}
 			if (ImGui::BeginPopup("Components"))
 			{
-				for(K::IFactory* comp : this->lst)
+				for(int i = 0; i < this->lst.size(); i++)
 				{
-					K::Component* temp = comp->create();
+					K::Component* temp = this->lst[i]->create();
 					if (ImGui::MenuItem(temp->GetName()))
 					{
 						this->selectedGameObject->AddComponent(temp);
 						temp->Init();
+						break;
 					}
-					else 
-					{
-						delete temp;
-					}
+					delete temp;
 				}
 				ImGui::EndPopup();
 			}

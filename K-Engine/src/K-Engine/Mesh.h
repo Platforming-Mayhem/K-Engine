@@ -1,7 +1,6 @@
 #pragma once
 #include "build.h"
 #include "Transform.h"
-#include "Material.h"
 #include "Component.h"
 
 namespace K 
@@ -41,7 +40,6 @@ namespace K
 	class K_API Mesh : public K::Component
 	{
 	private:
-		K::Material material;
 		ImGui::FileBrowser file;
 		std::string filename;
 		unsigned int VAO;
@@ -49,14 +47,10 @@ namespace K
 		unsigned int EBO;
 	public:
 		//Model Vertices
-		std::vector<K::Vertex> vertices = K::Quad;
+		std::vector<K::Vertex> vertices;
 
 		//Model Indices
-		std::vector<int> indices = 
-		{ 
-			0, 3, 1,
-			0, 2, 3
-		};
+		std::vector<int> indices;
 
 		//Constructor
 		Mesh();
