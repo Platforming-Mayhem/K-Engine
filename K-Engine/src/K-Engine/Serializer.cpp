@@ -113,25 +113,19 @@ namespace K
 						}
 						if (number > 9)
 						{
-							if (val.find("class") != std::string::npos)
-							{
-								for (int i = 0; i < editor->lst.size(); i++)
-								{
-									if (val == editor->lst[i]->getName())
-									{
-										currentComponent = editor->lst[i]->create();
-										std::cout << "Creating " << currentComponent->GetName() << std::endl;
-										temp->AddComponent(currentComponent);
-										componentCount = 0;
-										break;
-									}
-								}
-							}
-							else
+							std::map<std::string, K::IFactory*>::iterator pos = editor->lst.find(val.c_str());
+							if (pos == editor->lst.end())
 							{
 								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
 								currentComponent->SetPropertyValues(val.c_str(), componentCount);
 								componentCount++;
+							}
+							else
+							{
+								currentComponent = pos->second->create();
+								std::cout << "Creating " << currentComponent->GetName() << std::endl;
+								temp->AddComponent(currentComponent);
+								componentCount = 0;
 							}
 						}
 						line.erase(0, i);
@@ -221,25 +215,19 @@ namespace K
 						}
 						if (number > 9)
 						{
-							if (val.find("class") != std::string::npos) 
-							{
-								for (int j = 0; j < editor->lst.size(); j++)
-								{
-									if (val == editor->lst[j]->getName())
-									{
-										currentComponent = editor->lst[j]->create();
-										std::cout << "Creating " << currentComponent->GetName() << std::endl;
-										temp->AddComponent(currentComponent);
-										componentCount = 0;
-										break;
-									}
-								}
-							}
-							else
+							std::map<std::string, K::IFactory*>::iterator pos = editor->lst.find(val.c_str());
+							if (pos == editor->lst.end())
 							{
 								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
 								currentComponent->SetPropertyValues(val.c_str(), componentCount);
 								componentCount++;
+							}
+							else
+							{
+								currentComponent = pos->second->create();
+								std::cout << "Creating " << currentComponent->GetName() << std::endl;
+								temp->AddComponent(currentComponent);
+								componentCount = 0;
 							}
 						}
 						line.erase(0, i);

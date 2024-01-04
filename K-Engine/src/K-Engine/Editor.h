@@ -43,7 +43,7 @@ namespace K
 		static K::GameObject* selectedGameObject;
 	public:
 
-		std::vector<IFactory*> lst = { new K::Factory<K::Sprite> , new K::Factory<K::Player> ,new K::Factory<K::Mesh> ,new K::Factory<K::Camera> ,new K::Factory<K::Collider> ,new K::Factory<K::Animator>, new K::Factory<K::Enemy>};
+		std::map<std::string, IFactory*> lst { {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Enemy).name() , new K::Factory<K::Enemy>} };
 
 		Editor(K::Window* window, K::Scene* scene, K::Material* material);
 
