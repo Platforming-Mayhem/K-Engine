@@ -178,6 +178,8 @@ namespace K
 
 		K::Matrix4x4 modelMatrix;
 
+		Transform();
+
 		Transform(Vector3* newPos, Vector3* newRot, Vector3* newScale);
 
 		~Transform();

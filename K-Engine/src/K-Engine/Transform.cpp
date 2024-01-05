@@ -98,6 +98,13 @@ namespace K
 		return sqrtf((x * x) + (y * y) + (z * z));
 	}
 
+	K::Transform::Transform() 
+	{
+		this->position = new K::Vector3();
+		this->rotation = new K::Vector3();
+		this->scale = new K::Vector3(1.0f, 1.0f, 1.0f);
+	}
+
 	K::Transform::Transform(K::Vector3* newPos, K::Vector3* newRot, K::Vector3* newScale)
 	{
 		this->position = newPos;
