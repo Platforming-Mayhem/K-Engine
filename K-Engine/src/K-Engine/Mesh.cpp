@@ -128,23 +128,33 @@ namespace K
 		return typeid(K::Mesh).name();
 	}
 
-	//IMPLEMENT THIS LATER
 	void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
-			
+			float u = 0.0f;
+			float v = 0.0f;
+			if (mesh->HasTextureCoords(0))
+			{
+				u = mesh->mTextureCoords[0][i].x;
+				v = mesh->mTextureCoords[0][i].y;
+			}
+			this->vertices.push_back(K::Vertex(K::Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z), K::Vector2(u, v), K::Vector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z)));
 		}
 		// process indices
-
+		for (int i = 0; i < mesh->mNumFaces; i++)
+		{
+			aiFace face = mesh->mFaces[i];
+			for (int j = 0; j < face.mNumIndices; j++)
+				this->indices.push_back(face.mIndices[j]);
+		}
 		// process material
 		if (mesh->mMaterialIndex >= 0)
 		{
-			
+			//IMPLEMENT THIS LATER
 		}
 	}
 
-	//IMPLEMENT THIS LATER
 	void Mesh::processNode(aiNode* node, const aiScene* scene)
 	{
 		// process all the node's meshes (if any)
@@ -173,31 +183,7 @@ namespace K
 			std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
 			return false;
 		}
-		for (int j = 0; j < scene->mNumMeshes; j++)
-		{
-			aiMesh* mesh = scene->mMeshes[j];
-			for (int i = 0; i < mesh->mNumVertices; i++)
-			{
-				float u = 0.0f;
-				float v = 0.0f;
-				if (mesh->HasTextureCoords(0))
-				{
-					u = mesh->mTextureCoords[0][i].x;
-					v = mesh->mTextureCoords[0][i].y;
-				}
-				K::Vector3 normal = K::Vector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
-				this->vertices.push_back(K::Vertex(K::Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z), K::Vector2(u, v), normal));
-			}
-			for (int i = 0; i < mesh->mNumFaces; i++)
-			{
-				aiFace face = mesh->mFaces[i];
-				for (int j = 0; j < face.mNumIndices; j++)
-				{
-					int index = face.mIndices[j];
-					this->indices.push_back(index);
-				}
-			}
-		}
+		processNode(scene->mRootNode, scene);
 		return true;
 	}
 }
