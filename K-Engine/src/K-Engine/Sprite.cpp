@@ -197,9 +197,8 @@ namespace K
 
 	void Sprite::Update()
 	{
-		int time = this->internalClock;
 		int fps = (1.0f / 30.0f) * 60.0f;
-		if (time % fps == 0)
+		if (this->internalClock % fps == 0)
 		{
 			this->NextFrame();
 		}
