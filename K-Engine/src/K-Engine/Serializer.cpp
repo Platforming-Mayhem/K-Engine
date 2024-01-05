@@ -113,7 +113,7 @@ namespace K
 						}
 						if (number > 9)
 						{
-							std::map<std::string, K::IFactory*>::iterator pos = editor->lst.find(val.c_str());
+							std::map<std::string, K::IFactory*>::iterator pos = editor->lst.find(val);
 							if (pos == editor->lst.end())
 							{
 								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
@@ -215,7 +215,7 @@ namespace K
 						}
 						if (number > 9)
 						{
-							std::map<std::string, K::IFactory*>::iterator pos = editor->lst.find(val.c_str());
+							std::map<std::string, K::IFactory*>::iterator pos = editor->lst.find(val);
 							if (pos == editor->lst.end())
 							{
 								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
