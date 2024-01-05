@@ -4,18 +4,6 @@
 
 namespace K 
 {
-	Image::Image(unsigned char* data, int delay)
-	{
-		this->imageData = data;
-		this->delay = delay;
-	}
-
-	Image::~Image() 
-	{
-		//stbi_image_free(this->imageData);
-		std::cout << "Image Destructor..." << std::endl;
-	}
-
 	Texture::Texture(const char* filename, GLenum type)
 	{
 		this->filename = filename;
@@ -24,8 +12,8 @@ namespace K
 		this->image = stbi_load(filename, &this->width, &this->height, &this->c, 0);
 		glGenTextures(1, &this->id);
 		glBindTexture(this->type, this->id);
-		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		if (this->image)
@@ -72,8 +60,8 @@ namespace K
 				this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
 				glGenTextures(1, &this->id);
 				glBindTexture(this->type, this->id);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				if (this->image)
@@ -109,15 +97,6 @@ namespace K
 	{
 		std::cout << "Begin Texture Destruction..." << std::endl;
 		stbi_image_free(this->image);
-		if (!this->images.empty()) 
-		{
-			for (K::Image* i : this->images)
-			{
-				delete i;
-			}
-			this->images.clear();
-			this->images.shrink_to_fit();
-		}
 		glDeleteTextures(1, &this->id);
 		std::cout << "End Texture Destruction..." << std::endl;
 	}
@@ -162,14 +141,7 @@ namespace K
 	{
 		this->Bind(0);
 		this->image = stbi_xload_file(this->GetFilePath(), &this->width, &this->height, &this->frames, &this->delay);
-		if (this->frames > 1)
-		{
-			for (int i = 0; i < this->frames; i++) 
-			{
-				images.push_back(new K::Image(this->GetFrameImage(i), this->GetFrameDelay(i)));
-			}
-		}
-		else
+		if (this->frames <= 1)
 		{
 			stbi_image_free(this->image);
 			this->image = nullptr;

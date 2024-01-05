@@ -3,22 +3,6 @@
 
 namespace K 
 {
-	class K_API Image 
-	{
-	private:
-		unsigned char* imageData;
-		int delay;
-	public:
-		Image(unsigned char* data, int delay);
-
-		~Image();
-
-		unsigned char* GetData() 
-		{
-			return this->imageData;
-		}
-	};
-
 	class K_API Texture
 	{
 	private:
@@ -30,7 +14,6 @@ namespace K
 		int* delay;
 		int c;
 		unsigned int type;
-		std::vector<Image*> images;
 		std::string filename;
 
 	public:
