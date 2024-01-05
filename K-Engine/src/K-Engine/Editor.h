@@ -36,9 +36,9 @@ namespace K
 	class K_API Editor
 	{
 	private:
-		K::Material* material;
 		K::Window* window;
 		ImGui::FileBrowser file;
+		static K::Material* material;
 		static K::Scene* currentScene;
 		static K::GameObject* selectedGameObject;
 	public:
@@ -55,7 +55,7 @@ namespace K
 
 		bool Render();
 
-		K::Material* GetMaterial();
+		static K::Material* GetMaterial();
 
 		static void Delete(K::GameObject* temp);
 

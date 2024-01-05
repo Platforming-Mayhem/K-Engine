@@ -3,6 +3,7 @@
 
 namespace K 
 {
+	K::Material* K::Editor::material;
 	K::GameObject* K::Editor::selectedGameObject;
 	K::Scene* K::Editor::currentScene;
 
@@ -42,7 +43,7 @@ namespace K
 
 	K::Material* Editor::GetMaterial() 
 	{
-		return this->material;
+		return K::Editor::material;
 	}
 
 	bool Editor::Render() 
