@@ -28,6 +28,13 @@ namespace K
 			this->gameObjects.shrink_to_fit();
 		}
 
+		K::GameObject* CreateGameObject(const char* name, K::Transform* transform, K::Material* mat) 
+		{
+			K::GameObject* temp = new K::GameObject(name, transform, mat);
+			this->Attach(temp);
+			return temp;
+		}
+
 		void Attach(K::GameObject* gameObject)
 		{
 			this->gameObjects.push_back(gameObject);
