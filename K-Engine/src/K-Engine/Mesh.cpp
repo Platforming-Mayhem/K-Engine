@@ -162,7 +162,6 @@ namespace K
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			//K::GameObject* temp = new K::GameObject(mesh->mName.C_Str(), new K::Transform());
 			processMesh(mesh, scene);
 		}
 		// then do the same for each of its children
