@@ -29,7 +29,7 @@ namespace K
 
 		int layer = (int)K::Layer::LayerType::Ground;
 
-		GameObject(const char* name, K::Transform* transform, K::Material* material);
+		GameObject(const char* name, K::Transform* transform);
 
 		~GameObject();
 

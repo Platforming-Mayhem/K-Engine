@@ -64,7 +64,6 @@ namespace K
 			K::Component* currentComponent = nullptr;
 			while (std::getline(inFile, line))
 			{
-				std::string name = "";
 				K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
 				K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
 				K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
@@ -80,8 +79,7 @@ namespace K
 						switch (number)
 						{
 						case 0:
-							name = val;
-							temp = new K::GameObject(name.c_str(), transform, editor->GetMaterial());
+							temp = new K::GameObject(val.c_str(), transform);
 							break;
 						case 1:
 							position->x = std::stof(val);
@@ -138,7 +136,6 @@ namespace K
 						val += line[i];
 					}
 				}
-				newScene->Attach(temp);
 			}
 			inFile.close();
 		}
@@ -166,7 +163,6 @@ namespace K
 			K::Component* currentComponent = nullptr;
 			while (std::getline(inFile, line))
 			{
-				std::string name = "";
 				K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
 				K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
 				K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
@@ -182,8 +178,7 @@ namespace K
 						switch (number)
 						{
 						case 0:
-							name = val;
-							temp = new K::GameObject(name.c_str(), transform, editor->GetMaterial());
+							temp = new K::GameObject(val.c_str(), transform);
 							break;
 						case 1:
 							position->x = std::stof(val);
@@ -240,7 +235,6 @@ namespace K
 						val += line[i];
 					}
 				}
-				newScene->Attach(temp);
 			}
 			UnlockResource(temp);
 			inFile.clear();

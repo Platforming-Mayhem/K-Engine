@@ -172,6 +172,8 @@ namespace K
 	class K_API Transform 
 	{
 	public:
+		K::Transform* parent = nullptr;
+
 		Vector3* position;
 		Vector3* rotation;
 		Vector3* scale;

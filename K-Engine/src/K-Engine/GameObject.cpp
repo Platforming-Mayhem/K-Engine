@@ -4,11 +4,12 @@
 
 namespace K 
 {
-	GameObject::GameObject(const char* name, K::Transform* transform, K::Material* material)
+	GameObject::GameObject(const char* name, K::Transform* transform)
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		this->material = material;
+		this->material = K::Editor::GetMaterial();
+		K::Editor::GetScene()->Attach(this);
 		std::cout << name << " GameObject Created" << std::endl;
 	}
 

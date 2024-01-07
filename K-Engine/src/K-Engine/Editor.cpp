@@ -137,8 +137,7 @@ namespace K
 	{
 		if (ImGui::Button("Create new GameObject")) 
 		{
-			K::GameObject* temp = new K::GameObject("Name", new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f)), this->material);
-			this->currentScene->Attach(temp);
+			K::GameObject* temp = new K::GameObject("Name", new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f)));
 			this->selectedGameObject = temp;
 		}
 		if (this->selectedGameObject != NULL)
