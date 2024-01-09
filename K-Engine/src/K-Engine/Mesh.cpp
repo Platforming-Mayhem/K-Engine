@@ -131,6 +131,7 @@ namespace K
 
 	void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 	{
+		this->parent->SetName(mesh->mName.C_Str());
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			float u = 0.0f;
