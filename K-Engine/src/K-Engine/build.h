@@ -12,11 +12,6 @@
 #include <format>
 #include "resource.h"
 
-//ASSIMP
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 //ImGUI
 #include "imgui.h"
 #include "imgui_stdlib.h"

@@ -47,10 +47,10 @@ namespace K
 		unsigned int EBO;
 	public:
 		//Model Vertices
-		std::vector<K::Vertex> vertices;
+		std::vector<K::Vertex> vertices = K::Quad;
 
 		//Model Indices
-		std::vector<int> indices;
+		std::vector<int> indices = { 0, 3, 1, 0, 2, 3 };
 
 		//Constructor
 		Mesh();
@@ -94,12 +94,6 @@ namespace K
 		{
 			return this->vertices[0];
 		}
-
-		bool LoadModelsAssimp(std::string File);
-
-		void processMesh(aiMesh* mesh, const aiScene* scene);
-		
-		void processNode(aiNode* node, const aiScene* scene);
 
 		void Init() override;
 

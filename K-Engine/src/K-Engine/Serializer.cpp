@@ -13,25 +13,24 @@ namespace K
 			std::cerr << "Error - unable to open output file " << scene->GetSceneName()->c_str() << std::endl;
 			exit(1);
 		}
-		int count = 0;
-		int nOGameObjects = scene->GetNumberOfObjects() - 1;
-		for (K::GameObject* g : scene->GetGameObjects()) 
+		for (int i = 0; i < scene->GetNumberOfObjects(); i++) 
 		{
-			if (count == 0) 
+			if (i == 0) 
 			{
 				std::cout << "Saving..." << std::endl;
 			}
 			else 
 			{
-				K::Transform transform = *g->GetTransform();
+				K::GameObject* g = scene->GetGameObjects()[i];
+				K::Transform* transform = g->GetTransform();
 				outFile << g->GetName();
-				outFile << "," << transform.position->x << "," << transform.position->y << "," << transform.position->z;
-				outFile << "," << transform.rotation->x << "," << transform.rotation->y << "," << transform.rotation->z;
-				outFile << "," << transform.scale->x << "," << transform.scale->y << "," << transform.scale->z;
+				outFile << "," << transform->position->x << "," << transform->position->y << "," << transform->position->z;
+				outFile << "," << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
+				outFile << "," << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z;
 				std::cout << g->GetName();
-				std::cout << " " << transform.position->x << "," << transform.position->y << "," << transform.position->z;
-				std::cout << " " << transform.rotation->x << "," << transform.rotation->y << "," << transform.rotation->z;
-				std::cout << " " << transform.scale->x << "," << transform.scale->y << "," << transform.scale->z << " ";
+				std::cout << " " << transform->position->x << "," << transform->position->y << "," << transform->position->z;
+				std::cout << " " << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
+				std::cout << " " << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z << " ";
 				int numberOfComponents = g->GetNumberOfComponents();
 				for (int i = 0; i < numberOfComponents; i++)
 				{
@@ -42,14 +41,13 @@ namespace K
 						outFile << "," << component->GetPropertyValues();
 					}
 				}
-				if (count < nOGameObjects)
+				if (i < scene->GetNumberOfObjects())
 				{
 					outFile << ",";
 					outFile << '\n';
 				}
 				std::cout << std::endl;
 			}
-			count++;
 		}
 		outFile.close();
 	}
