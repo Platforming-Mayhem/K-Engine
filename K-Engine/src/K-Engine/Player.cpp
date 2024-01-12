@@ -13,6 +13,9 @@ namespace K
 
 	Player::~Player() 
 	{
+		this->animator = nullptr;
+		this->col = nullptr;
+		this->sprite = nullptr;
 		delete this->direction;
 		std::cout << "Player Destructor" << std::endl;
 	}
@@ -194,9 +197,8 @@ namespace K
 			{
 				this->animator->PlayAnimation(4, this->sprite);
 				K::Collider* hit = nullptr;
-				if (Physics::Hitbox(*this->col->GetPosition(), *this->col->GetPosition() + K::Vector3(1.0f, 0.0f, 1.0f), {K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && hit != nullptr)
+				if (Physics::Hitbox(*this->col->GetPosition(), *this->col->GetPosition() + K::Vector3(1.0f, 0.0f, 1.0f), {K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && &hit != nullptr)
 				{
-					std::cout << hit->parent->GetName() << std::endl;
 					K::Editor::Delete(hit->parent);
 					hit = nullptr;
 				}
@@ -205,9 +207,8 @@ namespace K
 			{
 				this->animator->PlayAnimation(5, this->sprite);
 				K::Collider* hit = nullptr;
-				if (Physics::Hitbox(*this->col->GetPosition() - K::Vector3(1.0f, 0.0f, 0.0f), *this->col->GetPosition() + K::Vector3(0.0f, 0.0f, 1.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && hit != nullptr)
+				if (Physics::Hitbox(*this->col->GetPosition() - K::Vector3(1.0f, 0.0f, 0.0f), *this->col->GetPosition() + K::Vector3(0.0f, 0.0f, 1.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && &hit != nullptr)
 				{
-					std::cout << hit->parent->GetName() << std::endl;
 					K::Editor::Delete(hit->parent);
 					hit = nullptr;
 				}

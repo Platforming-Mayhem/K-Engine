@@ -16,14 +16,13 @@ namespace K
 	GameObject::~GameObject() 
 	{
 		std::cout << "Begin GameObject Destruction..." << std::endl;
-		for (K::Component* comp : this->components)
+		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
-			delete comp;
+			delete this->components[i];
 		}
-		delete this->transform;
 		this->components.clear();
-		this->components.shrink_to_fit();
 		this->material = nullptr;
+		delete this->transform;
 		std::cout << "End GameObject Destruction..." << std::endl;
 	}
 
@@ -70,7 +69,8 @@ namespace K
 
 	void GameObject::Bind() 
 	{
-		for (int i = 0; i < this->GetNumberOfComponents(); i++)
+		int size = this->GetNumberOfComponents();
+		for (int i = 0; i < size; i++)
 		{
 			this->GetComponent(i)->Bind();
 		}
@@ -78,7 +78,8 @@ namespace K
 
 	void GameObject::Unbind() 
 	{
-		for (int i = 0; i < this->GetNumberOfComponents(); i++)
+		int size = this->GetNumberOfComponents();
+		for (int i = 0; i < size; i++)
 		{
 			this->GetComponent(i)->Unbind();
 		}

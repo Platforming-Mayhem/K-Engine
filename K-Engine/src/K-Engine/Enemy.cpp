@@ -10,6 +10,9 @@ namespace K
 
 	Enemy::~Enemy() 
 	{
+		this->animator = nullptr;
+		this->col = nullptr;
+		this->sprite = nullptr;
 		std::cout << "Enemy Destructor" << std::endl;
 	}
 
