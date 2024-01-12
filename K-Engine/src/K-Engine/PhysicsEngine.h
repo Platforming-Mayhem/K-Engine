@@ -9,10 +9,12 @@ namespace K
 	{
 		K::Vector3 position = K::Vector3();
 		K::Vector3 normal = K::Vector3();
-		ContactPoint(K::Vector3 newPos, K::Vector3 newNorm)
+		K::Collider* other = nullptr;
+		ContactPoint(K::Vector3 newPos, K::Vector3 newNorm, K::Collider* other = nullptr)
 		{
 			this->position = newPos;
 			this->normal = newNorm;
+			this->other = other;
 		}
 	};
 
@@ -33,7 +35,7 @@ namespace K
 
 		static bool IsInLayer(K::Collider* col, std::vector<K::Layer> avoidLayer);
 
-		static bool Hitbox(K::Vector3 bottomLeft, K::Vector3 topRight, std::vector<K::Layer> avoidLayer);
+		static bool Hitbox(K::Vector3 bottomLeft, K::Vector3 topRight, std::vector<K::Layer> avoidLayer, K::Collider** hit = nullptr);
 
 		static bool Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer, K::Collider** hit = nullptr);
 

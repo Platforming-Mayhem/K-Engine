@@ -71,7 +71,7 @@ namespace K
 		return isInLayer;
 	}
 
-	bool Physics::Hitbox(K::Vector3 bottomLeft, K::Vector3 topRight, std::vector<K::Layer> avoidLayer)
+	bool Physics::Hitbox(K::Vector3 bottomLeft, K::Vector3 topRight, std::vector<K::Layer> avoidLayer, K::Collider** hit)
 	{
 		K::Vector3 centre = (topRight + bottomLeft) * 0.5f;
 		for (K::ContactPoint contact : Physics::GetClosestPoints(centre, avoidLayer))
@@ -80,6 +80,8 @@ namespace K
 			{
 				if ((contact.position - bottomLeft).z > 0.0f && (contact.position - bottomLeft).x > 0.0f)
 				{
+					if (hit != nullptr)
+						*hit = contact.other;
 					return true;
 				}
 			}
@@ -100,7 +102,6 @@ namespace K
 				{
 					for (int j = 0; j < col->GetNumberOfPoints(); j++)
 					{
-						//FIX THIS: IT IS INCORRECT!!!
 						K::Vector3 C = col->GetLine(j)->point[0];
 						K::Vector3 D = col->GetLine(j)->point[1];
 						float x = (-(A.x * B.y - B.x * A.y) * (D.x - C.x) + (C.x * D.y - D.x * C.y) * (B.x - A.x)) / (-(C.y - D.y) * (B.x - A.x) + (A.y - B.y) * (D.x - C.x));
@@ -172,7 +173,7 @@ namespace K
 						K::Vector3 J = *Physics::colliders[i]->PointOnLine(Physics::colliders[i]->GetLine(j)->point[0], Physics::colliders[i]->GetLine(j)->point[1], position);
 						K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
 						K::Vector3 Normal = *Physics::colliders[i]->GetNormal(Physics::colliders[i]->GetLine(j)->point[0], Physics::colliders[i]->GetLine(j)->point[1]);
-						points.push_back(K::ContactPoint(J2, Normal));
+						points.push_back(K::ContactPoint(J2, Normal, Physics::colliders[i]));
 					}
 				}
 				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle)
@@ -182,7 +183,7 @@ namespace K
 					K::Vector3 Jtemp = otherPosition + (J * Physics::colliders[i]->GetRadius());
 					K::Vector3 J2 = K::Vector3(Jtemp.x, 0.0f, Jtemp.z);
 					K::Vector3 Normal = J;
-					points.push_back(K::ContactPoint(J2, Normal));
+					points.push_back(K::ContactPoint(J2, Normal, Physics::colliders[i]));
 				}
 			}
 		}
