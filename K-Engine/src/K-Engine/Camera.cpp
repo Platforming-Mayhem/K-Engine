@@ -12,7 +12,7 @@ namespace K
 
 	Camera::~Camera() 
 	{
-		delete this->offset;
+		this->player = nullptr;
 		std::cout << "Camera Destructor..." << std::endl;
 	}
 
@@ -209,25 +209,18 @@ namespace K
 	{
 		SetWindow(K::window);
 		SetMaterial(this->parent->GetMaterial());
-		for (int i = 0; i < Editor::GetScene()->GetNumberOfObjects(); i++)
-		{
-			if (Editor::GetScene()->GetGameObjects()[i]->GetComponentOfType(typeid(K::Player).name()) != nullptr)
-			{
-				this->target = Editor::GetScene()->GetGameObjects()[i]->GetTransform();
-				break;
-			}
-		}
 		if (!this->isEditorCamera) 
 		{
-			this->offset = new K::Vector3();
-			*this->offset += *this->parent->GetTransform()->position;
-			*this->offset -= *this->target->position;
+			for (int i = 0; i < K::Editor::GetScene()->GetNumberOfObjects(); i++) 
+			{
+				K::GameObject* temp = K::Editor::GetScene()->GetGameObjects()[i];
+				if (temp->GetComponentOfType(typeid(K::Player).name()) != nullptr) 
+				{
+					player = temp->GetTransform();
+					break;
+				}
+			}
 		}
-	}
-
-	void Camera::SetTarget(K::Transform* newTarget) 
-	{
-		this->target = newTarget;
 	}
 
 	void Camera::Unbind()
@@ -272,10 +265,10 @@ namespace K
 			}
 		}
 		#endif
-		if (this->target != nullptr && !this->isEditorCamera)
+		if (!this->isEditorCamera)
 		{
-			K::Vector3 finalPosition = *this->target->position + *this->offset;
-			K::Vector3 position = K::Vector3::Lerp(*this->parent->GetTransform()->position, finalPosition, K::Time::deltaTime() * 2.0f);
+			K::Vector3 offset = *player->position - K::Vector3(0.0f, 1.0f, 0.0f);
+			K::Vector3 position = K::Vector3::Lerp(*this->parent->GetTransform()->position, offset, K::Time::deltaTime() * 2.0f);
 			*this->parent->GetTransform()->position = position;
 		}
 	}

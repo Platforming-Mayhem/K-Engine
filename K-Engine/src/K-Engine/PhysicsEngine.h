@@ -33,11 +33,13 @@ namespace K
 
 		static bool IsInLayer(K::Collider* col, std::vector<K::Layer> avoidLayer);
 
+		static bool Hitbox(K::Vector3 bottomLeft, K::Vector3 topRight, std::vector<K::Layer> avoidLayer);
+
 		static bool Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer, K::Collider** hit = nullptr);
 
 		static bool IsStatic(K::GameObject* parent);
 
-		static std::vector<K::ContactPoint> GetClosestPoints(K::Vector3 position);
+		static std::vector<K::ContactPoint> GetClosestPoints(K::Vector3 position, std::vector<K::Layer> avoidLayer = {});
 
 		static K::Vector3* GetCollisionResolution(K::Collider* col);
 

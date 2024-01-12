@@ -11,7 +11,7 @@ namespace K
 	private:
 		float time = 0.0f;
 		float movementSpeed = 1.0f;
-		K::Vector3 direction = K::Vector3(1.0f, 0.0f, 0.0f);
+		K::Vector3 direction;
 		K::Collider* col;
 		K::Animator* animator;
 		K::Sprite* sprite;
@@ -26,6 +26,8 @@ namespace K
 		void Update() override;
 
 		void UpdateEditor() override;
+
+		void RaycastVisualiser();
 
 		void Bind() override;
 

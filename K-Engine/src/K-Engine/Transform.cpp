@@ -114,10 +114,11 @@ namespace K
 
 	K::Transform::~Transform() 
 	{
+		std::cout << "Started Transform Destructor..." << std::endl;
 		delete this->position;
 		delete this->rotation;
 		delete this->scale;
-		std::cout << "Transform Destructor..." << std::endl;
+		std::cout << "Transform Destroyed" << std::endl;
 	}
 
 	void K::Transform::PassModelMatrix() 

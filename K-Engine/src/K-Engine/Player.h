@@ -21,7 +21,6 @@ namespace K
 		K::Vector3* direction;
 		K::Animator* animator;
 		K::Collider* col;
-		K::Collider* hit = nullptr;
 		K::Sprite* sprite;
 		std::string properties;
 	public:
@@ -36,6 +35,8 @@ namespace K
 		void Update() override;
 
 		void UpdateEditor() override;
+
+		void HitboxVisualDebug();
 
 		void Bind() override;
 

@@ -32,10 +32,10 @@ namespace K
 		}
 	};
 
-	const std::vector<K::Vertex> Quad = {K::Vertex(K::Vector3(1.0f, 0.0f, 1.0f), K::Vector2(1.0f, 1.0f)),
-										 K::Vertex(K::Vector3(1.0f, 0.0f, -1.0f), K::Vector2(1.0f, 0.0f)),
-										 K::Vertex(K::Vector3(-1.0f, 0.0f, 1.0f), K::Vector2(0.0f, 1.0f)),
-										 K::Vertex(K::Vector3(-1.0f, 0.0f, -1.0f), K::Vector2(0.0f, 0.0f))};
+	const std::vector<K::Vertex> Quad = {K::Vertex(K::Vector3(1.0f, 0.0f, 1.0f), K::Vector2(1.0f, 1.0f)),//Top-Right
+										 K::Vertex(K::Vector3(1.0f, 0.0f, -1.0f), K::Vector2(1.0f, 0.0f)),//Bottom-Right
+										 K::Vertex(K::Vector3(-1.0f, 0.0f, 1.0f), K::Vector2(0.0f, 1.0f)),//Top-Left
+										 K::Vertex(K::Vector3(-1.0f, 0.0f, -1.0f), K::Vector2(0.0f, 0.0f))};//Bottom-Left
 
 	class K_API Mesh : public K::Component
 	{

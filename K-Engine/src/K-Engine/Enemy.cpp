@@ -5,7 +5,7 @@ namespace K
 {
 	Enemy::Enemy() 
 	{
-
+		
 	}
 
 	Enemy::~Enemy() 
@@ -26,34 +26,49 @@ namespace K
 			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
 		}
 		this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
+		this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
 	}
 
 	void Enemy::Update() 
 	{
 		if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(1.0f, 0.0f, 0.0f), {K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player)}))
 		{
-			this->direction = K::Vector3(-K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 		}
 		else if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			this->direction = K::Vector3(K::Time::deltaTime() * this->movementSpeed, 0.0f, 0.0f);
+			this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
 		}
-		if (this->direction.x > 0.0f) 
+		if (!Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, -1.0f, 0.0f), {K::Layer(K::Layer::LayerType::Enemy)}))
 		{
-			this->animator->PlayAnimation(0, this->sprite);
+			std::cout << "Left" << std::endl;
+			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 		}
-		else 
+		else if (!Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, -1.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy)}))
 		{
-			this->animator->PlayAnimation(1, this->sprite);
+			std::cout << "Right" << std::endl;
+			this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
 		}
-		*this->parent->GetTransform()->position += this->direction;
+		if (this->animator != nullptr) 
+		{
+			if (this->direction.x > 0.0f)
+			{
+				this->animator->PlayAnimation(0, this->sprite);
+			}
+			else
+			{
+				this->animator->PlayAnimation(1, this->sprite);
+			}
+		}
+		*this->parent->GetTransform()->position += this->direction * K::Time::deltaTime();
+
 		if (K::Physics::IsColliding(this->parent))
 		{
 			this->time = 0.0f;
 		}
 		else
 		{
-			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
+			*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
 			this->time += K::Time::deltaTime();
 		}
 	}
@@ -63,7 +78,28 @@ namespace K
 		if (ImGui::CollapsingHeader("Enemy Settings")) 
 		{
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
+			this->RaycastVisualiser();
 		}
+	}
+
+	void Enemy::RaycastVisualiser() 
+	{
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
+		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		temp.PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
+		glVertex3f(this->col->GetPosition()->x + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.0f);
+		glEnd();
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
+		glVertex3f(this->col->GetPosition()->x - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.0f);
+		glEnd();
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 	}
 
 	void Enemy::Bind() 

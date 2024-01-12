@@ -14,17 +14,6 @@ namespace K
 	Player::~Player() 
 	{
 		delete this->direction;
-		for (K::GameObject* temp : Editor::GetScene()->GetGameObjects())
-		{
-			if (temp != this->parent) 
-			{
-				if (temp->GetComponentOfType(typeid(K::Camera).name()) != nullptr)
-				{
-					K::Camera* tempCamera = (K::Camera*)temp->GetComponentOfType(typeid(K::Camera).name());
-					tempCamera->SetTarget(nullptr);
-				}
-			}
-		}
 		std::cout << "Player Destructor" << std::endl;
 	}
 
@@ -90,7 +79,32 @@ namespace K
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
+			this->HitboxVisualDebug();
 		}
+	}
+
+	void Player::HitboxVisualDebug() 
+	{
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
+		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		temp.PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(this->col->GetPosition()->x + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z + 1.0f);//Top-Right
+		glVertex3f(this->col->GetPosition()->x + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z);//Bottom-Right
+		glVertex3f(this->col->GetPosition()->x, this->col->GetPosition()->y, this->col->GetPosition()->z);//Bottom-Left
+		glVertex3f(this->col->GetPosition()->x, this->col->GetPosition()->y, this->col->GetPosition()->z + 1.0f);//Top-Left
+		glEnd();
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(this->col->GetPosition()->x, this->col->GetPosition()->y, this->col->GetPosition()->z + 1.0f);//Top-Right
+		glVertex3f(this->col->GetPosition()->x, this->col->GetPosition()->y, this->col->GetPosition()->z);//Bottom-Right
+		glVertex3f(this->col->GetPosition()->x - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z);//Bottom-Left
+		glVertex3f(this->col->GetPosition()->x - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z + 1.0f);//Top-Left
+		glEnd();
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 	}
 
 	void Player::Update() 
@@ -179,19 +193,17 @@ namespace K
 			if (this->attackDirection > 0.0f) 
 			{
 				this->animator->PlayAnimation(4, this->sprite);
-				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &this->hit) && this->hit != nullptr)
+				if (Physics::Hitbox(*this->col->GetPosition(), *this->col->GetPosition() + K::Vector3(1.0f, 0.0f, 1.0f), {K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}))
 				{
-					K::Editor::Delete(this->hit->parent);
-					this->hit = nullptr;
+					std::cout << "Destroy!!!" << std::endl;
 				}
 			}
 			else if (this->attackDirection < 0.0f) 
 			{
 				this->animator->PlayAnimation(5, this->sprite);
-				if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &this->hit) && this->hit != nullptr)
+				if (Physics::Hitbox(*this->col->GetPosition() - K::Vector3(1.0f, 0.0f, 0.0f), *this->col->GetPosition() + K::Vector3(0.0f, 0.0f, 1.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}))
 				{
-					K::Editor::Delete(this->hit->parent);
-					this->hit = nullptr;
+					std::cout << "Destroy!!!" << std::endl;
 				}
 			}
 
