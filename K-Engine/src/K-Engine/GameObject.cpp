@@ -24,6 +24,7 @@ namespace K
 		this->material = nullptr;
 		delete this->transform;
 		std::cout << "End GameObject Destruction..." << std::endl;
+		std::cout << this->GetNumberOfComponents() << std::endl;
 	}
 
 	void GameObject::Update()
@@ -69,8 +70,7 @@ namespace K
 
 	void GameObject::Bind() 
 	{
-		int size = this->GetNumberOfComponents();
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
 			this->GetComponent(i)->Bind();
 		}
@@ -78,8 +78,7 @@ namespace K
 
 	void GameObject::Unbind() 
 	{
-		int size = this->GetNumberOfComponents();
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
 			this->GetComponent(i)->Unbind();
 		}

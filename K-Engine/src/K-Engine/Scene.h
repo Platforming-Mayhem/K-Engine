@@ -117,12 +117,12 @@ namespace K
 		void Render() 
 		{
 			K::Time::startTime = glfwGetTime();
-			for (auto i : this->gameObjects)
+			for (int i = 0; i < this->GetNumberOfObjects(); i++)
 			{
-				i->Bind();
-				i->PassTransformationMatrix();
-				i->Update();
-				i->Unbind();
+				this->GetGameObjects()[i]->Bind();
+				this->GetGameObjects()[i]->PassTransformationMatrix();
+				this->GetGameObjects()[i]->Update();
+				this->GetGameObjects()[i]->Unbind();
 			}
 			K::Time::endTime = K::Time::startTime;
 		}
