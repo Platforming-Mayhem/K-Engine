@@ -5,11 +5,11 @@
 #include "Window.h"
 #include "Sprite.h"
 #include "Player.h"
-#include "Enemy.h"
 #include "Camera.h"
 #include "Collider.h"
 #include "Animator.h"
 #include "Component.h"
+#include "Fox.h"
 
 namespace K 
 {
@@ -43,7 +43,7 @@ namespace K
 		static K::GameObject* selectedGameObject;
 	public:
 
-		std::map<std::string, IFactory*> lst { {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Enemy).name() , new K::Factory<K::Enemy>} };
+		std::map<std::string, IFactory*> lst { {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Fox).name() , new K::Factory<K::Fox>} };
 
 		Editor(K::Window* window, K::Scene* scene, K::Material* material);
 

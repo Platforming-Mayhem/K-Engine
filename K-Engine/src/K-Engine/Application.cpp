@@ -47,7 +47,7 @@ namespace K
 				break;
 			}
 
-			glClearColor(29.0f / 255.0f, 143.0f / 255.0f, 224.0f / 255.0f, 1.0f);
+			glClearColor(19.0f / 255.0f, 18.0f / 255.0f, 15.0f / 255.0f, 1.0f);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 

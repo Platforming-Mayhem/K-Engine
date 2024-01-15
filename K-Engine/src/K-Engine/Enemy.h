@@ -21,6 +21,14 @@ namespace K
 
 		~Enemy();
 
+		void AvoidFalling();
+
+		void AvoidWalls();
+
+		void Move();
+
+		void Gravity();
+
 		void Init() override;
 
 		void Update() override;

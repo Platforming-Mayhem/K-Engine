@@ -34,11 +34,11 @@ namespace K
 		
 	}
 
-	void K::Animator::PlayAnimation(int index, K::Sprite* currentSprite) 
+	void K::Animator::PlayAnimation(int index, K::Sprite* currentSprite, bool reScale) 
 	{
 		if (index < this->animations.size()) 
 		{
-			currentSprite->SetTexture(this->animations[index]);
+			currentSprite->SetTexture(this->animations[index], reScale);
 			this->currentTexture = this->animations[index];
 		}
 	}

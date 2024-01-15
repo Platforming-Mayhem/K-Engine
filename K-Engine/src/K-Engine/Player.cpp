@@ -8,7 +8,7 @@ namespace K
 {
 	Player::Player()
 	{
-		
+		previousDirection = new K::Vector3(1.0f, 0.0f, 0.0f);
 	}
 
 	Player::~Player() 
@@ -17,6 +17,7 @@ namespace K
 		this->col = nullptr;
 		this->sprite = nullptr;
 		delete this->direction;
+		delete this->previousDirection;
 		std::cout << "Player Destructor" << std::endl;
 	}
 
@@ -82,11 +83,11 @@ namespace K
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
-			this->HitboxVisualDebug();
+			//this->HitboxVisualDebug();
 		}
 	}
 
-	void Player::HitboxVisualDebug() 
+	/*void Player::HitboxVisualDebug()
 	{
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
@@ -108,7 +109,7 @@ namespace K
 		glVertex3f(this->col->GetPosition()->x - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z + 1.0f);//Top-Left
 		glEnd();
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
-	}
+	}*/
 
 	void Player::Update() 
 	{
@@ -175,68 +176,62 @@ namespace K
 			}
 		}
 
-		if (this->direction->x > 0.0f && !this->isJumping && !this->isAttacking)
-		{
-			this->animator->PlayAnimation(1, this->sprite);
-		}
-		else if (this->direction->x < 0.0f && !this->isJumping && !this->isAttacking)
-		{
-			this->animator->PlayAnimation(2, this->sprite);
-		}
-		else if(this->direction->x == 0.0f && !this->isJumping && !this->isAttacking)
-		{
-			this->animator->PlayAnimation(0, this->sprite);
-		}
-		else if (this->isJumping && !this->isAttacking)
-		{
-			this->animator->PlayAnimation(3, this->sprite);
-		}
-		else if (this->isAttacking)
-		{
-			if (this->attackDirection > 0.0f) 
-			{
-				this->animator->PlayAnimation(4, this->sprite);
-				K::Collider* hit = nullptr;
-				if (Physics::Hitbox(*this->col->GetPosition(), *this->col->GetPosition() + K::Vector3(1.0f, 0.0f, 1.0f), {K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && &hit != nullptr)
-				{
-					K::Editor::Delete(hit->parent);
-					hit = nullptr;
-				}
-			}
-			else if (this->attackDirection < 0.0f) 
-			{
-				this->animator->PlayAnimation(5, this->sprite);
-				K::Collider* hit = nullptr;
-				if (Physics::Hitbox(*this->col->GetPosition() - K::Vector3(1.0f, 0.0f, 0.0f), *this->col->GetPosition() + K::Vector3(0.0f, 0.0f, 1.0f), { K::Layer(K::Layer::LayerType::Ground), K::Layer(K::Layer::LayerType::Player)}, &hit) && &hit != nullptr)
-				{
-					K::Editor::Delete(hit->parent);
-					hit = nullptr;
-				}
-			}
+		*(this->parent->GetTransform()->position) += this->direction;
 
-			if (!this->sprite->IsPlaying())
-				this->isAttacking = false;
+		if (this->isJumping)
+		{
+			this->animator->PlayAnimation(2, this->sprite, false);
+			if (direction->x < 0.0f)
+			{
+				this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
+			}
+			else
+			{
+				this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
+			}
+			this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+		}
+		else
+		{
+			if (this->direction->x != 0.0f)
+			{
+				this->animator->PlayAnimation(1, this->sprite, false);
+				if (direction->x < 0.0f)
+				{
+					this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
+				}
+				else
+				{
+					this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
+				}
+				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+			}
+			else
+			{
+				this->animator->PlayAnimation(0, this->sprite, false);
+				if (previousDirection->x < 0.0f)
+				{
+					this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
+				}
+				else
+				{
+					this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
+				}
+				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+			}
 		}
 
 		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
 		{
 			this->time = 0.0f;
-			this->jumpTime += K::Time::deltaTime();
-			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.1f);
+			this->jumpTime += K::Time::deltaTime() * 4.0f;
+			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f);
 			this->isJumping = true;
 		}
 		else if (InputManager::IsKeyReleased(GLFW_KEY_SPACE) && !K::Physics::IsColliding(this->parent))
 		{
 			this->jumpTime = 1.0f;
 		}
-		if (InputManager::IsKeyPressedDown(GLFW_KEY_Z) && !this->isJumping) 
-		{
-			this->isAttacking = true;
-		}
-		if(!this->isAttacking)
-			*(this->parent->GetTransform()->position) += this->direction;
-		else
-			this->accelerationTime = 0.0f;
 
 		if (!K::Physics::IsStatic(this->parent))
 		{
@@ -248,7 +243,7 @@ namespace K
 			}
 			else
 			{
-				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
+				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
 				this->time += K::Time::deltaTime();
 			}
 		}
@@ -256,7 +251,10 @@ namespace K
 		{
 			this->time = 0.0f;
 		}
-
+		if (this->direction->magnitude() != 0.0f)
+		{
+			*previousDirection = *this->direction;
+		}
 	}
 
 	void Player::Unbind() 

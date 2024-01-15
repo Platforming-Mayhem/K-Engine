@@ -19,7 +19,7 @@ namespace K
 
 		~Animator();
 
-		void PlayAnimation(int index, K::Sprite* currentSprite);
+		void PlayAnimation(int index, K::Sprite* currentSprite, bool reScale = true);
 
 		void Init() override;
 

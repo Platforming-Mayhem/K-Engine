@@ -20,7 +20,7 @@ void main()
 {
 	vec4 newPos = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
 	gl_Position = newPos;
-	TexCoord = textureCoord;
+	TexCoord = floor(textureCoord * 32.0) / 32.0;
 	Normal = normal;
 }
 
@@ -65,10 +65,6 @@ void main()
 		{
 			discard;
 		}
-	}
-	if (colour.a < 0.5)
-	{
-		discard;
 	}
 	//colour.rgb *= dot(normalize(Normal), normalize(lightDirection));
 }

@@ -29,30 +29,40 @@ namespace K
 			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
 		}
 		this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
-		this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
+		this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 	}
 
-	void Enemy::Update() 
+	void Enemy::AvoidFalling() 
 	{
-		if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(1.0f, 0.0f, 0.0f), {K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player)}))
+		if (!Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, -1.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
+			std::cout << "Avoid Falling: Move Left" << std::endl;
 			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 		}
-		else if (Physics::Raycast(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		else if (!Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, -1.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
+			std::cout << "Avoid Falling: Move Right" << std::endl;
 			this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
 		}
-		if (!Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, -1.0f, 0.0f), {K::Layer(K::Layer::LayerType::Enemy)}))
+	}
+
+	void Enemy::AvoidWalls() 
+	{
+		if (Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			std::cout << "Left" << std::endl;
+			std::cout << "Avoid Walls: Move Left" << std::endl;
 			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 		}
-		else if (!Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, -1.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy)}))
+		else if (Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			std::cout << "Right" << std::endl;
+			std::cout << "Avoid Walls: Move Right" << std::endl;
 			this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
 		}
-		if (this->animator != nullptr) 
+	}
+
+	void Enemy::Move() 
+	{
+		if (this->animator != nullptr)
 		{
 			if (this->direction.x > 0.0f)
 			{
@@ -64,7 +74,10 @@ namespace K
 			}
 		}
 		*this->parent->GetTransform()->position += this->direction * K::Time::deltaTime();
+	}
 
+	void Enemy::Gravity() 
+	{
 		if (K::Physics::IsColliding(this->parent))
 		{
 			this->time = 0.0f;
@@ -74,6 +87,11 @@ namespace K
 			*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
 			this->time += K::Time::deltaTime();
 		}
+	}
+
+	void Enemy::Update() 
+	{
+		
 	}
 
 	void Enemy::UpdateEditor() 
@@ -94,13 +112,23 @@ namespace K
 		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
 		temp.PassModelMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
+		//Avoid Falling
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
-		glVertex3f(this->col->GetPosition()->x + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.0f);
+		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius() + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.0f);
 		glEnd();
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
-		glVertex3f(this->col->GetPosition()->x - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.0f);
+		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.0f);
+		glEnd();
+		//Avoid Walls
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
+		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius() + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z);
+		glEnd();
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
+		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z);
 		glEnd();
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 	}

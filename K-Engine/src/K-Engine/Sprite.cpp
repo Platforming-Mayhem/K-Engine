@@ -127,13 +127,18 @@ namespace K
 		return this->texture;
 	}
 
-	void Sprite::SetTexture(K::Texture* newTexture) 
+	void Sprite::SetTexture(K::Texture* newTexture, bool reScale) 
 	{
 		if (this->texture != newTexture) 
 		{
 			this->frame = 0;
 			this->internalClock = 0;
 			this->texture = newTexture;
+			if (reScale) 
+			{
+				this->parent->GetTransform()->scale->x = this->texture->GetWidth() / 32.0f;
+				this->parent->GetTransform()->scale->z = this->texture->GetHeight() / 32.0f;
+			}
 		}
 	}
 

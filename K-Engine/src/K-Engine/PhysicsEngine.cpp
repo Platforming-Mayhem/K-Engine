@@ -94,16 +94,16 @@ namespace K
 	{
 		K::Vector3 A = K::Vector3(origin.x, origin.z, 0.0f);
 		K::Vector3 B = A + direction;
-		for (K::Collider* col : Physics::colliders)
+		for (int i = 0; i < Physics::colliders.size(); i++)
 		{
-			if (K::Physics::IsInLayer(col, avoidLayer)) 
+			if (K::Physics::IsInLayer(Physics::colliders[i], avoidLayer))
 			{
-				if (col->colliderType == K::Collider::ColliderType::Line)
+				if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Line)
 				{
-					for (int j = 0; j < col->GetNumberOfPoints(); j++)
+					for (int j = 0; j < Physics::colliders[i]->GetNumberOfPoints(); j++)
 					{
-						K::Vector3 C = col->GetLine(j)->point[0];
-						K::Vector3 D = col->GetLine(j)->point[1];
+						K::Vector3 C = Physics::colliders[i]->GetLine(j)->point[0];
+						K::Vector3 D = Physics::colliders[i]->GetLine(j)->point[1];
 						float x = (-(A.x * B.y - B.x * A.y) * (D.x - C.x) + (C.x * D.y - D.x * C.y) * (B.x - A.x)) / (-(C.y - D.y) * (B.x - A.x) + (A.y - B.y) * (D.x - C.x));
 						float y = (-(A.y - B.y) * x - (A.x * B.y - B.x * A.y)) / (B.x - A.x);
 						K::Vector3 J = K::Vector3(x, y, 0.0f);
@@ -115,20 +115,20 @@ namespace K
 						if (U > 0.0f && V < 0.0f)
 						{
 							if(hit != nullptr)
-								*hit = col;
+								*hit = Physics::colliders[i];
 							return true;
 						}
 					}
 				}
-				else if (col->colliderType == K::Collider::ColliderType::Circle)
+				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle)
 				{
-					K::Vector3 J = *col->PointOnLine(A, B, *col->GetPosition());
+					K::Vector3 J = *Physics::colliders[i]->PointOnLine(A, B, *Physics::colliders[i]->GetPosition());
 					K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
-					K::Vector3 offset = J2 - *col->GetPosition();
-					if (offset.magnitude() < col->GetRadius())
+					K::Vector3 offset = J2 - *Physics::colliders[i]->GetPosition();
+					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
 					{
 						if (hit != nullptr)
-							*hit = col;
+							*hit = Physics::colliders[i];
 						return true;
 					}
 				}
@@ -193,6 +193,7 @@ namespace K
 	K::Vector3* Physics::GetCollisionResolution(K::Collider* col) 
 	{
 		K::Vector3* offsetAmount = new K::Vector3();
+		int count = 0;
 		if (col->colliderType == K::Collider::ColliderType::Circle) 
 		{
 			K::Vector3 position = *col->GetPosition();
@@ -213,15 +214,12 @@ namespace K
 					if (angle < 0.8f && angle > -0.8f && angle1 > 0.0f)
 					{
 						col->SetIsColliding(true);
-					}
-					else
-					{
-						col->SetIsColliding(false);
+						count++;
 					}
 				}
 			}
 		}
-		if (offsetAmount->magnitude() <= 0.0f) 
+		if (offsetAmount->magnitude() <= 0.0f || count == 0) 
 		{
 			col->SetIsColliding(false);
 		}

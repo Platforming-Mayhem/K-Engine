@@ -44,9 +44,9 @@ namespace K
 
 		glPolygonMode(GL_FRONT, GL_FILL);
 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CCW);
+		//glEnable(GL_CULL_FACE);
+		//glCullFace(GL_BACK);
+		//glFrontFace(GL_CCW);
 
 		glEnable(GL_BLEND);
 		glEnable(GL_ALPHA_TEST);

@@ -28,7 +28,7 @@ namespace K
 
 		K::Texture* GetTexture();
 
-		void SetTexture(K::Texture* newTexture);
+		void SetTexture(K::Texture* newTexture, bool reScale = true);
 
 		void NextFrame();
 
