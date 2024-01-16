@@ -92,8 +92,8 @@ namespace K
 	//Direction up is K::Vector3(0.0f, 1.0f, 0.0f);
 	bool Physics::Raycast(K::Vector3 origin, K::Vector3 direction, std::vector<K::Layer> avoidLayer, K::Collider** hit)
 	{
-		K::Vector3 A = K::Vector3(origin.x, origin.z, 0.0f);
-		K::Vector3 B = A + direction;
+		K::Vector3 C = K::Vector3(origin.x, origin.z, 0.0f);
+		K::Vector3 D = C + direction;
 		for (int i = 0; i < Physics::colliders.size(); i++)
 		{
 			if (K::Physics::IsInLayer(Physics::colliders[i], avoidLayer))
@@ -102,17 +102,31 @@ namespace K
 				{
 					for (int j = 0; j < Physics::colliders[i]->GetNumberOfPoints(); j++)
 					{
-						K::Vector3 C = Physics::colliders[i]->GetLine(j)->point[0];
-						K::Vector3 D = Physics::colliders[i]->GetLine(j)->point[1];
-						float x = (-(A.x * B.y - B.x * A.y) * (D.x - C.x) + (C.x * D.y - D.x * C.y) * (B.x - A.x)) / (-(C.y - D.y) * (B.x - A.x) + (A.y - B.y) * (D.x - C.x));
-						float y = (-(A.y - B.y) * x - (A.x * B.y - B.x * A.y)) / (B.x - A.x);
-						K::Vector3 J = K::Vector3(x, y, 0.0f);
+						K::Vector3 A = Physics::colliders[i]->GetLine(j)->point[0];
+						K::Vector3 B = Physics::colliders[i]->GetLine(j)->point[1];
+						float a = (-(A.x * B.y - B.x * A.y) * (D.x - C.x) + (C.x * D.y - D.x * C.y) * (B.x - A.x)) / (-(C.y - D.y) * (B.x - A.x) + (A.y - B.y) * (D.x - C.x));
+						float b = (-(A.y - B.y) * a - (A.x * B.y - B.x * A.y)) / (B.x - A.x);
+						float c = (-(C.y - D.y) * a - (C.x * D.y - D.x * C.y)) / (D.x - C.x);
+						K::Vector3 J = K::Vector3(a, 0.0f, 0.0f);
+						if (B.x - A.x == 0.0f)
+						{
+							J.y = c;
+						}
+						else 
+						{
+							J.y = b;
+						}
+						K::Vector3 AJ = (J - A).normalise();
+						K::Vector3 BJ = (J - B).normalise();
 						K::Vector3 CJ = (J - C).normalise();
 						K::Vector3 DJ = (J - D).normalise();
-						K::Vector3 CD = (C - D).normalise();
-						float U = K::Vector3::DotProduct(DJ, CD);
-						float V = K::Vector3::DotProduct(CJ, CD);
-						if (U > 0.0f && V < 0.0f)
+						K::Vector3 BA = (A - B).normalise();
+						K::Vector3 CD = (D - C).normalise();
+						float U = K::Vector3::DotProduct(BJ, BA);
+						float V = K::Vector3::DotProduct(AJ, BA);
+						float W = K::Vector3::DotProduct(CD, CJ);
+						float N = K::Vector3::DotProduct(DJ, CJ);
+						if (U > 0.0f && V < 0.0f && W > 0.0f && N < 0.0f)
 						{
 							if(hit != nullptr)
 								*hit = Physics::colliders[i];
@@ -122,7 +136,7 @@ namespace K
 				}
 				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle)
 				{
-					K::Vector3 J = *Physics::colliders[i]->PointOnLine(A, B, *Physics::colliders[i]->GetPosition());
+					K::Vector3 J = *Physics::colliders[i]->PointOnLine(C, D, *Physics::colliders[i]->GetPosition());
 					K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
 					K::Vector3 offset = J2 - *Physics::colliders[i]->GetPosition();
 					if (offset.magnitude() < Physics::colliders[i]->GetRadius())

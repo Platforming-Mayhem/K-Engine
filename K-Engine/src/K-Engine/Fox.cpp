@@ -14,9 +14,8 @@ namespace K
 
 	void Fox::Update() 
 	{
-		//AVOID FALLING ISN'T WORKING!!!
 		this->AvoidFalling();
-		//this->AvoidWalls();
+		this->AvoidWalls();
 		this->Gravity();
 		this->Move();
 	}

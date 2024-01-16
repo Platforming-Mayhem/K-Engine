@@ -34,12 +34,12 @@ namespace K
 
 	void Enemy::AvoidFalling() 
 	{
-		if (!Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, -1.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		if (!Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, -1.5f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			std::cout << "Avoid Falling: Move Left" << std::endl;
 			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 		}
-		else if (!Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, -1.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		else if (!Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, -1.5f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			std::cout << "Avoid Falling: Move Right" << std::endl;
 			this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
@@ -115,11 +115,11 @@ namespace K
 		//Avoid Falling
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
-		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius() + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.0f);
+		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius() + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.5f);
 		glEnd();
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
-		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.0f);
+		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.5f);
 		glEnd();
 		//Avoid Walls
 		glBegin(GL_LINE_STRIP);
