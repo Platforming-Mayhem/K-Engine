@@ -34,12 +34,12 @@ namespace K
 
 	void Enemy::AvoidFalling() 
 	{
-		if (!Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, -1.5f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		if (!Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			std::cout << "Avoid Falling: Move Left" << std::endl;
 			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 		}
-		else if (!Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, -1.5f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		else if (!Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			std::cout << "Avoid Falling: Move Right" << std::endl;
 			this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
@@ -66,27 +66,38 @@ namespace K
 		{
 			if (this->direction.x > 0.0f)
 			{
-				this->animator->PlayAnimation(0, this->sprite);
+				this->animator->PlayAnimation(1, this->sprite, false);
+				this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
 			}
 			else
 			{
-				this->animator->PlayAnimation(1, this->sprite);
+				this->animator->PlayAnimation(1, this->sprite, false);
+				this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
 			}
+			this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 		}
 		*this->parent->GetTransform()->position += this->direction * K::Time::deltaTime();
 	}
 
 	void Enemy::Gravity() 
 	{
-		if (K::Physics::IsColliding(this->parent))
+		if (!K::Physics::IsStatic(this->parent))
 		{
-			this->time = 0.0f;
+			if (K::Physics::IsColliding(this->parent))
+			{
+				this->time = 0.0f;
+			}
+			else
+			{
+				*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -this->time);
+				this->time += K::Time::deltaTime();
+			}
 		}
-		else
-		{
-			*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -this->time * 0.2f);
-			this->time += K::Time::deltaTime();
-		}
+	}
+
+	void Enemy::Jump() 
+	{
+		
 	}
 
 	void Enemy::Update() 

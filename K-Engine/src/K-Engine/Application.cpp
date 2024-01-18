@@ -32,9 +32,10 @@ namespace K
 			camera->SetActiveState(true);
 			camera->SetEditorState(true);
 			cam->AddComponent(camera);
+			newScene->Init();
+		#else
+			K::Deserializer deserialize = K::Deserializer(newScene, TEST_SCENE, editor);
 		#endif
-
-		K::Deserializer deserialize = K::Deserializer(newScene, TEST_SCENE, editor);
 
 		std::cout << "Scene has been deserialized" << std::endl;
 

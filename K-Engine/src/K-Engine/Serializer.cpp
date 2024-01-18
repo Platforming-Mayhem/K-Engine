@@ -5,8 +5,12 @@ namespace K
 	Serializer::Serializer(K::Scene* scene)
 	{
 		std::ofstream outFile;
-		std::string name = *scene->GetSceneName();
-		name += ".JAWS";
+		std::string name = scene->GetLocation();
+		if (scene->GetLocation() == nullptr)
+		{
+			name = *scene->GetSceneName();
+			name += ".JAWS";
+		}
 		outFile.open(name.c_str());
 		if (!outFile)
 		{
@@ -17,7 +21,7 @@ namespace K
 		{
 			if (i == 0) 
 			{
-				std::cout << "Saving..." << std::endl;
+				std::cout << "Saving to " << name << std::endl;
 			}
 			else 
 			{
@@ -137,6 +141,7 @@ namespace K
 			}
 			inFile.close();
 		}
+		newScene->SetLocation(location);
 		newScene->Init();
 	}
 

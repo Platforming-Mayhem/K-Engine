@@ -41,6 +41,10 @@ namespace K
 					{
 						this->colliderType = ColliderType::Line;
 					}
+					else if (ImGui::Selectable("Capsule")) 
+					{
+						this->colliderType = ColliderType::Capsule;
+					}
 					ImGui::EndCombo();
 				}
 				this->CircleVisualDebug();
@@ -58,10 +62,18 @@ namespace K
 					{
 						this->colliderType = ColliderType::Line;
 					}
+					else if (ImGui::Selectable("Capsule"))
+					{
+						this->colliderType = ColliderType::Capsule;
+					}
 					ImGui::EndCombo();
 				}
 				this->LineVisualDebug();
 				this->LineEditor();
+			}
+			else if (this->colliderType == ColliderType::Capsule)
+			{
+				
 			}
 		}
 	}
@@ -164,6 +176,28 @@ namespace K
 			}
 		}
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
+	}
+
+	void Collider::CapsuleVisualDebug()
+	{
+
+	}
+
+	void Collider::CapsuleEditor()
+	{
+		ImGui::DragFloat("Capsule Radius", &this->radius);
+		ImGui::DragFloat3("Offset", (float*)&this->offset);
+		ImGui::DragFloat3("Orientation", (float*)&this->orientation);
+	}
+
+	void Collider::CapsuleColliderStatic()
+	{
+
+	}
+
+	void Collider::CapsuleCollider()
+	{
+
 	}
 
 	float Collider::GetRadius() 
@@ -284,7 +318,14 @@ namespace K
 	K::Vector3* Collider::GetPosition() 
 	{
 		K::Vector3 pos = *this->parent->GetTransform()->position;
-		pos += this->offset;
+		if (this->parent->GetTransform()->scale->x > 0.0f) 
+		{
+			pos += this->offset;
+		}
+		else 
+		{
+			pos += K::Vector3(-this->offset.x, this->offset.y, this->offset.z);
+		}
 		return &pos;
 	}
 

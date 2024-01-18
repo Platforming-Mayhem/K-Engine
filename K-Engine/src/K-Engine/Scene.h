@@ -8,6 +8,7 @@ namespace K
 	class K_API Scene
 	{
 	private:
+		std::string location;
 		std::string sceneName;
 		std::vector<K::GameObject*> gameObjects;
 	public:
@@ -26,6 +27,16 @@ namespace K
 			}
 			this->gameObjects.clear();
 			this->gameObjects.shrink_to_fit();
+		}
+
+		void SetLocation(std::string location) 
+		{
+			this->location = location;
+		}
+
+		const char* GetLocation() 
+		{
+			return this->location.c_str();
 		}
 
 		void Attach(K::GameObject* gameObject)

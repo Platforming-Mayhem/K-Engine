@@ -10,13 +10,14 @@ namespace K
 	{
 	private:
 		float time = 0.0f;
-		float movementSpeed = 1.0f;
 		K::Vector3 direction;
 		K::Collider* col;
 		K::Animator* animator;
 		K::Sprite* sprite;
 		std::string properties;
 	public:
+		float movementSpeed = 1.0f;
+
 		Enemy();
 
 		~Enemy();
@@ -28,6 +29,8 @@ namespace K
 		void Move();
 
 		void Gravity();
+
+		void Jump();
 
 		void Init() override;
 

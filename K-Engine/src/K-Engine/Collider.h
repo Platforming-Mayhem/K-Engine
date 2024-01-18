@@ -22,11 +22,13 @@ namespace K
 		bool isStatic = true;
 		K::Vector3 offset = K::Vector3();
 		float radius = 1.0f;
+		float height = 1.0f;
+		K::Vector3 orientation = K::Vector3(0.0f, 1.0f, 0.0f);
 		int selectedLine = 0;
 		std::vector<K::Line> linePoints;
 		std::string properties;
 	public:
-		enum class ColliderType { Circle = 0, Line = 1 };
+		enum class ColliderType { Circle = 0, Line = 1, Capsule = 2};
 
 		ColliderType colliderType = ColliderType::Circle;
 
@@ -41,6 +43,14 @@ namespace K
 		void CircleCollider();
 
 		void CircleVisualDebug();
+
+		void CapsuleVisualDebug();
+
+		void CapsuleEditor();
+
+		void CapsuleColliderStatic();
+
+		void CapsuleCollider();
 
 		float GetRadius();
 
