@@ -8,7 +8,7 @@ namespace K
 {
 	Player::Player()
 	{
-		previousDirection = new K::Vector3(1.0f, 0.0f, 0.0f);
+		
 	}
 
 	Player::~Player() 
@@ -16,8 +16,19 @@ namespace K
 		this->animator = nullptr;
 		this->col = nullptr;
 		this->sprite = nullptr;
+		for (int i = 0; i < K::Editor::GetScene()->GetNumberOfObjects(); i++)
+		{
+			K::GameObject* temp = K::Editor::GetScene()->GetGameObjects()[i];
+			if (temp != this->parent) 
+			{
+				if (temp->GetComponentOfType(typeid(K::Camera).name()) != nullptr)
+				{
+					K::Camera* cam = (K::Camera*)temp->GetComponentOfType(typeid(K::Camera).name());
+					cam->player = nullptr;
+				}
+			}
+		}
 		delete this->direction;
-		delete this->previousDirection;
 		std::cout << "Player Destructor" << std::endl;
 	}
 
@@ -181,43 +192,46 @@ namespace K
 		if (this->isJumping)
 		{
 			this->animator->PlayAnimation(2, this->sprite, false);
-			if (direction->x < 0.0f)
+			if (this->flip)
 			{
 				this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
+				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 			}
 			else
 			{
 				this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
+				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 			}
-			this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 		}
 		else
 		{
-			if (this->direction->x != 0.0f)
+			if (direction->x != 0.0f)
 			{
 				this->animator->PlayAnimation(1, this->sprite, false);
-				if (direction->x < 0.0f)
+				if (this->flip)
 				{
 					this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
+					this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 				}
-				else
+				else 
 				{
 					this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
+					this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 				}
-				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 			}
 			else
 			{
 				this->animator->PlayAnimation(0, this->sprite, false);
-				if (previousDirection->x < 0.0f)
+				if (this->flip)
 				{
 					this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
+					this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 				}
 				else
 				{
 					this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
+					this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 				}
-				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 			}
 		}
 
@@ -251,15 +265,18 @@ namespace K
 		{
 			this->time = 0.0f;
 		}
-		if (this->direction->magnitude() != 0.0f)
-		{
-			*previousDirection = *this->direction;
-		}
 	}
 
 	void Player::Unbind() 
 	{
-		
+		if (this->direction->x > K::Time::deltaTime()) 
+		{
+			this->flip = false;
+		}
+		else if(this->direction->x < -K::Time::deltaTime())
+		{
+			this->flip = true;
+		}
 	}
 
 	void Player::Bind() 

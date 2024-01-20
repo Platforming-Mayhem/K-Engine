@@ -124,9 +124,22 @@ namespace K
 		ImGui::DragFloat3("Offset", (float*)&this->offset);
 	}
 
+	void Collider::CircleCollider()
+	{
+		if (K::Physics::CanGetClosestPoint())
+		{
+			K::Vector3* temp = K::Physics::GetCollisionResolution(this);
+			*this->parent->GetTransform()->position += temp;
+		}
+	}
+
 	void Collider::CircleColliderStatic() 
 	{
-		
+		if (K::Physics::CanGetClosestPoint())
+		{
+			K::Vector3* temp = K::Physics::GetCollisionResolution(this, {K::Layer::LayerType::Player, K::Layer::LayerType::Enemy});
+			*this->parent->GetTransform()->position += temp;
+		}
 	}
 
 	void Collider::CircleVisualDebug() 
@@ -237,15 +250,6 @@ namespace K
 	void Collider::LineColliderStatic() 
 	{
 		
-	}
-
-	void Collider::CircleCollider() 
-	{
-		if (K::Physics::CanGetClosestPoint()) 
-		{
-			K::Vector3* temp = K::Physics::GetCollisionResolution(this);
-			*this->parent->GetTransform()->position += temp;
-		}
 	}
 
 	K::Vector3* Collider::ClosestPointLineCollider(K::Vector3 P) 

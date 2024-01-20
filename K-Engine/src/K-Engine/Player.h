@@ -10,6 +10,7 @@ namespace K
 	{
 	private:
 		bool hasGravity = false;
+		bool flip = false;
 		bool isJumping = false;
 		float movementSpeed = 1.0f;
 		float time = 0.0f;
@@ -18,7 +19,6 @@ namespace K
 		float decelerationTime = 0.0f;
 		float attackDirection = 1.0f;
 		K::Vector3* direction;
-		K::Vector3* previousDirection;
 		K::Animator* animator;
 		K::Collider* col;
 		K::Sprite* sprite;

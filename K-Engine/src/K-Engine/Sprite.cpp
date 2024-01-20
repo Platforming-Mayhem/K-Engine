@@ -167,6 +167,11 @@ namespace K
 		this->texture->Unbind();
 	}
 
+	int Sprite::GetFrameNumber() 
+	{
+		return this->frame;
+	}
+
 	void Sprite::NextFrame() 
 	{
 		if (this->texture->GetNumberOfFrames() > 1)

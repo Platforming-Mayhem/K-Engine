@@ -265,7 +265,7 @@ namespace K
 			}
 		}
 		#endif
-		if (!this->isEditorCamera)
+		if (!this->isEditorCamera && this->player != nullptr)
 		{
 			K::Vector3 offset = *player->position - K::Vector3(0.0f, 1.0f, 0.0f);
 			K::Vector3 position = K::Vector3::Lerp(*this->parent->GetTransform()->position, offset, K::Time::deltaTime() * this->movementSpeed);

@@ -32,6 +32,8 @@ namespace K
 
 		void NextFrame();
 
+		int GetFrameNumber();
+
 		bool IsPlaying();
 
 		void Init() override;

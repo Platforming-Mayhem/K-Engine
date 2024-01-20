@@ -22,11 +22,12 @@ namespace K
 		std::string properties;
 		K::Material* material = nullptr;
 		K::Window* window = nullptr;
-		K::Transform* player = nullptr;
 
 		float movementSpeed = 10.0f;
 		float rotationSpeed = 100.0f;
 	public:
+
+		K::Transform* player = nullptr;
 
 		K::Vector3 GetMousePosition(K::Window* window);
 

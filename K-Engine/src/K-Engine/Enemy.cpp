@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Time.h"
+#include "Editor.h"
 
 namespace K 
 {
@@ -32,6 +33,47 @@ namespace K
 		this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 	}
 
+	void Enemy::Attack() 
+	{
+		K::Collider* temp = nullptr;
+		if (this->direction.x > 0.0f) 
+		{
+			if (Physics::Hitbox(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, -this->col->GetRadius()), *this->col->GetPosition() + K::Vector3(this->col->GetRadius() + 2.0f, 0.0f, this->col->GetRadius() + 1.0f), { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &temp))
+			{
+				if (this->animator != nullptr)
+				{
+					this->animator->PlayAnimation(2, this->sprite, false);
+					this->isAttacking = true;
+					if (this->sprite->GetFrameNumber() >= this->minAttackFrame && this->sprite->GetFrameNumber() <= this->maxAttackFrame && temp != nullptr)
+					{
+						K::Editor::Delete(temp->parent);
+						temp = nullptr;
+					}
+				}
+			}
+		}
+		else 
+		{
+			if (Physics::Hitbox(*this->col->GetPosition() + K::Vector3(-this->col->GetRadius() - 2.0f, 0.0f, -this->col->GetRadius()), *this->col->GetPosition() + K::Vector3(-this->col->GetRadius(), 0.0f, this->col->GetRadius() + 1.0f), { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &temp))
+			{
+				if (this->animator != nullptr)
+				{
+					this->animator->PlayAnimation(2, this->sprite, false);
+					this->isAttacking = true;
+					if (this->sprite->GetFrameNumber() >= this->minAttackFrame && this->sprite->GetFrameNumber() <= this->maxAttackFrame && temp != nullptr)
+					{
+						K::Editor::Delete(temp->parent);
+						temp = nullptr;
+					}
+				}
+			}
+		}
+		if (this->isAttacking && !this->sprite->IsPlaying()) 
+		{
+			this->isAttacking = false;
+		}
+	}
+
 	void Enemy::AvoidFalling() 
 	{
 		if (!Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
@@ -62,36 +104,36 @@ namespace K
 
 	void Enemy::Move() 
 	{
-		if (this->animator != nullptr)
+		if (!this->isAttacking) 
 		{
-			if (this->direction.x > 0.0f)
+			if (this->animator != nullptr)
 			{
-				this->animator->PlayAnimation(1, this->sprite, false);
-				this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
+				if (this->direction.x > 0.0f)
+				{
+					this->animator->PlayAnimation(1, this->sprite, false);
+					this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
+				}
+				else
+				{
+					this->animator->PlayAnimation(1, this->sprite, false);
+					this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
+				}
+				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 			}
-			else
-			{
-				this->animator->PlayAnimation(1, this->sprite, false);
-				this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
-			}
-			this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+			*this->parent->GetTransform()->position += this->direction * K::Time::deltaTime();
 		}
-		*this->parent->GetTransform()->position += this->direction * K::Time::deltaTime();
 	}
 
 	void Enemy::Gravity() 
 	{
-		if (!K::Physics::IsStatic(this->parent))
+		if (K::Physics::IsColliding(this->parent))
 		{
-			if (K::Physics::IsColliding(this->parent))
-			{
-				this->time = 0.0f;
-			}
-			else
-			{
-				*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -this->time);
-				this->time += K::Time::deltaTime();
-			}
+			this->time = 0.0f;
+		}
+		else
+		{
+			*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -this->time);
+			this->time += K::Time::deltaTime();
 		}
 	}
 
@@ -126,11 +168,11 @@ namespace K
 		//Avoid Falling
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
-		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius() + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.5f);
+		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius() + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - (this->col->GetRadius() + 0.1f));
 		glEnd();
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
-		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - 1.5f);
+		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - (this->col->GetRadius() + 0.1f));
 		glEnd();
 		//Avoid Walls
 		glBegin(GL_LINE_STRIP);
@@ -140,6 +182,18 @@ namespace K
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
 		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z);
+		glEnd();
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
+		//Attack Hitbox
+		//RIGHT
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z - this->col->GetRadius());
+		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius() + 2.0f, this->col->GetPosition()->y, this->col->GetPosition()->z + this->col->GetRadius() + 1.0f);
+		glEnd();
+		//LEFT
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 2.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - this->col->GetRadius());
+		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z + this->col->GetRadius() + 1.0f);
 		glEnd();
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 	}

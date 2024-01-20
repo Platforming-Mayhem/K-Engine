@@ -4,7 +4,8 @@ namespace K
 {
 	Fox::Fox() 
 	{
-
+		this->minAttackFrame = 10;
+		this->maxAttackFrame = 12;
 	}
 
 	Fox::~Fox() 
@@ -14,6 +15,7 @@ namespace K
 
 	void Fox::Update() 
 	{
+		this->Attack();
 		this->AvoidFalling();
 		this->AvoidWalls();
 		this->Move();

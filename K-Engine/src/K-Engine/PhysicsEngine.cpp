@@ -204,14 +204,14 @@ namespace K
 		return points;
 	}
 
-	K::Vector3* Physics::GetCollisionResolution(K::Collider* col) 
+	K::Vector3* Physics::GetCollisionResolution(K::Collider* col, std::vector<K::Layer> avoidLayer)
 	{
 		K::Vector3* offsetAmount = new K::Vector3();
 		int count = 0;
 		if (col->colliderType == K::Collider::ColliderType::Circle) 
 		{
 			K::Vector3 position = *col->GetPosition();
-			for (K::ContactPoint J : K::Physics::GetClosestPoints(position))
+			for (K::ContactPoint J : K::Physics::GetClosestPoints(position, avoidLayer))
 			{
 				K::Vector3 originToJ = J.normal.normalise() * -(J.position - position).magnitude();
 				K::Vector3 normal = J.normal.normalise();

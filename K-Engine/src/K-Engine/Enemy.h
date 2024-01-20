@@ -16,11 +16,16 @@ namespace K
 		K::Sprite* sprite;
 		std::string properties;
 	public:
+		bool isAttacking = false;
 		float movementSpeed = 1.0f;
+		int minAttackFrame = 0;
+		int maxAttackFrame = 0;
 
 		Enemy();
 
 		~Enemy();
+
+		void Attack();
 
 		void AvoidFalling();
 
