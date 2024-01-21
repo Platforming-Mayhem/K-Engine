@@ -76,15 +76,18 @@ namespace K
 
 	void Enemy::AvoidFalling() 
 	{
-		if (!Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		if (K::Physics::IsColliding(this->parent)) 
 		{
-			std::cout << "Avoid Falling: Move Left" << std::endl;
-			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
+			this->isJumping = false;
+			this->jumpTime = 0.0f;
 		}
-		else if (!Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		if (!K::Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(0.5f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			std::cout << "Avoid Falling: Move Right" << std::endl;
-			this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
+			this->Jump();
+		}
+		else if (!K::Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-0.5f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+		{
+			this->Jump();
 		}
 	}
 
@@ -92,12 +95,10 @@ namespace K
 	{
 		if (Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			std::cout << "Avoid Walls: Move Left" << std::endl;
 			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 		}
 		else if (Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			std::cout << "Avoid Walls: Move Right" << std::endl;
 			this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
 		}
 	}
@@ -106,7 +107,7 @@ namespace K
 	{
 		if (!this->isAttacking) 
 		{
-			if (this->animator != nullptr)
+			if (this->animator != nullptr && !this->isJumping)
 			{
 				if (this->direction.x > 0.0f)
 				{
@@ -126,7 +127,7 @@ namespace K
 
 	void Enemy::Gravity() 
 	{
-		if (K::Physics::IsColliding(this->parent))
+		if (K::Physics::IsColliding(this->parent) && !this->isJumping)
 		{
 			this->time = 0.0f;
 		}
@@ -139,7 +140,17 @@ namespace K
 
 	void Enemy::Jump() 
 	{
-		
+		this->isJumping = true;
+		this->animator->PlayAnimation(3, this->sprite, false);
+	}
+
+	void Enemy::JumpUpdate() 
+	{
+		if (this->isJumping && this->jumpTime < 1.0f) 
+		{
+			this->jumpTime += K::Time::deltaTime();
+			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f);
+		}
 	}
 
 	void Enemy::Update() 
@@ -168,11 +179,11 @@ namespace K
 		//Avoid Falling
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
-		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius() + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - (this->col->GetRadius() + 0.1f));
+		glVertex3f(this->col->GetPosition()->x + this->col->GetRadius() + 0.5f, this->col->GetPosition()->y, this->col->GetPosition()->z - (this->col->GetRadius() + 0.1f));
 		glEnd();
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius(), this->col->GetPosition()->y, this->col->GetPosition()->z);
-		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z - (this->col->GetRadius() + 0.1f));
+		glVertex3f(this->col->GetPosition()->x - this->col->GetRadius() - 0.5f, this->col->GetPosition()->y, this->col->GetPosition()->z - (this->col->GetRadius() + 0.1f));
 		glEnd();
 		//Avoid Walls
 		glBegin(GL_LINE_STRIP);

@@ -10,6 +10,7 @@ namespace K
 	{
 	private:
 		float time = 0.0f;
+		float jumpTime = 0.0f;
 		K::Vector3 direction;
 		K::Collider* col;
 		K::Animator* animator;
@@ -17,6 +18,7 @@ namespace K
 		std::string properties;
 	public:
 		bool isAttacking = false;
+		bool isJumping = false;
 		float movementSpeed = 1.0f;
 		int minAttackFrame = 0;
 		int maxAttackFrame = 0;
@@ -36,6 +38,8 @@ namespace K
 		void Gravity();
 
 		void Jump();
+
+		void JumpUpdate();
 
 		void Init() override;
 

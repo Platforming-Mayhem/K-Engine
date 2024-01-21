@@ -19,6 +19,7 @@ namespace K
 		this->AvoidFalling();
 		this->AvoidWalls();
 		this->Move();
+		this->JumpUpdate();
 		this->Gravity();
 	}
 
