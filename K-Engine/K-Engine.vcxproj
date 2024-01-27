@@ -93,7 +93,9 @@
     <Image Include="src\K-Engine\watermark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Application\Test.JAWS" />
+    <None Include="..\Application\Test.JAWS">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="src\K-Engine\3D.shader" />
     <None Include="src\K-Engine\KEngineResources.aps" />
     <None Include="src\K-Engine\models1.bin" />

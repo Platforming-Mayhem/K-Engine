@@ -11,6 +11,8 @@ namespace K
 	private:
 		float time = 0.0f;
 		float jumpTime = 0.0f;
+		float decidingTime = 1.0f;
+		int r = 0;
 		K::Vector3 direction;
 		K::Collider* col;
 		K::Animator* animator;
@@ -40,6 +42,8 @@ namespace K
 		void Jump();
 
 		void JumpUpdate();
+
+		void ChooseDirection();
 
 		void Init() override;
 

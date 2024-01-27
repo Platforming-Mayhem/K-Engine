@@ -79,6 +79,7 @@ namespace K
 		if (K::Physics::IsColliding(this->parent)) 
 		{
 			this->isJumping = false;
+			this->time = 0.0f;
 			this->jumpTime = 0.0f;
 		}
 		if (!K::Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(0.5f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
@@ -95,11 +96,43 @@ namespace K
 	{
 		if (Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
+			//this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
+			this->Jump();
 		}
 		else if (Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
+			//this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
+			this->Jump();
+		}
+	}
+
+	void Enemy::ChooseDirection()
+	{
+		if (this->decidingTime > 0.0f) 
+		{
+			this->decidingTime -= K::Time::deltaTime();
+		}
+		else if(this->decidingTime <= -0.5f)
+		{
+			this->r = rand() - (RAND_MAX / 2);
+			this->decidingTime = 1.0f;
+		}
+		else 
+		{
+			this->decidingTime -= K::Time::deltaTime();
+			this->r = 0;
+		}
+		if (this->r > 0 && this->direction.magnitude() == 0.0f)
+		{
 			this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
+		}
+		else if (this->r < 0 && this->direction.magnitude() == 0.0f)
+		{
+			this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
+		}
+		else if(this->r == 0)
+		{
+			this->direction = K::Vector3(0.0f, 0.0f, 0.0f);
 		}
 	}
 
@@ -114,10 +147,14 @@ namespace K
 					this->animator->PlayAnimation(1, this->sprite, false);
 					this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
 				}
-				else
+				else if(this->direction.x < 0.0f)
 				{
 					this->animator->PlayAnimation(1, this->sprite, false);
 					this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
+				}
+				else 
+				{
+					this->animator->PlayAnimation(0, this->sprite, false);
 				}
 				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
 			}
@@ -127,11 +164,7 @@ namespace K
 
 	void Enemy::Gravity() 
 	{
-		if (K::Physics::IsColliding(this->parent) && !this->isJumping)
-		{
-			this->time = 0.0f;
-		}
-		else
+		if(!K::Physics::IsColliding(this->parent))
 		{
 			*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -this->time);
 			this->time += K::Time::deltaTime();

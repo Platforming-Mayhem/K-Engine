@@ -15,6 +15,7 @@ namespace K
 
 	void Fox::Update() 
 	{
+		this->ChooseDirection();
 		this->Attack();
 		this->AvoidFalling();
 		this->AvoidWalls();
