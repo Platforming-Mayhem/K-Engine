@@ -69,6 +69,7 @@ namespace K
 					{
 						file.SetTitle("Load Scene");
 						file.SetTypeFilters({ ".JAWS" });
+						file.SetPwd(ASSET_DIR);
 						file.Open();
 					}
 					if (ImGui::MenuItem("Save..."))

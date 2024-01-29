@@ -238,6 +238,30 @@
     <Image Include="assets\textures\watermark.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\textures\Fox_Attack.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\Fox_Idle.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\Fox_Jump.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\Fox_Walk.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\Mouse_Idle.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\Mouse_Jump.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\Mouse_Move.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\Sewer_G.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="assets\KEngineResources.rc">
@@ -256,5 +280,8 @@
   <ItemGroup>
     <Library Include="vendors\GLEW\lib\Release\x64\glew32.lib" />
     <Library Include="vendors\GLEW\lib\Release\x64\glew32s.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\excludeFromBuild.txt" />
   </ItemGroup>
 </Project>

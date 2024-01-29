@@ -56,13 +56,15 @@ namespace K
 			{
 				file.SetTitle("Load Sprite");
 				file.SetTypeFilters({ ".PNG", ".JPG", ".GIF" });
+				file.SetPwd(ASSET_DIR);
 				file.Open();
 			}
 			file.Display();
 			if (file.HasSelected())
 			{
 				std::string location = file.GetSelected().string();
-				K::Texture* temp = new K::Texture(location.c_str(), GL_TEXTURE_2D);
+				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
+				K::Texture* temp = new K::Texture(relativeLocation.c_str(), GL_TEXTURE_2D);
 				this->animations.push_back(temp);
 				this->selectedTexture = this->animations.size() - 1;
 				file.ClearSelected();

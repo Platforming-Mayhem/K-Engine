@@ -1,0 +1,4 @@
+.rc
+.h
+.aps
+excludeFromBuild.txt

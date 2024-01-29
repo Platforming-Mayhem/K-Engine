@@ -9,7 +9,7 @@ namespace K
 		this->filename = filename;
 		this->type = type;
 		stbi_set_flip_vertically_on_load(true);
-		this->image = stbi_load(filename, &this->width, &this->height, &this->c, 0);
+		this->image = stbi_load((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->c, 0);
 		glGenTextures(1, &this->id);
 		glBindTexture(this->type, this->id);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -30,7 +30,7 @@ namespace K
 		}
 		else
 		{
-			std::cout << "Failed to load texture" << std::endl;
+			std::cout << "Failed to load texture at: " << this->filename << std::endl;
 		}
 		glActiveTexture(0);
 		glBindTexture(this->type, 0);
@@ -140,7 +140,7 @@ namespace K
 	void Texture::LoadAnimation() 
 	{
 		this->Bind(0);
-		this->image = stbi_xload_file(this->GetFilePath(), &this->width, &this->height, &this->frames, &this->delay);
+		this->image = stbi_xload_file((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->frames, &this->delay);
 		if (this->frames <= 1)
 		{
 			stbi_image_free(this->image);
