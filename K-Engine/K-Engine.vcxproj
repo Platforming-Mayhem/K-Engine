@@ -24,7 +24,7 @@
     <ClInclude Include="src\K-Engine\Scene.h" />
     <ClInclude Include="src\K-Engine\Editor.h" />
     <ClInclude Include="src\K-Engine\Mesh.h" />
-    <ClInclude Include="src\K-Engine\resource.h" />
+    <ClInclude Include="assets\resource.h" />
     <ClInclude Include="src\K-Engine\GameObject.h" />
     <ClInclude Include="src\K-Engine\Serializer.h" />
     <ClInclude Include="src\K-Engine\Sprite.h" />
@@ -87,17 +87,14 @@
     <ClCompile Include="vendors\IMGUI\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\K-Engine\KEngineResources.rc" />
+    <ResourceCompile Include="assets\KEngineResources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\K-Engine\watermark.png" />
+    <Image Include="assets\textures\watermark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Application\Test.JAWS">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
-    <None Include="src\K-Engine\3D.shader" />
-    <None Include="src\K-Engine\KEngineResources.aps" />
+    <None Include="assets\shaders\3D.shader" />
+    <None Include="assets\scenes\Test.JAWS" />
     <None Include="src\K-Engine\models1.bin" />
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>GLEW_STATIC;K_WINDOWS;K_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendors\GLFW\include;$(ProjectDir)vendors\GLEW\include;$(ProjectDir)vendors\STB;$(ProjectDir)vendors\IMGUI;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)vendors\GLFW\include;$(ProjectDir)vendors\GLEW\include;$(ProjectDir)vendors\STB;$(ProjectDir)vendors\IMGUI;$(ProjectDir)src;$(ProjectDir)assets</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -170,7 +167,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>GLEW_STATIC;K_WINDOWS;K_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendors\GLFW\include;$(ProjectDir)vendors\GLEW\include;$(ProjectDir)vendors\STB;$(ProjectDir)vendors\IMGUI;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)vendors\GLFW\include;$(ProjectDir)vendors\GLEW\include;$(ProjectDir)vendors\STB;$(ProjectDir)vendors\IMGUI;$(ProjectDir)src;$(ProjectDir)assets</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <AdditionalOptions>/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS %(AdditionalOptions)</AdditionalOptions>

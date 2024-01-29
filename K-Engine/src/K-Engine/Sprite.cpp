@@ -48,7 +48,7 @@ namespace K
 			case 0:
 			{
 				K::Texture* tempTex = new K::Texture(temp.c_str(), GL_TEXTURE_2D);
-				this->SetTexture(tempTex);
+				this->SetTexture(tempTex, false);
 			}
 			break;
 			case 1:
@@ -236,7 +236,7 @@ namespace K
 			{
 				std::string location = file.GetSelected().string();
 				K::Texture* temp = new K::Texture(location.c_str(), GL_TEXTURE_2D);
-				this->SetTexture(temp);
+				this->SetTexture(temp, false);
 				file.ClearSelected();
 			}
 		}

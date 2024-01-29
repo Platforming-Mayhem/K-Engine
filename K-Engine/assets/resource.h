@@ -3,8 +3,8 @@
 // Used by KEngineResources.rc
 //
 #define WATERMARK                       101
-#define CORE_SHADER                     107
-#define TEST_SCENE                      117
+#define CORE_SHADER                     102
+#define TEST_SCENE                      103
 
 // Next default values for new objects
 // 

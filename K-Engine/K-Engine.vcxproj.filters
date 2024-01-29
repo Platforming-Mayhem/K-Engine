@@ -33,7 +33,7 @@
     <ClInclude Include="src\K-Engine\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\resource.h">
+    <ClInclude Include="assets\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\K-Engine\Editor.h">
@@ -235,24 +235,23 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\K-Engine\watermark.png">
+    <Image Include="assets\textures\watermark.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\K-Engine\KEngineResources.rc">
+    <ResourceCompile Include="assets\KEngineResources.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\K-Engine\3D.shader">
+    <None Include="assets\shaders\3D.shader">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="src\K-Engine\KEngineResources.aps" />
     <None Include="src\K-Engine\models1.bin">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Application\Test.JAWS" />
+    <None Include="assets\scenes\Test.JAWS" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="vendors\GLEW\lib\Release\x64\glew32.lib" />

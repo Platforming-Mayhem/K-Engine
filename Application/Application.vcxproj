@@ -53,7 +53,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>K_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)K-Engine\src;$(SolutionDir)K-Engine\vendors\GLEW\include;$(SolutionDir)K-Engine\vendors\GLFW\include;$(SolutionDir)K-Engine\vendors\STB;$(SolutionDir)K-Engine\vendors\IMGUI\examples;$(SolutionDir)K-Engine\vendors\IMGUI</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)K-Engine\assets;$(SolutionDir)K-Engine\src;$(SolutionDir)K-Engine\vendors\GLEW\include;$(SolutionDir)K-Engine\vendors\GLFW\include;$(SolutionDir)K-Engine\vendors\STB;$(SolutionDir)K-Engine\vendors\IMGUI\examples;$(SolutionDir)K-Engine\vendors\IMGUI</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
@@ -72,7 +72,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>K_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)K-Engine\src;$(SolutionDir)K-Engine\vendors\GLEW\include;$(SolutionDir)K-Engine\vendors\GLFW\include;$(SolutionDir)K-Engine\vendors\STB;$(SolutionDir)K-Engine\vendors\IMGUI\examples;$(SolutionDir)K-Engine\vendors\IMGUI</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)K-Engine\assets;$(SolutionDir)K-Engine\src;$(SolutionDir)K-Engine\vendors\GLEW\include;$(SolutionDir)K-Engine\vendors\GLFW\include;$(SolutionDir)K-Engine\vendors\STB;$(SolutionDir)K-Engine\vendors\IMGUI\examples;$(SolutionDir)K-Engine\vendors\IMGUI</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
