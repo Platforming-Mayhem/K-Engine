@@ -6,6 +6,7 @@
 #include <K-Engine/Material.h>
 #include <K-Engine/Editor.h>
 #include <K-Engine/Scene.h>
+#include <K-Engine/SceneManager.h>
 #include <K-Engine/Time.h>
 #include <K-Engine/Component.h>
 #include <K-Engine/Texture.h>

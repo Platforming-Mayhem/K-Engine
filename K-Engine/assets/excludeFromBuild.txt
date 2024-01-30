@@ -2,3 +2,5 @@
 .h
 .aps
 excludeFromBuild.txt
+scenes
+shaders

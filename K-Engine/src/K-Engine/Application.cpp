@@ -19,9 +19,9 @@ namespace K
 
 		K::Material* material = new K::Material();
 
-		K::Scene* newScene = new Scene("Test");
+		K::SceneManager manager = K::SceneManager();
 
-		K::Editor* editor = new K::Editor(window, newScene, material);
+		K::Editor* editor = new K::Editor(window, manager.currentScene, material);
 
 		#if _DEBUG
 			K::Transform* camPosition = new K::Transform(new Vector3(0.0f, -10.0f, 0.0f), new K::Vector3(90.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
@@ -32,9 +32,9 @@ namespace K
 			camera->SetActiveState(true);
 			camera->SetEditorState(true);
 			cam->AddComponent(camera);
-			newScene->Init();
+			manager.currentScene->Init();
 		#else
-			K::Deserializer deserialize = K::Deserializer(newScene, TEST_SCENE, editor);
+			K::Deserializer deserialize = K::Deserializer(manager.currentScene, TEST_SCENE, editor);
 		#endif
 
 		std::cout << "Scene has been deserialized" << std::endl;
@@ -50,19 +50,17 @@ namespace K
 
 			glClearColor(19.0f / 255.0f, 18.0f / 255.0f, 15.0f / 255.0f, 1.0f);
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glUseProgram(material->GetShader()->shader);
 
-			newScene->Render();
+			manager.currentScene->Render();
 			#if _DEBUG
 			if (editor->Render()) 
 			{
 				break;
 			}
 			#endif
-
-			glFlush();
 
 			glfwSwapBuffers(window->window);
 

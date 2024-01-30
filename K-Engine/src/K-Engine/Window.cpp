@@ -18,8 +18,6 @@ namespace K
 		this->width = mode->width;
 		this->height = mode->height;
 		this->refreshRate = mode->refreshRate;
-		//Set fullscreen: window = glfwCreateWindow(screenWidth, screenHeight, "Rasterizer", monitor, NULL);
-		//glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 		glViewport(0, 0, this->width, this->height);
 		#if _DEBUG
 			this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
@@ -35,6 +33,7 @@ namespace K
 			std::cout << "Failed to create window" << std::endl;
 		}
 		glfwMakeContextCurrent(this->window);
+
 		glfwSwapInterval(1);
 
 		if (glewInit() != GLEW_OK)
