@@ -70,6 +70,7 @@ namespace K
 			{
 				if (gameObject == this->gameObjects[i]) 
 				{
+					std::cout << this->gameObjects[i]->GetName() << std::endl;
 					delete this->gameObjects[i];
 					this->gameObjects.erase(this->gameObjects.begin() + i);
 					this->gameObjects.shrink_to_fit();
@@ -81,6 +82,7 @@ namespace K
 			{
 				if (gameObject == this->gameObjects[i])
 				{
+					std::cout << this->gameObjects[i]->GetName() << std::endl;
 					delete this->gameObjects[i];
 					this->gameObjects.erase(this->gameObjects.begin() + i);
 					this->gameObjects.shrink_to_fit();

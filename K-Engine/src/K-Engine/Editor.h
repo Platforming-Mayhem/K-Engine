@@ -39,6 +39,7 @@ namespace K
 		K::Window* window;
 		ImGui::FileBrowser file;
 		bool buildWindow;
+		bool saveWindow;
 		int selectedScene = -1;
 		static K::Material* material;
 		static K::SceneManager* sceneManager;

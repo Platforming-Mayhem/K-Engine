@@ -28,7 +28,7 @@ namespace K
 		std::vector<K::Line> linePoints;
 		std::string properties;
 	public:
-		enum class ColliderType { Circle = 0, Line = 1, Capsule = 2};
+		enum class ColliderType { Circle = 0, Line = 1};
 
 		ColliderType colliderType = ColliderType::Circle;
 
@@ -43,14 +43,6 @@ namespace K
 		void CircleCollider();
 
 		void CircleVisualDebug();
-
-		void CapsuleVisualDebug();
-
-		void CapsuleEditor();
-
-		void CapsuleColliderStatic();
-
-		void CapsuleCollider();
 
 		float GetRadius();
 
