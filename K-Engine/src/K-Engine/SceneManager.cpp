@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include "Editor.h"
 
 namespace K
 {
@@ -56,9 +57,16 @@ namespace K
 	void SceneManager::LoadScene(int index) 
 	{
 		K::SceneManager::currentScene->CreateEmptyScene();
+		K::Editor::selectedGameObject = nullptr;
 		if (this->scenes.size() > 0) 
 		{
+			std::string location = this->scenes[index];
+			std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
 			K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, this->scenes[index]);
+		}
+		else 
+		{
+			K::SceneManager::currentScene->Init();
 		}
 	}
 

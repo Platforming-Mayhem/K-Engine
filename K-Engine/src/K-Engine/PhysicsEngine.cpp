@@ -59,9 +59,9 @@ namespace K
 	bool Physics::IsInLayer(K::Collider* col, std::vector<K::Layer> avoidLayer)
 	{
 		bool isInLayer = true;
-		for (K::Layer layer : avoidLayer)
+		for (int i = 0; i < avoidLayer.size(); i++)
 		{
-			if (col->parent->layer == layer.layer)
+			if (col->parent->layer == avoidLayer[i].layer)
 			{
 				isInLayer = false;
 				return isInLayer;

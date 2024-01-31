@@ -34,7 +34,6 @@ namespace K
 			cam->AddComponent(camera);
 		#endif
 		manager->LoadScene(0);
-		manager->currentScene->Init();
 
 		std::cout << "Scene has been initialized" << std::endl;
 		std::cout << "Number Of Scenes in Build :" << manager->GetNumberOfScenes() << std::endl;

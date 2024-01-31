@@ -43,8 +43,9 @@ namespace K
 		int selectedScene = -1;
 		static K::Material* material;
 		static K::SceneManager* sceneManager;
-		static K::GameObject* selectedGameObject;
 	public:
+
+		static K::GameObject* selectedGameObject;
 
 		static std::map<std::string, IFactory*> lst;
 

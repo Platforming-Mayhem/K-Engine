@@ -3,5 +3,4 @@
 .aps
 excludeFromBuild.txt
 SceneManager.txt
-scenes
 shaders

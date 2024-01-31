@@ -76,6 +76,16 @@ namespace K
 
 	void Enemy::AvoidFalling() 
 	{
+		if (K::Physics::IsColliding(this->parent))
+		{
+			if (this->isJumping)
+			{
+				this->isJumping = false;
+				this->jumpTime = 0.0f;
+				this->animator->PlayAnimation(0, this->sprite, false);
+			}
+			this->time = 0.0f;
+		}
 		if (!K::Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(0.5f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			this->Jump();
@@ -187,16 +197,6 @@ namespace K
 		{
 			this->jumpTime += K::Time::deltaTime();
 			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f);
-		}
-		if (K::Physics::IsColliding(this->parent)) 
-		{
-			if (this->isJumping)
-			{
-				this->isJumping = false;
-				this->jumpTime = 0.0f;
-				this->animator->PlayAnimation(0, this->sprite, false);
-			}
-			this->time = 0.0f;
 		}
 	}
 
