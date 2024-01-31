@@ -16,9 +16,9 @@ namespace K
 		this->animator = nullptr;
 		this->col = nullptr;
 		this->sprite = nullptr;
-		for (int i = 0; i < K::Editor::GetScene()->GetNumberOfObjects(); i++)
+		for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++)
 		{
-			K::GameObject* temp = K::Editor::GetScene()->GetGameObjects()[i];
+			K::GameObject* temp = K::Editor::GetCurrentScene()->GetGameObjects()[i];
 			if (temp != this->parent) 
 			{
 				if (temp->GetComponentOfType(typeid(K::Camera).name()) != nullptr)

@@ -1,6 +1,6 @@
 #pragma once
 #include "build.h"
-#include "Scene.h"
+#include "SceneManager.h"
 #include "Material.h"
 #include "Window.h"
 #include "Sprite.h"
@@ -38,14 +38,16 @@ namespace K
 	private:
 		K::Window* window;
 		ImGui::FileBrowser file;
+		bool buildWindow;
+		int selectedScene;
 		static K::Material* material;
-		static K::Scene* currentScene;
+		static K::SceneManager* sceneManager;
 		static K::GameObject* selectedGameObject;
 	public:
 
-		std::map<std::string, IFactory*> lst { {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Fox).name() , new K::Factory<K::Fox>} };
+		static std::map<std::string, IFactory*> lst;
 
-		Editor(K::Window* window, K::Scene* scene, K::Material* material);
+		Editor(K::Window* window, K::SceneManager* sceneManager, K::Material* material);
 
 		virtual ~Editor();
 
@@ -61,6 +63,6 @@ namespace K
 
 		static K::GameObject* GetSelectedGameObject();
 
-		static K::Scene* GetScene();
+		static K::Scene* GetCurrentScene();
 	};
 }

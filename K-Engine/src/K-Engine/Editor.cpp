@@ -5,9 +5,10 @@ namespace K
 {
 	K::Material* K::Editor::material;
 	K::GameObject* K::Editor::selectedGameObject;
-	K::Scene* K::Editor::currentScene;
+	K::SceneManager* K::Editor::sceneManager;
+	std::map<std::string, IFactory*> K::Editor::lst{ {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Fox).name() , new K::Factory<K::Fox>} };
 
-	Editor::Editor(K::Window* window, K::Scene* scene, K::Material* material)
+	Editor::Editor(K::Window* window, K::SceneManager* sceneManager, K::Material* material)
 	{
 		//IMGUI Setup Stuffs
 		IMGUI_CHECKVERSION();
@@ -16,14 +17,14 @@ namespace K
 		ImGui::StyleColorsDark();
 		ImGui_ImplGlfw_InitForOpenGL(window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
-		this->currentScene = scene;
+		this->sceneManager = sceneManager;
 		this->window = window;
 		this->material = material;
+		this->buildWindow = false;
 	}
 
 	Editor::~Editor()
 	{
-		delete this->currentScene;
 		delete this->material;
 		delete this->window;
 		ImGui_ImplOpenGL3_Shutdown();
@@ -31,9 +32,9 @@ namespace K
 		ImGui::DestroyContext();
 	}
 
-	K::Scene* Editor::GetScene() 
+	K::Scene* Editor::GetCurrentScene() 
 	{
-		return currentScene;
+		return K::Editor::sceneManager->currentScene;
 	}
 
 	K::GameObject* Editor::GetSelectedGameObject() 
@@ -54,54 +55,107 @@ namespace K
 		ImGui::NewFrame();
 
 		{
-			ImGui::Begin("K-Engine Properties", NULL, ImGuiWindowFlags_MenuBar);
-
-			if (ImGui::BeginMenuBar())
+			if (ImGui::Begin("K-Engine Properties", NULL, ImGuiWindowFlags_MenuBar)) 
 			{
-				if (ImGui::BeginMenu("File"))
+				if (ImGui::BeginMenuBar())
 				{
-					if (ImGui::MenuItem("New Scene"))
+					if (ImGui::BeginMenu("File"))
 					{
-						this->currentScene->CreateEmptyScene();
-						this->selectedGameObject = nullptr;
+						if (ImGui::MenuItem("New Scene"))
+						{
+							K::Editor::GetCurrentScene()->CreateEmptyScene();
+							this->selectedGameObject = nullptr;
+						}
+						if (ImGui::MenuItem("Open..."))
+						{
+							file.SetTitle("Load Scene");
+							file.SetTypeFilters({ ".JAWS" });
+							file.SetPwd(ASSET_DIR);
+							file.Open();
+						}
+						if (ImGui::MenuItem("Save..."))
+						{
+							K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene());
+						}
+						if (ImGui::MenuItem("Build..."))
+						{
+							this->buildWindow = true;
+						}
+						if (ImGui::MenuItem("Exit"))
+						{
+							return true;
+						}
+						ImGui::EndMenu();
 					}
-					if (ImGui::MenuItem("Open..."))
+					ImGui::EndMenuBar();
+				}
+				file.Display();
+				if (this->buildWindow) 
+				{
+					ImGui::BeginChild("Build Menu");
+
+					if (ImGui::Button("Add Scene"))
 					{
 						file.SetTitle("Load Scene");
-						file.SetTypeFilters({ ".JAWS" });
+						file.SetTypeFilters({ ".JAWS"});
 						file.SetPwd(ASSET_DIR);
 						file.Open();
 					}
-					if (ImGui::MenuItem("Save..."))
+					if (file.HasSelected())
 					{
-						K::Serializer serialize = K::Serializer(this->currentScene);
+						std::string location = file.GetSelected().string();
+						std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
+						this->sceneManager->AddScene(relativeLocation);
+						file.ClearSelected();
 					}
-					if (ImGui::MenuItem("Exit"))
+					if (ImGui::BeginListBox("Scenes"))
 					{
-						return true;
+						for (int i = 0; i < this->sceneManager->GetNumberOfScenes(); i++)
+						{
+							if (ImGui::Selectable(this->sceneManager->GetSceneName(i)))
+							{
+								this->selectedScene = i;
+							}
+						}
+						ImGui::EndListBox();
 					}
-					ImGui::EndMenu();
+
+					if (ImGui::Button("Save Build Menu")) 
+					{
+						this->sceneManager->SaveSceneManager();
+						this->buildWindow = false;
+					}
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Exit Build Menu")) 
+					{
+						this->buildWindow = false;
+					}
+
+					ImGui::EndChild();
 				}
-				ImGui::EndMenuBar();
+				else 
+				{
+					if (file.HasSelected())
+					{
+						K::Editor::GetCurrentScene()->CreateEmptyScene();
+						this->selectedGameObject = nullptr;
+						std::string location = file.GetSelected().string();
+						std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
+						K::Deserializer deserialize = K::Deserializer(K::Editor::GetCurrentScene(), relativeLocation);
+						file.ClearSelected();
+					}
+				}
+
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / (ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
+
+				ImGui::Text("Number of GameObjects: %i", K::Editor::GetCurrentScene()->GetNumberOfObjects());
+
+				ImGuiExtra();
+
+				ImGui::End();
 			}
-
-			file.Display();
-			if (file.HasSelected())
-			{
-				this->currentScene->CreateEmptyScene();
-				this->selectedGameObject = nullptr;
-				std::string location = file.GetSelected().string();
-				K::Deserializer deserialize = K::Deserializer(this->currentScene, location, this);
-				file.ClearSelected();
-			}
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / (ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
-
-			ImGui::Text("Number of GameObjects: %i", this->currentScene->GetNumberOfObjects());
-
-			ImGuiExtra();
-
-			ImGui::End();
 
 			ImGuiHierarchy();
 
@@ -115,19 +169,21 @@ namespace K
 
 	void Editor::Delete(K::GameObject* temp) 
 	{
-		K::Editor::currentScene->Delete(temp);
+		K::Editor::GetCurrentScene()->Delete(temp);
 		K::Editor::selectedGameObject = nullptr;
 	}
 
 	void Editor::ImGuiHierarchy()
 	{
-		ImGui::Begin("Hierarchy");
+		std::string temp = "Hierarchy: ";
+		temp += K::Editor::GetCurrentScene()->GetSceneName();
+		ImGui::Begin(temp.c_str());
 
-		for (int i = 0; i < this->currentScene->GetNumberOfObjects(); i++) 
+		for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++)
 		{
-			if (ImGui::Selectable(this->currentScene->GetGameObjects()[i]->GetName()))
+			if (ImGui::Selectable(K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetName()))
 			{
-				this->selectedGameObject = this->currentScene->GetGameObjects()[i];
+				this->selectedGameObject = K::Editor::GetCurrentScene()->GetGameObjects()[i];
 			}
 		}
 

@@ -9,7 +9,7 @@ namespace K
 		this->name = (char*)name;
 		this->transform = transform;
 		this->material = K::Editor::GetMaterial();
-		K::Editor::GetScene()->Attach(this);
+		K::Editor::GetCurrentScene()->Attach(this);
 		std::cout << name << " GameObject Created" << std::endl;
 	}
 

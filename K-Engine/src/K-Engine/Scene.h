@@ -34,6 +34,11 @@ namespace K
 			this->location = location;
 		}
 
+		void SetSceneName(std::string name) 
+		{
+			this->sceneName = name;
+		}
+
 		const char* GetLocation() 
 		{
 			return this->location.c_str();
@@ -107,6 +112,7 @@ namespace K
 				#endif
 			}
 			this->gameObjects.shrink_to_fit();
+			this->sceneName = "Untitled*";
 		}
 
 		int GetNumberOfObjects() 
@@ -120,9 +126,9 @@ namespace K
 			return this->gameObjects;
 		}
 
-		std::string* GetSceneName() 
+		const char* GetSceneName() 
 		{
-			return &this->sceneName;
+			return this->sceneName.c_str();
 		}
 
 		void Render() 

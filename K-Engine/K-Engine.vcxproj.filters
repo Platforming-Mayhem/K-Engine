@@ -289,5 +289,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="assets\excludeFromBuild.txt" />
+    <Text Include="assets\SceneManager.txt" />
   </ItemGroup>
 </Project>

@@ -19,9 +19,9 @@ namespace K
 
 		K::Material* material = new K::Material();
 
-		K::SceneManager manager = K::SceneManager();
+		K::SceneManager manager = K::SceneManager(BUILD_SCENES);
 
-		K::Editor* editor = new K::Editor(window, manager.currentScene, material);
+		K::Editor* editor = new K::Editor(window, &manager, material);
 
 		#if _DEBUG
 			K::Transform* camPosition = new K::Transform(new Vector3(0.0f, -10.0f, 0.0f), new K::Vector3(90.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
@@ -32,12 +32,11 @@ namespace K
 			camera->SetActiveState(true);
 			camera->SetEditorState(true);
 			cam->AddComponent(camera);
-			manager.currentScene->Init();
-		#else
-			K::Deserializer deserialize = K::Deserializer(manager.currentScene, TEST_SCENE, editor);
 		#endif
+		manager.LoadScene(0);
+		manager.currentScene->Init();
 
-		std::cout << "Scene has been deserialized" << std::endl;
+		std::cout << "Scene has been initialized" << std::endl;
 
 		while (!glfwWindowShouldClose(window->window))
 		{

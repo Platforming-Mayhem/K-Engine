@@ -1,4 +1,5 @@
 #include "Serializer.h"
+#include "Editor.h"
 
 namespace K 
 {
@@ -14,7 +15,7 @@ namespace K
 		outFile.open(name.c_str());
 		if (!outFile)
 		{
-			std::cerr << "Error - unable to open output file " << scene->GetSceneName()->c_str() << std::endl;
+			std::cerr << "Error - unable to open output file " << name.c_str() << std::endl;
 			exit(1);
 		}
 		for (int i = 0; i < scene->GetNumberOfObjects(); i++) 
@@ -56,10 +57,10 @@ namespace K
 		outFile.close();
 	}
 
-	Deserializer::Deserializer(K::Scene* newScene, std::string location, K::Editor* editor) 
+	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
 	{
 		std::ifstream inFile;
-		inFile.open(location);
+		inFile.open(ASSET_DIR + location);
 		if (inFile)
 		{
 			std::string line;
@@ -113,8 +114,8 @@ namespace K
 						}
 						if (number > 9)
 						{
-							std::map<std::string, K::IFactory*>::iterator pos = editor->lst.find(val);
-							if (pos == editor->lst.end())
+							std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(val);
+							if (pos == K::Editor::lst.end())
 							{
 								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
 								currentComponent->SetPropertyValues(val.c_str(), componentCount);
@@ -140,108 +141,14 @@ namespace K
 				}
 			}
 			inFile.close();
-		}
-		newScene->SetLocation(location);
-		newScene->Init();
-	}
-
-	Deserializer::Deserializer(K::Scene* newScene, unsigned int resource, K::Editor* editor)
-	{
-		HMODULE hModule;
-		GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
-		HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(resource), "SCENE");
-		int size = SizeofResource(hModule, hr);
-		if (hr == NULL)
-		{
-			
+			std::cout << "Opened File at location: " << ASSET_DIR + location << std::endl;
 		}
 		else 
 		{
-			HGLOBAL temp = LoadResource(hModule, hr);
-			LPVOID lp = LockResource(temp);
-			std::stringstream inFile;
-			const char* data = (const char*)lp;
-			inFile << data;
-			std::string line;
-			K::Component* currentComponent = nullptr;
-			while (std::getline(inFile, line))
-			{
-				K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
-				K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
-				K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
-				K::Transform* transform = new K::Transform(position, rotation, scale);
-				std::string val = "";
-				K::GameObject* temp = nullptr;
-				int componentCount = 0;
-				int number = 0;
-				for (int i = 0; i < line.size(); i++)
-				{
-					if (line[i] == ',')
-					{
-						switch (number)
-						{
-						case 0:
-							temp = new K::GameObject(val.c_str(), transform);
-							break;
-						case 1:
-							position->x = std::stof(val);
-							break;
-						case 2:
-							position->y = std::stof(val);
-							break;
-						case 3:
-							position->z = std::stof(val);
-							break;
-						case 4:
-							rotation->x = std::stof(val);
-							break;
-						case 5:
-							rotation->y = std::stof(val);
-							break;
-						case 6:
-							rotation->z = std::stof(val);
-							break;
-						case 7:
-							scale->x = std::stof(val);
-							break;
-						case 8:
-							scale->y = std::stof(val);
-							break;
-						case 9:
-							scale->z = std::stof(val);
-							break;
-						}
-						if (number > 9)
-						{
-							std::map<std::string, K::IFactory*>::iterator pos = editor->lst.find(val);
-							if (pos == editor->lst.end())
-							{
-								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
-								currentComponent->SetPropertyValues(val.c_str(), componentCount);
-								componentCount++;
-							}
-							else
-							{
-								currentComponent = pos->second->create();
-								std::cout << "Creating " << currentComponent->GetName() << std::endl;
-								temp->AddComponent(currentComponent);
-								componentCount = 0;
-							}
-						}
-						line.erase(0, i);
-						i = 0;
-						val = "";
-						number++;
-					}
-					else
-					{
-						val += line[i];
-					}
-				}
-			}
-			UnlockResource(temp);
-			inFile.clear();
+			std::cout << "Couldn't open file at location: " << ASSET_DIR + location << std::endl;
 		}
+		newScene->SetSceneName(location);
+		newScene->SetLocation(location);
 		newScene->Init();
 	}
 }

@@ -211,9 +211,9 @@ namespace K
 		SetMaterial(this->parent->GetMaterial());
 		if (!this->isEditorCamera) 
 		{
-			for (int i = 0; i < K::Editor::GetScene()->GetNumberOfObjects(); i++) 
+			for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++) 
 			{
-				K::GameObject* temp = K::Editor::GetScene()->GetGameObjects()[i];
+				K::GameObject* temp = K::Editor::GetCurrentScene()->GetGameObjects()[i];
 				if (temp->GetComponentOfType(typeid(K::Player).name()) != nullptr) 
 				{
 					player = temp->GetTransform();
