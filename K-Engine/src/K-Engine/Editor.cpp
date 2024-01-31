@@ -73,7 +73,7 @@ namespace K
 							file.SetPwd(ASSET_DIR);
 							file.Open();
 						}
-						if (ImGui::MenuItem("Save..."))
+						if (ImGui::MenuItem("Save Scene..."))
 						{
 							K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene());
 						}
@@ -92,47 +92,58 @@ namespace K
 				file.Display();
 				if (this->buildWindow) 
 				{
-					ImGui::BeginChild("Build Menu");
-
-					if (ImGui::Button("Add Scene"))
+					if (ImGui::BeginChild("Build Menu")) 
 					{
-						file.SetTitle("Load Scene");
-						file.SetTypeFilters({ ".JAWS"});
-						file.SetPwd(ASSET_DIR);
-						file.Open();
-					}
-					if (file.HasSelected())
-					{
-						std::string location = file.GetSelected().string();
-						std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-						this->sceneManager->AddScene(relativeLocation);
-						file.ClearSelected();
-					}
-					if (ImGui::BeginListBox("Scenes"))
-					{
-						for (int i = 0; i < this->sceneManager->GetNumberOfScenes(); i++)
+						if (ImGui::Button("Add Scene"))
 						{
-							if (ImGui::Selectable(this->sceneManager->GetSceneName(i)))
-							{
-								this->selectedScene = i;
-							}
+							file.SetTitle("Load Scene");
+							file.SetTypeFilters({ ".JAWS" });
+							file.SetPwd(ASSET_DIR);
+							file.Open();
 						}
-						ImGui::EndListBox();
+						if (file.HasSelected())
+						{
+							std::string location = file.GetSelected().string();
+							std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
+							this->sceneManager->AddScene(relativeLocation);
+							file.ClearSelected();
+						}
+						if (ImGui::BeginListBox("Scenes"))
+						{
+							for (int i = 0; i < this->sceneManager->GetNumberOfScenes(); i++)
+							{
+								if (ImGui::Selectable(this->sceneManager->GetSceneName(i)))
+								{
+									this->selectedScene = i;
+								}
+							}
+							ImGui::EndListBox();
+						}
+
+						if (this->selectedScene >= 0) 
+						{
+							ImGui::Text(this->sceneManager->GetSceneName(this->selectedScene));
+						}
+
+						if (ImGui::Button("Save Build Menu"))
+						{
+							this->sceneManager->SaveSceneManager();
+							this->buildWindow = false;
+						}
+
+						ImGui::SameLine();
+
+						if (ImGui::Button("Delete Scene From Build")) 
+						{
+							this->sceneManager->DeleteScene(this->selectedScene);
+							this->selectedScene = -1;
+						}
+
+						if (ImGui::Button("Exit Build Menu"))
+						{
+							this->buildWindow = false;
+						}
 					}
-
-					if (ImGui::Button("Save Build Menu")) 
-					{
-						this->sceneManager->SaveSceneManager();
-						this->buildWindow = false;
-					}
-
-					ImGui::SameLine();
-
-					if (ImGui::Button("Exit Build Menu")) 
-					{
-						this->buildWindow = false;
-					}
-
 					ImGui::EndChild();
 				}
 				else 
@@ -153,9 +164,9 @@ namespace K
 				ImGui::Text("Number of GameObjects: %i", K::Editor::GetCurrentScene()->GetNumberOfObjects());
 
 				ImGuiExtra();
-
-				ImGui::End();
 			}
+
+			ImGui::End();
 
 			ImGuiHierarchy();
 

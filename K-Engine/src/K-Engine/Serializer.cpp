@@ -141,12 +141,9 @@ namespace K
 				}
 			}
 			inFile.close();
-			std::cout << "Opened File at location: " << ASSET_DIR + location << std::endl;
 		}
-		else 
-		{
-			std::cout << "Couldn't open file at location: " << ASSET_DIR + location << std::endl;
-		}
+		std::cout << ASSET_DIR + location;
+		std::cout << "..." << std::endl;
 		newScene->SetSceneName(location);
 		newScene->SetLocation(location);
 		newScene->Init();

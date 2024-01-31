@@ -9,22 +9,26 @@ namespace K
 		HMODULE hModule;
 		GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
 		HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(resource), "SCENES");
-		int size = SizeofResource(hModule, hr);
 		if (hr != NULL) 
 		{
+			int size = SizeofResource(hModule, hr);
 			HGLOBAL temp = LoadResource(hModule, hr);
-			LPVOID lp = LockResource(temp);
-			std::stringstream inFile;
-			const char* data = (const char*)lp;
-			inFile << data;
-			std::string line;
-			while (std::getline(inFile, line)) 
+			if (temp) 
 			{
-				std::cout << "Found scene: " << line.c_str() << std::endl;
-				this->AddScene(line);
+				LPVOID lp = LockResource(temp);
+				std::stringstream inFile;
+				const char* data = (const char*)lp;
+				inFile << data;
+				std::string line;
+				while (std::getline(inFile, line))
+				{
+					line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+					this->AddScene(line.c_str());
+				}
+
+				UnlockResource(temp);
+				inFile.clear();
 			}
-			UnlockResource(temp);
-			inFile.clear();
 		}
 		else 
 		{
@@ -52,7 +56,15 @@ namespace K
 	void SceneManager::LoadScene(int index) 
 	{
 		K::SceneManager::currentScene->CreateEmptyScene();
-		K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, this->scenes[index]);
+		if (this->scenes.size() > 0) 
+		{
+			K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, this->scenes[index]);
+		}
+	}
+
+	void SceneManager::DeleteScene(int index) 
+	{
+		this->scenes.erase(this->scenes.begin() + index);
 	}
 
 	void SceneManager::AddScene(std::string name)
@@ -69,8 +81,7 @@ namespace K
 			for (int i = 0; i < this->scenes.size(); i++) 
 			{
 				outFile << this->scenes[i];
-				if(i < this->scenes.size())
-					outFile << '\n';
+				outFile << '\n';
 			}
 		}
 		outFile.close();

@@ -19,9 +19,9 @@ namespace K
 
 		K::Material* material = new K::Material();
 
-		K::SceneManager manager = K::SceneManager(BUILD_SCENES);
+		K::SceneManager* manager = new K::SceneManager(BUILD_SCENES);
 
-		K::Editor* editor = new K::Editor(window, &manager, material);
+		K::Editor* editor = new K::Editor(window, manager, material);
 
 		#if _DEBUG
 			K::Transform* camPosition = new K::Transform(new Vector3(0.0f, -10.0f, 0.0f), new K::Vector3(90.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
@@ -33,10 +33,11 @@ namespace K
 			camera->SetEditorState(true);
 			cam->AddComponent(camera);
 		#endif
-		manager.LoadScene(0);
-		manager.currentScene->Init();
+		manager->LoadScene(0);
+		manager->currentScene->Init();
 
 		std::cout << "Scene has been initialized" << std::endl;
+		std::cout << "Number Of Scenes in Build :" << manager->GetNumberOfScenes() << std::endl;
 
 		while (!glfwWindowShouldClose(window->window))
 		{
@@ -53,7 +54,7 @@ namespace K
 
 			glUseProgram(material->GetShader()->shader);
 
-			manager.currentScene->Render();
+			manager->currentScene->Render();
 			#if _DEBUG
 			if (editor->Render()) 
 			{
@@ -66,5 +67,6 @@ namespace K
 			glfwPollEvents();
 		}
 		delete editor;
+		delete manager;
 	}
 }

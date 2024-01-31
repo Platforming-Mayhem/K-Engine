@@ -22,6 +22,8 @@ namespace K
 
 		void LoadScene(int index);
 
+		void DeleteScene(int index);
+
 		const char* GetSceneName(int index);
 
 		void SaveSceneManager();
