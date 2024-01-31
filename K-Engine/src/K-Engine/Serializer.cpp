@@ -3,13 +3,13 @@
 
 namespace K 
 {
-	Serializer::Serializer(K::Scene* scene)
+	Serializer::Serializer(K::Scene* scene, std::string location)
 	{
 		std::ofstream outFile;
-		std::string name = scene->GetLocation();
-		if (scene->GetLocation() == nullptr)
+		std::string name = location;
+		if (location.c_str() == nullptr)
 		{
-			name = *scene->GetSceneName();
+			name = location.c_str();
 			name += ".JAWS";
 		}
 		outFile.open(name.c_str());

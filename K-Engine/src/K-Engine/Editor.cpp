@@ -68,6 +68,7 @@ namespace K
 						}
 						if (ImGui::MenuItem("Open..."))
 						{
+							file = ImGui::FileBrowser();
 							file.SetTitle("Load Scene");
 							file.SetTypeFilters({ ".JAWS" });
 							file.SetPwd(ASSET_DIR);
@@ -75,7 +76,12 @@ namespace K
 						}
 						if (ImGui::MenuItem("Save Scene..."))
 						{
-							K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene());
+							file = ImGui::FileBrowser(ImGuiFileBrowserFlags_EnterNewFilename);
+							file.SetTitle("Save Scene");
+							file.SetTypeFilters({ ".JAWS" });
+							file.SetPwd(ASSET_DIR);
+							file.Open();
+							this->saveWindow = true;
 						}
 						if (ImGui::MenuItem("Build..."))
 						{
@@ -96,6 +102,7 @@ namespace K
 					{
 						if (ImGui::Button("Add Scene"))
 						{
+							file = ImGui::FileBrowser();
 							file.SetTitle("Load Scene");
 							file.SetTypeFilters({ ".JAWS" });
 							file.SetPwd(ASSET_DIR);
@@ -145,6 +152,20 @@ namespace K
 						}
 					}
 					ImGui::EndChild();
+				}
+				else if (this->saveWindow) 
+				{
+					if (file.HasSelected())
+					{
+						std::string location = file.GetSelected().string();
+						if (location.find(".JAWS") == std::string::npos)
+						{
+							location += ".JAWS";
+						}
+						K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene(), location);
+						file.ClearSelected();
+						this->saveWindow = false;
+					}
 				}
 				else 
 				{

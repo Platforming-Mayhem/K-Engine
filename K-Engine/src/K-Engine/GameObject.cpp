@@ -24,7 +24,6 @@ namespace K
 		this->material = nullptr;
 		delete this->transform;
 		std::cout << "End GameObject Destruction..." << std::endl;
-		std::cout << this->GetNumberOfComponents() << std::endl;
 	}
 
 	void GameObject::Update()
