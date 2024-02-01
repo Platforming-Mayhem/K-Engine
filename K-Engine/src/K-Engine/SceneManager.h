@@ -8,6 +8,7 @@ namespace K
 	{
 	private:
 		static std::vector<std::string> scenes;
+		static bool loadNextScene;
 	public:
 
 		static K::Scene* currentScene;
@@ -19,6 +20,8 @@ namespace K
 		int GetNumberOfScenes();
 
 		void AddScene(std::string name);
+
+		static void Update();
 
 		static void LoadScene(int index);
 

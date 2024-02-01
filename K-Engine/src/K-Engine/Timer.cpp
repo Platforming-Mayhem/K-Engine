@@ -28,6 +28,7 @@ namespace K
 			else
 			{
 				K::SceneManager::LoadNextScene();
+				this->startCountDown = false;
 			}
 		}
 	}

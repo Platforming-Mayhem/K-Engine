@@ -5,6 +5,7 @@ namespace K
 {
 	std::vector<std::string> K::SceneManager::scenes;
 	K::Scene* K::SceneManager::currentScene;
+	bool K::SceneManager::loadNextScene = false;
 
 	SceneManager::SceneManager(unsigned int resource)
 	{
@@ -73,20 +74,29 @@ namespace K
 
 	void SceneManager::LoadNextScene() 
 	{
-		int index = -1;
-		std::string currentScene = K::SceneManager::currentScene->GetSceneName();
-		for (int i = 0; i < K::SceneManager::scenes.size(); i++) 
+		K::SceneManager::loadNextScene = true;
+	}
+
+	void SceneManager::Update() 
+	{
+		if (K::SceneManager::loadNextScene) 
 		{
-			if (currentScene.find(scenes[i]) != std::string::npos)
+			int index = -1;
+			std::string currentScene = K::SceneManager::currentScene->GetSceneName();
+			for (int i = 0; i < K::SceneManager::scenes.size(); i++)
 			{
-				index = i;
-				break;
+				if (currentScene.find(scenes[i]) != std::string::npos)
+				{
+					index = i;
+					break;
+				}
 			}
-		}
-		if (index > -1) 
-		{
-			index++;
-			K::SceneManager::LoadScene(index);
+			if (index > -1)
+			{
+				index++;
+				K::SceneManager::LoadScene(index);
+			}
+			K::SceneManager::loadNextScene = false;
 		}
 	}
 

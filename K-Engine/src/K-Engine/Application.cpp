@@ -59,6 +59,8 @@ namespace K
 			}
 			#endif
 
+			manager->Update();
+
 			glfwSwapBuffers(window->window);
 
 			glfwPollEvents();

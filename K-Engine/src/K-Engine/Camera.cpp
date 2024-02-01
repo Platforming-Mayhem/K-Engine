@@ -12,6 +12,7 @@ namespace K
 
 	Camera::~Camera() 
 	{
+		this->isActive = false;
 		this->player = nullptr;
 		std::cout << "Camera Destructor..." << std::endl;
 	}
