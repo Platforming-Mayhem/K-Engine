@@ -5,11 +5,12 @@
 #include "Window.h"
 #include "Sprite.h"
 #include "Player.h"
+#include "Fox.h"
 #include "Camera.h"
 #include "Collider.h"
 #include "Animator.h"
+#include "Timer.h"
 #include "Component.h"
-#include "Fox.h"
 
 namespace K 
 {

@@ -6,7 +6,7 @@ namespace K
 	K::Material* K::Editor::material;
 	K::GameObject* K::Editor::selectedGameObject;
 	K::SceneManager* K::Editor::sceneManager;
-	std::map<std::string, IFactory*> K::Editor::lst{ {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Fox).name() , new K::Factory<K::Fox>} };
+	std::map<std::string, IFactory*> K::Editor::lst{ {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Fox).name() , new K::Factory<K::Fox>}, {typeid(K::Timer).name() , new K::Factory<K::Timer>} };
 
 	Editor::Editor(K::Window* window, K::SceneManager* sceneManager, K::Material* material)
 	{
@@ -34,7 +34,7 @@ namespace K
 
 	K::Scene* Editor::GetCurrentScene() 
 	{
-		return K::Editor::sceneManager->currentScene;
+		return K::SceneManager::currentScene;
 	}
 
 	K::GameObject* Editor::GetSelectedGameObject() 

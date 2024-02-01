@@ -30,6 +30,7 @@
     <ClInclude Include="src\K-Engine\Serializer.h" />
     <ClInclude Include="src\K-Engine\Sprite.h" />
     <ClInclude Include="src\K-Engine\Time.h" />
+    <ClInclude Include="src\K-Engine\Timer.h" />
     <ClInclude Include="src\K-Engine\Transform.h" />
     <ClInclude Include="src\K-Engine\Window.h" />
     <ClInclude Include="src\K-Engine\Shader.h" />
@@ -77,6 +78,7 @@
     <ClCompile Include="src\K-Engine\Sprite.cpp" />
     <ClCompile Include="src\K-Engine\Texture.cpp" />
     <ClCompile Include="src\K-Engine\Time.cpp" />
+    <ClCompile Include="src\K-Engine\Timer.cpp" />
     <ClCompile Include="src\K-Engine\Transform.cpp" />
     <ClCompile Include="src\K-Engine\Window.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui.cpp" />

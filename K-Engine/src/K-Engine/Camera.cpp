@@ -83,6 +83,7 @@ namespace K
 	{
 		if (this->isActive) 
 		{
+			glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
 			//Projection Matrix
 			float deltaZ, aspect;
 			float radians = ((3.14159f * 2.0f) / 360.0f) * this->FOV / 2.0f;
@@ -152,7 +153,11 @@ namespace K
 		}
 		this->properties += temp + ",";
 		temp = std::to_string((int)this->cameraType);
-		this->properties += temp;
+		this->properties += temp + ",";
+		this->properties += std::to_string(this->backgroundColour[0]) + ",";
+		this->properties += std::to_string(this->backgroundColour[1]) + ",";
+		this->properties += std::to_string(this->backgroundColour[2]) + ",";
+		this->properties += std::to_string(this->backgroundColour[3]);
 		return this->properties.c_str();
 	}
 
@@ -200,6 +205,18 @@ namespace K
 				{
 					this->cameraType = CameraType::Orthographic;
 				}
+				break;
+			case 8:
+				this->backgroundColour[0] = std::stof(temp);
+				break;
+			case 9:
+				this->backgroundColour[1] = std::stof(temp);
+				break;
+			case 10:
+				this->backgroundColour[2] = std::stof(temp);
+				break;
+			case 11:
+				this->backgroundColour[3] = std::stof(temp);
 				break;
 			}
 		}
@@ -316,6 +333,7 @@ namespace K
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
 			ImGui::DragFloat("Rotation Speed", &this->rotationSpeed);
 			ImGui::Checkbox("is Active", &this->isActive);
+			ImGui::ColorPicker4("Background Colour", this->backgroundColour);
 		}
 	}
 }

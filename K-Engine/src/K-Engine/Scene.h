@@ -119,8 +119,7 @@ namespace K
 
 		int GetNumberOfObjects() 
 		{
-			int size = this->gameObjects.size();
-			return size;
+			return this->gameObjects.size();
 		}
 
 		std::vector <K::GameObject*> GetGameObjects()

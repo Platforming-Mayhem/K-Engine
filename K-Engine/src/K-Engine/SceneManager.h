@@ -7,7 +7,7 @@ namespace K
 	class K_API SceneManager
 	{
 	private:
-		std::vector<std::string> scenes;
+		static std::vector<std::string> scenes;
 	public:
 
 		static K::Scene* currentScene;
@@ -20,11 +20,13 @@ namespace K
 
 		void AddScene(std::string name);
 
-		void LoadScene(int index);
+		static void LoadScene(int index);
+
+		static void LoadNextScene();
 
 		void DeleteScene(int index);
 
-		const char* GetSceneName(int index);
+		static const char* GetSceneName(int index);
 
 		void SaveSceneManager();
 	};

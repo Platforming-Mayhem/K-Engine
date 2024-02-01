@@ -33,7 +33,7 @@ namespace K
 			camera->SetEditorState(true);
 			cam->AddComponent(camera);
 		#endif
-		manager->LoadScene(0);
+		K::SceneManager::LoadScene(0);
 
 		std::cout << "Scene has been initialized" << std::endl;
 		std::cout << "Number Of Scenes in Build :" << manager->GetNumberOfScenes() << std::endl;
@@ -46,8 +46,6 @@ namespace K
 			{
 				break;
 			}
-
-			glClearColor(19.0f / 255.0f, 18.0f / 255.0f, 15.0f / 255.0f, 1.0f);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

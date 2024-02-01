@@ -17,6 +17,7 @@ namespace K
 		float orthoSize = 1.0f;
 		enum class CameraType { Perspective = 0, Orthographic = 1 };
 		CameraType cameraType = CameraType::Perspective;
+		float backgroundColour[4];
 		K::Matrix4x4 projectionMatrix;
 		K::Matrix4x4 viewMatrix;
 		std::string properties;
