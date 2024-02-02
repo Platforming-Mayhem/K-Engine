@@ -247,7 +247,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\textures\watermark.png">
+    <Image Include="assets\textures\watermark\watermark.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\textures\Fox_Attack.gif">

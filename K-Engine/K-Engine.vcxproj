@@ -102,7 +102,7 @@
     <Image Include="assets\textures\Mouse_Jump.gif" />
     <Image Include="assets\textures\Mouse_Move.gif" />
     <Image Include="assets\textures\Sewer_G.png" />
-    <Image Include="assets\textures\watermark.png" />
+    <Image Include="assets\textures\watermark\watermark.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\3D.shader" />
@@ -221,7 +221,8 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>XCOPY "$(SolutionDir)K-Engine\assets" "$(TargetDir)assets" /I /E /Y /EXCLUDE:$(SolutionDir)K-Engine\assets\excludeFromBuild.txt</Command>
+      <Command>RD /S /Q "$(TargetDir)assets"
+XCOPY "$(SolutionDir)K-Engine\assets" "$(TargetDir)assets" /I /E /Y /EXCLUDE:$(SolutionDir)K-Engine\assets\excludeFromBuild.txt</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

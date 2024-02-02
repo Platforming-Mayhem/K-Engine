@@ -4,7 +4,11 @@ namespace K
 {
 	Timer::Timer() 
 	{
-
+		#if _DEBUG
+			this->startCountDown = false;
+		#else
+			this->startCountDown = true;
+		#endif
 	}
 
 	Timer::~Timer() 

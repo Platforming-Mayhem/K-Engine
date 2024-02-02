@@ -51,17 +51,18 @@ namespace K
 
 			glUseProgram(material->GetShader()->shader);
 
-			manager->currentScene->Render();
+			K::SceneManager::currentScene->Render();
+
 			#if _DEBUG
-			if (editor->Render()) 
+			if (editor->Render())
 			{
 				break;
 			}
 			#endif
 
-			manager->Update();
-
 			glfwSwapBuffers(window->window);
+
+			K::SceneManager::Update();
 
 			glfwPollEvents();
 		}

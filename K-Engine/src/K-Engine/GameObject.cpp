@@ -26,6 +26,15 @@ namespace K
 		std::cout << "End GameObject Destruction..." << std::endl;
 	}
 
+	void GameObject::Init() 
+	{
+		for (K::Component* c : this->components)
+		{
+			std::cout << "Initializing " << c->GetName() << std::endl;
+			c->Init();
+		}
+	}
+
 	void GameObject::Update()
 	{
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)

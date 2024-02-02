@@ -33,11 +33,17 @@ namespace K
 
 		~GameObject();
 
+		void Init();
+
 		void Update();
 
 		void UpdateEditor();
 
 		void PassTransformationMatrix();
+
+		void Bind();
+
+		void Unbind();
 
 		const char* GetName() 
 		{
@@ -52,15 +58,6 @@ namespace K
 		K::Transform* GetTransform() 
 		{
 			return this->transform;
-		}
-
-		void Init() 
-		{
-			for (K::Component* c : this->components) 
-			{
-				std::cout << "Initializing " << c->GetName() << std::endl;
-				c->Init();
-			}
 		}
 
 		void AddComponent(K::Component* component)
@@ -121,9 +118,5 @@ namespace K
 		{
 			return this->components.size();
 		}
-
-		void Bind();
-
-		void Unbind();
 	};
 }

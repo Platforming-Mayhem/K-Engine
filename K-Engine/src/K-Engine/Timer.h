@@ -10,7 +10,7 @@ namespace K
 	{
 	private:
 		std::string properties;
-		bool startCountDown = true;
+		bool startCountDown;
 		float countDown = 1.0f;
 	public:
 

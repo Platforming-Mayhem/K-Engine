@@ -150,7 +150,7 @@ namespace K
 	void Sprite::Init()
 	{
 		if(this->texture == nullptr)
-			this->SetTexture(new K::Texture(WATERMARK, GL_TEXTURE_2D));
+			this->SetTexture(new K::Texture(WATERMARK, GL_TEXTURE_2D), false);
 	}
 
 	void Sprite::Bind() 

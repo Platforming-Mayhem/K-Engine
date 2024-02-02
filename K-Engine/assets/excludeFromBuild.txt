@@ -4,3 +4,4 @@
 excludeFromBuild.txt
 SceneManager.txt
 shaders
+textures\watermark

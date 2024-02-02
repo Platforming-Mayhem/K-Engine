@@ -6,6 +6,8 @@ namespace K
 	std::vector<std::string> K::SceneManager::scenes;
 	K::Scene* K::SceneManager::currentScene;
 	bool K::SceneManager::loadNextScene = false;
+	bool K::SceneManager::loadScene = false;
+	int K::SceneManager::index = -1;
 
 	SceneManager::SceneManager(unsigned int resource)
 	{
@@ -56,20 +58,16 @@ namespace K
 		return K::SceneManager::scenes[index].c_str();
 	}
 
-	void SceneManager::LoadScene(int index) 
+	void SceneManager::LoadScene(int newIndex) 
 	{
-		K::Editor::selectedGameObject = nullptr;
-		K::SceneManager::currentScene->CreateEmptyScene();
-		if (K::SceneManager::scenes.size() > 0) 
-		{
-			std::string location = K::SceneManager::scenes[index];
-			std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-			K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, K::SceneManager::scenes[index]);
-		}
-		else 
-		{
-			K::SceneManager::currentScene->Init();
-		}
+		K::SceneManager::loadScene = true;
+		K::SceneManager::index = newIndex;
+		K::SceneManager::loadNextScene = false;
+	}
+
+	bool SceneManager::IsLoadingNextScene() 
+	{
+		return K::SceneManager::loadNextScene;
 	}
 
 	void SceneManager::LoadNextScene() 
@@ -96,7 +94,23 @@ namespace K
 				index++;
 				K::SceneManager::LoadScene(index);
 			}
-			K::SceneManager::loadNextScene = false;
+		}
+		if (K::SceneManager::loadScene) 
+		{
+			K::Editor::selectedGameObject = nullptr;
+			K::SceneManager::currentScene->CreateEmptyScene();
+			if (K::SceneManager::scenes.size() > 0)
+			{
+				std::string location = K::SceneManager::scenes[K::SceneManager::index];
+				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
+				K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, K::SceneManager::scenes[index]);
+			}
+			else
+			{
+				K::SceneManager::currentScene->Init();
+			}
+			K::SceneManager::loadScene = false;
+			K::SceneManager::index = -1;
 		}
 	}
 
