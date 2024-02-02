@@ -17,6 +17,8 @@ namespace K
 	public:
 		static bool IsKeyPressed(int key);
 
+		static bool IsKeyHeldDown(int key);
+
 		static bool IsKeyPressedDown(int key);
 
 		static bool IsKeyReleased(int key);

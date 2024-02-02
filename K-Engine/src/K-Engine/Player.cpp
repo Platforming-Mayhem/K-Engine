@@ -235,7 +235,7 @@ namespace K
 			}
 		}
 
-		if (InputManager::IsKeyPressedDown(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
+		if (InputManager::IsKeyPressedDown(GLFW_KEY_SPACE) && this->jumpTime == 0.0f)
 		{
 			this->isJumping = true;
 		}
@@ -243,20 +243,20 @@ namespace K
 		{
 			this->jumpTime = 1.0f;
 		}
+		if (K::Physics::IsColliding(this->parent)) 
+		{
+			if (this->jumpTime >= 1.0f) 
+			{
+				this->jumpTime = 0.0f;
+				this->isJumping = false;
+			}
+		}
 
 		if (this->isJumping) 
 		{
 			this->time = 0.0f;
 			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f);
 			this->jumpTime += K::Time::deltaTime() * 4.0f;
-			if (!K::Physics::IsColliding(this->parent)) 
-			{
-
-			}
-			else 
-			{
-				this->isJumping = false;
-			}
 		}
 		else 
 		{
@@ -268,7 +268,6 @@ namespace K
 			else 
 			{
 				this->time = 0.0f;
-				this->jumpTime = 0.0f;
 			}
 		}
 	}

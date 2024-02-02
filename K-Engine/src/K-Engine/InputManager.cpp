@@ -27,6 +27,18 @@ namespace K
 		}
 	}
 
+	bool InputManager::IsKeyHeldDown(int key) 
+	{
+		if (K::InputManager::GetKey(key) == GLFW_REPEAT)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	bool InputManager::IsKeyPressedDown(int key) 
 	{
 		if (K::InputManager::GetKey(key) == GLFW_PRESS)

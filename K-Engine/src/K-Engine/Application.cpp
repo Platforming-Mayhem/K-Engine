@@ -29,7 +29,7 @@ namespace K
 			K::GameObject* cam = new K::GameObject("Editor Camera", camPosition);
 
 			K::Camera* camera = new K::Camera();
-			camera->SetActiveState(true);
+			//camera->SetActiveState(true);
 			camera->SetEditorState(true);
 			cam->AddComponent(camera);
 		#endif
