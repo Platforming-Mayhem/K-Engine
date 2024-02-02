@@ -8,6 +8,12 @@ namespace K
 	extern K::Window* window;
 	class K_API InputManager 
 	{
+	private:
+
+		static std::map<int, int> keys;
+
+		static int GetKey(int key);
+
 	public:
 		static bool IsKeyPressed(int key);
 
@@ -16,5 +22,7 @@ namespace K
 		static bool IsKeyReleased(int key);
 		//GET THIS WORKING ASAP!!!
 		static K::Vector3 GetMousePosition();
+
+		static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	};
 }

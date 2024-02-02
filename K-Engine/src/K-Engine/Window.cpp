@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "InputManager.h"
 
 namespace K 
 {
@@ -55,6 +56,8 @@ namespace K
 		glDepthFunc(GL_LEQUAL);
 		glDepthMask(GL_TRUE);
 		glDepthRange(0.0f, 1.0f);
+
+		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
 	}
 
 	Window::~Window()

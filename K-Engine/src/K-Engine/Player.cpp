@@ -235,35 +235,41 @@ namespace K
 			}
 		}
 
-		if (InputManager::IsKeyPressed(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
+		if (InputManager::IsKeyPressedDown(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
 		{
-			this->time = 0.0f;
-			this->jumpTime += K::Time::deltaTime() * 4.0f;
-			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f);
 			this->isJumping = true;
 		}
-		else if (InputManager::IsKeyReleased(GLFW_KEY_SPACE) && !K::Physics::IsColliding(this->parent))
+		else if (InputManager::IsKeyReleased(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
 		{
 			this->jumpTime = 1.0f;
 		}
 
-		if (!K::Physics::IsStatic(this->parent))
+		if (this->isJumping) 
 		{
-			if (K::Physics::IsColliding(this->parent))
+			this->time = 0.0f;
+			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f);
+			this->jumpTime += K::Time::deltaTime() * 4.0f;
+			if (!K::Physics::IsColliding(this->parent)) 
 			{
-				this->time = 0.0f;
-				this->jumpTime = 0.0f;
+
+			}
+			else 
+			{
 				this->isJumping = false;
 			}
-			else
+		}
+		else 
+		{
+			if (!K::Physics::IsColliding(this->parent)) 
 			{
 				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
 				this->time += K::Time::deltaTime();
 			}
-		}
-		else
-		{
-			this->time = 0.0f;
+			else 
+			{
+				this->time = 0.0f;
+				this->jumpTime = 0.0f;
+			}
 		}
 	}
 

@@ -35,7 +35,8 @@ namespace K
 		#endif
 		K::SceneManager::LoadScene(0);
 
-		std::cout << "Scene has been initialized" << std::endl;
+		K::SceneManager::Update();
+
 		std::cout << "Number Of Scenes in Build :" << manager->GetNumberOfScenes() << std::endl;
 
 		while (!glfwWindowShouldClose(window->window))

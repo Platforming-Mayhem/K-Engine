@@ -2,9 +2,22 @@
 
 namespace K 
 {
+	std::map<int, int> K::InputManager::keys;
+
+	int InputManager::GetKey(int key) 
+	{
+		auto search = K::InputManager::keys.find(key);
+		if (search != K::InputManager::keys.end()) 
+		{
+			int val = search->second;
+			return val;
+		}
+		return GLFW_RELEASE;
+	}
+
 	bool InputManager::IsKeyPressed(int key)
 	{
-		if (glfwGetKey(window->window, key) == GLFW_PRESS || glfwGetKey(window->window, key) == GLFW_REPEAT)
+		if (K::InputManager::GetKey(key) == GLFW_PRESS || K::InputManager::GetKey(key) == GLFW_REPEAT)
 		{
 			return true;
 		}
@@ -16,7 +29,7 @@ namespace K
 
 	bool InputManager::IsKeyPressedDown(int key) 
 	{
-		if (glfwGetKey(window->window, key) == GLFW_PRESS)
+		if (K::InputManager::GetKey(key) == GLFW_PRESS)
 		{
 			return true;
 		}
@@ -28,7 +41,7 @@ namespace K
 
 	bool InputManager::IsKeyReleased(int key)
 	{
-		if (glfwGetKey(window->window, key) == GLFW_RELEASE)
+		if (K::InputManager::GetKey(key) == GLFW_RELEASE)
 		{
 			return true;
 		}
@@ -46,5 +59,25 @@ namespace K
 		//MultiplyMatrixVector(screenPosition, worldPosition, K::Camera::translationMatrix);
 		//MultiplyMatrixVector(translatedPosition, worldPosition, K::Camera::projectionMatrix);
 		return clipPosition;
+	}
+
+	void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		auto search = K::InputManager::keys.find(key);
+		if (search != K::InputManager::keys.end()) 
+		{
+			if (action == GLFW_RELEASE)
+			{
+				K::InputManager::keys.erase(search);
+			}
+			else 
+			{
+				search->second = action;
+			}
+		}
+		else 
+		{
+			K::InputManager::keys.insert({ key, action });
+		}
 	}
 }
