@@ -130,7 +130,7 @@ namespace K
 		{
 			if (this->accelerationTime < 1.0f)
 			{
-				this->accelerationTime += K::Time::deltaTime() * 0.5f;
+				this->accelerationTime += K::Time::deltaTime();
 			}
 			else
 			{
@@ -144,7 +144,7 @@ namespace K
 		{
 			if (this->accelerationTime < 1.0f)
 			{
-				this->accelerationTime += K::Time::deltaTime() * 0.5f;
+				this->accelerationTime += K::Time::deltaTime();
 			}
 			else
 			{
@@ -243,13 +243,10 @@ namespace K
 		{
 			this->jumpTime = 1.0f;
 		}
-		if (K::Physics::IsColliding(this->parent)) 
+		else if (K::Physics::IsColliding(this->parent) && this->jumpTime >= 1.0f)
 		{
-			if (this->jumpTime >= 1.0f) 
-			{
-				this->jumpTime = 0.0f;
-				this->isJumping = false;
-			}
+			this->jumpTime = 0.0f;
+			this->isJumping = false;
 		}
 
 		if (this->isJumping) 
