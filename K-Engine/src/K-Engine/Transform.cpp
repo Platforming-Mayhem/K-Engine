@@ -134,6 +134,10 @@ namespace K
 		this->modelMatrix.m[3][0] = this->position->x;
 		this->modelMatrix.m[3][1] = this->position->y;
 		this->modelMatrix.m[3][2] = this->position->z;
+		/*if (this->parent != nullptr)
+		{
+			this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->parent->modelMatrix, this->modelMatrix);
+		}*/
 	}
 
 	K::Quaternion::~Quaternion() 

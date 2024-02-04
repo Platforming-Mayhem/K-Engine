@@ -213,6 +213,10 @@ namespace K
 
 		for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++)
 		{
+			if (K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetTransform()->parent == nullptr) 
+			{
+				
+			}
 			if (ImGui::Selectable(K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetName()))
 			{
 				this->selectedGameObject = K::Editor::GetCurrentScene()->GetGameObjects()[i];
