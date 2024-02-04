@@ -58,6 +58,11 @@ namespace K
 		glDepthRange(0.0f, 1.0f);
 
 		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
+		#if _DEBUG
+
+		#else
+			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		#endif
 	}
 
 	Window::~Window()
