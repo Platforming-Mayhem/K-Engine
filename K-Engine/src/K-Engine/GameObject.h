@@ -24,8 +24,11 @@ namespace K
 		std::string name;
 		K::Transform* transform = new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
 		std::vector<K::Component*> components;
+		std::vector<K::GameObject*> children;
 		K::Material* material;
 	public:
+
+		K::GameObject* parent = nullptr;
 
 		int layer = (int)K::Layer::LayerType::Ground;
 
@@ -44,6 +47,14 @@ namespace K
 		void Bind();
 
 		void Unbind();
+
+		void SetParent(K::GameObject* newParent);
+
+		void AddChild(K::GameObject* child);
+
+		K::GameObject* GetChild(int index);
+
+		int GetNumberOfChildren();
 
 		const char* GetName() 
 		{

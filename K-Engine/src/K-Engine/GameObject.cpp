@@ -21,6 +21,7 @@ namespace K
 			delete this->components[i];
 		}
 		this->components.clear();
+		this->children.clear();
 		this->material = nullptr;
 		delete this->transform;
 		std::cout << "End GameObject Destruction..." << std::endl;
@@ -68,6 +69,40 @@ namespace K
 				this->components.shrink_to_fit();
 			}
 		}
+	}
+
+	void GameObject::SetParent(K::GameObject* newParent) 
+	{
+		/*if (this->parent == nullptr)
+		{
+			std::cout << "GameObject:" << this->GetName() << ",Set Parent:" << newParent->GetName() << std::endl;
+			std::cout << "GameObject:" << newParent->GetName() << ",Set Child:" << this->GetName() << std::endl;
+		}
+		else 
+		{
+			std::cout << "GameObject:" << this->GetName() << this->parent->GetName() << ",Set Parent:" << newParent->GetName() << std::endl;
+			std::cout << "GameObject:" << newParent->GetName() << ",Set Child:" << this->GetName() << std::endl;
+		}*/
+		//std::cout << this->GetName() << std::endl;
+		//std::cout << newParent->GetName() << std::endl;
+		std::cout << "Setting Parent" << std::endl;
+		newParent->AddChild(this);
+		this->parent = newParent;
+	}
+
+	void GameObject::AddChild(K::GameObject* child)
+	{
+		children.push_back(child);
+	}
+
+	K::GameObject* GameObject::GetChild(int index) 
+	{
+		return this->children.at(index);
+	}
+
+	int GameObject::GetNumberOfChildren() 
+	{
+		return this->children.size();
 	}
 
 	void GameObject::PassTransformationMatrix()
