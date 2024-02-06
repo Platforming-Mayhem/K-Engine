@@ -131,13 +131,9 @@ namespace K
 		//Rotation Matrix
 		this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->modelMatrix, *K::Quaternion::Euler(new K::Vector3(this->rotation->x, this->rotation->y, this->rotation->z))->QuaternionToMatrix());
 		//Translation Matrix
-		this->modelMatrix.m[3][0] = this->position->x;
-		this->modelMatrix.m[3][1] = this->position->y;
-		this->modelMatrix.m[3][2] = this->position->z;
-		/*if (this->parent != nullptr)
-		{
-			this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->parent->modelMatrix, this->modelMatrix);
-		}*/
+		this->modelMatrix.m[3][0] += this->position->x;
+		this->modelMatrix.m[3][1] += this->position->y;
+		this->modelMatrix.m[3][2] += this->position->z;
 	}
 
 	K::Quaternion::~Quaternion() 

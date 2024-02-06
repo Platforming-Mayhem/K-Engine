@@ -287,14 +287,14 @@ namespace K
 
 	K::Vector3* Collider::GetPosition() 
 	{
-		K::Vector3 pos = *this->parent->GetTransform()->position;
+		K::Vector3 pos = K::Vector3(this->parent->GetTransform()->position->x, 0.0f, this->parent->GetTransform()->position->z);
 		if (this->parent->GetTransform()->scale->x > 0.0f) 
 		{
-			pos += this->offset;
+			pos += K::Vector3(this->offset.x, 0.0f, this->offset.z);
 		}
 		else 
 		{
-			pos += K::Vector3(-this->offset.x, this->offset.y, this->offset.z);
+			pos += K::Vector3(-this->offset.x, 0.0f, this->offset.z);
 		}
 		return &pos;
 	}

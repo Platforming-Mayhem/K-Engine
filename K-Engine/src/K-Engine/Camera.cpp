@@ -115,7 +115,7 @@ namespace K
 			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
 
 			//View Matrix
-			K::Vector3 forward = K::Vector3(0.0f, 0.0f, 1.0f);
+			/*K::Vector3 forward = K::Vector3(0.0f, 0.0f, 1.0f);
 			K::Vector3 up = K::Vector3(0.0f, 1.0f, 0.0f);
 
 			K::Vector3 rotatedForward = K::Vector3(0.0f, 0.0f, 0.0f);
@@ -128,8 +128,10 @@ namespace K
 
 			K::Vector3 pos = *this->parent->GetTransform()->position;
 			K::Vector3 target = pos + rotatedForward;
-			K::Matrix4x4* lookAtMatrix = K::LookAt(pos, target, rotatedUp);
-			K::Camera::viewMatrix = K::QuickInverse(*lookAtMatrix);
+			K::Matrix4x4* lookAtMatrix = K::LookAt(pos, target, rotatedUp);*/
+
+			K::Camera::viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
+
 			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
 		}
 	}
@@ -248,6 +250,8 @@ namespace K
 
 	void Camera::Update() 
 	{
+		
+
 		//Camera Move WASD
 		#if _DEBUG
 		if (this->isActive && this->isEditorCamera) 

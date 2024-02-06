@@ -17,12 +17,12 @@ namespace K
 	GameObject::~GameObject() 
 	{
 		std::cout << "Begin GameObject Destruction..." << std::endl;
+		this->children.clear();
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
 			delete this->components[i];
 		}
 		this->components.clear();
-		this->children.clear();
 		this->material = nullptr;
 		delete this->transform;
 		std::cout << "End GameObject Destruction..." << std::endl;
@@ -102,18 +102,6 @@ namespace K
 
 	bool GameObject::SetParent(K::GameObject* newParent) 
 	{
-		/*if (this->parent == nullptr)
-		{
-			std::cout << "GameObject:" << this->GetName() << ",Set Parent:" << newParent->GetName() << std::endl;
-			std::cout << "GameObject:" << newParent->GetName() << ",Set Child:" << this->GetName() << std::endl;
-		}
-		else 
-		{
-			std::cout << "GameObject:" << this->GetName() << this->parent->GetName() << ",Set Parent:" << newParent->GetName() << std::endl;
-			std::cout << "GameObject:" << newParent->GetName() << ",Set Child:" << this->GetName() << std::endl;
-		}*/
-		//std::cout << this->GetName() << std::endl;
-		//std::cout << newParent->GetName() << std::endl;
 		if (newParent == nullptr) 
 		{
 			if (this->parent != nullptr)
@@ -188,8 +176,17 @@ namespace K
 
 	void GameObject::PassTransformationMatrix()
 	{
-		K::GameObject::GetTransform()->PassModelMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &K::GameObject::GetTransform()->modelMatrix.m[0][0]);
+		if (this->parent != nullptr)
+		{
+			this->GetTransform()->PassModelMatrix();
+			this->parent->GetTransform()->PassModelMatrix();
+			this->GetTransform()->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->GetTransform()->modelMatrix, this->parent->GetTransform()->modelMatrix);
+		}
+		else
+		{
+			this->GetTransform()->PassModelMatrix();
+		}
+		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
 	}
 
 	void GameObject::Bind() 
