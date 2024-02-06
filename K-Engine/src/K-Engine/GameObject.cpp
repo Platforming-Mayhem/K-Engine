@@ -93,19 +93,38 @@ namespace K
 		this->parent = newParent;
 	}
 
-	void GameObject::AddChild(K::GameObject* child)
+	void GameObject::AddChild(K::GameObject* index)
 	{
-		this->children.push_back(child);
+		for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++) 
+		{
+			if (K::Editor::GetCurrentScene()->GetGameObjects()[i] == index) 
+			{
+				this->children.push_back(i);
+				break;
+			}
+		}
 	}
 
-	void GameObject::RemoveChild(K::GameObject* child) 
+	void GameObject::RemoveChild(K::GameObject* index) 
 	{
-		this->children.erase(std::find(this->children.begin(), this->children.end(), child));
+		for (int i = 0; i < this->children.size(); i++)
+		{
+			if (K::Editor::GetCurrentScene()->GetGameObjects()[this->children[i]] == index)
+			{
+				this->children.erase(this->children.begin() + i);
+				break;
+			}
+		}
 	}
 
 	K::GameObject* GameObject::GetChild(int index) 
 	{
-		return this->children.at(index);
+		return K::Editor::GetCurrentScene()->GetGameObjects()[this->children[index]];
+	}
+
+	int GameObject::GetChildIndex(int index)
+	{
+		return this->children[index];
 	}
 
 	int GameObject::GetNumberOfChildren() 
