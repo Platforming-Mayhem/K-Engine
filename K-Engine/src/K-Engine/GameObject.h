@@ -49,7 +49,7 @@ namespace K
 
 		void Unbind();
 
-		void SetParent(K::GameObject* newParent);
+		bool SetParent(K::GameObject* newParent);
 
 		void RemoveChild(K::GameObject* index);
 

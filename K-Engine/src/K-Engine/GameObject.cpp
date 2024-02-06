@@ -100,7 +100,7 @@ namespace K
 		}
 	}
 
-	void GameObject::SetParent(K::GameObject* newParent) 
+	bool GameObject::SetParent(K::GameObject* newParent) 
 	{
 		/*if (this->parent == nullptr)
 		{
@@ -114,19 +114,20 @@ namespace K
 		}*/
 		//std::cout << this->GetName() << std::endl;
 		//std::cout << newParent->GetName() << std::endl;
-		if (CheckForGameObjectInChildren(this, newParent))
+		if (newParent == nullptr) 
 		{
-			std::cout << "FOUND YA" << std::endl;
+			if (this->parent != nullptr)
+			{
+				this->parent->RemoveChild(this);
+			}
+			this->parent = nullptr;
+			return true;
 		}
 		else 
 		{
-			if (newParent == nullptr)
+			if (CheckForGameObjectInChildren(this, newParent))
 			{
-				if (this->parent != nullptr)
-				{
-					this->parent->RemoveChild(this);
-				}
-				this->parent = nullptr;
+				return false;
 			}
 			else
 			{
@@ -136,6 +137,7 @@ namespace K
 				}
 				newParent->AddChild(this);
 				this->parent = newParent;
+				return true;
 			}
 		}
 	}
