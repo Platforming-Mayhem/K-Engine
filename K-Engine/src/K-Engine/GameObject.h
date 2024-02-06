@@ -50,6 +50,8 @@ namespace K
 
 		void SetParent(K::GameObject* newParent);
 
+		void RemoveChild(K::GameObject* child);
+
 		void AddChild(K::GameObject* child);
 
 		K::GameObject* GetChild(int index);

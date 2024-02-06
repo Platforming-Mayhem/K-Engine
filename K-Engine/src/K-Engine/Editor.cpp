@@ -209,7 +209,12 @@ namespace K
 	{
 		for (int i = 0; i < current->GetNumberOfChildren(); i++) 
 		{
-			bool nodeOpen = ImGui::TreeNodeEx(current->GetChild(i)->GetName(), ImGuiTreeNodeFlags_OpenOnArrow);
+			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+			if (current->GetChild(i)->GetNumberOfChildren() <= 0)
+			{
+				flags |= ImGuiTreeNodeFlags_Leaf;
+			}
+			bool nodeOpen = ImGui::TreeNodeEx(current->GetChild(i)->GetName(), flags);
 			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 			{
 				this->selectedGameObject = current->GetChild(i);
@@ -217,16 +222,20 @@ namespace K
 
 			if (ImGui::BeginDragDropSource())
 			{
-				ImGui::SetDragDropPayload("_CHILD", &i, sizeof(int));
+				//int it = std::find(K::Editor::GetCurrentScene()->GetGameObjects().begin(), K::Editor::GetCurrentScene()->GetGameObjects().end(), current->GetChild(i)) - K::Editor::GetCurrentScene()->GetGameObjects().begin();
+				//ImGui::SetDragDropPayload("_CHILD", &it, sizeof(int));
 				ImGui::Text(current->GetChild(i)->GetName());
 				ImGui::EndDragDropSource();
 			}
-			if (ImGui::BeginDragDropTarget())
+			else if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_CHILD"))
 				{
 					int child = *(const int*)payload->Data;
-					current->GetChild(child)->SetParent(current->GetChild(i));
+					if (current->GetChild(i)->parent != K::Editor::GetCurrentScene()->GetGameObjects()[child])
+					{
+						K::Editor::GetCurrentScene()->GetGameObjects()[child]->SetParent(current->GetChild(i));
+					}
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -242,17 +251,18 @@ namespace K
 		}
 	}
 
-	void Editor::ImGuiHierarchy()
+	void Editor::ParentChildrenHierarchy() 
 	{
-		std::string temp = "Hierarchy: ";
-		temp += K::Editor::GetCurrentScene()->GetSceneName();
-		ImGui::Begin(temp.c_str());
-
 		for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++)
 		{
-			if (K::Editor::GetCurrentScene()->GetGameObjects()[i]->parent == nullptr) 
+			if (K::Editor::GetCurrentScene()->GetGameObjects()[i]->parent == nullptr)
 			{
-				bool nodeOpen = ImGui::TreeNodeEx(K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetName(), ImGuiTreeNodeFlags_OpenOnArrow);
+				ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+				if (K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetNumberOfChildren() <= 0) 
+				{
+					flags |= ImGuiTreeNodeFlags_Leaf;
+				}
+				bool nodeOpen = ImGui::TreeNodeEx(K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetName(), flags);
 				if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 				{
 					this->selectedGameObject = K::Editor::GetCurrentScene()->GetGameObjects()[i];
@@ -263,12 +273,15 @@ namespace K
 					ImGui::Text(K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetName());
 					ImGui::EndDragDropSource();
 				}
-				if (ImGui::BeginDragDropTarget())
+				else if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_CHILD"))
 					{
 						int child = *(const int*)payload->Data;
-						K::Editor::GetCurrentScene()->GetGameObjects()[child]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
+						if (K::Editor::GetCurrentScene()->GetGameObjects()[i]->parent != K::Editor::GetCurrentScene()->GetGameObjects()[child]) 
+						{
+							K::Editor::GetCurrentScene()->GetGameObjects()[child]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
+						}
 					}
 					ImGui::EndDragDropTarget();
 				}
@@ -282,6 +295,15 @@ namespace K
 				}
 			}
 		}
+	}
+
+	void Editor::ImGuiHierarchy()
+	{
+		std::string temp = "Hierarchy: ";
+		temp += K::Editor::GetCurrentScene()->GetSceneName();
+		ImGui::Begin(temp.c_str());
+
+		this->ParentChildrenHierarchy();
 
 		ImGui::End();
 	}

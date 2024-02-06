@@ -54,6 +54,8 @@ namespace K
 
 		virtual ~Editor();
 
+		void ParentChildrenHierarchy();
+
 		void ShowChildren(K::GameObject* current);
 
 		void ImGuiHierarchy();

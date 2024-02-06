@@ -85,14 +85,22 @@ namespace K
 		}*/
 		//std::cout << this->GetName() << std::endl;
 		//std::cout << newParent->GetName() << std::endl;
-		std::cout << "Setting Parent" << std::endl;
+		if (this->parent != nullptr) 
+		{
+			this->parent->RemoveChild(this);
+		}
 		newParent->AddChild(this);
 		this->parent = newParent;
 	}
 
 	void GameObject::AddChild(K::GameObject* child)
 	{
-		children.push_back(child);
+		this->children.push_back(child);
+	}
+
+	void GameObject::RemoveChild(K::GameObject* child) 
+	{
+		this->children.erase(std::find(this->children.begin(), this->children.end(), child));
 	}
 
 	K::GameObject* GameObject::GetChild(int index) 
