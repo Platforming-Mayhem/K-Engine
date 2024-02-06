@@ -233,10 +233,7 @@ namespace K
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_CHILD"))
 				{
 					int child = *(const int*)payload->Data;
-					if (K::Editor::GetCurrentScene()->GetGameObjects()[j]->parent != K::Editor::GetCurrentScene()->GetGameObjects()[child])
-					{
-						K::Editor::GetCurrentScene()->GetGameObjects()[child]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[j]);
-					}
+					K::Editor::GetCurrentScene()->GetGameObjects()[child]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[j]);
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -279,10 +276,7 @@ namespace K
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_CHILD"))
 					{
 						int child = *(const int*)payload->Data;
-						if (K::Editor::GetCurrentScene()->GetGameObjects()[i]->parent != K::Editor::GetCurrentScene()->GetGameObjects()[child]) 
-						{
-							K::Editor::GetCurrentScene()->GetGameObjects()[child]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
-						}
+						K::Editor::GetCurrentScene()->GetGameObjects()[child]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
 					}
 					ImGui::EndDragDropTarget();
 				}

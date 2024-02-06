@@ -9,6 +9,7 @@ namespace K
 		this->name = (char*)name;
 		this->transform = transform;
 		this->material = K::Editor::GetMaterial();
+		this->g_Index = K::Editor::GetCurrentScene()->GetNumberOfObjects();
 		K::Editor::GetCurrentScene()->Attach(this);
 		std::cout << name << " GameObject Created" << std::endl;
 	}
@@ -49,6 +50,9 @@ namespace K
 		ImGui::Separator();
 		//INPUT TEXT DOESN'T WORK WHEN THE STRING IS EMPTY
 		ImGui::InputText("Name:", &(this->name));
+		ImGui::Text("Index: ");
+		ImGui::SameLine();
+		ImGui::Text(std::to_string(this->g_Index).c_str());
 		ImGui::Text(Editor::GetSelectedGameObject()->GetName());
 		ImGui::Text(std::to_string(this->layer).c_str());
 		ImGui::Separator();
@@ -71,6 +75,31 @@ namespace K
 		}
 	}
 
+	bool GameObject::CheckForGameObjectInChildren(K::GameObject* parent, K::GameObject* gameObject)
+	{
+		if (parent->GetNumberOfChildren() > 0) 
+		{
+			for (int i = 0; i < parent->children.size(); i++)
+			{
+				if (gameObject == parent->GetChild(i))
+				{
+					return true;
+				}
+				else 
+				{
+					if (CheckForGameObjectInChildren(parent->GetChild(i), gameObject)) 
+					{
+						return true;
+					}
+				}
+			}
+		}
+		else 
+		{
+			return false;
+		}
+	}
+
 	void GameObject::SetParent(K::GameObject* newParent) 
 	{
 		/*if (this->parent == nullptr)
@@ -85,12 +114,30 @@ namespace K
 		}*/
 		//std::cout << this->GetName() << std::endl;
 		//std::cout << newParent->GetName() << std::endl;
-		if (this->parent != nullptr) 
+		if (CheckForGameObjectInChildren(this, newParent))
 		{
-			this->parent->RemoveChild(this);
+			std::cout << "FOUND YA" << std::endl;
 		}
-		newParent->AddChild(this);
-		this->parent = newParent;
+		else 
+		{
+			if (newParent == nullptr)
+			{
+				if (this->parent != nullptr)
+				{
+					this->parent->RemoveChild(this);
+				}
+				this->parent = nullptr;
+			}
+			else
+			{
+				if (this->parent != nullptr)
+				{
+					this->parent->RemoveChild(this);
+				}
+				newParent->AddChild(this);
+				this->parent = newParent;
+			}
+		}
 	}
 
 	void GameObject::AddChild(K::GameObject* index)
@@ -120,6 +167,11 @@ namespace K
 	K::GameObject* GameObject::GetChild(int index) 
 	{
 		return K::Editor::GetCurrentScene()->GetGameObjects()[this->children[index]];
+	}
+
+	int GameObject::GetIndex() 
+	{
+		return this->g_Index;
 	}
 
 	int GameObject::GetChildIndex(int index)

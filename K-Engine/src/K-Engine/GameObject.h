@@ -26,6 +26,7 @@ namespace K
 		std::vector<K::Component*> components;
 		std::vector<int> children;
 		K::Material* material;
+		int g_Index;
 	public:
 
 		K::GameObject* parent = nullptr;
@@ -56,9 +57,13 @@ namespace K
 
 		K::GameObject* GetChild(int index);
 
+		int GetIndex();
+
 		int GetChildIndex(int index);
 
 		int GetNumberOfChildren();
+
+		bool CheckForGameObjectInChildren(K::GameObject* parent, K::GameObject* gameObject);
 
 		const char* GetName() 
 		{
