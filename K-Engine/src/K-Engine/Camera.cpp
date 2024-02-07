@@ -120,13 +120,22 @@ namespace K
 
 			K::Vector3 rotatedForward = K::Vector3(0.0f, 0.0f, 0.0f);
 			K::Vector3 rotatedUp = K::Vector3(0.0f, 0.0f, 0.0f);
+			K::Vector3 rotation = *this->parent->GetTransform()->rotation;
 
-			K::Quaternion* quat = K::Quaternion::Euler(new K::Vector3(this->parent->GetTransform()->rotation->x, this->parent->GetTransform()->rotation->y, this->parent->GetTransform()->rotation->z));
+			if (this->parent->parent != nullptr)
+			{
+				rotation -= *this->parent->parent->GetTransform()->rotation;
+			}
+			K::Quaternion* quat = K::Quaternion::Euler(&rotation);
 
-			MultiplyMatrixVector(forward, rotatedForward, *quat->QuaternionToMatrix());
-			MultiplyMatrixVector(up, rotatedUp, *quat->QuaternionToMatrix());
+			K::MultiplyMatrixVector(forward, rotatedForward, *quat->QuaternionToMatrix());
+			K::MultiplyMatrixVector(up, rotatedUp, *quat->QuaternionToMatrix());
 
 			K::Vector3 pos = *this->parent->GetTransform()->position;
+			if (this->parent->parent != nullptr)
+			{
+				pos -= *this->parent->parent->GetTransform()->position;
+			}
 			K::Vector3 target = pos + rotatedForward;
 			K::Matrix4x4* lookAtMatrix = K::LookAt(pos, target, rotatedUp);*/
 

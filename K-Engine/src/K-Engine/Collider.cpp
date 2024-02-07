@@ -139,7 +139,7 @@ namespace K
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
 		K::Vector3 position = *this->GetPosition();
 		K::Transform* temp = new K::Transform(&position, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
-		temp->PassModelMatrix();
+		temp->PassModelMatrix(nullptr);
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
 		float theta = 360.0f / 16.0f;
 		glBegin(GL_LINE_LOOP);

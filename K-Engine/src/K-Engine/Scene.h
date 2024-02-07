@@ -137,8 +137,8 @@ namespace K
 			K::Time::startTime = glfwGetTime();
 			for (int i = 0; i < this->GetNumberOfObjects(); i++)
 			{
-				this->GetGameObjects()[i]->Bind();
 				this->GetGameObjects()[i]->PassTransformationMatrix();
+				this->GetGameObjects()[i]->Bind();
 				this->GetGameObjects()[i]->Update();
 				this->GetGameObjects()[i]->Unbind();
 			}
