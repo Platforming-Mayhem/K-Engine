@@ -25,6 +25,22 @@ namespace K
 					matrix.m[r][c] = lhs.m[r][0] * rhs.m[0][c] + lhs.m[r][1] * rhs.m[1][c] + lhs.m[r][2] * rhs.m[2][c] + lhs.m[r][3] * rhs.m[3][c];
 			return matrix;
 		}
+
+		bool operator == (const K::Matrix4x4 other)
+		{
+			for (int i = 0; i < 4; i++) 
+			{
+				for (int j = 0; j < 4; j++) 
+				{
+					if (other.m[i][j] != this->m[i][j]) 
+					{
+						std::cout << i << "," << j << std::endl;
+						return false;
+					}
+				}
+			}
+			return true;
+		}
 	};
 
 	struct K_API Vector2 

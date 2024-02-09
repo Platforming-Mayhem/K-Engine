@@ -42,17 +42,51 @@ namespace K
 		return &matrix;
 	}
 
-	K::Matrix4x4 QuickInverse(K::Matrix4x4& m) // Only for Rotation/Translation Matrices
+	//This Is Just Brute Force Inverse
+	K::Matrix4x4 QuickInverse(K::Matrix4x4& m)
 	{
-		K::Matrix4x4 matrix;
-		matrix.m[0][0] = m.m[0][0]; matrix.m[0][1] = m.m[1][0]; matrix.m[0][2] = m.m[2][0]; matrix.m[0][3] = 0.0f;
-		matrix.m[1][0] = m.m[0][1]; matrix.m[1][1] = m.m[1][1]; matrix.m[1][2] = m.m[2][1]; matrix.m[1][3] = 0.0f;
-		matrix.m[2][0] = m.m[0][2]; matrix.m[2][1] = m.m[1][2]; matrix.m[2][2] = m.m[2][2]; matrix.m[2][3] = 0.0f;
-		matrix.m[3][0] = -(m.m[3][0] * matrix.m[0][0] + m.m[3][1] * matrix.m[1][0] + m.m[3][2] * matrix.m[2][0]);
-		matrix.m[3][1] = -(m.m[3][0] * matrix.m[0][1] + m.m[3][1] * matrix.m[1][1] + m.m[3][2] * matrix.m[2][1]);
-		matrix.m[3][2] = -(m.m[3][0] * matrix.m[0][2] + m.m[3][1] * matrix.m[1][2] + m.m[3][2] * matrix.m[2][2]);
-		matrix.m[3][3] = 1.0f;
-		return matrix;
+		Matrix4x4 mat;
+
+		float A2323 = m.m[2][2] * m.m[3][3] - m.m[2][3] * m.m[3][2];
+		float A1323 = m.m[2][1] * m.m[3][3] - m.m[2][3] * m.m[3][1];
+		float A1223 = m.m[2][1] * m.m[3][2] - m.m[2][2] * m.m[3][1];
+		float A0323 = m.m[2][0] * m.m[3][3] - m.m[2][3] * m.m[3][0];
+		float A0223 = m.m[2][0] * m.m[3][2] - m.m[2][2] * m.m[3][0];
+		float A0123 = m.m[2][0] * m.m[3][1] - m.m[2][1] * m.m[3][0];
+		float A2313 = m.m[1][2] * m.m[3][3] - m.m[1][3] * m.m[3][2];
+		float A1313 = m.m[1][1] * m.m[3][3] - m.m[1][3] * m.m[3][1];
+		float A1213 = m.m[1][1] * m.m[3][2] - m.m[1][2] * m.m[3][1];
+		float A2312 = m.m[1][2] * m.m[2][3] - m.m[1][3] * m.m[2][2];
+		float A1312 = m.m[1][1] * m.m[2][3] - m.m[1][3] * m.m[2][1];
+		float A1212 = m.m[1][1] * m.m[2][2] - m.m[1][2] * m.m[2][1];
+		float A0313 = m.m[1][0] * m.m[3][3] - m.m[1][3] * m.m[3][0];
+		float A0213 = m.m[1][0] * m.m[3][2] - m.m[1][2] * m.m[3][0];
+		float A0312 = m.m[1][0] * m.m[2][3] - m.m[1][3] * m.m[2][0];
+		float A0212 = m.m[1][0] * m.m[2][2] - m.m[1][2] * m.m[2][0];
+		float A0113 = m.m[1][0] * m.m[3][1] - m.m[1][1] * m.m[3][0];
+		float A0112 = m.m[1][0] * m.m[2][1] - m.m[1][1] * m.m[2][0];
+
+		float det = m.m[0][0] * (m.m[1][1] * A2323 - m.m[1][2] * A1323 + m.m[1][3] * A1223) - m.m[0][1] * (m.m[1][0] * A2323 - m.m[1][2] * A0323 + m.m[1][3] * A0223) + m.m[0][2] * (m.m[1][0] * A1323 - m.m[1][1] * A0323 + m.m[1][3] * A0123) - m.m[0][3] * (m.m[1][0] * A1223 - m.m[1][1] * A0223 + m.m[1][2] * A0123);
+		det = 1 / det;
+
+		mat.m[0][0] = det * (m.m[1][1] * A2323 - m.m[1][2] * A1323 + m.m[1][3] * A1223);
+		mat.m[0][1] = det * -(m.m[0][1] * A2323 - m.m[0][2] * A1323 + m.m[0][3] * A1223);
+		mat.m[0][2] = det * (m.m[0][1] * A2313 - m.m[0][2] * A1313 + m.m[0][3] * A1213);
+		mat.m[0][3] = det * -(m.m[0][1] * A2312 - m.m[0][2] * A1312 + m.m[0][3] * A1212);
+		mat.m[1][0] = det * -(m.m[1][0] * A2323 - m.m[1][2] * A0323 + m.m[1][3] * A0223);
+		mat.m[1][1] = det * (m.m[0][0] * A2323 - m.m[0][2] * A0323 + m.m[0][3] * A0223);
+		mat.m[1][2] = det * -(m.m[0][0] * A2313 - m.m[0][2] * A0313 + m.m[0][3] * A0213);
+		mat.m[1][3] = det * (m.m[0][0] * A2312 - m.m[0][2] * A0312 + m.m[0][3] * A0212);
+		mat.m[2][0] = det * (m.m[1][0] * A1323 - m.m[1][1] * A0323 + m.m[1][3] * A0123);
+		mat.m[2][1] = det * -(m.m[0][0] * A1323 - m.m[0][1] * A0323 + m.m[0][3] * A0123);
+		mat.m[2][2] = det * (m.m[0][0] * A1313 - m.m[0][1] * A0313 + m.m[0][3] * A0113);
+		mat.m[2][3] = det * -(m.m[0][0] * A1312 - m.m[0][1] * A0312 + m.m[0][3] * A0112);
+		mat.m[3][0] = det * -(m.m[1][0] * A1223 - m.m[1][1] * A0223 + m.m[1][2] * A0123);
+		mat.m[3][1] = det * (m.m[0][0] * A1223 - m.m[0][1] * A0223 + m.m[0][2] * A0123);
+		mat.m[3][2] = det * -(m.m[0][0] * A1213 - m.m[0][1] * A0213 + m.m[0][2] * A0113);
+		mat.m[3][3] = det * (m.m[0][0] * A1212 - m.m[0][1] * A0212 + m.m[0][2] * A0112);
+
+		return mat;
 	}
 
 	K::Vector2::Vector2(float x, float y) 

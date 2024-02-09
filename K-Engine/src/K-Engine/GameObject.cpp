@@ -138,8 +138,8 @@ namespace K
 	{
 		*index->GetTransform()->localScale /= *this->GetTransform()->scale;
 		*index->GetTransform()->localRotation -= *this->GetTransform()->rotation;
-		//POSITION NEEDS TO BE FIXED, I THINK
-		*index->GetTransform()->localPosition -= *this->GetTransform()->position;
+		K::Matrix4x4 invert = K::QuickInverse(this->GetTransform()->modelMatrix);
+		K::MultiplyMatrixVector(*index->GetTransform()->position, *index->GetTransform()->localPosition, invert);
 		for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++) 
 		{
 			if (K::Editor::GetCurrentScene()->GetGameObjects()[i] == index) 
