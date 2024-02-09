@@ -83,6 +83,24 @@ namespace K
 			return temp;
 		}
 
+		K::Vector3 operator * (const K::Vector3 other)
+		{
+			K::Vector3 temp = *this;
+			temp.x *= other.x;
+			temp.y *= other.y;
+			temp.z *= other.z;
+			return temp;
+		}
+
+		K::Vector3 operator / (const K::Vector3 other)
+		{
+			K::Vector3 temp = *this;
+			temp.x /= other.x;
+			temp.y /= other.y;
+			temp.z /= other.z;
+			return temp;
+		}
+
 		K::Vector3& operator * (const float& other)
 		{
 			K::Vector3 temp = *this;
@@ -195,6 +213,12 @@ namespace K
 		Vector3* localScale;
 
 		K::Matrix4x4 modelMatrix = K::Matrix4x4::IdentityMatrix();
+
+		K::Matrix4x4 RotationMatrix();
+
+		K::Matrix4x4 PositionMatrix();
+
+		K::Matrix4x4 ScaleMatrix();
 
 		Transform();
 

@@ -58,18 +58,13 @@ namespace K
 		ImGui::Separator();
 		if (ImGui::CollapsingHeader("GameObject Settings"))
 		{
-			if (Editor::GetSelectedGameObject()->parent == nullptr) 
-			{
-				ImGui::DragFloat3("Position:", &Editor::GetSelectedGameObject()->GetTransform()->position->x);
-				ImGui::DragFloat3("Rotation:", &Editor::GetSelectedGameObject()->GetTransform()->rotation->x);
-				ImGui::DragFloat3("Scale:", &Editor::GetSelectedGameObject()->GetTransform()->scale->x);
-			}
-			else 
-			{
-				ImGui::DragFloat3("Position:", &Editor::GetSelectedGameObject()->GetTransform()->localPosition->x);
-				ImGui::DragFloat3("Rotation:", &Editor::GetSelectedGameObject()->GetTransform()->localRotation->x);
-				ImGui::DragFloat3("Scale:", &Editor::GetSelectedGameObject()->GetTransform()->localScale->x);
-			}
+			ImGui::DragFloat3("Position:", &Editor::GetSelectedGameObject()->GetTransform()->position->x);
+			ImGui::DragFloat3("Rotation:", &Editor::GetSelectedGameObject()->GetTransform()->rotation->x);
+			ImGui::DragFloat3("Scale:", &Editor::GetSelectedGameObject()->GetTransform()->scale->x);
+
+			ImGui::DragFloat3("Local Position:", &Editor::GetSelectedGameObject()->GetTransform()->localPosition->x);
+			ImGui::DragFloat3("Local Rotation:", &Editor::GetSelectedGameObject()->GetTransform()->localRotation->x);
+			ImGui::DragFloat3("Local Scale:", &Editor::GetSelectedGameObject()->GetTransform()->localScale->x);
 		}
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
@@ -141,9 +136,10 @@ namespace K
 
 	void GameObject::AddChild(K::GameObject* index)
 	{
-		*index->GetTransform()->localPosition -= *index->parent->GetTransform()->position;
-		*index->GetTransform()->localRotation -= *index->parent->GetTransform()->rotation;
-		*index->GetTransform()->localScale /= *index->parent->GetTransform()->scale;
+		*index->GetTransform()->localScale /= *this->GetTransform()->scale;
+		*index->GetTransform()->localRotation -= *this->GetTransform()->rotation;
+		//POSITION NEEDS TO BE FIXED, I THINK
+		*index->GetTransform()->localPosition -= *this->GetTransform()->position;
 		for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++) 
 		{
 			if (K::Editor::GetCurrentScene()->GetGameObjects()[i] == index) 
@@ -156,12 +152,9 @@ namespace K
 
 	void GameObject::RemoveChild(K::GameObject* index) 
 	{
-		/**index->GetTransform()->position += *index->GetTransform()->localPosition;
-		*index->GetTransform()->rotation += *index->GetTransform()->localRotation;
-		*index->GetTransform()->scale *= *index->GetTransform()->localScale;*/
-		index->GetTransform()->localPosition->Reset();
-		index->GetTransform()->localRotation->Reset();
 		index->GetTransform()->localScale->ResetScale();
+		index->GetTransform()->localRotation->Reset();
+		index->GetTransform()->localPosition->Reset();
 		for (int i = 0; i < this->children.size(); i++)
 		{
 			if (K::Editor::GetCurrentScene()->GetGameObjects()[this->children[i]] == index)

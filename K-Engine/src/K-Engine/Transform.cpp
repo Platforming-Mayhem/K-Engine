@@ -130,38 +130,70 @@ namespace K
 		std::cout << "Transform Destroyed" << std::endl;
 	}
 
+	K::Matrix4x4 K::Transform::PositionMatrix() 
+	{
+		K::Matrix4x4 temp = K::Matrix4x4::IdentityMatrix();
+		//Translation Matrix
+		temp.m[3][0] += this->position->x;
+		temp.m[3][1] += this->position->y;
+		temp.m[3][2] += this->position->z;
+
+		return temp;
+	}
+
+	K::Matrix4x4 K::Transform::RotationMatrix()
+	{
+		K::Matrix4x4 temp = K::Matrix4x4::IdentityMatrix();
+
+		//Rotation Matrix
+		temp = K::Matrix4x4::Matrix_MultiplyMatrix(temp, *K::Quaternion::Euler(this->rotation)->QuaternionToMatrix());
+		
+		return temp;
+	}
+
+	K::Matrix4x4 K::Transform::ScaleMatrix()
+	{
+		K::Matrix4x4 temp = K::Matrix4x4::IdentityMatrix();
+
+		//Scaling Matrix
+		temp.m[0][0] *= this->scale->x;
+		temp.m[1][1] *= this->scale->y;
+		temp.m[2][2] *= this->scale->z;
+
+		return temp;
+	}
+
 	void K::Transform::PassModelMatrix(K::Transform* parent) 
 	{
-		if (parent != nullptr) 
+
+		K::Matrix4x4 globalModelMatrix = K::Matrix4x4::IdentityMatrix();
+
+		if (parent == nullptr) 
 		{
-			this->modelMatrix = this->modelMatrix.IdentityMatrix();
-			//Scaling Matrix
-			this->modelMatrix.m[0][0] *= this->scale->x * this->localScale->x;
-			this->modelMatrix.m[1][1] *= this->scale->y * this->localScale->y;
-			this->modelMatrix.m[2][2] *= this->scale->z * this->localScale->z;
-			//Rotation Matrix
-			K::Vector3 rotation = *this->rotation + *this->localRotation;
-			this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->modelMatrix, *K::Quaternion::Euler(&rotation)->QuaternionToMatrix());
-			//Translation Matrix
-			this->modelMatrix.m[3][0] += this->position->x + this->localPosition->x;
-			this->modelMatrix.m[3][1] += this->position->y + this->localPosition->y;
-			this->modelMatrix.m[3][2] += this->position->z + this->localPosition->z;
-			this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->modelMatrix, parent->modelMatrix);
+			*this->localScale = *this->scale;
+			*this->localRotation = *this->rotation;
+			*this->localPosition = *this->position;
 		}
 		else 
 		{
-			this->modelMatrix = this->modelMatrix.IdentityMatrix();
-			//Scaling Matrix
-			this->modelMatrix.m[0][0] *= this->scale->x;
-			this->modelMatrix.m[1][1] *= this->scale->y;
-			this->modelMatrix.m[2][2] *= this->scale->z;
-			//Rotation Matrix
-			this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->modelMatrix, *K::Quaternion::Euler(this->rotation)->QuaternionToMatrix());
-			//Translation Matrix
-			this->modelMatrix.m[3][0] += this->position->x;
-			this->modelMatrix.m[3][1] += this->position->y;
-			this->modelMatrix.m[3][2] += this->position->z;
+			//Find A Way To Transform Local Transforms into World/Global Transforms
+			*this->scale = *this->localScale * *parent->scale;
+			*this->rotation = *this->localRotation + *parent->rotation;
+			K::MultiplyMatrixVector(*this->localPosition, *this->position, parent->modelMatrix);
 		}
+
+		//Scaling Matrix
+		globalModelMatrix.m[0][0] *= this->scale->x;
+		globalModelMatrix.m[1][1] *= this->scale->y;
+		globalModelMatrix.m[2][2] *= this->scale->z;
+		//Rotation Matrix
+		globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, *K::Quaternion::Euler(this->rotation)->QuaternionToMatrix());
+		//Translation Matrix
+		globalModelMatrix.m[3][0] += this->position->x;
+		globalModelMatrix.m[3][1] += this->position->y;
+		globalModelMatrix.m[3][2] += this->position->z;
+
+		this->modelMatrix = globalModelMatrix;
 	}
 
 	K::Quaternion::~Quaternion() 
