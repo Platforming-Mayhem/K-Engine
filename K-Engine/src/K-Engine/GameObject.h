@@ -55,6 +55,8 @@ namespace K
 
 		void AddChild(K::GameObject* index);
 
+		void UpdateToWorld();
+
 		K::GameObject* GetChild(int index);
 
 		int GetIndex();

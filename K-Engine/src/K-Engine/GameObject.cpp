@@ -58,13 +58,20 @@ namespace K
 		ImGui::Separator();
 		if (ImGui::CollapsingHeader("GameObject Settings"))
 		{
-			ImGui::DragFloat3("Position:", &Editor::GetSelectedGameObject()->GetTransform()->position->x);
-			ImGui::DragFloat3("Rotation:", &Editor::GetSelectedGameObject()->GetTransform()->rotation->x);
-			ImGui::DragFloat3("Scale:", &Editor::GetSelectedGameObject()->GetTransform()->scale->x);
-
-			ImGui::DragFloat3("Local Position:", &Editor::GetSelectedGameObject()->GetTransform()->localPosition->x);
-			ImGui::DragFloat3("Local Rotation:", &Editor::GetSelectedGameObject()->GetTransform()->localRotation->x);
-			ImGui::DragFloat3("Local Scale:", &Editor::GetSelectedGameObject()->GetTransform()->localScale->x);
+			if (ImGui::TreeNode("World Space Transforms")) 
+			{
+				ImGui::DragFloat3("Position:", &Editor::GetSelectedGameObject()->GetTransform()->position->x);
+				ImGui::DragFloat3("Rotation:", &Editor::GetSelectedGameObject()->GetTransform()->rotation->x);
+				ImGui::DragFloat3("Scale:", &Editor::GetSelectedGameObject()->GetTransform()->scale->x);
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("Local Space Transforms"))
+			{
+				ImGui::DragFloat3("Local Position:", &Editor::GetSelectedGameObject()->GetTransform()->localPosition->x);
+				ImGui::DragFloat3("Local Rotation:", &Editor::GetSelectedGameObject()->GetTransform()->localRotation->x);
+				ImGui::DragFloat3("Local Scale:", &Editor::GetSelectedGameObject()->GetTransform()->localScale->x);
+				ImGui::TreePop();
+			}
 		}
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
@@ -134,6 +141,22 @@ namespace K
 		}
 	}
 
+	void GameObject::UpdateToWorld() 
+	{
+		if (this->parent == nullptr) 
+		{
+			
+		}
+		else 
+		{
+			*this->GetTransform()->localScale = *this->GetTransform()->scale / *this->parent->GetTransform()->scale;
+			*this->GetTransform()->localRotation = *this->GetTransform()->rotation - *this->parent->GetTransform()->rotation;
+			*this->GetTransform()->localPosition = *this->GetTransform()->position;
+			K::Matrix4x4 invert = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
+			K::MultiplyMatrixVector(*this->GetTransform()->position, *this->GetTransform()->localPosition, invert);
+		}
+	}
+
 	void GameObject::AddChild(K::GameObject* index)
 	{
 		*index->GetTransform()->localScale /= *this->GetTransform()->scale;
@@ -152,9 +175,13 @@ namespace K
 
 	void GameObject::RemoveChild(K::GameObject* index) 
 	{
-		index->GetTransform()->localScale->ResetScale();
-		index->GetTransform()->localRotation->Reset();
-		index->GetTransform()->localPosition->Reset();
+		K::Vector3 localScaleInWorldSpace = *index->GetTransform()->localScale * *this->GetTransform()->scale;
+		K::Vector3 localRotationInWorldSpace = *index->GetTransform()->localRotation + *this->GetTransform()->rotation;
+		K::Vector3 localPositionInWorldSpace;
+		K::MultiplyMatrixVector(*index->GetTransform()->localPosition, localPositionInWorldSpace, this->GetTransform()->modelMatrix);
+		*index->GetTransform()->scale = localScaleInWorldSpace;
+		*index->GetTransform()->rotation = localRotationInWorldSpace;
+		*index->GetTransform()->position = localPositionInWorldSpace;
 		for (int i = 0; i < this->children.size(); i++)
 		{
 			if (K::Editor::GetCurrentScene()->GetGameObjects()[this->children[i]] == index)

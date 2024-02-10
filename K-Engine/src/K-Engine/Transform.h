@@ -34,7 +34,6 @@ namespace K
 				{
 					if (other.m[i][j] != this->m[i][j]) 
 					{
-						std::cout << i << "," << j << std::endl;
 						return false;
 					}
 				}
@@ -80,6 +79,22 @@ namespace K
 		}
 
 		~Vector3();
+
+		bool operator == (const K::Vector3 other) 
+		{
+			if (this->x == other.x && this->y == other.y && this->z == other.z)
+				return true;
+			else
+				return false;
+		}
+
+		bool operator != (const K::Vector3 other)
+		{
+			if (this->x == other.x && this->y == other.y && this->z == other.z)
+				return false;
+			else
+				return true;
+		}
 
 		K::Vector3 operator - (const K::Vector3 other)
 		{
@@ -219,6 +234,11 @@ namespace K
 
 	class K_API Transform 
 	{
+	private:
+		Vector3 previousPosition;
+		Vector3 previousRotation;
+		Vector3 previousScale;
+
 	public:
 		Vector3* position;
 		Vector3* rotation;
