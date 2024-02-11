@@ -89,68 +89,20 @@ namespace K
 
 	void Player::Update() 
 	{
-		float accelerationSpeed = (easeOutQuint(this->accelerationTime, 6.0f) * this->movementSpeed);
-		float decelerationSpeed = (decelerateEaseOutQuint(this->decelerationTime, 2.0f) * this->movementSpeed);
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
 			this->animator->PlayAnimation(1, this->sprite, false);
-			if (this->accelerationTime < 1.0f)
-			{
-				this->accelerationTime += K::Time::deltaTime();
-			}
-			else
-			{
-				this->accelerationTime = 1.0f;
-			}
-			this->decelerationTime = 0.0f;
-			*this->direction = K::Vector3(accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			*this->direction = K::Vector3(this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 		}
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 		{
 			this->animator->PlayAnimation(1, this->sprite, false);
-			if (this->accelerationTime < 1.0f)
-			{
-				this->accelerationTime += K::Time::deltaTime();
-			}
-			else
-			{
-				this->accelerationTime = 1.0f;
-			}
-			this->decelerationTime = 0.0f;
-			*this->direction = K::Vector3(-accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			*this->direction = K::Vector3(-this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 		}
 		else
 		{
 			this->animator->PlayAnimation(0, this->sprite, false);
-			if (this->direction->x > 0.0f)
-			{
-				if (this->decelerationTime < 1.0f)
-				{
-					this->decelerationTime += K::Time::deltaTime() * 2.0f;
-				}
-				else
-				{
-					this->decelerationTime = 1.0f;
-				}
-				*this->direction = K::Vector3(decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
-			}
-			else if (this->direction->x < 0.0f)
-			{
-				if (this->decelerationTime < 1.0f)
-				{
-					this->decelerationTime += K::Time::deltaTime() * 2.0f;
-				}
-				else
-				{
-					this->decelerationTime = 1.0f;
-				}
-				*this->direction = K::Vector3(-decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
-			}
-			if (this->accelerationTime > 0.0f)
-			{
-				this->decelerationTime = 1.0f - this->accelerationTime;
-				this->accelerationTime = 0.0f;
-			}
+			*this->direction = K::Vector3(0.0f, 0.0f, 0.0f);
 		}
 
 		*(this->parent->GetTransform()->position) += this->direction;

@@ -15,8 +15,6 @@ namespace K
 		float movementSpeed = 1.0f;
 		float time = 0.0f;
 		float jumpTime = 0.0f;
-		float accelerationTime = 0.0f;
-		float decelerationTime = 0.0f;
 		K::Vector3 originalScale;
 		K::Vector3* direction;
 		K::Animator* animator;
@@ -35,8 +33,6 @@ namespace K
 		void Update() override;
 
 		void UpdateEditor() override;
-
-		//void HitboxVisualDebug();
 
 		void Bind() override;
 
