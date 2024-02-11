@@ -35,7 +35,7 @@ namespace K
 				if (g->parent == nullptr)
 					outFile << "," << "-1";
 				else 
-					outFile << "," << g->parent->GetIndex();
+					outFile << "," << (g->parent->GetIndex() - 1);
 				std::cout << g->GetName();
 				std::cout << " " << transform->position->x << "," << transform->position->y << "," << transform->position->z;
 				std::cout << " " << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
@@ -149,29 +149,34 @@ namespace K
 				}
 			}
 			inFile.close();
+			if (!parents.empty())
+			{
+				#if _DEBUG
+					int j = 1;
+				#else
+					int j = 0;
+				#endif
+				for (int i : parents)
+				{
+					if (i != -1)
+					{
+						std::cout << K::Editor::GetCurrentScene()->GetGameObjects()[j]->GetName() << "," << K::Editor::GetCurrentScene()->GetGameObjects()[i + 1]->GetName() << std::endl;
+						#if _DEBUG
+						K::Editor::GetCurrentScene()->GetGameObjects()[j]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i + 1]);
+						#else
+						K::Editor::GetCurrentScene()->GetGameObjects()[j]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
+						#endif
+					}
+					j++;
+				}
+				parents.clear();
+			}
+			std::cout << "Finished setting parents..." << std::endl;
 		}
 		std::cout << ASSET_DIR + location;
 		std::cout << "..." << std::endl;
 		newScene->SetSceneName(location);
 		newScene->SetLocation(location);
-		if (!parents.empty()) 
-		{
-			int j = 0;
-			for (int i : parents)
-			{
-				if (i != -1) 
-				{
-					#if _DEBUG
-					K::Editor::GetCurrentScene()->GetGameObjects()[j]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i - 1]);
-					#else
-					K::Editor::GetCurrentScene()->GetGameObjects()[j]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
-					#endif
-				}
-				j++;
-			}
-			parents.clear();
-		}
-		std::cout << "Finished setting parents..." << std::endl;
 		newScene->Init();
 	}
 }
