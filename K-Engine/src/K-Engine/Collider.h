@@ -28,6 +28,8 @@ namespace K
 		std::vector<K::Line> linePoints;
 		std::string properties;
 	public:
+		K::Collider* other = nullptr;
+
 		enum class ColliderType { Circle = 0, Line = 1};
 
 		ColliderType colliderType = ColliderType::Circle;

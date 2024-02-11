@@ -75,6 +75,10 @@ namespace K
 							file.SetPwd(ASSET_DIR);
 							file.Open();
 						}
+						if (ImGui::MenuItem("Save..."))
+						{
+							K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene(), ASSET_DIR + K::Editor::GetCurrentScene()->GetLocation());
+						}
 						if (ImGui::MenuItem("Save Scene..."))
 						{
 							file = ImGui::FileBrowser(ImGuiFileBrowserFlags_EnterNewFilename);
@@ -200,10 +204,13 @@ namespace K
 		}
 	}
 
-	void Editor::Delete(K::GameObject* temp) 
+	void Editor::Delete(K::GameObject* target) 
 	{
-		K::Editor::GetCurrentScene()->Delete(temp);
-		K::Editor::selectedGameObject = nullptr;
+		K::Editor::GetCurrentScene()->Delete(target);
+		if (target == K::Editor::selectedGameObject) 
+		{
+			K::Editor::selectedGameObject = nullptr;
+		}
 	}
 
 	void Editor::ShowChildren(K::GameObject* current) 
@@ -326,6 +333,7 @@ namespace K
 		}
 		if (this->selectedGameObject != NULL)
 		{
+
 			this->selectedGameObject->UpdateEditor();
 
 			if (ImGui::Button("Delete")) 

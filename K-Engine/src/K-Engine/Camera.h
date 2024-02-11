@@ -28,8 +28,6 @@ namespace K
 		float rotationSpeed = 100.0f;
 	public:
 
-		K::Transform* player = nullptr;
-
 		K::Vector3 GetMousePosition(K::Window* window);
 
 		Camera();

@@ -32,6 +32,10 @@ namespace K
 				outFile << "," << transform->position->x << "," << transform->position->y << "," << transform->position->z;
 				outFile << "," << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
 				outFile << "," << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z;
+				if (g->parent == nullptr)
+					outFile << "," << "-1";
+				else 
+					outFile << "," << g->parent->GetIndex();
 				std::cout << g->GetName();
 				std::cout << " " << transform->position->x << "," << transform->position->y << "," << transform->position->z;
 				std::cout << " " << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
@@ -61,6 +65,7 @@ namespace K
 	{
 		std::ifstream inFile;
 		inFile.open(ASSET_DIR + location);
+		std::vector<int> parents;
 		if (inFile)
 		{
 			std::string line;
@@ -111,8 +116,11 @@ namespace K
 						case 9:
 							scale->z = std::stof(val);
 							break;
+						case 10:
+							parents.push_back(std::stoi(val));
+							break;
 						}
-						if (number > 9)
+						if (number > 10)
 						{
 							std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(val);
 							if (pos == K::Editor::lst.end())
@@ -146,6 +154,24 @@ namespace K
 		std::cout << "..." << std::endl;
 		newScene->SetSceneName(location);
 		newScene->SetLocation(location);
+		if (!parents.empty()) 
+		{
+			int j = 0;
+			for (int i : parents)
+			{
+				if (i != -1) 
+				{
+					#if _DEBUG
+					K::Editor::GetCurrentScene()->GetGameObjects()[j]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i - 1]);
+					#else
+					K::Editor::GetCurrentScene()->GetGameObjects()[j]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
+					#endif
+				}
+				j++;
+			}
+			parents.clear();
+		}
+		std::cout << "Finished setting parents..." << std::endl;
 		newScene->Init();
 	}
 }

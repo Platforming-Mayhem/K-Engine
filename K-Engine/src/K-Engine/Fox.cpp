@@ -15,13 +15,13 @@ namespace K
 
 	void Fox::Update() 
 	{
-		this->ChooseDirection();
 		this->Attack();
 		this->AvoidFalling();
 		this->AvoidWalls();
 		this->Move();
 		this->JumpUpdate();
 		this->Gravity();
+		this->ChooseDirection();
 	}
 
 	void Fox::UpdateEditor()

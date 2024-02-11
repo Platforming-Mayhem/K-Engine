@@ -43,6 +43,7 @@ namespace K
 				if (this->animator != nullptr)
 				{
 					this->animator->PlayAnimation(2, this->sprite, false);
+					this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
 					this->isAttacking = true;
 					if (this->sprite->GetFrameNumber() >= this->minAttackFrame && this->sprite->GetFrameNumber() <= this->maxAttackFrame && temp != nullptr)
 					{
@@ -52,13 +53,14 @@ namespace K
 				}
 			}
 		}
-		else 
+		else if(this->direction.x < 0.0f)
 		{
 			if (Physics::Hitbox(*this->col->GetPosition() + K::Vector3(-this->col->GetRadius() - 2.0f, 0.0f, -this->col->GetRadius()), *this->col->GetPosition() + K::Vector3(-this->col->GetRadius(), 0.0f, this->col->GetRadius() + 1.0f), { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &temp))
 			{
 				if (this->animator != nullptr)
 				{
 					this->animator->PlayAnimation(2, this->sprite, false);
+					this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
 					this->isAttacking = true;
 					if (this->sprite->GetFrameNumber() >= this->minAttackFrame && this->sprite->GetFrameNumber() <= this->maxAttackFrame && temp != nullptr)
 					{
@@ -89,12 +91,10 @@ namespace K
 		if (!K::Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(0.5f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			this->Jump();
-			//this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 		}
 		else if (!K::Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-0.5f, -(this->col->GetRadius() + 0.1f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
 			this->Jump();
-			//this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
 		}
 	}
 
@@ -102,12 +102,10 @@ namespace K
 	{
 		if (Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			//this->direction = K::Vector3(-this->movementSpeed, 0.0f, 0.0f);
 			this->Jump();
 		}
 		else if (Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, 0.0f), K::Vector3(-1.0f, 0.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			//this->direction = K::Vector3(this->movementSpeed, 0.0f, 0.0f);
 			this->Jump();
 		}
 	}
@@ -181,14 +179,6 @@ namespace K
 	{
 		this->isJumping = true;
 		this->animator->PlayAnimation(3, this->sprite, false);
-		if (this->direction.x > 0.0f)
-		{
-			this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
-		}
-		else if (this->direction.x < 0.0f)
-		{
-			this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
-		}
 	}
 
 	void Enemy::JumpUpdate() 

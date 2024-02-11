@@ -17,7 +17,7 @@ namespace K
 		float jumpTime = 0.0f;
 		float accelerationTime = 0.0f;
 		float decelerationTime = 0.0f;
-		float attackDirection = 1.0f;
+		K::Vector3 originalScale;
 		K::Vector3* direction;
 		K::Animator* animator;
 		K::Collider* col;

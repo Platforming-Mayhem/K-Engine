@@ -12,7 +12,6 @@ namespace K
 
 	Camera::~Camera() 
 	{
-		this->player = nullptr;
 		std::cout << "Camera Destructor..." << std::endl;
 	}
 
@@ -114,31 +113,6 @@ namespace K
 
 			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
 
-			//View Matrix
-			/*K::Vector3 forward = K::Vector3(0.0f, 0.0f, 1.0f);
-			K::Vector3 up = K::Vector3(0.0f, 1.0f, 0.0f);
-
-			K::Vector3 rotatedForward = K::Vector3(0.0f, 0.0f, 0.0f);
-			K::Vector3 rotatedUp = K::Vector3(0.0f, 0.0f, 0.0f);
-			K::Vector3 rotation = *this->parent->GetTransform()->rotation;
-
-			if (this->parent->parent != nullptr)
-			{
-				rotation -= *this->parent->parent->GetTransform()->rotation;
-			}
-			K::Quaternion* quat = K::Quaternion::Euler(&rotation);
-
-			K::MultiplyMatrixVector(forward, rotatedForward, *quat->QuaternionToMatrix());
-			K::MultiplyMatrixVector(up, rotatedUp, *quat->QuaternionToMatrix());
-
-			K::Vector3 pos = *this->parent->GetTransform()->position;
-			if (this->parent->parent != nullptr)
-			{
-				pos -= *this->parent->parent->GetTransform()->position;
-			}
-			K::Vector3 target = pos + rotatedForward;
-			K::Matrix4x4* lookAtMatrix = K::LookAt(pos, target, rotatedUp);*/
-
 			K::Camera::viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
 
 			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
@@ -237,18 +211,6 @@ namespace K
 	{
 		SetWindow(K::window);
 		SetMaterial(this->parent->GetMaterial());
-		if (!this->isEditorCamera) 
-		{
-			for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++) 
-			{
-				K::GameObject* temp = K::Editor::GetCurrentScene()->GetGameObjects()[i];
-				if (temp->GetComponentOfType(typeid(K::Player).name()) != nullptr) 
-				{
-					player = temp->GetTransform();
-					break;
-				}
-			}
-		}
 		this->Bind();
 	}
 
@@ -296,12 +258,6 @@ namespace K
 			}
 		}
 		#endif
-		if (!this->isEditorCamera && this->player != nullptr)
-		{
-			K::Vector3 offset = *player->position - K::Vector3(0.0f, 1.0f, 0.0f);
-			K::Vector3 position = K::Vector3::Lerp(*this->parent->GetTransform()->position, offset, K::Time::deltaTime() * this->movementSpeed);
-			*this->parent->GetTransform()->position = position;
-		}
 	}
 
 	void Camera::UpdateEditor()

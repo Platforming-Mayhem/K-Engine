@@ -227,6 +227,7 @@ namespace K
 					if (angle < 0.8f && angle > -0.8f && angle1 > 0.0f)
 					{
 						col->SetIsColliding(true);
+						col->other = J.other;
 						count++;
 					}
 				}
@@ -235,6 +236,7 @@ namespace K
 		if (offsetAmount->magnitude() <= 0.0f || count == 0) 
 		{
 			col->SetIsColliding(false);
+			col->other = nullptr;
 		}
 		return offsetAmount;
 	}

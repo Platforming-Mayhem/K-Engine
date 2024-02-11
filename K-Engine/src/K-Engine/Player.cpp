@@ -16,18 +16,6 @@ namespace K
 		this->animator = nullptr;
 		this->col = nullptr;
 		this->sprite = nullptr;
-		for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++)
-		{
-			K::GameObject* temp = K::Editor::GetCurrentScene()->GetGameObjects()[i];
-			if (temp != this->parent) 
-			{
-				if (temp->GetComponentOfType(typeid(K::Camera).name()) != nullptr)
-				{
-					K::Camera* cam = (K::Camera*)temp->GetComponentOfType(typeid(K::Camera).name());
-					cam->player = nullptr;
-				}
-			}
-		}
 		delete this->direction;
 		std::cout << "Player Destructor" << std::endl;
 	}
@@ -85,6 +73,8 @@ namespace K
 			this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
 		}
 
+		this->originalScale = *this->parent->GetTransform()->scale;
+
 		this->parent->layer = (int)K::Layer::LayerType::Player;
 		this->time = 0.0f;
 	}
@@ -94,40 +84,16 @@ namespace K
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
-			//this->HitboxVisualDebug();
 		}
 	}
 
-	/*void Player::HitboxVisualDebug()
-	{
-		glClear(GL_DEPTH_BUFFER_BIT);
-		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
-		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
-		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
-		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
-		temp.PassModelMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
-		glBegin(GL_LINE_LOOP);
-		glVertex3f(this->col->GetPosition()->x + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z + 1.0f);//Top-Right
-		glVertex3f(this->col->GetPosition()->x + 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z);//Bottom-Right
-		glVertex3f(this->col->GetPosition()->x, this->col->GetPosition()->y, this->col->GetPosition()->z);//Bottom-Left
-		glVertex3f(this->col->GetPosition()->x, this->col->GetPosition()->y, this->col->GetPosition()->z + 1.0f);//Top-Left
-		glEnd();
-		glBegin(GL_LINE_LOOP);
-		glVertex3f(this->col->GetPosition()->x, this->col->GetPosition()->y, this->col->GetPosition()->z + 1.0f);//Top-Right
-		glVertex3f(this->col->GetPosition()->x, this->col->GetPosition()->y, this->col->GetPosition()->z);//Bottom-Right
-		glVertex3f(this->col->GetPosition()->x - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z);//Bottom-Left
-		glVertex3f(this->col->GetPosition()->x - 1.0f, this->col->GetPosition()->y, this->col->GetPosition()->z + 1.0f);//Top-Left
-		glEnd();
-		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
-	}*/
-
 	void Player::Update() 
 	{
-		float accelerationSpeed = (easeOutQuint(this->accelerationTime, 4.0f) * this->movementSpeed);
+		float accelerationSpeed = (easeOutQuint(this->accelerationTime, 6.0f) * this->movementSpeed);
 		float decelerationSpeed = (decelerateEaseOutQuint(this->decelerationTime, 2.0f) * this->movementSpeed);
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
+			this->animator->PlayAnimation(1, this->sprite, false);
 			if (this->accelerationTime < 1.0f)
 			{
 				this->accelerationTime += K::Time::deltaTime();
@@ -137,11 +103,11 @@ namespace K
 				this->accelerationTime = 1.0f;
 			}
 			this->decelerationTime = 0.0f;
-			this->attackDirection = 1.0f;
-			this->direction = new K::Vector3(accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			*this->direction = K::Vector3(accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 		}
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 		{
+			this->animator->PlayAnimation(1, this->sprite, false);
 			if (this->accelerationTime < 1.0f)
 			{
 				this->accelerationTime += K::Time::deltaTime();
@@ -151,34 +117,34 @@ namespace K
 				this->accelerationTime = 1.0f;
 			}
 			this->decelerationTime = 0.0f;
-			this->attackDirection = -1.0f;
-			this->direction = new K::Vector3(-accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			*this->direction = K::Vector3(-accelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 		}
 		else
 		{
+			this->animator->PlayAnimation(0, this->sprite, false);
 			if (this->direction->x > 0.0f)
 			{
 				if (this->decelerationTime < 1.0f)
 				{
-					this->decelerationTime += K::Time::deltaTime() * 4.0f;
+					this->decelerationTime += K::Time::deltaTime() * 2.0f;
 				}
 				else
 				{
 					this->decelerationTime = 1.0f;
 				}
-				this->direction = new K::Vector3(decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+				*this->direction = K::Vector3(decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 			}
 			else if (this->direction->x < 0.0f)
 			{
 				if (this->decelerationTime < 1.0f)
 				{
-					this->decelerationTime += K::Time::deltaTime() * 4.0f;
+					this->decelerationTime += K::Time::deltaTime() * 2.0f;
 				}
 				else
 				{
 					this->decelerationTime = 1.0f;
 				}
-				this->direction = new K::Vector3(-decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+				*this->direction = K::Vector3(-decelerationSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 			}
 			if (this->accelerationTime > 0.0f)
 			{
@@ -194,56 +160,48 @@ namespace K
 			this->animator->PlayAnimation(2, this->sprite, false);
 			if (this->flip)
 			{
-				this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
-				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+				this->parent->GetTransform()->scale->x = -this->originalScale.x;
 			}
 			else
 			{
-				this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
-				this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+				this->parent->GetTransform()->scale->x = this->originalScale.x;
 			}
 		}
 		else
 		{
 			if (direction->x != 0.0f)
 			{
-				this->animator->PlayAnimation(1, this->sprite, false);
 				if (this->flip)
 				{
-					this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
-					this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+					this->parent->GetTransform()->scale->x = -this->originalScale.x;
 				}
 				else 
 				{
-					this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
-					this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+					this->parent->GetTransform()->scale->x = this->originalScale.x;
 				}
 			}
 			else
 			{
-				this->animator->PlayAnimation(0, this->sprite, false);
 				if (this->flip)
 				{
-					this->parent->GetTransform()->scale->x = -this->sprite->GetTexture()->GetWidth() / 32.0f;
-					this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+					this->parent->GetTransform()->scale->x = -this->originalScale.x;
 				}
 				else
 				{
-					this->parent->GetTransform()->scale->x = this->sprite->GetTexture()->GetWidth() / 32.0f;
-					this->parent->GetTransform()->scale->z = this->sprite->GetTexture()->GetHeight() / 32.0f;
+					this->parent->GetTransform()->scale->x = this->originalScale.x;
 				}
 			}
 		}
 
-		if (InputManager::IsKeyPressedDown(GLFW_KEY_SPACE) && this->jumpTime == 0.0f)
+		if (InputManager::IsKeyPressedDown(GLFW_KEY_UP) && this->jumpTime == 0.0f)
 		{
 			this->isJumping = true;
 		}
-		else if (InputManager::IsKeyReleased(GLFW_KEY_SPACE) && this->jumpTime < 1.0f)
+		else if (InputManager::IsKeyReleased(GLFW_KEY_UP) && this->jumpTime < 1.0f)
 		{
 			this->jumpTime = 1.0f;
 		}
-		else if (K::Physics::IsColliding(this->parent) && this->jumpTime >= 1.0f)
+		else if (K::Physics::IsColliding(this->parent) && this->jumpTime > 0.0f)
 		{
 			this->jumpTime = 0.0f;
 			this->isJumping = false;
@@ -252,12 +210,12 @@ namespace K
 		if (this->isJumping) 
 		{
 			this->time = 0.0f;
-			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f);
-			this->jumpTime += K::Time::deltaTime() * 4.0f;
+			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 1.0f);
+			this->jumpTime += K::Time::deltaTime() * 2.0f;
 		}
 		else 
 		{
-			if (!K::Physics::IsColliding(this->parent)) 
+			if (!K::Physics::IsColliding(this->parent) && !K::Physics::IsStatic(this->parent)) 
 			{
 				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
 				this->time += K::Time::deltaTime();
