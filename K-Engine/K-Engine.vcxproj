@@ -19,6 +19,7 @@
     <ClInclude Include="src\K-Engine\Fox.h" />
     <ClInclude Include="src\K-Engine\InputManager.h" />
     <ClInclude Include="src\K-Engine\Material.h" />
+    <ClInclude Include="src\K-Engine\Move.h" />
     <ClInclude Include="src\K-Engine\PhysicsEngine.h" />
     <ClInclude Include="src\K-Engine\Player.h" />
     <ClInclude Include="src\K-Engine\Scene.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="src\K-Engine\Time.h" />
     <ClInclude Include="src\K-Engine\Timer.h" />
     <ClInclude Include="src\K-Engine\Transform.h" />
+    <ClInclude Include="src\K-Engine\TriggerDeath.h" />
     <ClInclude Include="src\K-Engine\Window.h" />
     <ClInclude Include="src\K-Engine\Shader.h" />
     <ClInclude Include="src\K-Engine\Texture.h" />
@@ -70,6 +72,7 @@
     <ClCompile Include="src\K-Engine\InputManager.cpp" />
     <ClCompile Include="src\K-Engine\Material.cpp" />
     <ClCompile Include="src\K-Engine\Mesh.cpp" />
+    <ClCompile Include="src\K-Engine\Move.cpp" />
     <ClCompile Include="src\K-Engine\PhysicsEngine.cpp" />
     <ClCompile Include="src\K-Engine\Player.cpp" />
     <ClCompile Include="src\K-Engine\SceneManager.cpp" />
@@ -80,6 +83,7 @@
     <ClCompile Include="src\K-Engine\Time.cpp" />
     <ClCompile Include="src\K-Engine\Timer.cpp" />
     <ClCompile Include="src\K-Engine\Transform.cpp" />
+    <ClCompile Include="src\K-Engine\TriggerDeath.cpp" />
     <ClCompile Include="src\K-Engine\Window.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui_demo.cpp" />

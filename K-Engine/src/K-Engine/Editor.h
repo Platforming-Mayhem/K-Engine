@@ -10,6 +10,8 @@
 #include "Collider.h"
 #include "Animator.h"
 #include "Timer.h"
+#include "Move.h"
+#include "TriggerDeath.h"
 #include "Component.h"
 
 namespace K 

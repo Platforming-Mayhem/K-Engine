@@ -169,6 +169,14 @@ namespace K
 			return *this;
 		}
 
+		K::Vector3* operator -= (const K::Vector3* other)
+		{
+			this->x -= other->x;
+			this->y -= other->y;
+			this->z -= other->z;
+			return this;
+		}
+
 		K::Vector3& operator *= (const K::Vector3& other)
 		{
 			this->x *= other.x;

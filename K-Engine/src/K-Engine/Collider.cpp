@@ -16,6 +16,8 @@ namespace K
 		K::Physics::Remove(this);
 		this->linePoints.clear();
 		this->linePoints.shrink_to_fit();
+		this->linePointsModelMatrix.clear();
+		this->linePointsModelMatrix.shrink_to_fit();
 		std::cout << "End Collider Destruction..." << std::endl;
 	}
 
@@ -71,6 +73,7 @@ namespace K
 		if (ImGui::Button("Add Line")) 
 		{
 			this->linePoints.push_back(K::Line(K::Vector3(0.0f, 0.0f, 0.0f), K::Vector3(1.0f, 0.0f, 0.0f)));
+			this->linePointsModelMatrix.push_back(K::Line(K::Vector3(0.0f, 0.0f, 0.0f), K::Vector3(1.0f, 0.0f, 0.0f)));
 			this->selectedLine = this->linePoints.size() - 1;
 		}
 		if (this->linePoints.size() > 0) 
@@ -94,6 +97,7 @@ namespace K
 			if (ImGui::Button("Delete Line")) 
 			{
 				this->linePoints.erase(this->linePoints.begin() + this->selectedLine);
+				this->linePointsModelMatrix.erase(this->linePoints.begin() + this->selectedLine);
 				if (this->linePoints.size() > 0)
 				{
 					this->selectedLine = this->linePoints.size() - 1;
@@ -205,8 +209,8 @@ namespace K
 					glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
 				}
 				glBegin(GL_LINES);
-				glVertex3f(this->linePoints[i].point[0].x, 0.0f, this->linePoints[i].point[0].y);
-				glVertex3f(this->linePoints[i].point[1].x, 0.0f, this->linePoints[i].point[1].y);
+				glVertex3f(this->linePointsModelMatrix[i].point[0].x, 0.0f, this->linePointsModelMatrix[i].point[0].y);
+				glVertex3f(this->linePointsModelMatrix[i].point[1].x, 0.0f, this->linePointsModelMatrix[i].point[1].y);
 				glEnd();
 			}
 			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
@@ -215,7 +219,16 @@ namespace K
 
 	void Collider::LineColliderStatic() 
 	{
-		
+		for (int i = 0; i < this->linePoints.size(); i++) 
+		{
+			K::Vector3 points[2];
+			K::Vector3 beforeModelMatrix[2];
+			beforeModelMatrix[0] = K::Vector3(this->linePoints[i].point[0].x, 0.0f, this->linePoints[i].point[0].y);
+			beforeModelMatrix[1] = K::Vector3(this->linePoints[i].point[1].x, 0.0f, this->linePoints[i].point[1].y);
+			K::MultiplyMatrixVector(beforeModelMatrix[0], points[0], this->parent->GetTransform()->modelMatrix);
+			K::MultiplyMatrixVector(beforeModelMatrix[1], points[1], this->parent->GetTransform()->modelMatrix);
+			this->linePointsModelMatrix[i] = K::Line(K::Vector3(points[0].x, points[0].z, 0.0f), K::Vector3(points[1].x, points[1].z, 0.0f));
+		}
 	}
 
 	K::Vector3* Collider::ClosestPointLineCollider(K::Vector3 P) 
@@ -224,7 +237,7 @@ namespace K
 		float distance = INFINITY;
 		for (int i = 0; i < this->linePoints.size(); i++) 
 		{
-			K::Vector3 J = K::Vector3(this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->x, P.y, this->PointOnLine(this->linePoints[i].point[0], this->linePoints[i].point[1], P)->y);
+			K::Vector3 J = K::Vector3(this->PointOnLine(this->linePointsModelMatrix[i].point[0], this->linePointsModelMatrix[i].point[1], P)->x, P.y, this->PointOnLine(this->linePointsModelMatrix[i].point[0], this->linePointsModelMatrix[i].point[1], P)->y);
 			K::Vector3 PJ = J - P;
 			if (PJ.magnitude() < distance && PJ.magnitude() > 0.0f) 
 			{
@@ -277,7 +290,7 @@ namespace K
 
 	K::Line* Collider::GetLine(int index) 
 	{
-		return &this->linePoints[index];
+		return &this->linePointsModelMatrix[index];
 	}
 
 	K::Vector3* Collider::GetOffset() 
@@ -386,6 +399,7 @@ namespace K
 			if ((pointNumber - 1) % 4 == 0) 
 			{
 				this->linePoints.push_back(K::Line(K::Vector3(), K::Vector3()));
+				this->linePointsModelMatrix.push_back(K::Line(K::Vector3(), K::Vector3()));
 				this->selectedLine = this->linePoints.size() - 1;
 				//Set Value
 				this->linePoints[this->selectedLine].point[0].x = temp;

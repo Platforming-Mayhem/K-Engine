@@ -17,13 +17,21 @@ namespace K
 	GameObject::~GameObject() 
 	{
 		std::cout << "Begin GameObject Destruction..." << std::endl;
-		this->children.clear();
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
 			delete this->components[i];
 		}
 		this->components.clear();
 		this->material = nullptr;
+
+		this->SetParent(nullptr);
+
+		for (int j = 0; j < this->children.size(); j++)
+		{
+			K::Editor::Delete(K::Editor::GetCurrentScene()->GetGameObjects()[this->children[j]]);
+		}
+		this->children.clear();
+
 		delete this->transform;
 		std::cout << "End GameObject Destruction..." << std::endl;
 	}

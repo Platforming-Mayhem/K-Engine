@@ -26,6 +26,7 @@ namespace K
 		K::Vector3 orientation = K::Vector3(0.0f, 1.0f, 0.0f);
 		int selectedLine = 0;
 		std::vector<K::Line> linePoints;
+		std::vector<K::Line> linePointsModelMatrix;
 		std::string properties;
 	public:
 		K::Collider* other = nullptr;
