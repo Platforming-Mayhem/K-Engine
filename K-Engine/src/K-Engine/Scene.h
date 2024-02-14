@@ -10,7 +10,7 @@ namespace K
 	private:
 		std::string location;
 		std::string sceneName;
-		std::vector<K::GameObject*> gameObjects;
+		std::unordered_map<int, K::GameObject*> gameObjects;
 	public:
 		K::Matrix4x4 cameraMatrix;
 
@@ -21,12 +21,11 @@ namespace K
 
 		~Scene() 
 		{
-			for (K::GameObject* temp : this->gameObjects) 
+			for (int i = 0; i < this->gameObjects.size(); i++) 
 			{
-				delete temp;
+				delete this->gameObjects[i];
 			}
 			this->gameObjects.clear();
-			this->gameObjects.shrink_to_fit();
 		}
 
 		void SetLocation(std::string location) 
@@ -46,17 +45,17 @@ namespace K
 
 		void Attach(K::GameObject* gameObject)
 		{
-			this->gameObjects.push_back(gameObject);
+			this->gameObjects.insert({ gameObject->GetIndex() ,gameObject });
 		}
 
 		void Init()
 		{
 			if (!this->gameObjects.empty()) 
 			{
-				for (K::GameObject* g : this->gameObjects)
+				for (auto g : this->gameObjects)
 				{
-					std::cout << "Initializing " << g->GetName() << std::endl;
-					g->Init();
+					std::cout << "Initializing " << g.second->GetName() << std::endl;
+					g.second->Init();
 				}
 			}
 			K::Time::startTime = glfwGetTime();
@@ -71,9 +70,8 @@ namespace K
 				if (gameObject == this->gameObjects[i]) 
 				{
 					std::cout << this->gameObjects[i]->GetName() << std::endl;
-					delete this->gameObjects[i];
+					delete this->gameObjects.at(i);
 					this->gameObjects.erase(this->gameObjects.begin() + i);
-					this->gameObjects.shrink_to_fit();
 					break;
 				}
 			}
@@ -85,11 +83,11 @@ namespace K
 					std::cout << this->gameObjects[i]->GetName() << std::endl;
 					delete this->gameObjects[i];
 					this->gameObjects.erase(this->gameObjects.begin() + i);
-					this->gameObjects.shrink_to_fit();
 					break;
 				}
 			}
 			#endif
+			this->gameObjects.shrink_to_fit();
 		}
 
 		void CreateEmptyScene() 
