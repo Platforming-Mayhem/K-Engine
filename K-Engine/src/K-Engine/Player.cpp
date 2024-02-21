@@ -76,7 +76,6 @@ namespace K
 		this->originalScale = *this->parent->GetTransform()->scale;
 
 		this->parent->layer = (int)K::Layer::LayerType::Player;
-		this->time = 0.0f;
 	}
 
 	void Player::UpdateEditor() 
@@ -153,29 +152,39 @@ namespace K
 		{
 			this->jumpTime = 1.0f;
 		}
-		else if (K::Physics::IsColliding(this->parent) && this->jumpTime > 0.0f)
+		else if (this->jumpTime >= 1.0f)
 		{
-			this->jumpTime = 0.0f;
 			this->isJumping = false;
-		}
-
-		if (this->isJumping) 
-		{
-			this->time = 0.0f;
-			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 1.0f);
-			this->jumpTime += K::Time::deltaTime() * 2.0f;
-		}
-		else 
-		{
-			if (!K::Physics::IsColliding(this->parent) && !K::Physics::IsStatic(this->parent)) 
+			if (K::Physics::IsColliding(this->parent)) 
 			{
-				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
-				this->time += K::Time::deltaTime();
+				this->jumpTime = 0.0f;
+			}
+		}
+		if (!this->isJumping)
+		{
+			if (K::Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, -this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -2.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) })) 
+			{
+				
+			}
+			else if (K::Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -2.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+			{
+				
 			}
 			else 
 			{
-				this->time = 0.0f;
+				this->jumpTime = 1.0f;
 			}
+		}
+
+		if (this->isJumping)
+		{
+			this->col->ResetVelocity();
+			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 1.0f);
+			this->jumpTime += K::Time::deltaTime() * 2.0f;
+		}
+		if (this->col->GetPosition()->z + this->col->GetRadius() < -7.0f) 
+		{
+			K::Editor::Delete(this->parent);
 		}
 	}
 

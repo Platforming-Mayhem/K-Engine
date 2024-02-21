@@ -10,7 +10,7 @@ namespace K
 	private:
 		std::string location;
 		std::string sceneName;
-		std::unordered_map<int, K::GameObject*> gameObjects;
+		std::map<int, K::GameObject*> gameObjects;
 	public:
 		K::Matrix4x4 cameraMatrix;
 
@@ -58,36 +58,24 @@ namespace K
 					g.second->Init();
 				}
 			}
+
 			K::Time::startTime = glfwGetTime();
 			K::Time::endTime = K::Time::startTime;
 		}
 
 		void Delete(K::GameObject* gameObject) 
 		{
-			#if _DEBUG
-			for (int i = 1; i < this->GetNumberOfObjects(); i++)
+			for (auto temp : this->gameObjects)
 			{
-				if (gameObject == this->gameObjects[i]) 
+				if (gameObject == temp.second)
 				{
-					std::cout << this->gameObjects[i]->GetName() << std::endl;
-					delete this->gameObjects.at(i);
-					this->gameObjects.erase(this->gameObjects.begin() + i);
+					std::cout << temp.second->GetName() << std::endl;
+					int index = temp.first;
+					delete temp.second;
+					this->gameObjects.erase(index);
 					break;
 				}
 			}
-			#else
-			for (int i = 0; i < this->GetNumberOfObjects(); i++)
-			{
-				if (gameObject == this->gameObjects[i])
-				{
-					std::cout << this->gameObjects[i]->GetName() << std::endl;
-					delete this->gameObjects[i];
-					this->gameObjects.erase(this->gameObjects.begin() + i);
-					break;
-				}
-			}
-			#endif
-			this->gameObjects.shrink_to_fit();
 		}
 
 		void CreateEmptyScene() 
@@ -95,23 +83,13 @@ namespace K
 			int size = this->GetNumberOfObjects();
 			if (size > 0) 
 			{
-				#if _DEBUG
-				for (int i = 1; i < this->GetNumberOfObjects(); i++)
+				for (auto temp : this->gameObjects)
 				{
-					std::cout << this->gameObjects[i]->GetName() << std::endl;
-					delete this->gameObjects[i];
-				}
-				this->gameObjects.erase(this->gameObjects.begin() + 1, this->gameObjects.end());
-				#else
-				for (int i = 0; i < this->GetNumberOfObjects(); i++)
-				{
-					std::cout << this->gameObjects[i]->GetName() << std::endl;
-					delete this->gameObjects[i];
+					std::cout << temp.second->GetName() << std::endl;
+					delete temp.second;
 				}
 				this->gameObjects.erase(this->gameObjects.begin(), this->gameObjects.end());
-				#endif
 			}
-			this->gameObjects.shrink_to_fit();
 			this->sceneName = "Untitled*";
 		}
 
@@ -120,7 +98,7 @@ namespace K
 			return this->gameObjects.size();
 		}
 
-		std::vector <K::GameObject*> GetGameObjects()
+		std::map <int, K::GameObject*> GetGameObjects()
 		{
 			return this->gameObjects;
 		}
@@ -133,12 +111,12 @@ namespace K
 		void Render() 
 		{
 			K::Time::startTime = glfwGetTime();
-			for (int i = 0; i < this->GetNumberOfObjects(); i++)
+			for (auto temp : this->GetGameObjects())
 			{
-				this->GetGameObjects()[i]->PassTransformationMatrix();
-				this->GetGameObjects()[i]->Bind();
-				this->GetGameObjects()[i]->Update();
-				this->GetGameObjects()[i]->Unbind();
+				temp.second->PassTransformationMatrix();
+				temp.second->Bind();
+				temp.second->Update();
+				temp.second->Unbind();
 			}
 			K::Time::endTime = K::Time::startTime;
 		}

@@ -21,6 +21,67 @@ namespace K
 		std::cout << "End Collider Destruction..." << std::endl;
 	}
 
+	void Collider::CapsuleEditor()
+	{
+		ImGui::DragFloat("Capsule Radius", &this->radius);
+		ImGui::DragFloat("Capsule Height", &this->height);
+		ImGui::DragFloat3("Offset", (float*)&this->offset);
+	}
+
+	void Collider::CapsuleVisualDebug()
+	{
+		//Draw Circle
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
+		K::Vector3 topPosition = *this->GetPosition() + K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
+		K::Vector3 bottomPosition = *this->GetPosition() - K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
+		K::Transform* temp = new K::Transform(&topPosition, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		temp->PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
+		float theta = 360.0f / 16.0f;
+		glBegin(GL_LINE_LOOP);
+		for (int i = 0; i < 16; i++)
+		{
+			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
+		}
+		glEnd();
+		*temp->position = bottomPosition;
+		temp->PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
+		glBegin(GL_LINE_LOOP);
+		for (int i = 0; i < 16; i++)
+		{
+			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
+		}
+		glEnd();
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
+	}
+
+	void Collider::CapsuleColliderStatic()
+	{
+
+	}
+
+	void Collider::CapsuleCollider()
+	{
+		if (K::Physics::CanGetClosestPoint())
+		{
+			if (K::Physics::IsColliding(this->parent))
+			{
+				this->time = 0.0f;
+			}
+			else
+			{
+				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
+				this->time += K::Time::deltaTime();
+			}
+			K::Vector3* temp = K::Physics::GetCollisionResolution(this);
+			*this->parent->GetTransform()->position += temp;
+		}
+	}
+
 	void Collider::Init()
 	{
 		K::Physics::Attach(this);
@@ -31,39 +92,56 @@ namespace K
 		if (ImGui::CollapsingHeader("Collider Settings")) 
 		{
 			ImGui::Checkbox("Is Static", &this->isStatic);
-			if (this->colliderType == ColliderType::Circle)
+			switch (this->colliderType)
 			{
+			case ColliderType::Circle:
 				if (ImGui::BeginCombo("Collider Type", "Circle"))
 				{
-					if (ImGui::Selectable("Circle"))
-					{
-						this->colliderType = ColliderType::Circle;
-					}
-					else if (ImGui::Selectable("Line"))
+					if (ImGui::Selectable("Line"))
 					{
 						this->colliderType = ColliderType::Line;
+					}
+					else if (ImGui::Selectable("Capsule"))
+					{
+						this->colliderType = ColliderType::Capsule;
 					}
 					ImGui::EndCombo();
 				}
 				this->CircleVisualDebug();
 				this->CircleEditor();
-			}
-			else if (this->colliderType == ColliderType::Line)
-			{
+				break;
+			case ColliderType::Line:
 				if (ImGui::BeginCombo("Collider Type", "Line"))
 				{
 					if (ImGui::Selectable("Circle"))
 					{
 						this->colliderType = ColliderType::Circle;
 					}
+					else if (ImGui::Selectable("Capsule"))
+					{
+						this->colliderType = ColliderType::Capsule;
+					}
+					ImGui::EndCombo();
+				}
+				this->LineVisualDebug();
+				this->LineEditor();
+				break;
+			case ColliderType::Capsule:
+				if (ImGui::BeginCombo("Collider Type", "Capsule"))
+				{
+					if (ImGui::Selectable("Circle"))
+					{
+						this->colliderType = ColliderType::Circle;
+					}
 					else if (ImGui::Selectable("Line"))
 					{
 						this->colliderType = ColliderType::Line;
 					}
 					ImGui::EndCombo();
 				}
-				this->LineVisualDebug();
-				this->LineEditor();
+				this->CapsuleVisualDebug();
+				this->CapsuleEditor();
+				break;
 			}
 		}
 	}
@@ -120,9 +198,23 @@ namespace K
 	{
 		if (K::Physics::CanGetClosestPoint())
 		{
+			if (K::Physics::IsColliding(this->parent))
+			{
+				this->time = 0.0f;
+			}
+			else
+			{
+				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
+				this->time += K::Time::deltaTime();
+			}
 			K::Vector3* temp = K::Physics::GetCollisionResolution(this);
 			*this->parent->GetTransform()->position += temp;
 		}
+	}
+
+	void Collider::ResetVelocity() 
+	{
+		this->time = 0.0f;
 	}
 
 	void Collider::CircleColliderStatic() 
@@ -186,6 +278,11 @@ namespace K
 	float Collider::GetRadius() 
 	{
 		return this->radius;
+	}
+
+	float Collider::GetHeight() 
+	{
+		return this->height;
 	}
 
 	void Collider::LineVisualDebug()
@@ -349,6 +446,9 @@ namespace K
 			case ColliderType::Line:
 				LineColliderStatic();
 				break;
+			case ColliderType::Capsule:
+				CapsuleColliderStatic();
+				break;
 			}
 		}
 		else
@@ -360,6 +460,9 @@ namespace K
 				break;
 			case ColliderType::Line:
 				LineCollider();
+				break;
+			case ColliderType::Capsule:
+				CapsuleCollider();
 				break;
 			}
 		}
@@ -437,31 +540,40 @@ namespace K
 				{
 					this->colliderType = ColliderType::Line;
 				}
+				else if (temp == std::to_string((int)ColliderType::Capsule)) 
+				{
+					this->colliderType = ColliderType::Capsule;
+				}
 				break;
 			case 2:
-				if (this->colliderType == ColliderType::Circle)
+				if (this->colliderType == ColliderType::Circle || this->colliderType == ColliderType::Capsule)
 				{
 					this->radius = std::stof(temp);
 				}
 				break;
 			case 3:
-				if (this->colliderType == ColliderType::Circle)
+				if (this->colliderType == ColliderType::Circle || this->colliderType == ColliderType::Capsule)
 				{
 					this->offset.x = std::stof(temp);
 				}
 				break;
 			case 4:
-				if (this->colliderType == ColliderType::Circle)
+				if (this->colliderType == ColliderType::Circle || this->colliderType == ColliderType::Capsule)
 				{
 					this->offset.y = std::stof(temp);
 				}
 				break;
 			case 5:
-				if (this->colliderType == ColliderType::Circle)
+				if (this->colliderType == ColliderType::Circle || this->colliderType == ColliderType::Capsule)
 				{
 					this->offset.z = std::stof(temp);
 				}
 				break;
+			case 6:
+				if (this->colliderType == ColliderType::Capsule) 
+				{
+					this->height = std::stof(temp);
+				}
 			}
 
 			if (valueIndex > 1 && this->colliderType == ColliderType::Line)
@@ -505,6 +617,14 @@ namespace K
 				this->properties += "," + std::to_string(l.point[1].x);
 				this->properties += "," + std::to_string(l.point[1].y);
 			}
+		}
+		else if (this->colliderType == ColliderType::Capsule) 
+		{
+			this->properties += "," + std::to_string(this->radius);
+			this->properties += "," + std::to_string(this->offset.x);
+			this->properties += "," + std::to_string(this->offset.y);
+			this->properties += "," + std::to_string(this->offset.z);
+			this->properties += "," + std::to_string(this->height);
 		}
 		return this->properties.c_str();
 	}

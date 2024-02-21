@@ -24,14 +24,17 @@ namespace K
 		std::string name;
 		K::Transform* transform = new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
 		std::vector<K::Component*> components;
-		std::vector<int> children;
 		K::Material* material;
 		int g_Index;
 	public:
 
+		std::vector<int> children;
+
 		K::GameObject* parent = nullptr;
 
 		int layer = (int)K::Layer::LayerType::Ground;
+
+		GameObject(const char* name, K::Transform* transform, int index);
 
 		GameObject(const char* name, K::Transform* transform);
 
@@ -57,13 +60,9 @@ namespace K
 
 		void UpdateToWorld();
 
-		K::GameObject* GetChild(int index);
+		void SetIndex(int index);
 
 		int GetIndex();
-
-		int GetChildIndex(int index);
-
-		int GetNumberOfChildren();
 
 		bool CheckForGameObjectInChildren(K::GameObject* parent, K::GameObject* gameObject);
 

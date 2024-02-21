@@ -233,6 +233,67 @@ namespace K
 				}
 			}
 		}
+		else if (col->colliderType == K::Collider::ColliderType::Capsule) 
+		{
+			K::Vector3 topPosition = *col->GetPosition() + K::Vector3(0.0f,0.0f, col->GetHeight() * 0.5f);
+			K::Vector3 bottomPosition = *col->GetPosition() - K::Vector3(0.0f, 0.0f, col->GetHeight() * 0.5f);
+
+			for (K::ContactPoint J : K::Physics::GetClosestPoints(topPosition, avoidLayer))
+			{
+				K::Vector3 originToJ = J.normal.normalise() * -(J.position - topPosition).magnitude();
+				K::Vector3 normal = J.normal.normalise();
+				if (originToJ.magnitude() < col->GetRadius())
+				{
+					K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
+					K::Vector3 right = K::Vector3(1.0f, 0.0f, 0.0f);
+					float angle = K::Vector3::DotProduct(normal, right);
+					float angle1 = K::Vector3::DotProduct(normal, up);
+
+					K::Vector3 contactResolution = originToJ + (normal * col->GetRadius());
+					*offsetAmount += contactResolution;
+
+					if (angle < 0.8f && angle > -0.8f && angle1 > 0.0f)
+					{
+						col->SetIsColliding(true);
+						col->other = J.other;
+						count++;
+					}
+				}
+			}
+			for (K::ContactPoint J : K::Physics::GetClosestPoints(bottomPosition, avoidLayer))
+			{
+				K::Vector3 originToJ = J.normal.normalise() * -(J.position - bottomPosition).magnitude();
+				K::Vector3 normal = J.normal.normalise();
+				if (originToJ.magnitude() < col->GetRadius())
+				{
+					K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
+					K::Vector3 right = K::Vector3(1.0f, 0.0f, 0.0f);
+					float angle = K::Vector3::DotProduct(normal, right);
+					float angle1 = K::Vector3::DotProduct(normal, up);
+
+					K::Vector3 contactResolution = originToJ + (normal * col->GetRadius());
+					*offsetAmount += contactResolution;
+
+					if (angle < 0.8f && angle > -0.8f && angle1 > 0.0f)
+					{
+						col->SetIsColliding(true);
+						col->other = J.other;
+						count++;
+					}
+				}
+			}
+			for (K::ContactPoint J : K::Physics::GetClosestPoints(*col->GetPosition(), avoidLayer))
+			{
+				float xMin = col->GetPosition()->x - col->GetRadius();
+				float yMin = col->GetPosition()->z - col->GetHeight() * 0.5f;
+				float xMax = col->GetPosition()->x + col->GetRadius();
+				float yMax = col->GetPosition()->z + col->GetHeight() * 0.5f;
+				if (J.position.x < xMax && J.position.x > xMin && J.position.z < yMax && J.position.z > yMin) 
+				{
+					
+				}
+			}
+		}
 		if (offsetAmount->magnitude() <= 0.0f || count == 0) 
 		{
 			col->SetIsColliding(false);

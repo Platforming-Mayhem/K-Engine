@@ -52,6 +52,8 @@ namespace K
 
 		static std::map<std::string, IFactory*> lst;
 
+		static std::vector<K::GameObject*> deleteArray;
+
 		Editor(K::Window* window, K::SceneManager* sceneManager, K::Material* material);
 
 		virtual ~Editor();

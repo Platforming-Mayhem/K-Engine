@@ -18,45 +18,45 @@ namespace K
 			std::cerr << "Error - unable to open output file " << name.c_str() << std::endl;
 			exit(1);
 		}
-		for (int i = 0; i < scene->GetNumberOfObjects(); i++) 
+		int i = 0;
+		for (auto it : scene->GetGameObjects())
 		{
 			if (i == 0) 
 			{
 				std::cout << "Saving to " << name << std::endl;
 			}
-			else 
+			K::GameObject* g = it.second;
+			K::Transform* transform = g->GetTransform();
+			outFile << g->GetName();
+			outFile << "," << g->GetIndex();
+			outFile << "," << transform->position->x << "," << transform->position->y << "," << transform->position->z;
+			outFile << "," << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
+			outFile << "," << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z;
+			if (g->parent == nullptr)
+				outFile << "," << "-1";
+			else
+				outFile << "," << g->parent->GetIndex();
+			std::cout << g->GetName();
+			std::cout << " " << transform->position->x << "," << transform->position->y << "," << transform->position->z;
+			std::cout << " " << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
+			std::cout << " " << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z << " ";
+			int numberOfComponents = g->GetNumberOfComponents();
+			for (int i = 0; i < numberOfComponents; i++)
 			{
-				K::GameObject* g = scene->GetGameObjects()[i];
-				K::Transform* transform = g->GetTransform();
-				outFile << g->GetName();
-				outFile << "," << transform->position->x << "," << transform->position->y << "," << transform->position->z;
-				outFile << "," << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
-				outFile << "," << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z;
-				if (g->parent == nullptr)
-					outFile << "," << "-1";
-				else 
-					outFile << "," << (g->parent->GetIndex() - 1);
-				std::cout << g->GetName();
-				std::cout << " " << transform->position->x << "," << transform->position->y << "," << transform->position->z;
-				std::cout << " " << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
-				std::cout << " " << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z << " ";
-				int numberOfComponents = g->GetNumberOfComponents();
-				for (int i = 0; i < numberOfComponents; i++)
+				K::Component* component = g->GetComponent(i);
+				outFile << "," << component->GetName();
+				if (component->GetPropertyValues()[0] != '\0')
 				{
-					K::Component* component = g->GetComponent(i);
-					outFile << "," << component->GetName();
-					if (component->GetPropertyValues()[0] != '\0')
-					{
-						outFile << "," << component->GetPropertyValues();
-					}
+					outFile << "," << component->GetPropertyValues();
 				}
-				if (i < scene->GetNumberOfObjects())
-				{
-					outFile << ",";
-					outFile << '\n';
-				}
-				std::cout << std::endl;
 			}
+			if (i < scene->GetNumberOfObjects())
+			{
+				outFile << ",";
+				outFile << '\n';
+			}
+			std::cout << std::endl;
+			i++;
 		}
 		outFile.close();
 	}
@@ -65,7 +65,7 @@ namespace K
 	{
 		std::ifstream inFile;
 		inFile.open(ASSET_DIR + location);
-		std::vector<int> parents;
+		std::map<K::GameObject* , int> parents;
 		if (inFile)
 		{
 			std::string line;
@@ -78,6 +78,7 @@ namespace K
 				K::Transform* transform = new K::Transform(position, rotation, scale);
 				std::string val = "";
 				K::GameObject* temp = nullptr;
+				std::string name = "";
 				int componentCount = 0;
 				int number = 0;
 				for (int i = 0; i < line.size(); i++)
@@ -87,40 +88,46 @@ namespace K
 						switch (number)
 						{
 						case 0:
-							temp = new K::GameObject(val.c_str(), transform);
+							name = val;
 							break;
 						case 1:
-							position->x = std::stof(val);
+							temp = new K::GameObject(name.c_str(), transform, std::stoi(val));
 							break;
 						case 2:
-							position->y = std::stof(val);
+							position->x = std::stof(val);
 							break;
 						case 3:
-							position->z = std::stof(val);
+							position->y = std::stof(val);
 							break;
 						case 4:
-							rotation->x = std::stof(val);
+							position->z = std::stof(val);
 							break;
 						case 5:
-							rotation->y = std::stof(val);
+							rotation->x = std::stof(val);
 							break;
 						case 6:
-							rotation->z = std::stof(val);
+							rotation->y = std::stof(val);
 							break;
 						case 7:
-							scale->x = std::stof(val);
+							rotation->z = std::stof(val);
 							break;
 						case 8:
-							scale->y = std::stof(val);
+							scale->x = std::stof(val);
 							break;
 						case 9:
-							scale->z = std::stof(val);
+							scale->y = std::stof(val);
 							break;
 						case 10:
-							parents.push_back(std::stoi(val));
+							scale->z = std::stof(val);
+							break;
+						case 11:
+							if (std::stoi(val) != -1) 
+							{
+								parents.insert({ temp, std::stoi(val) });
+							}
 							break;
 						}
-						if (number > 10)
+						if (number > 11)
 						{
 							std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(val);
 							if (pos == K::Editor::lst.end())
@@ -151,23 +158,16 @@ namespace K
 			inFile.close();
 			if (!parents.empty())
 			{
-				#if _DEBUG
-					int j = 1;
-				#else
-					int j = 0;
-				#endif
-				for (int i : parents)
+				for (auto temp : parents)
 				{
-					if (i != -1)
+					if (temp.first->SetParent(K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)))
 					{
-						std::cout << K::Editor::GetCurrentScene()->GetGameObjects()[j]->GetName() << "," << K::Editor::GetCurrentScene()->GetGameObjects()[i + 1]->GetName() << std::endl;
-						#if _DEBUG
-						K::Editor::GetCurrentScene()->GetGameObjects()[j]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i + 1]);
-						#else
-						K::Editor::GetCurrentScene()->GetGameObjects()[j]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
-						#endif
+						std::cout << "Parent: " << K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)->GetName() << "," << " Child: " << temp.first->GetName() << std::endl;
 					}
-					j++;
+					else
+					{
+						std::cout << "Failed Setting Parent: " << K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)->GetName() << "," << " Child: " << temp.first->GetName() << std::endl;
+					}
 				}
 				parents.clear();
 			}

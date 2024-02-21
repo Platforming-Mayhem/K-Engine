@@ -23,16 +23,6 @@ namespace K
 
 		K::Editor* editor = new K::Editor(window, manager, material);
 
-		#if _DEBUG
-			K::Transform* camPosition = new K::Transform(new Vector3(0.0f, -10.0f, 0.0f), new K::Vector3(90.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
-
-			K::GameObject* cam = new K::GameObject("Editor Camera", camPosition);
-
-			K::Camera* camera = new K::Camera();
-			//camera->SetActiveState(true);
-			camera->SetEditorState(true);
-			cam->AddComponent(camera);
-		#endif
 		K::SceneManager::LoadScene(0);
 
 		K::SceneManager::Update();
@@ -61,9 +51,9 @@ namespace K
 			}
 			#endif
 
-			glfwSwapBuffers(window->window);
-
 			K::SceneManager::Update();
+
+			glfwSwapBuffers(window->window);
 
 			glfwPollEvents();
 		}

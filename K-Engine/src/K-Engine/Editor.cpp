@@ -6,6 +6,7 @@ namespace K
 	K::Material* K::Editor::material;
 	K::GameObject* K::Editor::selectedGameObject;
 	K::SceneManager* K::Editor::sceneManager;
+	std::vector<K::GameObject*> K::Editor::deleteArray;
 	std::map<std::string, IFactory*> K::Editor::lst{ {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Fox).name() , new K::Factory<K::Fox>}, {typeid(K::Timer).name() , new K::Factory<K::Timer>}, {typeid(K::Move).name() , new K::Factory<K::Move>}, {typeid(K::TriggerDeath).name() , new K::Factory<K::TriggerDeath>} };
 
 	Editor::Editor(K::Window* window, K::SceneManager* sceneManager, K::Material* material)
@@ -206,7 +207,7 @@ namespace K
 
 	void Editor::Delete(K::GameObject* target) 
 	{
-		K::Editor::GetCurrentScene()->Delete(target);
+		K::Editor::deleteArray.push_back(target);
 		if (target == K::Editor::selectedGameObject) 
 		{
 			K::Editor::selectedGameObject = nullptr;
@@ -215,24 +216,23 @@ namespace K
 
 	void Editor::ShowChildren(K::GameObject* current) 
 	{
-		for (int i = 0; i < current->GetNumberOfChildren(); i++) 
+		for (int i : current->children) 
 		{
-			int j = current->GetChildIndex(i);
 			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-			if (K::Editor::GetCurrentScene()->GetGameObjects()[j]->GetNumberOfChildren() <= 0)
+			if (K::Editor::GetCurrentScene()->GetGameObjects().at(i)->children.size() <= 0)
 			{
 				flags |= ImGuiTreeNodeFlags_Leaf;
 			}
-			bool nodeOpen = ImGui::TreeNodeEx(K::Editor::GetCurrentScene()->GetGameObjects()[j]->GetName(), flags);
+			bool nodeOpen = ImGui::TreeNodeEx(K::Editor::GetCurrentScene()->GetGameObjects().at(i)->GetName(), flags);
 			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 			{
-				this->selectedGameObject = K::Editor::GetCurrentScene()->GetGameObjects()[j];
+				this->selectedGameObject = K::Editor::GetCurrentScene()->GetGameObjects().at(i);
 			}
 
 			if (ImGui::BeginDragDropSource())
 			{
-				ImGui::SetDragDropPayload("_CHILD", &j, sizeof(int));
-				ImGui::Text(K::Editor::GetCurrentScene()->GetGameObjects()[j]->GetName());
+				ImGui::SetDragDropPayload("_CHILD", &i, sizeof(int));
+				ImGui::Text(K::Editor::GetCurrentScene()->GetGameObjects().at(i)->GetName());
 				ImGui::EndDragDropSource();
 			}
 			else if (ImGui::BeginDragDropTarget())
@@ -240,16 +240,16 @@ namespace K
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_CHILD"))
 				{
 					int child = *(const int*)payload->Data;
-					K::Editor::GetCurrentScene()->GetGameObjects()[child]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[j]);
+					K::Editor::GetCurrentScene()->GetGameObjects().at(child)->SetParent(K::Editor::GetCurrentScene()->GetGameObjects().at(i));
 				}
 				ImGui::EndDragDropTarget();
 			}
 
 			if (nodeOpen)
 			{
-				if (K::Editor::GetCurrentScene()->GetGameObjects()[j]->GetNumberOfChildren() > 0)
+				if (K::Editor::GetCurrentScene()->GetGameObjects().at(i)->children.size() > 0)
 				{
-					this->ShowChildren(K::Editor::GetCurrentScene()->GetGameObjects()[j]);
+					this->ShowChildren(K::Editor::GetCurrentScene()->GetGameObjects().at(i));
 				}
 				ImGui::TreePop();
 			}
@@ -270,24 +270,24 @@ namespace K
 		}
 		if (sceneOpen) 
 		{
-			for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++)
+			for (auto temp : K::Editor::GetCurrentScene()->GetGameObjects())
 			{
-				if (K::Editor::GetCurrentScene()->GetGameObjects()[i]->parent == nullptr)
+				if (temp.second->parent == nullptr)
 				{
 					ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-					if (K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetNumberOfChildren() <= 0)
+					if (temp.second->children.size() <= 0)
 					{
 						flags |= ImGuiTreeNodeFlags_Leaf;
 					}
-					bool nodeOpen = ImGui::TreeNodeEx(K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetName(), flags);
+					bool nodeOpen = ImGui::TreeNodeEx(temp.second->GetName(), flags);
 					if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 					{
-						this->selectedGameObject = K::Editor::GetCurrentScene()->GetGameObjects()[i];
+						this->selectedGameObject = temp.second;
 					}
 					if (ImGui::BeginDragDropSource())
 					{
-						ImGui::SetDragDropPayload("_CHILD", &i, sizeof(int));
-						ImGui::Text(K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetName());
+						ImGui::SetDragDropPayload("_CHILD", &temp.first, sizeof(int));
+						ImGui::Text(temp.second->GetName());
 						ImGui::EndDragDropSource();
 					}
 					else if (ImGui::BeginDragDropTarget())
@@ -295,15 +295,15 @@ namespace K
 						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_CHILD"))
 						{
 							int child = *(const int*)payload->Data;
-							K::Editor::GetCurrentScene()->GetGameObjects()[child]->SetParent(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
+							K::Editor::GetCurrentScene()->GetGameObjects().at(child)->SetParent(temp.second);
 						}
 						ImGui::EndDragDropTarget();
 					}
 					if (nodeOpen)
 					{
-						if (K::Editor::GetCurrentScene()->GetGameObjects()[i]->GetNumberOfChildren() > 0)
+						if (temp.second->children.size() > 0)
 						{
-							this->ShowChildren(K::Editor::GetCurrentScene()->GetGameObjects()[i]);
+							this->ShowChildren(temp.second);
 						}
 						ImGui::TreePop();
 					}

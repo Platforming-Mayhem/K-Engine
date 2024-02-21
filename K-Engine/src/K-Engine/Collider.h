@@ -21,6 +21,7 @@ namespace K
 		bool isColliding = false;
 		bool isStatic = true;
 		K::Vector3 offset = K::Vector3();
+		float time = 0.0f;
 		float radius = 1.0f;
 		float height = 1.0f;
 		K::Vector3 orientation = K::Vector3(0.0f, 1.0f, 0.0f);
@@ -31,13 +32,21 @@ namespace K
 	public:
 		K::Collider* other = nullptr;
 
-		enum class ColliderType { Circle = 0, Line = 1};
+		enum class ColliderType { Circle = 0, Line = 1, Capsule = 2};
 
 		ColliderType colliderType = ColliderType::Circle;
 
 		Collider();
 
 		~Collider();
+
+		void CapsuleEditor();
+
+		void CapsuleVisualDebug();
+
+		void CapsuleColliderStatic();
+
+		void CapsuleCollider();
 
 		void CircleEditor();
 
@@ -47,7 +56,11 @@ namespace K
 
 		void CircleVisualDebug();
 
+		void ResetVelocity();
+
 		float GetRadius();
+
+		float GetHeight();
 
 		bool IsColliding();
 

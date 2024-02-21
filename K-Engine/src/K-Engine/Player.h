@@ -13,7 +13,6 @@ namespace K
 		bool flip = false;
 		bool isJumping = false;
 		float movementSpeed = 1.0f;
-		float time = 0.0f;
 		float jumpTime = 0.0f;
 		K::Vector3 originalScale;
 		K::Vector3* direction;

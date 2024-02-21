@@ -77,6 +77,25 @@ namespace K
 
 	void SceneManager::Update() 
 	{
+		if (!K::Editor::deleteArray.empty())
+		{
+			for (K::GameObject* pointer : K::Editor::deleteArray)
+			{
+				if (pointer->parent != nullptr) 
+				{
+					pointer->SetParent(nullptr);
+				}
+				if (!pointer->children.empty()) 
+				{
+					for (int i : pointer->children) 
+					{
+						K::Editor::GetCurrentScene()->GetGameObjects().at(i)->SetParent(nullptr);
+					}
+				}
+				K::Editor::GetCurrentScene()->Delete(pointer);
+			}
+			K::Editor::deleteArray.clear();
+		}
 		if (K::SceneManager::loadNextScene) 
 		{
 			int index = -1;

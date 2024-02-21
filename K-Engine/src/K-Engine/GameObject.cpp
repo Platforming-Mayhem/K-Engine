@@ -9,7 +9,18 @@ namespace K
 		this->name = (char*)name;
 		this->transform = transform;
 		this->material = K::Editor::GetMaterial();
-		this->g_Index = K::Editor::GetCurrentScene()->GetNumberOfObjects();
+		std::srand(std::chrono::system_clock::now().time_since_epoch().count());
+		this->g_Index = std::rand();
+		K::Editor::GetCurrentScene()->Attach(this);
+		std::cout << name << " GameObject Created" << std::endl;
+	}
+
+	GameObject::GameObject(const char* name, K::Transform* transform, int index)
+	{
+		this->name = (char*)name;
+		this->transform = transform;
+		this->material = K::Editor::GetMaterial();
+		this->g_Index = index;
 		K::Editor::GetCurrentScene()->Attach(this);
 		std::cout << name << " GameObject Created" << std::endl;
 	}
@@ -17,21 +28,14 @@ namespace K
 	GameObject::~GameObject() 
 	{
 		std::cout << "Begin GameObject Destruction..." << std::endl;
+		std::cout << "Begin Component Destruction..." << std::endl;
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
 			delete this->components[i];
 		}
 		this->components.clear();
+		std::cout << "End Component Destruction..." << std::endl;
 		this->material = nullptr;
-
-		this->SetParent(nullptr);
-
-		for (int j = 0; j < this->children.size(); j++)
-		{
-			K::Editor::Delete(K::Editor::GetCurrentScene()->GetGameObjects()[this->children[j]]);
-		}
-		this->children.clear();
-
 		delete this->transform;
 		std::cout << "End GameObject Destruction..." << std::endl;
 	}
@@ -96,17 +100,17 @@ namespace K
 
 	bool GameObject::CheckForGameObjectInChildren(K::GameObject* parent, K::GameObject* gameObject)
 	{
-		if (parent->GetNumberOfChildren() > 0) 
+		if (parent->children.size() > 0)
 		{
-			for (int i = 0; i < parent->children.size(); i++)
+			for (int i : parent->children)
 			{
-				if (gameObject == parent->GetChild(i))
+				if (gameObject == K::Editor::GetCurrentScene()->GetGameObjects().at(i))
 				{
 					return true;
 				}
 				else 
 				{
-					if (CheckForGameObjectInChildren(parent->GetChild(i), gameObject)) 
+					if (CheckForGameObjectInChildren(K::Editor::GetCurrentScene()->GetGameObjects().at(i), gameObject))
 					{
 						return true;
 					}
@@ -171,11 +175,11 @@ namespace K
 		*index->GetTransform()->localRotation -= *this->GetTransform()->rotation;
 		K::Matrix4x4 invert = K::QuickInverse(this->GetTransform()->modelMatrix);
 		K::MultiplyMatrixVector(*index->GetTransform()->position, *index->GetTransform()->localPosition, invert);
-		for (int i = 0; i < K::Editor::GetCurrentScene()->GetNumberOfObjects(); i++) 
+		for (auto temp : K::Editor::GetCurrentScene()->GetGameObjects())
 		{
-			if (K::Editor::GetCurrentScene()->GetGameObjects()[i] == index) 
+			if (temp.second == index) 
 			{
-				this->children.push_back(i);
+				this->children.push_back(temp.first);
 				break;
 			}
 		}
@@ -190,34 +194,26 @@ namespace K
 		*index->GetTransform()->scale = localScaleInWorldSpace;
 		*index->GetTransform()->rotation = localRotationInWorldSpace;
 		*index->GetTransform()->position = localPositionInWorldSpace;
-		for (int i = 0; i < this->children.size(); i++)
+		int j = 0;
+		for (int i : this->children)
 		{
-			if (K::Editor::GetCurrentScene()->GetGameObjects()[this->children[i]] == index)
+			if (K::Editor::GetCurrentScene()->GetGameObjects()[i] == index)
 			{
-				this->children.erase(this->children.begin() + i);
+				this->children.erase(this->children.begin() + j);
 				break;
 			}
+			j++;
 		}
 	}
 
-	K::GameObject* GameObject::GetChild(int index) 
+	void GameObject::SetIndex(int index) 
 	{
-		return K::Editor::GetCurrentScene()->GetGameObjects()[this->children[index]];
+		this->g_Index = index;
 	}
 
 	int GameObject::GetIndex() 
 	{
 		return this->g_Index;
-	}
-
-	int GameObject::GetChildIndex(int index)
-	{
-		return this->children[index];
-	}
-
-	int GameObject::GetNumberOfChildren() 
-	{
-		return this->children.size();
 	}
 
 	void GameObject::PassTransformationMatrix()
