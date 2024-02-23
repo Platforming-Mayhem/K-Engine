@@ -104,8 +104,6 @@ namespace K
 			*this->direction = K::Vector3(0.0f, 0.0f, 0.0f);
 		}
 
-		*(this->parent->GetTransform()->position) += this->direction;
-
 		if (this->isJumping)
 		{
 			this->animator->PlayAnimation(2, this->sprite, false);
@@ -176,12 +174,6 @@ namespace K
 			}
 		}
 
-		if (this->isJumping)
-		{
-			this->col->ResetVelocity();
-			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 1.0f);
-			this->jumpTime += K::Time::deltaTime() * 2.0f;
-		}
 		if (this->col->GetPosition()->z + this->col->GetRadius() < -7.0f) 
 		{
 			K::Editor::Delete(this->parent);
@@ -202,6 +194,12 @@ namespace K
 
 	void Player::Bind() 
 	{
-		
+		if (this->isJumping)
+		{
+			this->col->ResetVelocity();
+			*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 1.0f);
+			this->jumpTime += K::Time::deltaTime() * 2.0f;
+		}
+		*(this->parent->GetTransform()->position) += this->direction;
 	}
 }

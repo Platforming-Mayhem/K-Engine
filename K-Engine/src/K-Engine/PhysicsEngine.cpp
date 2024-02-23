@@ -242,7 +242,7 @@ namespace K
 			{
 				K::Vector3 originToJ = J.normal.normalise() * -(J.position - topPosition).magnitude();
 				K::Vector3 normal = J.normal.normalise();
-				if (originToJ.magnitude() < col->GetRadius())
+				if (originToJ.magnitude() < col->GetRadius() && originToJ.z > 0.0f)
 				{
 					K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
 					K::Vector3 right = K::Vector3(1.0f, 0.0f, 0.0f);
@@ -264,7 +264,7 @@ namespace K
 			{
 				K::Vector3 originToJ = J.normal.normalise() * -(J.position - bottomPosition).magnitude();
 				K::Vector3 normal = J.normal.normalise();
-				if (originToJ.magnitude() < col->GetRadius())
+				if (originToJ.magnitude() < col->GetRadius() && originToJ.z < 0.0f)
 				{
 					K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
 					K::Vector3 right = K::Vector3(1.0f, 0.0f, 0.0f);
@@ -285,12 +285,15 @@ namespace K
 			for (K::ContactPoint J : K::Physics::GetClosestPoints(*col->GetPosition(), avoidLayer))
 			{
 				float xMin = col->GetPosition()->x - col->GetRadius();
-				float yMin = col->GetPosition()->z - col->GetHeight() * 0.5f;
 				float xMax = col->GetPosition()->x + col->GetRadius();
-				float yMax = col->GetPosition()->z + col->GetHeight() * 0.5f;
-				if (J.position.x < xMax && J.position.x > xMin && J.position.z < yMax && J.position.z > yMin) 
+				float yMin = col->GetPosition()->z - (col->GetHeight() * 0.5f);
+				float yMax = col->GetPosition()->z + (col->GetHeight() * 0.5f);
+				if (J.position.x > xMin && J.position.x < xMax && J.position.z > yMin && J.position.z < yMax) 
 				{
-					
+					K::Vector3 normal = J.normal.normalise();
+					float depth = col->GetRadius() - std::fabsf(col->GetPosition()->x - J.position.x);
+					K::Vector3 contactResolution = K::Vector3(depth * normal.x, 0.0f, 0.0f);
+					*offsetAmount += contactResolution;
 				}
 			}
 		}

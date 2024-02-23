@@ -41,8 +41,8 @@ namespace K
 		temp->PassModelMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
 		float theta = 360.0f / 16.0f;
-		glBegin(GL_LINE_LOOP);
-		for (int i = 0; i < 16; i++)
+		glBegin(GL_LINE_STRIP);
+		for (int i = 0; i <= 8; i++)
 		{
 			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
 		}
@@ -50,12 +50,26 @@ namespace K
 		*temp->position = bottomPosition;
 		temp->PassModelMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
-		glBegin(GL_LINE_LOOP);
-		for (int i = 0; i < 16; i++)
+		glBegin(GL_LINE_STRIP);
+		for (int i = 8; i <= 16; i++)
 		{
 			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
 		}
 		glEnd();
+		*temp->position = *this->GetPosition();
+		temp->PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
+
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(this->radius, 0.0f, this->GetHeight() * 0.5f);
+		glVertex3f(this->radius, 0.0f, this->GetHeight() * -0.5f);
+		glEnd();
+
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(-this->radius, 0.0f, this->GetHeight() * 0.5f);
+		glVertex3f(-this->radius, 0.0f, this->GetHeight() * -0.5f);
+		glEnd();
+
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
 	}
 
