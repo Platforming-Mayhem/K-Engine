@@ -198,6 +198,36 @@ namespace K
 					K::Vector3 Normal = J;
 					points.push_back(K::ContactPoint(J2, Normal, Physics::colliders[i]));
 				}
+				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Capsule) 
+				{
+					K::Vector3 otherPosition = *Physics::colliders[i]->GetPosition();
+					K::Vector3 tC = otherPosition + K::Vector3(0.0f, Physics::colliders[i]->GetHeight() * 0.5f, 0.0f);
+					K::Vector3 bC = otherPosition - K::Vector3(0.0f, Physics::colliders[i]->GetHeight() * 0.5f, 0.0f);
+					if (tC.z - position.z > 0.0f) 
+					{
+						K::Vector3 J = K::Vector3(position.x - tC.x, 0.0f, position.z - tC.z).normalise();
+						K::Vector3 Jtemp = tC + (J * Physics::colliders[i]->GetRadius());
+						K::Vector3 J2 = K::Vector3(Jtemp.x, 0.0f, Jtemp.z);
+						K::Vector3 Normal = J;
+						points.push_back(K::ContactPoint(J2, Normal, Physics::colliders[i]));
+					}
+					else if (bC.z - position.z < 0.0f)
+					{
+						K::Vector3 J = K::Vector3(position.x - bC.x, 0.0f, position.z - bC.z).normalise();
+						K::Vector3 Jtemp = bC + (J * Physics::colliders[i]->GetRadius());
+						K::Vector3 J2 = K::Vector3(Jtemp.x, 0.0f, Jtemp.z);
+						K::Vector3 Normal = J;
+						points.push_back(K::ContactPoint(J2, Normal, Physics::colliders[i]));
+					}
+					else 
+					{
+						K::Vector3 J = K::Vector3(position.x - otherPosition.x, 0.0f, 0.0f).normalise();
+						K::Vector3 Jtemp = otherPosition + (J * Physics::colliders[i]->GetRadius());
+						K::Vector3 J2 = K::Vector3(Jtemp.x, 0.0f, position.z);
+						K::Vector3 Normal = J;
+						points.push_back(K::ContactPoint(J2, Normal, Physics::colliders[i]));
+					}
+				}
 			}
 		}
 		return points;

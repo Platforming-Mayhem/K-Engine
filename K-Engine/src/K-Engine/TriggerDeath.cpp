@@ -26,8 +26,6 @@ namespace K
 		temp.PassModelMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 
-		//Attack Hitbox
-		//RIGHT
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->boundsModelMatrix[0].x, this->boundsModelMatrix[0].y, this->boundsModelMatrix[0].z);
 		glVertex3f(this->boundsModelMatrix[1].x, this->boundsModelMatrix[1].y, this->boundsModelMatrix[1].z);
@@ -48,6 +46,7 @@ namespace K
 		K::Collider* temp = nullptr;
 		if (K::Physics::Hitbox(this->boundsModelMatrix[0], this->boundsModelMatrix[1], { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &temp))
 		{
+			std::cout << "KILL" << std::endl;
 			K::Editor::Delete(temp->parent);
 			temp = nullptr;
 		}

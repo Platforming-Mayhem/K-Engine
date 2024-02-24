@@ -174,7 +174,7 @@ namespace K
 			}
 		}
 
-		if (this->col->GetPosition()->z + this->col->GetRadius() < -7.0f) 
+		if (this->col->GetPosition()->z - (this->col->GetHeight() * 0.5f) - this->col->GetRadius() < -7.0f) 
 		{
 			K::Editor::Delete(this->parent);
 		}
