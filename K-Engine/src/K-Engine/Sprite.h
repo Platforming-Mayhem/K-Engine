@@ -15,6 +15,7 @@ namespace K
 		int internalClock = 0;
 		float chromaKeyColour[3];
 		int frame = 0;
+		bool hasNormal = false;
 		bool canChromaKey = false;
 		bool isPlaying = true;
 		K::Vector3 lightDirection = K::Vector3(0.0f, -0.5f, 0.5f);

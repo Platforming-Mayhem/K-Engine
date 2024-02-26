@@ -34,7 +34,9 @@ in vec2 TexCoord;
 in vec3 Normal;
 
 uniform sampler2D tex;
+uniform sampler2D normalTex;
 uniform bool hasTexture = false;
+uniform bool hasNormal = false;
 uniform bool canChromaKey = false;
 uniform vec3 lightDirection = vec3(0.0, 0.0, -1.0);
 uniform vec3 colorTint = vec3(1.0, 1.0, 1.0);
