@@ -157,12 +157,12 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), this->hasNormal);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "chromaKey"), this->chromaKeyColour[0], this->chromaKeyColour[1], this->chromaKeyColour[2]);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), true);
-		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "lightDirection"), this->lightDirection.x, this->lightDirection.y, this->lightDirection.z);
 
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "texture0"), 0);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "texture1"), 1);
 
 		this->texture->Bind(0);
+
 		this->normalTexture->Bind(1);
 	}
 
@@ -242,7 +242,6 @@ namespace K
 				fileNormal.SetPwd(ASSET_DIR);
 				fileNormal.Open();
 			}
-			ImGui::DragFloat3("Lighting Direction", &this->lightDirection.x);
 			ImGui::Checkbox("has Normal Texture", &this->hasNormal);
 			ImGui::Checkbox("Can Chroma Key", &this->canChromaKey);
 			if (this->canChromaKey) 

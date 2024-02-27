@@ -1,18 +1,23 @@
 #pragma once
 #include "build.h"
+#include "Transform.h"
 #include "Component.h"
 
 namespace K 
 {
-	class K_API Move : public K::Component 
+	class K_API Light : public K::Component 
 	{
 	private:
-		float moveSpeed = 1.0f;
+		K::Vector3 lightDirection = K::Vector3(0.0f, 0.0f, 1.0f);
 		std::string properties;
 	public:
-		Move();
+		enum class LightType { Directional = 0, Point = 1};
 
-		~Move();
+		LightType lightType = LightType::Directional;
+
+		Light();
+
+		~Light();
 
 		void Init() override;
 

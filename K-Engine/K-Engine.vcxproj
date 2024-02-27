@@ -18,6 +18,7 @@
     <ClInclude Include="src\K-Engine\Enemy.h" />
     <ClInclude Include="src\K-Engine\Fox.h" />
     <ClInclude Include="src\K-Engine\InputManager.h" />
+    <ClInclude Include="src\K-Engine\Light.h" />
     <ClInclude Include="src\K-Engine\Material.h" />
     <ClInclude Include="src\K-Engine\Move.h" />
     <ClInclude Include="src\K-Engine\PhysicsEngine.h" />
@@ -70,6 +71,7 @@
     <ClCompile Include="src\K-Engine\Fox.cpp" />
     <ClCompile Include="src\K-Engine\GameObject.cpp" />
     <ClCompile Include="src\K-Engine\InputManager.cpp" />
+    <ClCompile Include="src\K-Engine\Light.cpp" />
     <ClCompile Include="src\K-Engine\Material.cpp" />
     <ClCompile Include="src\K-Engine\Mesh.cpp" />
     <ClCompile Include="src\K-Engine\Move.cpp" />

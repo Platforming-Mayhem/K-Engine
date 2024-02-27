@@ -39,7 +39,7 @@ uniform sampler2D texture1;
 uniform bool hasTexture = false;
 uniform bool hasNormal = false;
 uniform bool canChromaKey = false;
-uniform vec3 lightDirection = vec3(0.0, 0.0, -1.0);
+uniform vec3 lightDirection = vec3(0.0, 0.0, 1.0);
 uniform vec3 colorTint = vec3(1.0, 1.0, 1.0);
 uniform vec3 chromaKey = vec3(0.0, 0.0, 0.0);
 

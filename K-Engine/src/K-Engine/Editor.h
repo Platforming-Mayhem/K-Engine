@@ -11,6 +11,7 @@
 #include "Animator.h"
 #include "Timer.h"
 #include "Move.h"
+#include "Light.h"
 #include "TriggerDeath.h"
 #include "Component.h"
 

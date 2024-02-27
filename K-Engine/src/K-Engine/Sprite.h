@@ -19,7 +19,6 @@ namespace K
 		bool hasNormal = false;
 		bool canChromaKey = false;
 		bool isPlaying = true;
-		K::Vector3 lightDirection = K::Vector3(0.0f, -0.5f, 0.5f);
 		std::string properties;
 
 		ImGui::FileBrowser file;
