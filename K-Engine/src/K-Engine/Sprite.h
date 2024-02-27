@@ -12,6 +12,7 @@ namespace K
 	{
 	private:
 		K::Texture* texture;
+		K::Texture* normalTexture;
 		int internalClock = 0;
 		float chromaKeyColour[3];
 		int frame = 0;
@@ -20,8 +21,12 @@ namespace K
 		bool isPlaying = true;
 		K::Vector3 lightDirection = K::Vector3(0.0f, -0.5f, 0.5f);
 		std::string properties;
-	public:
+
 		ImGui::FileBrowser file;
+
+		ImGui::FileBrowser fileNormal;
+
+	public:
 
 		Sprite();
 

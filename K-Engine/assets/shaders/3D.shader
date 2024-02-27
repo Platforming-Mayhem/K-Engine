@@ -33,8 +33,9 @@ layout(location = 0) out vec4 colour;
 in vec2 TexCoord;
 in vec3 Normal;
 
-uniform sampler2D tex;
-uniform sampler2D normalTex;
+uniform sampler2D texture0;
+uniform sampler2D texture1;
+
 uniform bool hasTexture = false;
 uniform bool hasNormal = false;
 uniform bool canChromaKey = false;
@@ -52,11 +53,11 @@ void main()
 {
 	if (hasTexture) 
 	{
-		colour = texture(tex, TexCoord) * vec4(colorTint, 1.0);
+		colour = texture(texture0, TexCoord) * vec4(colorTint, 1.0);
 	}
 	else 
 	{
-		colour = vec4(colorTint, 1.0);
+		colour = vec4(0.0, 0.0, 0.0, 1.0);
 	}
 	if (canChromaKey) 
 	{
@@ -68,5 +69,9 @@ void main()
 			discard;
 		}
 	}
-	//colour.rgb *= dot(normalize(Normal), normalize(lightDirection));
+	if(hasNormal)
+	{
+		float lighting = dot(normalize(texture(texture1, TexCoord).rgb * 2.0 - 1.0), normalize(lightDirection));
+		colour.rgb *= lighting;
+	}
 }
