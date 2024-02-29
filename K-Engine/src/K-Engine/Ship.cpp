@@ -4,7 +4,8 @@ namespace K
 {
 	Ship::Ship() 
 	{
-
+		this->minAttackFrame = 0;
+		this->maxAttackFrame = 2;
 	}
 
 	Ship::~Ship() 
@@ -14,7 +15,7 @@ namespace K
 
 	void Ship::Update() 
 	{
-
+		
 	}
 
 	void Ship::UpdateEditor() 
