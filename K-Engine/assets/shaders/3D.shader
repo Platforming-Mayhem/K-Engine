@@ -72,6 +72,17 @@ void main()
 	if(hasNormal)
 	{
 		float lighting = dot(normalize(texture(texture1, TexCoord).rgb * 2.0 - 1.0), normalize(lightDirection));
-		colour.rgb *= lighting;
+		if(lighting > 0.8)
+		{
+			colour.rgb *= 1.0;
+		}
+		else if(lighting < 0.8 && lighting > 0.6)
+		{
+			colour.rgb *= 0.7 * lighting;
+		}
+		else if(lighting < 0.6)
+		{
+			colour.rgb *= 0.5 * lighting;
+		}
 	}
 }

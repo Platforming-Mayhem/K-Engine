@@ -5,7 +5,7 @@
 #include "Window.h"
 #include "Sprite.h"
 #include "Player.h"
-#include "Fox.h"
+#include "Ship.h"
 #include "Camera.h"
 #include "Collider.h"
 #include "Animator.h"

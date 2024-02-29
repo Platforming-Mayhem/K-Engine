@@ -3,15 +3,15 @@
 
 namespace K 
 {
-	class K_API Fox : public Enemy 
+	class K_API Ship : public Enemy 
 	{
 	private:
 		std::string properties;
 	public:
 
-		Fox();
+		Ship();
 
-		~Fox();
+		~Ship();
 
 		void Update() override;
 

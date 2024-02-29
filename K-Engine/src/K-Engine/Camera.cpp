@@ -80,7 +80,44 @@ namespace K
 
 	void Camera::Bind()
 	{
-		if (this->isActive) 
+		if (this->isActive && !this->isEditorCamera) 
+		{
+			glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
+			//Projection Matrix
+			float deltaZ, aspect;
+			float radians = ((3.14159f * 2.0f) / 360.0f) * this->FOV / 2.0f;
+			float fFovRad = tanf(this->FOV * 0.5f / 180.0f * 3.14159f);
+			deltaZ = this->farPlane - this->nearPlane;
+			aspect = this->window->width / this->window->height;
+
+			if (this->cameraType == CameraType::Perspective)
+			{
+				K::Camera::projectionMatrix.m[0][0] = 1.0f / (aspect * fFovRad);
+				K::Camera::projectionMatrix.m[1][1] = 1.0f / fFovRad;
+				K::Camera::projectionMatrix.m[2][2] = -((this->farPlane + this->nearPlane) / deltaZ);
+				K::Camera::projectionMatrix.m[3][2] = -((2.0f * this->farPlane * this->nearPlane) / deltaZ);
+				K::Camera::projectionMatrix.m[2][3] = -1.0f;
+				K::Camera::projectionMatrix.m[3][3] = 0.0f;
+			}
+			else if (this->cameraType == CameraType::Orthographic)
+			{
+				float t = this->orthoSize, b = -this->orthoSize, l = -this->orthoSize * aspect, r = this->orthoSize * aspect;
+				K::Camera::projectionMatrix = K::Camera::projectionMatrix.IdentityMatrix();
+				K::Camera::projectionMatrix.m[0][0] = 2.0f / (r - l);
+				K::Camera::projectionMatrix.m[1][1] = 2.0f / (t - b);
+				K::Camera::projectionMatrix.m[2][2] = -2.0f / (this->farPlane - this->nearPlane);
+				K::Camera::projectionMatrix.m[3][0] = -(r + l) / (r - l);
+				K::Camera::projectionMatrix.m[3][1] = -(t + b) / (t - b);
+				K::Camera::projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
+			}
+
+			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
+
+			K::Camera::viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
+
+			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
+		}
+		else if (this->isEditorCamera) 
 		{
 			glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
 			//Projection Matrix
