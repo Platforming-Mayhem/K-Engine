@@ -157,6 +157,7 @@ namespace K
 				this->CapsuleEditor();
 				break;
 			}
+			ImGui::Checkbox("Is Colliding", &this->isColliding);
 		}
 	}
 

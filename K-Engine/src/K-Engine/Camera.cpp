@@ -114,6 +114,18 @@ namespace K
 			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
 
 			K::Camera::viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
+			if (this->parent->parent != nullptr) 
+			{
+				K::Matrix4x4 scalingMatrix = this->parent->GetTransform()->LocalScaleMatrix(this->parent->parent->GetTransform());
+				K::Matrix4x4 invertedScalingMatrix = K::QuickInverse(scalingMatrix);
+				K::Camera::viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(K::Camera::viewMatrix, invertedScalingMatrix);
+			}
+			else 
+			{
+				K::Matrix4x4 scalingMatrix = this->parent->GetTransform()->ScaleMatrix();
+				K::Matrix4x4 invertedScalingMatrix = K::QuickInverse(scalingMatrix);
+				K::Camera::viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(K::Camera::viewMatrix, invertedScalingMatrix);
+			}
 
 			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
 		}

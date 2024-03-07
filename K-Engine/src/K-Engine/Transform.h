@@ -264,6 +264,8 @@ namespace K
 
 		K::Matrix4x4 ScaleMatrix();
 
+		K::Matrix4x4 LocalScaleMatrix(K::Transform* parent);
+
 		Transform();
 
 		Transform(Vector3* newPos, Vector3* newRot, Vector3* newScale);

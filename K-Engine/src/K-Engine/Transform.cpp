@@ -197,6 +197,19 @@ namespace K
 		return temp;
 	}
 
+	K::Matrix4x4 Transform::LocalScaleMatrix(K::Transform* parent)
+	{
+		K::Matrix4x4 temp = K::Matrix4x4::IdentityMatrix();
+		K::Vector3 localScaleInWorldSpace = *this->localScale * *parent->scale;
+
+		//Scaling Matrix
+		temp.m[0][0] *= localScaleInWorldSpace.x;
+		temp.m[1][1] *= localScaleInWorldSpace.y;
+		temp.m[2][2] *= localScaleInWorldSpace.z;
+
+		return temp;
+	}
+
 	void K::Transform::PassModelMatrix(K::Transform* parent) 
 	{
 

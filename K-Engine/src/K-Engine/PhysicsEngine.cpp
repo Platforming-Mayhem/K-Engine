@@ -324,6 +324,8 @@ namespace K
 					float depth = col->GetRadius() - std::fabsf(col->GetPosition()->x - J.position.x);
 					K::Vector3 contactResolution = K::Vector3(depth * normal.x, 0.0f, 0.0f);
 					*offsetAmount += contactResolution;
+					col->other = J.other;
+					count++;
 				}
 			}
 		}

@@ -11,10 +11,19 @@ namespace K
 	private:
 		bool hasGravity = false;
 		bool flip = false;
+
+		int animationState = 0;
+
 		bool isJumping = false;
+		bool isDodging = false;
+
+		float dodgeSpeed = 1.0f;
 		float movementSpeed = 1.0f;
+
 		float jumpTime = 0.0f;
+
 		K::Vector3 originalScale;
+		K::Vector3* dodgeDirection;
 		K::Vector3* direction;
 		K::Animator* animator;
 		K::Collider* col;
@@ -26,6 +35,8 @@ namespace K
 		~Player();
 
 		float GetMovementSpeed();
+
+		bool IsDodging();
 
 		void Init() override;
 
