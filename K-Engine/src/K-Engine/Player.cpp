@@ -179,7 +179,7 @@ namespace K
 			}
 			else 
 			{
-				if (!K::Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, -this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -2.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }) && !K::Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -2.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+				if (!K::Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, -this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -(this->col->GetRadius() + 1.0f), 0.0f), {K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player)}) && !K::Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -(this->col->GetRadius() + 1.0f), 0.0f), {K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player)}))
 				{
 					this->jumpTime = 1.0f;
 				}

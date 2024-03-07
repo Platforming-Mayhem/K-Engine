@@ -51,6 +51,7 @@ namespace K
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(int), &this->indices[0], GL_DYNAMIC_DRAW);
 		glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(K::Vertex), &this->vertices[0], GL_DYNAMIC_DRAW);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), colourTint[0], colourTint[1], colourTint[2]);
 	}
 
 	void Mesh::Update() 
@@ -64,6 +65,7 @@ namespace K
 		{
 			ImGui::Text("Vertices: %i", this->vertices.size());
 			ImGui::Text("Indices: %i", this->indices.size());
+			ImGui::ColorPicker3("Colour Tint", this->colourTint);
 		}
 	}
 
@@ -77,13 +79,28 @@ namespace K
 	{
 		if (value[0] != '\0' && value != nullptr)
 		{
-			
+			std::string temp = value;
+			switch (valueIndex)
+			{
+			case 0:
+				this->colourTint[0] = std::stof(temp);
+				break;
+			case 1:
+				this->colourTint[1] = std::stof(temp);
+				break;
+			case 2:
+				this->colourTint[2] = std::stof(temp);
+				break;
+			}
 		}
 	}
 
 	const char* Mesh::GetPropertyValues()
 	{
-		return this->GetFilePath();
+		this->properties = std::to_string(this->colourTint[0]) + ",";
+		this->properties += std::to_string(this->colourTint[1]) + ",";
+		this->properties += std::to_string(this->colourTint[2]);
+		return this->properties.c_str();
 	}
 
 	const char* Mesh::GetFilePath() 

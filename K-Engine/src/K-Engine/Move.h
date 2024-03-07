@@ -8,11 +8,14 @@ namespace K
 	{
 	private:
 		float moveSpeed = 1.0f;
+		float time = 0.0f;
 		std::string properties;
 	public:
 		Move();
 
 		~Move();
+
+		float EaseInQuart(float x);
 
 		void Init() override;
 

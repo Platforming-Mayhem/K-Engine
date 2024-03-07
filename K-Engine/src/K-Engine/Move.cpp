@@ -4,7 +4,7 @@
 
 K::Move::Move()
 {
-
+	
 }
 
 K::Move::~Move()
@@ -12,9 +12,16 @@ K::Move::~Move()
 
 }
 
+float K::Move::EaseInQuart(float x) 
+{
+	return x * x * x * x;
+}
+
 void K::Move::Init()
 {
-
+	K::Time::startTime = 0.0f;
+	K::Time::endTime = 0.0f;
+	this->time = 0.0f;
 }
 
 void K::Move::Update()
@@ -22,7 +29,16 @@ void K::Move::Update()
 	#if _DEBUG
 		
 	#else
-		*this->parent->GetTransform()->position += K::Vector3(K::Time::deltaTime() * this->moveSpeed, 0.0f, 0.0f);
+		float speed = EaseInQuart(this->time);
+		if (speed < 1.0f)
+		{
+			this->time += K::Time::deltaTime();
+		}
+		else if(speed >= 1.0f)
+		{
+			this->time = 1.0f;
+		}
+		this->parent->GetTransform()->position->x += speed * K::Time::deltaTime() * this->moveSpeed;
 	#endif
 }
 

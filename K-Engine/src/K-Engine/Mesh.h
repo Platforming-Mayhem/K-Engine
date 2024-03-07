@@ -42,9 +42,11 @@ namespace K
 	private:
 		ImGui::FileBrowser file;
 		std::string filename;
+		float colourTint[3] = {1.0f, 1.0f, 1.0f};
 		unsigned int VAO;
 		unsigned int VBO;
 		unsigned int EBO;
+		std::string properties;
 	public:
 		//Model Vertices
 		std::vector<K::Vertex> vertices = K::Quad;

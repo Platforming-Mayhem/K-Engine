@@ -34,6 +34,7 @@ namespace K
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
 		K::Vector3 topPosition = *this->GetPosition() + K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
 		K::Vector3 bottomPosition = *this->GetPosition() - K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
@@ -247,6 +248,7 @@ namespace K
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
 		K::Vector3 position = *this->GetPosition();
 		K::Transform* temp = new K::Transform(&position, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
@@ -265,6 +267,7 @@ namespace K
 			//DEBUGGING
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 			for (K::ContactPoint pointOnLine : K::Physics::GetClosestPoints(*this->GetPosition()))
 			{
@@ -306,6 +309,7 @@ namespace K
 		{
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 			K::Transform transform = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
 			transform.PassModelMatrix();
