@@ -40,6 +40,10 @@ namespace K
 
 		~GameObject();
 
+		GameObject(const GameObject&);
+
+		GameObject& operator=(GameObject const& other);
+
 		void Init();
 
 		void Update();
@@ -57,8 +61,6 @@ namespace K
 		void RemoveChild(K::GameObject* index);
 
 		void AddChild(K::GameObject* index);
-
-		void UpdateToWorld();
 
 		void SetIndex(int index);
 

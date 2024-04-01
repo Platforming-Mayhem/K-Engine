@@ -39,6 +39,12 @@ namespace K
 		return this->properties.c_str();
 	}
 
+	void Sprite::ResetFrame() 
+	{
+		this->frame = 0;
+		this->internalClock = 0;
+	}
+
 	void Sprite::SetPropertyValues(const char* value, int valueIndex)
 	{
 		if (value[0] != '\0' && value != nullptr)
@@ -48,7 +54,7 @@ namespace K
 			{
 			case 0:
 			{
-				K::Texture* tempTex = new K::Texture(temp.c_str(), GL_TEXTURE_2D);
+				K::Texture* tempTex = new K::Texture(temp.c_str(), GL_TEXTURE_2D_ARRAY);
 				this->SetTexture(tempTex, false);
 			}
 			break;
@@ -146,7 +152,7 @@ namespace K
 	void Sprite::Init()
 	{
 		if(this->texture == nullptr)
-			this->SetTexture(new K::Texture(WATERMARK, GL_TEXTURE_2D), false);
+			this->SetTexture(new K::Texture(WATERMARK, GL_TEXTURE_2D_ARRAY), false);
 		if (this->normalTexture == nullptr)
 			this->normalTexture = new K::Texture(WATERMARK, GL_TEXTURE_2D);
 	}
@@ -160,6 +166,7 @@ namespace K
 
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "texture0"), 0);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "texture1"), 1);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "frame"), this->frame);
 
 		this->texture->Bind(0);
 
@@ -209,13 +216,12 @@ namespace K
 					this->isPlaying = false;
 				}
 			}
-			this->texture->LoadFrame(this->frame);
 		}
 	}
 
 	void Sprite::Update()
 	{
-		int fps = (1.0f / 30.0f) * 60.0f;
+		int fps = (1.0f / 15.0f) * 60.0f;
 		if (this->internalClock % fps == 0)
 		{
 			this->NextFrame();
@@ -254,7 +260,7 @@ namespace K
 			{
 				std::string location = file.GetSelected().string();
 				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-				K::Texture* temp = new K::Texture(relativeLocation.c_str(), GL_TEXTURE_2D);
+				K::Texture* temp = new K::Texture(relativeLocation.c_str(), GL_TEXTURE_2D_ARRAY);
 				this->SetTexture(temp, false);
 				file.ClearSelected();
 			}

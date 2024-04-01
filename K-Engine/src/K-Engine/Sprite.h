@@ -35,6 +35,8 @@ namespace K
 
 		void SetTexture(K::Texture* newTexture, bool reScale = true);
 
+		void ResetFrame();
+
 		void NextFrame();
 
 		int GetFrameNumber();

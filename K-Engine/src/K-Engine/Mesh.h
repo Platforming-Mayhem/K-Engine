@@ -42,6 +42,7 @@ namespace K
 	private:
 		ImGui::FileBrowser file;
 		std::string filename;
+		bool canDepth = true;
 		float colourTint[3] = {1.0f, 1.0f, 1.0f};
 		unsigned int VAO;
 		unsigned int VBO;

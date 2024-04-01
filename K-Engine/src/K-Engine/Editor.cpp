@@ -345,6 +345,12 @@ namespace K
 			{
 				ImGui::OpenPopup("Components");
 			}
+			if (ImGui::Button("Duplicate")) 
+			{
+				K::GameObject* temp = new K::GameObject("Name", new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f)));
+				*temp = *this->selectedGameObject;
+				this->selectedGameObject = temp;
+			}
 			if (ImGui::BeginPopup("Components"))
 			{
 				for(auto const& x : this->lst)

@@ -4,39 +4,107 @@
 
 namespace K 
 {
+	K::TextureManager K::textureManager = K::TextureManager();
+
+	TextureManager::TextureManager() 
+	{
+
+	}
+
+	void TextureManager::Add(std::string location, K::TextureInfo id)
+	{
+		this->textures.insert(std::make_pair(location, id));
+	}
+
+	K::TextureInfo TextureManager::Check(std::string location)
+	{
+		return this->textures.find(location)->second;
+	}
+
+	bool TextureManager::Contains(std::string location)
+	{
+		return this->textures.contains(location);
+	}
+
+	TextureManager::~TextureManager() 
+	{
+
+	}
+
 	Texture::Texture(const char* filename, GLenum type)
 	{
+		this->textures = &K::textureManager;
 		this->filename = filename;
-		this->type = type;
-		stbi_set_flip_vertically_on_load(true);
-		this->image = stbi_load((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->c, 0);
-		glGenTextures(1, &this->id);
-		glBindTexture(this->type, this->id);
-		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		if (this->image)
+		if (this->textures->Contains(this->filename)) 
 		{
-			if (this->c >= 4) 
-			{
-				glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
-			}
-			else 
-			{
-				glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
-			}
-			glGenerateTextureMipmap(this->type);
+			this->id = this->textures->Check(this->filename).id;
+			this->type = this->textures->Check(this->filename).type;
+			this->frames = this->textures->Check(this->filename).frames;
 		}
 		else
 		{
-			std::cout << "Failed to load texture at: " << this->filename << std::endl;
+			this->type = type;
+			stbi_set_flip_vertically_on_load(true);
+			if (this->type == GL_TEXTURE_2D_ARRAY)
+			{
+				this->LoadAnimation();
+				glGenTextures(1, &this->id);
+				glBindTexture(this->type, this->id);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+				if (this->image)
+				{
+					glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, this->frames, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+				}
+				else
+				{
+					std::cout << "Failed to load texture" << std::endl;
+				}
+				glActiveTexture(0);
+				glBindTexture(this->type, 0);
+				stbi_image_free(this->image);
+				this->image = nullptr;
+				std::cout << "Loaded Animation: " << this->GetFilePath() << std::endl;
+			}
+			else
+			{
+				this->image = stbi_load((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->c, 0);
+				glGenTextures(1, &this->id);
+				glBindTexture(this->type, this->id);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				if (this->image)
+				{
+					if (this->c >= 4)
+					{
+						glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+					}
+					else
+					{
+						glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+					}
+					glActiveTexture(0);
+					glBindTexture(this->type, 0);
+					stbi_image_free(this->image);
+					this->image = nullptr;
+					std::cout << "Loaded Single Texture: " << this->GetFilePath() << std::endl;
+				}
+				else
+				{
+					std::cout << "Failed to load texture at: " << this->filename << std::endl;
+				}
+			}
+			K::TextureInfo textureInfo = K::TextureInfo();
+			textureInfo.id = this->id;
+			textureInfo.type = this->type;
+			textureInfo.frames = this->frames;
+			this->textures->Add(this->filename, textureInfo);
 		}
-		glActiveTexture(0);
-		glBindTexture(this->type, 0);
-		stbi_image_free(this->image);
-		this->image = nullptr;
-		this->LoadAnimation();
 	}
 
 	Texture::Texture(unsigned int resource, GLenum type) {
@@ -68,22 +136,21 @@ namespace K
 				{
 					if (this->c > 3)
 					{
-						glTexImage2D(type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+						glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 					}
 					else
 					{
-						glTexImage2D(type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+						glTexImage3D(this->type, 0, GL_RGB, this->width, this->height, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 					}
-					glGenerateTextureMipmap(type);
+					glActiveTexture(0);
+					glBindTexture(this->type, 0);
+					stbi_image_free(this->image);
+					this->image = nullptr;
 				}
 				else
 				{
 					std::cout << "Failed to load texture" << std::endl;
 				}
-				glActiveTexture(0);
-				glBindTexture(this->type, 0);
-				stbi_image_free(this->image);
-				this->image = nullptr;
 				UnlockResource(temp);
 			}
 		}
@@ -96,7 +163,6 @@ namespace K
 	Texture::~Texture() 
 	{
 		std::cout << "Begin Texture Destruction..." << std::endl;
-		stbi_image_free(this->image);
 		glDeleteTextures(1, &this->id);
 		std::cout << "End Texture Destruction..." << std::endl;
 	}
@@ -128,24 +194,8 @@ namespace K
 		return this->delay[frame] / 10;
 	}
 
-	void Texture::LoadFrame(int frame) 
-	{
-		this->Bind(0);
-
-		glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->GetFrameImage(frame));
-
-		this->Unbind();
-	}
-
 	void Texture::LoadAnimation() 
 	{
-		this->Bind(0);
 		this->image = stbi_xload_file((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->frames, &this->delay);
-		if (this->frames <= 1)
-		{
-			stbi_image_free(this->image);
-			this->image = nullptr;
-		}
-		this->Unbind();
 	}
 }

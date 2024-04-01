@@ -339,20 +339,17 @@ namespace K
 
 	K::Vector3* Physics::GetClosestPoint(K::Vector3 position) 
 	{
-		int closestIndex = 0;
+		K::Vector3 newPosition;
 		float distance = INFINITY;
-		for (int i = 0; i < Physics::colliders.size(); i++)
+		for (auto contactPoint : K::Physics::GetClosestPoints(position))
 		{
-			if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Line && Physics::colliders[i]->GetNumberOfPoints() > 0)
+			K::Vector3 PJ = contactPoint.position - position;
+			if (PJ.magnitude() < distance)
 			{
-				K::Vector3 PJ = *Physics::colliders[i]->ClosestPointLineCollider(position) - position;
-				if (PJ.magnitude() < distance)
-				{
-					distance = PJ.magnitude();
-					closestIndex = i;
-				}
+				distance = PJ.magnitude();
+				newPosition = contactPoint.position;
 			}
 		}
-		return Physics::colliders[closestIndex]->ClosestPointLineCollider(position);
+		return &newPosition;
 	}
 }

@@ -33,15 +33,17 @@ layout(location = 0) out vec4 colour;
 in vec2 TexCoord;
 in vec3 Normal;
 
-uniform sampler2D texture0;
+uniform sampler2DArray texture0;
 uniform sampler2D texture1;
 
 uniform bool hasTexture = false;
 uniform bool hasNormal = false;
 uniform bool canChromaKey = false;
+uniform bool canDepth = true;
 uniform vec3 lightDirection = vec3(0.0, 0.0, 1.0);
 uniform vec3 colorTint = vec3(1.0, 1.0, 1.0);
 uniform vec3 chromaKey = vec3(0.0, 0.0, 0.0);
+uniform int frame = 0;
 
 float LinearizeDepth(float depth)
 {
@@ -53,11 +55,11 @@ void main()
 {
 	if (hasTexture) 
 	{
-		colour = texture(texture0, TexCoord) * vec4(colorTint, 1.0);
+		colour = texture(texture0, vec3(TexCoord, frame));
 	}
 	else 
 	{
-		colour = vec4(colorTint.r, colorTint.g, colorTint.b, 1.0);
+		colour = vec4(1.0, 1.0, 1.0, 1.0);
 	}
 	if (canChromaKey) 
 	{
@@ -85,4 +87,10 @@ void main()
 			colour.rgb *= 0.5 * lighting;
 		}
 	}
+	if(canDepth)
+	{
+		float depthRaw = (gl_FragCoord.z / gl_FragCoord.w) - 5.0;
+		colour.rgb *= abs(1.0 - clamp((depthRaw / 1000) * 72.0, 0.0, 1.0));
+	}
+	colour.rgb *= colorTint;
 }

@@ -111,7 +111,7 @@ namespace K
 				K::Camera::projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
 			}
 
-			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
+			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &K::Camera::projectionMatrix.m[0][0]);
 
 			K::Camera::viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
 			if (this->parent->parent != nullptr) 
@@ -127,7 +127,7 @@ namespace K
 				K::Camera::viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(K::Camera::viewMatrix, invertedScalingMatrix);
 			}
 
-			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
+			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &K::Camera::viewMatrix.m[0][0]);
 		}
 		else if (this->isEditorCamera) 
 		{
@@ -160,11 +160,11 @@ namespace K
 				K::Camera::projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
 			}
 
-			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
+			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &K::Camera::projectionMatrix.m[0][0]);
 
 			K::Camera::viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
 
-			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
+			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &K::Camera::viewMatrix.m[0][0]);
 		}
 	}
 

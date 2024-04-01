@@ -64,7 +64,7 @@ namespace K
 			{
 				std::string location = file.GetSelected().string();
 				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-				K::Texture* temp = new K::Texture(relativeLocation.c_str(), GL_TEXTURE_2D);
+				K::Texture* temp = new K::Texture(relativeLocation.c_str(), GL_TEXTURE_2D_ARRAY);
 				this->animations.push_back(temp);
 				this->selectedTexture = this->animations.size() - 1;
 				file.ClearSelected();
@@ -112,7 +112,7 @@ namespace K
 			}
 			else 
 			{
-				this->animations.push_back(new K::Texture(value, GL_TEXTURE_2D));
+				this->animations.push_back(new K::Texture(value, GL_TEXTURE_2D_ARRAY));
 			}
 		}
 	}

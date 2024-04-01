@@ -15,6 +15,83 @@ namespace K
 		std::cout << name << " GameObject Created" << std::endl;
 	}
 
+	GameObject::GameObject(const GameObject &other) : name(other.name)
+	{
+		this->name = other.name;
+		this->transform = new K::Transform();
+		*this->transform->position = *other.transform->position;
+		*this->transform->rotation = *other.transform->rotation;
+		*this->transform->scale = *other.transform->scale;
+		*this->transform->localPosition = *other.transform->localPosition;
+		*this->transform->localRotation = *other.transform->localRotation;
+		*this->transform->localScale = *other.transform->localScale;
+		for (int i = 0; i < other.components.size(); i++)
+		{
+			K::Component* comp = K::Editor::lst.at(other.components[i]->GetName())->create();
+			std::string allValues = other.components[i]->GetPropertyValues();
+			std::string value;
+			int index = 0;
+			for (int i = 0; i < allValues.size(); i++)
+			{
+				if (allValues[i] == ',')
+				{
+					comp->SetPropertyValues(value.c_str(), index);
+					value = "";
+					index++;
+				}
+				else
+				{
+					value += allValues[i];
+				}
+			}
+			if (value != "")
+			{
+				comp->SetPropertyValues(value.c_str(), index);
+			}
+			this->AddComponent(comp);
+			comp->Init();
+		}
+	}
+
+	GameObject& GameObject::operator=(GameObject const& other)
+	{
+		this->name = other.name;
+		this->transform = new K::Transform();
+		*this->transform->position = *other.transform->position;
+		*this->transform->rotation = *other.transform->rotation;
+		*this->transform->scale = *other.transform->scale;
+		*this->transform->localPosition = *other.transform->localPosition;
+		*this->transform->localRotation = *other.transform->localRotation;
+		*this->transform->localScale = *other.transform->localScale;
+		for (int i = 0; i < other.components.size(); i++) 
+		{
+			K::Component* comp = K::Editor::lst.at(other.components[i]->GetName())->create();
+			std::string allValues = other.components[i]->GetPropertyValues();
+			std::string value;
+			int index = 0;
+			for (int i = 0; i < allValues.size(); i++)
+			{
+				if (allValues[i] == ',')
+				{
+					comp->SetPropertyValues(value.c_str(), index);
+					value = "";
+					index++;
+				}
+				else 
+				{
+					value += allValues[i];
+				}
+			}
+			if (value != "") 
+			{
+				comp->SetPropertyValues(value.c_str(), index);
+			}
+			this->AddComponent(comp);
+			comp->Init();
+		}
+		return *this;
+	}
+
 	GameObject::GameObject(const char* name, K::Transform* transform, int index)
 	{
 		this->name = (char*)name;
@@ -150,22 +227,6 @@ namespace K
 				newParent->AddChild(this);
 				return true;
 			}
-		}
-	}
-
-	void GameObject::UpdateToWorld() 
-	{
-		if (this->parent == nullptr) 
-		{
-			
-		}
-		else 
-		{
-			*this->GetTransform()->localScale = *this->GetTransform()->scale / *this->parent->GetTransform()->scale;
-			*this->GetTransform()->localRotation = *this->GetTransform()->rotation - *this->parent->GetTransform()->rotation;
-			*this->GetTransform()->localPosition = *this->GetTransform()->position;
-			K::Matrix4x4 invert = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
-			K::MultiplyMatrixVector(*this->GetTransform()->position, *this->GetTransform()->localPosition, invert);
 		}
 	}
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "build.h"
 #include "Component.h"
+#include "Transform.h"
 
 namespace K 
 {
@@ -9,6 +10,7 @@ namespace K
 	private:
 		float moveSpeed = 1.0f;
 		float time = 0.0f;
+		K::Vector3 destination;
 		std::string properties;
 	public:
 		Move();

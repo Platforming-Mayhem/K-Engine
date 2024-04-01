@@ -3,9 +3,35 @@
 
 namespace K 
 {
+	struct TextureInfo 
+	{
+		int id;
+		int type;
+		int frames;
+	};
+
+	class K_API TextureManager 
+	{
+	private:
+		std::map<std::string, K::TextureInfo> textures;
+	public:
+		TextureManager();
+
+		void Add(std::string location, K::TextureInfo id);
+
+		K::TextureInfo Check(std::string location);
+
+		bool Contains(std::string location);
+
+		~TextureManager();
+	};
+
+	extern K::TextureManager textureManager;
+
 	class K_API Texture
 	{
 	private:
+		K::TextureManager* textures;
 		unsigned int id;
 		unsigned char* image;
 		int width;
@@ -49,8 +75,6 @@ namespace K
 		void Bind(const GLint texture_unit);
 
 		void Unbind();
-
-		void LoadFrame(int frame);
 
 		void LoadAnimation();
 	};

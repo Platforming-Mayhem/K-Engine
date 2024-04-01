@@ -17,7 +17,6 @@ namespace K
 		this->col = nullptr;
 		this->sprite = nullptr;
 		delete this->direction;
-		delete this->dodgeDirection;
 		std::cout << "Player Destructor" << std::endl;
 	}
 
@@ -58,11 +57,6 @@ namespace K
 		return 1 - powf(1 - time - 1, power);
 	}
 
-	bool Player::IsDodging() 
-	{
-		return this->isDodging;
-	}
-
 	void Player::Init() 
 	{
 		if (this->parent->GetComponentOfType(typeid(K::Animator).name()) != nullptr)
@@ -80,8 +74,6 @@ namespace K
 
 		this->direction = new K::Vector3();
 
-		this->dodgeDirection = new K::Vector3();
-
 		this->originalScale = *this->parent->GetTransform()->scale;
 
 		this->parent->layer = (int)K::Layer::LayerType::Player;
@@ -97,97 +89,96 @@ namespace K
 
 	void Player::Update() 
 	{
-		if (this->isDodging) 
+		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
-			if (this->direction->x > 0.0f) 
+			this->direction = new K::Vector3(this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			if (this->animationState == 0)
 			{
-				this->direction->x = K::Time::deltaTime() * this->dodgeSpeed;
-			}
-			else 
-			{
-				this->direction->x = -K::Time::deltaTime() * this->dodgeSpeed;
+				this->animationState = 1;
 			}
 		}
-		else 
+		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
+		{
+			this->direction = new K::Vector3(-this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			if (this->animationState == 0)
+			{
+				this->animationState = 1;
+			}
+		}
+		else
+		{
+			this->direction = new K::Vector3();
+			if (this->animationState == 1)
+			{
+				this->animationState = 0;
+			}
+		}
+		if (InputManager::IsKeyPressedDown(GLFW_KEY_UP) && this->jumpTime == 0.0f)
+		{
+			this->isJumping = true;
+			this->animationState = 2;
+		}
+		else if (InputManager::IsKeyReleased(GLFW_KEY_UP) && this->jumpTime < 1.0f)
+		{
+			this->jumpTime = 1.0f;
+		}
+		else if (this->jumpTime >= 1.0f)
+		{
+			this->isJumping = false;
+			if (K::Physics::IsColliding(this->parent))
+			{
+				this->jumpTime = 0.0f;
+				this->animationState = 0;
+			}
+		}
+
+		if (InputManager::IsKeyPressedDown(GLFW_KEY_Z)) 
 		{
 			if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 			{
-				this->direction = new K::Vector3(this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
-				if (this->animationState == 0)
-				{
-					this->animationState = 1;
-				}
-				if (InputManager::IsKeyPressedDown(GLFW_KEY_DOWN))
-				{
-					this->isDodging = true;
-					this->animationState = 3;
-				}
-				else if (InputManager::IsKeyReleased(GLFW_KEY_DOWN))
-				{
-
-				}
+				*this->parent->GetTransform()->position += K::Vector3(5.0f, 0.0f, 0.0f);
+				this->animationState = 3;
+				this->sprite->ResetFrame();
 			}
 			else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 			{
-				this->direction = new K::Vector3(-this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
-				if (this->animationState == 0)
-				{
-					this->animationState = 1;
-				}
-				if (InputManager::IsKeyPressedDown(GLFW_KEY_DOWN))
-				{
-					this->isDodging = true;
-					this->animationState = 3;
-				}
-				else if (InputManager::IsKeyReleased(GLFW_KEY_DOWN))
-				{
+				*this->parent->GetTransform()->position += K::Vector3(-5.0f, 0.0f, 0.0f);
+				this->animationState = 3;
+				this->sprite->ResetFrame();
+			}
+			if (InputManager::IsKeyPressed(GLFW_KEY_UP))
+			{
+				*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, 5.0f);
+				this->animationState = 3;
+				this->sprite->ResetFrame();
+			}
+			else if (InputManager::IsKeyPressed(GLFW_KEY_DOWN))
+			{
+				*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -5.0f);
+				this->animationState = 3;
+				this->sprite->ResetFrame();
+			}
+		}
+		else if (InputManager::IsKeyReleased(GLFW_KEY_Z))
+		{
 
-				}
-			}
-			else
-			{
-				this->direction = new K::Vector3(0.0f, 0.0f, 0.0f);
-				if (this->animationState == 1)
-				{
-					this->animationState = 0;
-				}
-			}
-			if (InputManager::IsKeyPressedDown(GLFW_KEY_UP) && this->jumpTime == 0.0f)
-			{
-				this->isJumping = true;
-				this->animationState = 2;
-			}
-			else if (InputManager::IsKeyReleased(GLFW_KEY_UP) && this->jumpTime < 1.0f)
+		}
+
+		if (this->isJumping)
+		{
+			this->col->ResetVelocity();
+			this->direction->z += (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f;
+			this->jumpTime += K::Time::deltaTime() * 2.5f;
+		}
+		else
+		{
+			if (!K::Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, -this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -(this->col->GetRadius() + 1.0f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }) && !K::Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -(this->col->GetRadius() + 1.0f), 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 			{
 				this->jumpTime = 1.0f;
-			}
-			else if (this->jumpTime >= 1.0f)
-			{
-				this->isJumping = false;
-				if (K::Physics::IsColliding(this->parent)) 
-				{
-					this->jumpTime = 0.0f;
-					this->animationState = 0;
-				}
-			}
-
-			if (this->isJumping)
-			{
-				this->col->ResetVelocity();
-				this->direction->z += (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f;
-				this->jumpTime += K::Time::deltaTime() * 2.5f;
-			}
-			else 
-			{
-				if (!K::Physics::Raycast(*this->col->GetPosition() + K::Vector3(this->col->GetRadius(), 0.0f, -this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -(this->col->GetRadius() + 1.0f), 0.0f), {K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player)}) && !K::Physics::Raycast(*this->col->GetPosition() - K::Vector3(this->col->GetRadius(), 0.0f, this->col->GetHeight() / 2.0f), K::Vector3(0.0f, -(this->col->GetRadius() + 1.0f), 0.0f), {K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player)}))
-				{
-					this->jumpTime = 1.0f;
-				}
 			}
 		}
 
 		*(this->parent->GetTransform()->position) += this->direction;
-		this->dodgeSpeed = this->movementSpeed * 1.5f;
 	}
 
 	void Player::Unbind() 
@@ -227,11 +218,21 @@ namespace K
 			this->animator->PlayAnimation(2, this->sprite, false);
 			break;
 		case 3:
-			//Dodging
+			//Dashing
 			if (!this->sprite->IsPlaying())
 			{
-				this->isDodging = false;
-				this->animationState = 0;
+				if (this->isJumping) 
+				{
+					this->animationState = 2;
+				}
+				else if (this->direction->x != 0.0f) 
+				{
+					this->animationState = 1;
+				}
+				else
+				{
+					this->animationState = 0;
+				}
 			}
 			else
 			{
