@@ -1,2 +1,1 @@
-scenes\Watermark.JAWS
-scenes\SaveTheBaby_LevelOne.JAWS
+scenes\Blank.JAWS

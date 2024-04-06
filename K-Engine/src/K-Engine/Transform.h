@@ -7,6 +7,11 @@ namespace K
 	{
 		float m[4][4] = { 0 };
 
+		~Matrix4x4() 
+		{
+			//std::cout << "Destroy Matrix4x4" << std::endl;
+		}
+
 		static Matrix4x4 IdentityMatrix()
 		{
 			Matrix4x4 identity;

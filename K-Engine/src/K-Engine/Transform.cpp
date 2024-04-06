@@ -327,11 +327,11 @@ namespace K
 		float cr = cosf(rotation->x * 0.5 / 57.2958);
 		float sr = sinf(rotation->x * 0.5 / 57.2958);
 
-		K::Quaternion* q = new K::Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
-		q->w = cr * cp * cy + sr * sp * sy;
-		q->x = sr * cp * cy - cr * sp * sy;
-		q->y = cr * sp * cy + sr * cp * sy;
-		q->z = cr * cp * sy - sr * sp * cy;
-		return q;
+		K::Quaternion q = K::Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+		q.w = cr * cp * cy + sr * sp * sy;
+		q.x = sr * cp * cy - cr * sp * sy;
+		q.y = cr * sp * cy + sr * cp * sy;
+		q.z = cr * cp * sy - sr * sp * cy;
+		return &q;
 	}
 }
