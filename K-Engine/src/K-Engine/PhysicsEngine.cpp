@@ -339,11 +339,11 @@ namespace K
 		return temp;
 	}
 
-	K::Vector3* Physics::GetClosestPoint(K::Vector3 position) 
+	K::Vector3 Physics::GetClosestPoint(K::Vector3 position) 
 	{
 		K::Vector3 newPosition;
 		float distance = INFINITY;
-		for (auto contactPoint : K::Physics::GetClosestPoints(position))
+		for (K::ContactPoint contactPoint : K::Physics::GetClosestPoints(position))
 		{
 			K::Vector3 PJ = contactPoint.position - position;
 			if (PJ.magnitude() < distance)
@@ -352,6 +352,6 @@ namespace K
 				newPosition = contactPoint.position;
 			}
 		}
-		return &newPosition;
+		return newPosition;
 	}
 }

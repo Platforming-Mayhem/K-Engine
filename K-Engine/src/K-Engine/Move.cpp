@@ -43,11 +43,11 @@ void K::Move::Update()
 		destination.x += speed * K::Time::deltaTime() * this->moveSpeed;
 		if (K::Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(5.0f, -20.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) })) 
 		{
-			destination.z = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position)->z + 15.0f;
+			destination.z = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position).z + 15.0f;
 		}
 		else if (K::Physics::Raycast(*this->parent->GetTransform()->position, K::Vector3(5.0f, 20.0f, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
 		{
-			destination.z = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position)->z + 15.0f;
+			destination.z = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position).z + 15.0f;
 		}
 		this->parent->GetTransform()->rotation->y = std::lerp(this->parent->GetTransform()->rotation->y, (*this->parent->GetTransform()->position - this->destination).z * 2.0f, K::Time::deltaTime() * 5.0f);
 		*this->parent->GetTransform()->position = K::Vector3::Lerp(*this->parent->GetTransform()->position, this->destination, K::Time::deltaTime() * 2.0f);
