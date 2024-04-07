@@ -114,9 +114,9 @@ namespace K
 			for (auto temp : this->GetGameObjects())
 			{
 				temp.second->PassTransformationMatrix();
-				/*temp.second->Bind();
+				temp.second->Bind();
 				temp.second->Update();
-				temp.second->Unbind();*/
+				temp.second->Unbind();
 			}
 			K::Time::endTime = K::Time::startTime;
 		}

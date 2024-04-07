@@ -91,7 +91,7 @@ namespace K
 	{
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
-			this->direction = new K::Vector3(this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			*this->direction = K::Vector3(this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 			if (this->animationState == 0)
 			{
 				this->animationState = 1;
@@ -99,7 +99,7 @@ namespace K
 		}
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 		{
-			this->direction = new K::Vector3(-this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			*this->direction = K::Vector3(-this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
 			if (this->animationState == 0)
 			{
 				this->animationState = 1;
@@ -107,7 +107,7 @@ namespace K
 		}
 		else
 		{
-			this->direction = new K::Vector3();
+			*this->direction = K::Vector3();
 			if (this->animationState == 1)
 			{
 				this->animationState = 0;

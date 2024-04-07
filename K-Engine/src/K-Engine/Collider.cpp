@@ -92,8 +92,7 @@ namespace K
 				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
 				this->time += K::Time::deltaTime();
 			}
-			K::Vector3* temp = K::Physics::GetCollisionResolution(this);
-			*this->parent->GetTransform()->position += temp;
+			*this->parent->GetTransform()->position += K::Physics::GetCollisionResolution(this);
 		}
 	}
 
@@ -223,8 +222,7 @@ namespace K
 				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
 				this->time += K::Time::deltaTime();
 			}
-			K::Vector3* temp = K::Physics::GetCollisionResolution(this);
-			*this->parent->GetTransform()->position += temp;
+			*this->parent->GetTransform()->position += K::Physics::GetCollisionResolution(this);
 		}
 	}
 
@@ -237,8 +235,7 @@ namespace K
 	{
 		if (K::Physics::CanGetClosestPoint())
 		{
-			K::Vector3* temp = K::Physics::GetCollisionResolution(this, {K::Layer::LayerType::Player, K::Layer::LayerType::Enemy});
-			*this->parent->GetTransform()->position += temp;
+			*this->parent->GetTransform()->position += K::Physics::GetCollisionResolution(this, { K::Layer::LayerType::Player, K::Layer::LayerType::Enemy });
 		}
 	}
 
@@ -353,7 +350,7 @@ namespace K
 		float distance = INFINITY;
 		for (int i = 0; i < this->linePoints.size(); i++) 
 		{
-			K::Vector3 J = K::Vector3(this->PointOnLine(this->linePointsModelMatrix[i].point[0], this->linePointsModelMatrix[i].point[1], P)->x, P.y, this->PointOnLine(this->linePointsModelMatrix[i].point[0], this->linePointsModelMatrix[i].point[1], P)->y);
+			K::Vector3 J = K::Vector3(this->PointOnLine(this->linePointsModelMatrix[i].point[0], this->linePointsModelMatrix[i].point[1], P).x, P.y, this->PointOnLine(this->linePointsModelMatrix[i].point[0], this->linePointsModelMatrix[i].point[1], P).y);
 			K::Vector3 PJ = J - P;
 			if (PJ.magnitude() < distance && PJ.magnitude() > 0.0f) 
 			{
@@ -367,11 +364,11 @@ namespace K
 				break;
 			}
 		}
-		K::Vector3 J = K::Vector3(this->PointOnLine(this->linePoints[closestIndex].point[0], this->linePoints[closestIndex].point[1], P)->x, 0.0f, this->PointOnLine(this->linePoints[closestIndex].point[0], this->linePoints[closestIndex].point[1], P)->y);
+		K::Vector3 J = K::Vector3(this->PointOnLine(this->linePoints[closestIndex].point[0], this->linePoints[closestIndex].point[1], P).x, 0.0f, this->PointOnLine(this->linePoints[closestIndex].point[0], this->linePoints[closestIndex].point[1], P).y);
 		return &J;
 	}
 
-	K::Vector3* Collider::PointOnLine(K::Vector3 A, K::Vector3 B, K::Vector3 P)
+	K::Vector3 Collider::PointOnLine(K::Vector3 A, K::Vector3 B, K::Vector3 P)
 	{
 		K::Vector3 N = K::Vector3(-(B.y - A.y), B.x - A.x, 0.0f);
 		float C = (N.x*P.z) - (N.y*P.x);
@@ -385,15 +382,15 @@ namespace K
 		float V = K::Vector3::DotProduct(AJ, AB);
 		if (V >= 0.0f) 
 		{
-			return new K::Vector3(A);
+			return A;
 		}
 		else if (U <= 0.0f) 
 		{
-			return new K::Vector3(B);
+			return B;
 		}
 		else if (U > 0.0f && V < 0.0f)
 		{
-			return new K::Vector3(J);
+			return J;
 		}
 	}
 

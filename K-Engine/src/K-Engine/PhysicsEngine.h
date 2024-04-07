@@ -16,6 +16,12 @@ namespace K
 			this->normal = newNorm;
 			this->other = other;
 		}
+
+		~ContactPoint() 
+		{
+			this->other = nullptr;
+			//std::cout << "Destroy ContactPoint" << std::endl;
+		}
 	};
 
 	class K_API Physics
@@ -43,7 +49,7 @@ namespace K
 
 		static std::vector<K::ContactPoint> GetClosestPoints(K::Vector3 position, std::vector<K::Layer> avoidLayer = {});
 
-		static K::Vector3* GetCollisionResolution(K::Collider* col, std::vector<K::Layer> avoidLayer = {});
+		static K::Vector3 GetCollisionResolution(K::Collider* col, std::vector<K::Layer> avoidLayer = {});
 
 		static K::Vector3* GetClosestPoint(K::Vector3 position);
 	};

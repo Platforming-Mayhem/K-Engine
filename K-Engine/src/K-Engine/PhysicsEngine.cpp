@@ -135,7 +135,7 @@ namespace K
 				}
 				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle)
 				{
-					K::Vector3 J = *Physics::colliders[i]->PointOnLine(C, D, *Physics::colliders[i]->GetPosition());
+					K::Vector3 J = Physics::colliders[i]->PointOnLine(C, D, *Physics::colliders[i]->GetPosition());
 					K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
 					K::Vector3 offset = J2 - *Physics::colliders[i]->GetPosition();
 					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
@@ -183,7 +183,7 @@ namespace K
 				{
 					for (int j = 0; j < Physics::colliders[i]->GetNumberOfPoints(); j++)
 					{
-						K::Vector3 J = *Physics::colliders[i]->PointOnLine(Physics::colliders[i]->GetLine(j)->point[0], Physics::colliders[i]->GetLine(j)->point[1], position);
+						K::Vector3 J = Physics::colliders[i]->PointOnLine(Physics::colliders[i]->GetLine(j)->point[0], Physics::colliders[i]->GetLine(j)->point[1], position);
 						K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
 						K::Vector3 Normal = *Physics::colliders[i]->GetNormal(Physics::colliders[i]->GetLine(j)->point[0], Physics::colliders[i]->GetLine(j)->point[1]);
 						points.push_back(K::ContactPoint(J2, Normal, Physics::colliders[i]));
@@ -233,7 +233,7 @@ namespace K
 		return points;
 	}
 
-	K::Vector3* Physics::GetCollisionResolution(K::Collider* col, std::vector<K::Layer> avoidLayer)
+	K::Vector3 Physics::GetCollisionResolution(K::Collider* col, std::vector<K::Layer> avoidLayer)
 	{
 		K::Vector3* offsetAmount = new K::Vector3();
 		int count = 0;
@@ -334,7 +334,9 @@ namespace K
 			col->SetIsColliding(false);
 			col->other = nullptr;
 		}
-		return offsetAmount;
+		K::Vector3 temp = K::Vector3(*offsetAmount);
+		delete offsetAmount;
+		return temp;
 	}
 
 	K::Vector3* Physics::GetClosestPoint(K::Vector3 position) 

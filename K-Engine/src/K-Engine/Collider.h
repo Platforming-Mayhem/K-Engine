@@ -72,7 +72,7 @@ namespace K
 
 		K::Vector3* GetNormal(K::Vector3 A, K::Vector3 B);
 
-		K::Vector3* PointOnLine(K::Vector3 A, K::Vector3 B, K::Vector3 P);
+		K::Vector3 PointOnLine(K::Vector3 A, K::Vector3 B, K::Vector3 P);
 
 		K::Vector3* ClosestPointLineCollider(K::Vector3 P);
 
