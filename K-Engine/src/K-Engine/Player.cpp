@@ -134,27 +134,54 @@ namespace K
 
 		if (InputManager::IsKeyPressedDown(GLFW_KEY_Z)) 
 		{
+			K::Vector3 dashDirection = K::Vector3();
 			if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 			{
-				*this->parent->GetTransform()->position += K::Vector3(5.0f, 0.0f, 0.0f);
-				this->animationState = 3;
-				this->sprite->ResetFrame();
+				dashDirection += K::Vector3(1.0f, 0.0f, 0.0f);
 			}
 			else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 			{
-				*this->parent->GetTransform()->position += K::Vector3(-5.0f, 0.0f, 0.0f);
-				this->animationState = 3;
-				this->sprite->ResetFrame();
+				dashDirection += K::Vector3(-1.0f, 0.0f, 0.0f);
 			}
 			if (InputManager::IsKeyPressed(GLFW_KEY_UP))
 			{
-				*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, 5.0f);
-				this->animationState = 3;
-				this->sprite->ResetFrame();
+				dashDirection += K::Vector3(0.0f, 0.0f, 1.0f);
 			}
 			else if (InputManager::IsKeyPressed(GLFW_KEY_DOWN))
 			{
-				*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -5.0f);
+				dashDirection += K::Vector3(0.0f, 0.0f, -1.0f);
+			}
+			if (dashDirection.magnitude() > 0.0f)
+			{
+				K::Vector3 dash = dashDirection.normalise() * 5.0f;
+				if (K::Physics::Raycast(*this->col->GetPosition(), K::Vector3(dash.x, dash.z, 0.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }))
+				{
+					this->col->ResetVelocity();
+					K::Vector3 closestFuturePoint = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position + dash);
+					*this->parent->GetTransform()->position = closestFuturePoint;
+					*this->parent->GetTransform()->position -= K::Vector3(dashDirection.x * this->col->GetRadius(), 0.0f, dashDirection.z * (this->col->GetRadius() + (this->col->GetHeight() * 0.5f)));
+					//if (dash.x > 0.0f)
+					//{
+					//	*this->parent->GetTransform()->position -= K::Vector3(this->col->GetRadius(), 0.0f, 0.0f);
+					//}
+					//else if (dash.x < 0.0f)
+					//{
+					//	*this->parent->GetTransform()->position += K::Vector3(this->col->GetRadius(), 0.0f, 0.0f);
+					//}
+					//if (dash.z > 0.0f)
+					//{
+					//	*this->parent->GetTransform()->position -= K::Vector3(0.0f, 0.0f, this->col->GetRadius() + (this->col->GetHeight() * 0.5f));
+					//}
+					//else if (dash.z < 0.0f)
+					//{
+					//	*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, this->col->GetRadius() + (this->col->GetHeight() * 0.5f));
+					//}
+				}
+				else
+				{
+					this->col->ResetVelocity();
+					*this->parent->GetTransform()->position += dash;
+				}
 				this->animationState = 3;
 				this->sprite->ResetFrame();
 			}
