@@ -13,6 +13,11 @@ namespace K
 			this->point[0] = v1;
 			this->point[1] = v2;
 		}
+
+		~Line() 
+		{
+
+		}
 	};
 
 	class K_API Collider : public K::Component

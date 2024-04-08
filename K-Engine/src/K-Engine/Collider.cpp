@@ -190,7 +190,7 @@ namespace K
 			if (ImGui::Button("Delete Line")) 
 			{
 				this->linePoints.erase(this->linePoints.begin() + this->selectedLine);
-				this->linePointsModelMatrix.erase(this->linePoints.begin() + this->selectedLine);
+				this->linePointsModelMatrix.erase(this->linePointsModelMatrix.begin() + this->selectedLine);
 				if (this->linePoints.size() > 0)
 				{
 					this->selectedLine = this->linePoints.size() - 1;
