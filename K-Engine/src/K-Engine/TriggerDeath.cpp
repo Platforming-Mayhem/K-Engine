@@ -47,6 +47,15 @@ namespace K
 		if (K::Physics::Hitbox(this->boundsModelMatrix[0], this->boundsModelMatrix[1], { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &temp))
 		{
 			std::cout << "KILL" << std::endl;
+			for (auto temp : K::Editor::GetCurrentScene()->GetGameObjects())
+			{
+				if (temp.second->GetComponentOfType(typeid(K::FollowPlayer).name()) != nullptr)
+				{
+					K::FollowPlayer* player = (K::FollowPlayer*)temp.second->GetComponentOfType(typeid(K::FollowPlayer).name());
+					player->SetPlayer();
+					break;
+				}
+			}
 			K::Editor::Delete(temp->parent);
 			temp = nullptr;
 		}

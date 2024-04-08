@@ -16,7 +16,6 @@ namespace K
 		this->animator = nullptr;
 		this->col = nullptr;
 		this->sprite = nullptr;
-		delete this->direction;
 		std::cout << "Player Destructor" << std::endl;
 	}
 
@@ -47,14 +46,19 @@ namespace K
 		}
 	}
 
-	float easeOutQuint(float time, float power)
+	float easeInPow(float time, float power, float duration = 1.0f)
 	{
-		return 1 - powf(1 - time, power);
+		return powf((time / duration), power);
 	}
 
-	float decelerateEaseOutQuint(float time, float power)
+	float easeOutPow(float time, float power, float duration = 1.0f)
 	{
-		return 1 - powf(1 - time - 1, power);
+		return 1 - powf(1 - (time * 1 / duration), power);
+	}
+
+	float decelerateEaseOutPow(float time, float power, float duration = 1.0f)
+	{
+		return 1 - powf(1 - (time * 1 / duration) - 1, power);
 	}
 
 	void Player::Init() 
@@ -71,8 +75,6 @@ namespace K
 		{
 			this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
 		}
-
-		this->direction = new K::Vector3();
 
 		this->originalScale = *this->parent->GetTransform()->scale;
 
@@ -91,7 +93,20 @@ namespace K
 	{
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
-			*this->direction = K::Vector3(this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			this->direction = K::Vector3(this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f), 0.0f, 0.0f);
+			this->isSlowingDown = true;
+			if (this->direction.x == 0.0f) 
+			{
+				this->moveTime = 0.6f;
+			}
+			if (this->moveTime < 1.0f) 
+			{
+				this->moveTime += K::Time::deltaTime() * 2.0f;
+			}
+			else 
+			{
+				this->moveTime = 1.0f;
+			}
 			if (this->animationState == 0)
 			{
 				this->animationState = 1;
@@ -99,7 +114,20 @@ namespace K
 		}
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 		{
-			*this->direction = K::Vector3(-this->movementSpeed * K::Time::deltaTime(), 0.0f, 0.0f);
+			this->direction = K::Vector3(-this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f), 0.0f, 0.0f);
+			this->isSlowingDown = true;
+			if (this->direction.x == 0.0f)
+			{
+				this->moveTime = 0.6f;
+			}
+			if (this->moveTime < 1.0f)
+			{
+				this->moveTime += K::Time::deltaTime() * 2.0f;
+			}
+			else
+			{
+				this->moveTime = 1.0f;
+			}
 			if (this->animationState == 0)
 			{
 				this->animationState = 1;
@@ -107,7 +135,28 @@ namespace K
 		}
 		else
 		{
-			*this->direction = K::Vector3();
+			if (this->isSlowingDown) 
+			{
+				if (this->moveTime > K::Time::deltaTime()) 
+				{
+					this->moveTime -= K::Time::deltaTime() * 6.0f;
+					if (this->direction.x > 0.0f) 
+					{
+						this->direction = K::Vector3(this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f), 0.0f, 0.0f);
+					}
+					else if (this->direction.x < 0.0f)
+					{
+						this->direction = K::Vector3(-this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f), 0.0f, 0.0f);
+					}
+				}
+				else 
+				{
+					this->moveTime = 0.0f;
+					this->direction = K::Vector3();
+					this->isSlowingDown = false;
+				}
+			}
+
 			if (this->animationState == 1)
 			{
 				this->animationState = 0;
@@ -159,22 +208,6 @@ namespace K
 					K::Vector3 closestFuturePoint = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position + (dashDirection.normalise() * 5.0f));
 					*this->parent->GetTransform()->position = closestFuturePoint;
 					*this->parent->GetTransform()->position -= K::Vector3(dashDirection.x * this->col->GetRadius(), 0.0f, dashDirection.z * (this->col->GetRadius() + (this->col->GetHeight() * 0.5f)));
-					//if (dash.x > 0.0f)
-					//{
-					//	*this->parent->GetTransform()->position -= K::Vector3(this->col->GetRadius(), 0.0f, 0.0f);
-					//}
-					//else if (dash.x < 0.0f)
-					//{
-					//	*this->parent->GetTransform()->position += K::Vector3(this->col->GetRadius(), 0.0f, 0.0f);
-					//}
-					//if (dash.z > 0.0f)
-					//{
-					//	*this->parent->GetTransform()->position -= K::Vector3(0.0f, 0.0f, this->col->GetRadius() + (this->col->GetHeight() * 0.5f));
-					//}
-					//else if (dash.z < 0.0f)
-					//{
-					//	*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, this->col->GetRadius() + (this->col->GetHeight() * 0.5f));
-					//}
 				}
 				else
 				{
@@ -193,7 +226,7 @@ namespace K
 		if (this->isJumping)
 		{
 			this->col->ResetVelocity();
-			this->direction->z += (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f;
+			this->direction = K::Vector3(this->direction.x, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f);
 			this->jumpTime += K::Time::deltaTime() * 2.5f;
 		}
 		else
@@ -219,11 +252,11 @@ namespace K
 			this->parent->GetTransform()->scale->x = this->originalScale.x;
 		}
 
-		if (this->direction->x >= K::Time::deltaTime()) 
+		if (this->direction.x >= K::Time::deltaTime()) 
 		{
 			this->flip = false;
 		}
-		else if(this->direction->x <= -K::Time::deltaTime())
+		else if(this->direction.x <= -K::Time::deltaTime())
 		{
 			this->flip = true;
 		}
@@ -251,7 +284,7 @@ namespace K
 				{
 					this->animationState = 2;
 				}
-				else if (this->direction->x != 0.0f) 
+				else if (this->direction.x != 0.0f) 
 				{
 					this->animationState = 1;
 				}

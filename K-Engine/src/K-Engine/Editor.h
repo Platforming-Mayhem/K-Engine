@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "Collider.h"
 #include "Animator.h"
+#include "FollowPlayer.h"
 #include "Timer.h"
 #include "Move.h"
 #include "Light.h"

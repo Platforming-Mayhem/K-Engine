@@ -15,13 +15,16 @@ namespace K
 		int animationState = 0;
 
 		bool isJumping = false;
+		bool isSlowingDown = false;
 
 		float movementSpeed = 1.0f;
+
+		float moveTime = 0.0f;
 
 		float jumpTime = 0.0f;
 
 		K::Vector3 originalScale;
-		K::Vector3* direction;
+		K::Vector3 direction;
 		K::Animator* animator;
 		K::Collider* col;
 		K::Sprite* sprite;
