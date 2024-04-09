@@ -159,7 +159,7 @@ namespace K
 
 			if (this->animationState == 1)
 			{
-				this->animationState = 0;
+				this->animationState = 4;
 			}
 		}
 		if (InputManager::IsKeyPressedDown(GLFW_KEY_UP) && this->jumpTime == 0.0f)
@@ -296,6 +296,23 @@ namespace K
 			else
 			{
 				this->animator->PlayAnimation(3, this->sprite, false);
+			}
+			break;
+		case 4:
+			if (!this->sprite->IsPlaying())
+			{
+				if (this->isJumping)
+				{
+					this->animationState = 2;
+				}
+				else
+				{
+					this->animationState = 0;
+				}
+			}
+			else
+			{
+				this->animator->PlayAnimation(4, this->sprite, false);
 			}
 			break;
 		}
