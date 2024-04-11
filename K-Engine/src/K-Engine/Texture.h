@@ -16,6 +16,8 @@ namespace K
 		std::map<std::string, K::TextureInfo> textures;
 	public:
 		TextureManager();
+		
+		void Remove(std::string location);
 
 		void Add(std::string location, K::TextureInfo id);
 

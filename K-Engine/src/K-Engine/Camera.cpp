@@ -92,43 +92,42 @@ namespace K
 
 			if (this->cameraType == CameraType::Perspective)
 			{
-				K::Camera::projectionMatrix.m[0][0] = 1.0f / (aspect * fFovRad);
-				K::Camera::projectionMatrix.m[1][1] = 1.0f / fFovRad;
-				K::Camera::projectionMatrix.m[2][2] = -((this->farPlane + this->nearPlane) / deltaZ);
-				K::Camera::projectionMatrix.m[3][2] = -((2.0f * this->farPlane * this->nearPlane) / deltaZ);
-				K::Camera::projectionMatrix.m[2][3] = -1.0f;
-				K::Camera::projectionMatrix.m[3][3] = 0.0f;
+				this->projectionMatrix.m[0][0] = 1.0f / (aspect * fFovRad);
+				this->projectionMatrix.m[1][1] = 1.0f / fFovRad;
+				this->projectionMatrix.m[2][2] = -((this->farPlane + this->nearPlane) / deltaZ);
+				this->projectionMatrix.m[3][2] = -((2.0f * this->farPlane * this->nearPlane) / deltaZ);
+				this->projectionMatrix.m[2][3] = -1.0f;
+				this->projectionMatrix.m[3][3] = 0.0f;
 			}
 			else if (this->cameraType == CameraType::Orthographic)
 			{
 				float t = this->orthoSize, b = -this->orthoSize, l = -this->orthoSize * aspect, r = this->orthoSize * aspect;
-				K::Camera::projectionMatrix = K::Camera::projectionMatrix.IdentityMatrix();
-				K::Camera::projectionMatrix.m[0][0] = 2.0f / (r - l);
-				K::Camera::projectionMatrix.m[1][1] = 2.0f / (t - b);
-				K::Camera::projectionMatrix.m[2][2] = -2.0f / (this->farPlane - this->nearPlane);
-				K::Camera::projectionMatrix.m[3][0] = -(r + l) / (r - l);
-				K::Camera::projectionMatrix.m[3][1] = -(t + b) / (t - b);
-				K::Camera::projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
+				this->projectionMatrix = this->projectionMatrix.IdentityMatrix();
+				this->projectionMatrix.m[0][0] = 2.0f / (r - l);
+				this->projectionMatrix.m[1][1] = 2.0f / (t - b);
+				this->projectionMatrix.m[2][2] = -2.0f / (this->farPlane - this->nearPlane);
+				this->projectionMatrix.m[3][0] = -(r + l) / (r - l);
+				this->projectionMatrix.m[3][1] = -(t + b) / (t - b);
+				this->projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
 			}
 
-			K::Camera::viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
+			this->viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
 			if (this->parent->parent != nullptr) 
 			{
 				K::Matrix4x4 scalingMatrix = this->parent->GetTransform()->LocalScaleMatrix(this->parent->parent->GetTransform());
 				K::Matrix4x4 invertedScalingMatrix = K::QuickInverse(scalingMatrix);
-				K::Camera::viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(K::Camera::viewMatrix, invertedScalingMatrix);
+				this->viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->viewMatrix, invertedScalingMatrix);
 			}
 			else 
 			{
 				K::Matrix4x4 scalingMatrix = this->parent->GetTransform()->ScaleMatrix();
 				K::Matrix4x4 invertedScalingMatrix = K::QuickInverse(scalingMatrix);
-				K::Camera::viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(K::Camera::viewMatrix, invertedScalingMatrix);
+				this->viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->viewMatrix, invertedScalingMatrix);
 			}
-
-			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &K::Camera::projectionMatrix.m[0][0]);
-
-			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &K::Camera::viewMatrix.m[0][0]);
 		}
+		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
+
+		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
 	}
 
 	const char* Camera::GetPropertyValues()

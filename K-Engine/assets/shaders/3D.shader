@@ -20,7 +20,7 @@ void main()
 {
 	vec4 newPos = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
 	gl_Position = newPos;
-	TexCoord = floor(textureCoord * 32.0) / 32.0;
+	TexCoord = textureCoord;
 	Normal = normal;
 }
 

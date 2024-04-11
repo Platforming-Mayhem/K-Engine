@@ -11,6 +11,11 @@ namespace K
 
 	}
 
+	void TextureManager::Remove(std::string location)
+	{
+		this->textures.erase(location);
+	}
+
 	void TextureManager::Add(std::string location, K::TextureInfo id)
 	{
 		this->textures.insert(std::make_pair(location, id));
@@ -108,6 +113,7 @@ namespace K
 	}
 
 	Texture::Texture(unsigned int resource, GLenum type) {
+		this->textures = &K::textureManager;
 		stbi_set_flip_vertically_on_load(true);
 		this->type = type;
 		if (IS_INTRESOURCE(resource))
@@ -163,6 +169,10 @@ namespace K
 	Texture::~Texture() 
 	{
 		std::cout << "Begin Texture Destruction..." << std::endl;
+		if (this->textures->Contains(this->filename)) 
+		{
+			this->textures->Remove(this->filename);
+		}
 		glDeleteTextures(1, &this->id);
 		std::cout << "End Texture Destruction..." << std::endl;
 	}

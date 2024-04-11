@@ -42,7 +42,7 @@ namespace K
 	void Sprite::ResetFrame() 
 	{
 		this->frame = 0;
-		this->internalClock = 0;
+		this->internalClock = 0.0f;
 	}
 
 	void Sprite::SetPropertyValues(const char* value, int valueIndex)
@@ -134,7 +134,7 @@ namespace K
 		if (this->texture != newTexture) 
 		{
 			this->frame = 0;
-			this->internalClock = 0;
+			this->internalClock = 0.0f;
 			this->texture = newTexture;
 			if (reScale) 
 			{
@@ -221,12 +221,13 @@ namespace K
 
 	void Sprite::Update()
 	{
-		int fps = (1.0f / 15.0f) * 60.0f;
-		if (this->internalClock % fps == 0)
+		float fps = 1.0f / 15.0f;
+		if (this->internalClock >= fps)
 		{
 			this->NextFrame();
+			this->internalClock = 0.0f;
 		}
-		this->internalClock++;
+		this->internalClock += K::Time::deltaTime();
 	}
 
 	void Sprite::UpdateEditor()

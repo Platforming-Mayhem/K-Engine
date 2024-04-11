@@ -91,9 +91,10 @@ namespace K
 
 	void Player::Update() 
 	{
+		this->direction = K::Vector3();
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
-			this->direction = K::Vector3(this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f), 0.0f, 0.0f);
+			this->direction.x = this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f);
 			this->isSlowingDown = true;
 			if (this->direction.x == 0.0f) 
 			{
@@ -114,7 +115,7 @@ namespace K
 		}
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 		{
-			this->direction = K::Vector3(-this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f), 0.0f, 0.0f);
+			this->direction.x = -this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f);
 			this->isSlowingDown = true;
 			if (this->direction.x == 0.0f)
 			{
@@ -142,17 +143,17 @@ namespace K
 					this->moveTime -= K::Time::deltaTime() * 6.0f;
 					if (this->direction.x > 0.0f) 
 					{
-						this->direction = K::Vector3(this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f), 0.0f, 0.0f);
+						this->direction.x = this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f);
 					}
 					else if (this->direction.x < 0.0f)
 					{
-						this->direction = K::Vector3(-this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f), 0.0f, 0.0f);
+						this->direction.x = -this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f);
 					}
 				}
 				else 
 				{
 					this->moveTime = 0.0f;
-					this->direction = K::Vector3();
+					this->direction.x = 0.0f;
 					this->isSlowingDown = false;
 				}
 			}
@@ -162,43 +163,25 @@ namespace K
 				this->animationState = 4;
 			}
 		}
-		if (InputManager::IsKeyPressedDown(GLFW_KEY_UP) && this->jumpTime == 0.0f)
-		{
-			this->isJumping = true;
-			this->animationState = 2;
-		}
-		else if (InputManager::IsKeyReleased(GLFW_KEY_UP) && this->jumpTime < 1.0f)
-		{
-			this->jumpTime = 1.0f;
-		}
-		else if (this->jumpTime >= 1.0f)
-		{
-			this->isJumping = false;
-			if (K::Physics::IsColliding(this->parent))
-			{
-				this->jumpTime = 0.0f;
-				this->animationState = 0;
-			}
-		}
 
 		if (InputManager::IsKeyPressedDown(GLFW_KEY_Z)) 
 		{
 			K::Vector3 dashDirection = K::Vector3();
 			if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 			{
-				dashDirection += K::Vector3(1.0f, 0.0f, 0.0f);
+				dashDirection.x = 1.0f;
 			}
 			else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 			{
-				dashDirection += K::Vector3(-1.0f, 0.0f, 0.0f);
+				dashDirection.x = -1.0f;
 			}
 			if (InputManager::IsKeyPressed(GLFW_KEY_UP))
 			{
-				dashDirection += K::Vector3(0.0f, 0.0f, 1.0f);
+				dashDirection.z += 1.0f;
 			}
 			else if (InputManager::IsKeyPressed(GLFW_KEY_DOWN))
 			{
-				dashDirection += K::Vector3(0.0f, 0.0f, -1.0f);
+				dashDirection.z += -1.0f;
 			}
 			if (dashDirection.magnitude() > 0.0f)
 			{
@@ -223,10 +206,28 @@ namespace K
 
 		}
 
+		if (InputManager::IsKeyPressedDown(GLFW_KEY_UP) && this->jumpTime == 0.0f)
+		{
+			this->isJumping = true;
+			this->animationState = 2;
+		}
+		else if (InputManager::IsKeyReleased(GLFW_KEY_UP) && this->jumpTime < 1.0f)
+		{
+			this->jumpTime = 1.0f;
+		}
+		else if (this->jumpTime >= 1.0f)
+		{
+			this->isJumping = false;
+			if (K::Physics::IsColliding(this->parent))
+			{
+				this->jumpTime = 0.0f;
+				this->animationState = 0;
+			}
+		}
 		if (this->isJumping)
 		{
 			this->col->ResetVelocity();
-			this->direction = K::Vector3(this->direction.x, 0.0f, (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f);
+			this->direction.z = (-(this->jumpTime - 0.5f) + 0.5f) * 0.5f * K::Time::deltaTime() * 60.0f;
 			this->jumpTime += K::Time::deltaTime() * 2.5f;
 		}
 		else

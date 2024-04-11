@@ -89,7 +89,7 @@ namespace K
 			}
 			else
 			{
-				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
+				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * K::Time::deltaTime() * 60.0f);
 				this->time += K::Time::deltaTime();
 			}
 			*this->parent->GetTransform()->position += K::Physics::GetCollisionResolution(this);
@@ -219,7 +219,7 @@ namespace K
 			}
 			else
 			{
-				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time);
+				*this->parent->GetTransform()->position += K::Vector3(0.0f, 0.0f, -this->time * K::Time::deltaTime() * 60.0f);
 				this->time += K::Time::deltaTime();
 			}
 			*this->parent->GetTransform()->position += K::Physics::GetCollisionResolution(this);

@@ -35,7 +35,11 @@ namespace K
 		}
 		glfwMakeContextCurrent(this->window);
 
-		glfwSwapInterval(1);
+		#if _DEBUG
+			glfwSwapInterval(0);
+		#else
+			glfwSwapInterval(1);
+		#endif
 
 		if (glewInit() != GLEW_OK)
 		{
