@@ -1,5 +1,6 @@
 #pragma once
 #include "build.h"
+#include "Time.h"
 #include "Component.h"
 #include "GameObject.h"
 

@@ -212,8 +212,7 @@ namespace K
 
 	void K::Transform::PassModelMatrix(K::Transform* parent) 
 	{
-
-		K::Matrix4x4 globalModelMatrix = K::Matrix4x4::IdentityMatrix();
+		this->modelMatrix = K::Matrix4x4::IdentityMatrix();
 
 		if (parent == nullptr) 
 		{
@@ -222,15 +221,15 @@ namespace K
 			*this->localRotation = *this->rotation;
 			*this->localPosition = *this->position;
 			//Scaling Matrix
-			globalModelMatrix.m[0][0] *= this->scale->x;
-			globalModelMatrix.m[1][1] *= this->scale->y;
-			globalModelMatrix.m[2][2] *= this->scale->z;
+			this->modelMatrix.m[0][0] *= this->localScale->x;
+			this->modelMatrix.m[1][1] *= this->localScale->y;
+			this->modelMatrix.m[2][2] *= this->localScale->z;
 			//Rotation Matrix
-			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, *K::Quaternion::Euler(this->rotation)->QuaternionToMatrix());
+			this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->modelMatrix, *K::Quaternion::Euler(this->localRotation)->QuaternionToMatrix());
 			//Translation Matrix
-			globalModelMatrix.m[3][0] += this->position->x;
-			globalModelMatrix.m[3][1] += this->position->y;
-			globalModelMatrix.m[3][2] += this->position->z;
+			this->modelMatrix.m[3][0] += this->localPosition->x;
+			this->modelMatrix.m[3][1] += this->localPosition->y;
+			this->modelMatrix.m[3][2] += this->localPosition->z;
 		}
 		else 
 		{
@@ -255,22 +254,20 @@ namespace K
 			K::Vector3 localPositionInWorldSpace;
 			K::MultiplyMatrixVector(*this->localPosition, localPositionInWorldSpace, parent->modelMatrix);
 			//Scaling Matrix
-			globalModelMatrix.m[0][0] *= localScaleInWorldSpace.x;
-			globalModelMatrix.m[1][1] *= localScaleInWorldSpace.y;
-			globalModelMatrix.m[2][2] *= localScaleInWorldSpace.z;
+			this->modelMatrix.m[0][0] *= localScaleInWorldSpace.x;
+			this->modelMatrix.m[1][1] *= localScaleInWorldSpace.y;
+			this->modelMatrix.m[2][2] *= localScaleInWorldSpace.z;
 			//Rotation Matrix
-			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, *K::Quaternion::Euler(&localRotationInWorldSpace)->QuaternionToMatrix());
+			this->modelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->modelMatrix, *K::Quaternion::Euler(&localRotationInWorldSpace)->QuaternionToMatrix());
 			//Translation Matrix
-			globalModelMatrix.m[3][0] += localPositionInWorldSpace.x;
-			globalModelMatrix.m[3][1] += localPositionInWorldSpace.y;
-			globalModelMatrix.m[3][2] += localPositionInWorldSpace.z;
+			this->modelMatrix.m[3][0] += localPositionInWorldSpace.x;
+			this->modelMatrix.m[3][1] += localPositionInWorldSpace.y;
+			this->modelMatrix.m[3][2] += localPositionInWorldSpace.z;
 		}
 
-		this->modelMatrix = globalModelMatrix;
-
-		this->previousPosition = *this->position;
-		this->previousRotation = *this->rotation;
-		this->previousScale = *this->scale;
+		this->previousPosition = *this->localPosition;
+		this->previousRotation = *this->localRotation;
+		this->previousScale = *this->localScale;
 	}
 
 	K::Quaternion::~Quaternion() 

@@ -91,17 +91,17 @@ namespace K
 
 		void SetPosition(K::Vector3 position)
 		{
-			GetTransform()->position = &position;
+			*GetTransform()->position = position;
 		}
 
 		void SetRotation(K::Vector3 rotation)
 		{
-			GetTransform()->rotation = &rotation;
+			*GetTransform()->rotation = rotation;
 		}
 
 		void SetScale(K::Vector3 scale)
 		{
-			GetTransform()->scale = &scale;
+			*GetTransform()->scale = scale;
 		}
 
 		void SetMaterial(K::Material* material) 

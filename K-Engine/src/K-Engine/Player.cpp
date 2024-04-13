@@ -1,6 +1,5 @@
 #include "Player.h"
 #include "InputManager.h"
-#include "Time.h"
 #include "GameObject.h"
 #include "Editor.h"
 
@@ -8,7 +7,7 @@ namespace K
 {
 	Player::Player()
 	{
-		
+		this->direction = K::Vector3();
 	}
 
 	Player::~Player() 
@@ -86,16 +85,18 @@ namespace K
 		if (ImGui::CollapsingHeader("Player Settings")) 
 		{
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
+			ImGui::Checkbox("is Slowing Down", &this->isSlowingDown);
 		}
 	}
 
 	void Player::Update() 
 	{
-		this->direction = K::Vector3();
+		this->direction.z = 0.0f;
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
 			this->direction.x = this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f);
 			this->isSlowingDown = true;
+			this->flip = false;
 			if (this->direction.x == 0.0f) 
 			{
 				this->moveTime = 0.6f;
@@ -117,6 +118,7 @@ namespace K
 		{
 			this->direction.x = -this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f);
 			this->isSlowingDown = true;
+			this->flip = true;
 			if (this->direction.x == 0.0f)
 			{
 				this->moveTime = 0.6f;
@@ -138,9 +140,9 @@ namespace K
 		{
 			if (this->isSlowingDown) 
 			{
-				if (this->moveTime > K::Time::deltaTime()) 
+				if (this->moveTime > 0.0f) 
 				{
-					this->moveTime -= K::Time::deltaTime() * 6.0f;
+					this->moveTime -= K::Time::deltaTime() * 4.0f;
 					if (this->direction.x > 0.0f) 
 					{
 						this->direction.x = this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f);
@@ -158,9 +160,13 @@ namespace K
 				}
 			}
 
-			if (this->animationState == 1)
+			if (this->animationState == 1 && this->moveTime >= 0.8f)
 			{
 				this->animationState = 4;
+			}
+			else if(this->animationState == 1 && this->moveTime < 0.8f)
+			{
+				this->animationState = 0;
 			}
 		}
 
@@ -251,15 +257,6 @@ namespace K
 		else
 		{
 			this->parent->GetTransform()->scale->x = this->originalScale.x;
-		}
-
-		if (this->direction.x >= K::Time::deltaTime()) 
-		{
-			this->flip = false;
-		}
-		else if(this->direction.x <= -K::Time::deltaTime())
-		{
-			this->flip = true;
 		}
 		//Animation States
 

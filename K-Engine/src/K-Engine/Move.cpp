@@ -1,5 +1,4 @@
 #include "Move.h"
-#include "Time.h"
 #include "GameObject.h"
 #include "PhysicsEngine.h"
 
@@ -20,8 +19,6 @@ float K::Move::EaseInQuart(float x)
 
 void K::Move::Init()
 {
-	K::Time::startTime = 0.0f;
-	K::Time::endTime = 0.0f;
 	this->time = 0.2f;
 	destination = *this->parent->GetTransform()->position;
 }

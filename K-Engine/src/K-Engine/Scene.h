@@ -58,7 +58,6 @@ namespace K
 					g.second->Init();
 				}
 			}
-
 			K::Time::startTime = glfwGetTime();
 			K::Time::endTime = K::Time::startTime;
 		}

@@ -1,6 +1,5 @@
 #include "Camera.h"
 #include "InputManager.h"
-#include "Time.h"
 #include "Editor.h"
 
 namespace K 
@@ -84,14 +83,14 @@ namespace K
 		{
 			glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
 			//Projection Matrix
-			float deltaZ, aspect;
-			float radians = ((3.14159f * 2.0f) / 360.0f) * this->FOV / 2.0f;
-			float fFovRad = tanf(this->FOV * 0.5f / 180.0f * 3.14159f);
-			deltaZ = this->farPlane - this->nearPlane;
-			aspect = this->window->width / this->window->height;
+			float aspect = this->window->width / this->window->height;
 
 			if (this->cameraType == CameraType::Perspective)
 			{
+				float radians = ((3.14159f * 2.0f) / 360.0f) * this->FOV / 2.0f;
+				float fFovRad = tanf(this->FOV * 0.5f / 180.0f * 3.14159f);
+				float deltaZ = this->farPlane - this->nearPlane;
+				this->projectionMatrix = K::Matrix4x4::IdentityMatrix();
 				this->projectionMatrix.m[0][0] = 1.0f / (aspect * fFovRad);
 				this->projectionMatrix.m[1][1] = 1.0f / fFovRad;
 				this->projectionMatrix.m[2][2] = -((this->farPlane + this->nearPlane) / deltaZ);
@@ -102,7 +101,7 @@ namespace K
 			else if (this->cameraType == CameraType::Orthographic)
 			{
 				float t = this->orthoSize, b = -this->orthoSize, l = -this->orthoSize * aspect, r = this->orthoSize * aspect;
-				this->projectionMatrix = this->projectionMatrix.IdentityMatrix();
+				this->projectionMatrix = K::Matrix4x4::IdentityMatrix();
 				this->projectionMatrix.m[0][0] = 2.0f / (r - l);
 				this->projectionMatrix.m[1][1] = 2.0f / (t - b);
 				this->projectionMatrix.m[2][2] = -2.0f / (this->farPlane - this->nearPlane);
@@ -111,7 +110,10 @@ namespace K
 				this->projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
 			}
 
+			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
+
 			this->viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
+
 			if (this->parent->parent != nullptr) 
 			{
 				K::Matrix4x4 scalingMatrix = this->parent->GetTransform()->LocalScaleMatrix(this->parent->parent->GetTransform());
@@ -124,10 +126,9 @@ namespace K
 				K::Matrix4x4 invertedScalingMatrix = K::QuickInverse(scalingMatrix);
 				this->viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->viewMatrix, invertedScalingMatrix);
 			}
-		}
-		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
 
-		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
+			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
+		}
 	}
 
 	const char* Camera::GetPropertyValues()
@@ -222,6 +223,7 @@ namespace K
 	{
 		SetWindow(K::window);
 		SetMaterial(this->parent->GetMaterial());
+		//This bind is here to make sure that the camera gets placed in the correct position immediately
 		this->Bind();
 	}
 
