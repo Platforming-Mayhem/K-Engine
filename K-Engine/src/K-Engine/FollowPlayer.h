@@ -15,6 +15,8 @@ namespace K
 
 		~FollowPlayer();
 
+		void Follow();
+
 		void SetPlayer(K::Player* newPlayer = nullptr);
 
 		void Init() override;

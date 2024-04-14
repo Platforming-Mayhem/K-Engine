@@ -77,9 +77,11 @@ namespace K
 		return worldPosition;
 	}
 
-	void Camera::Bind()
+	void Camera::CameraMatrix() 
 	{
-		if (this->isActive && !this->isEditorCamera) 
+		this->viewMatrix = K::Matrix4x4::IdentityMatrix();
+
+		if (this->isActive && !this->isEditorCamera)
 		{
 			glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
 			//Projection Matrix
@@ -110,17 +112,22 @@ namespace K
 				this->projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
 			}
 
-			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
+			//View Matrix
+			K::Vector3 forward = K::Vector3(0.0f, 0.0f, 1.0f);
+			K::Vector3 up = K::Vector3(0.0f, 1.0f, 0.0f);
+
+			K::Vector3 rotatedForward = K::Vector3(0.0f, -1.0f, 0.0f);
+			K::Vector3 rotatedUp = K::Vector3(0.0f, 0.0f, 1.0f);
 
 			this->viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
 
-			if (this->parent->parent != nullptr) 
+			if (this->parent->parent != nullptr)
 			{
 				K::Matrix4x4 scalingMatrix = this->parent->GetTransform()->LocalScaleMatrix(this->parent->parent->GetTransform());
 				K::Matrix4x4 invertedScalingMatrix = K::QuickInverse(scalingMatrix);
 				this->viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->viewMatrix, invertedScalingMatrix);
 			}
-			else 
+			else
 			{
 				K::Matrix4x4 scalingMatrix = this->parent->GetTransform()->ScaleMatrix();
 				K::Matrix4x4 invertedScalingMatrix = K::QuickInverse(scalingMatrix);
@@ -128,7 +135,14 @@ namespace K
 			}
 
 			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
+
+			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
 		}
+	}
+
+	void Camera::Bind()
+	{
+		this->CameraMatrix();
 	}
 
 	const char* Camera::GetPropertyValues()
@@ -223,8 +237,7 @@ namespace K
 	{
 		SetWindow(K::window);
 		SetMaterial(this->parent->GetMaterial());
-		//This bind is here to make sure that the camera gets placed in the correct position immediately
-		this->Bind();
+		this->CameraMatrix();
 	}
 
 	void Camera::Unbind()

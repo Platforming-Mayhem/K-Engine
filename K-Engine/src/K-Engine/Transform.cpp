@@ -13,7 +13,7 @@ namespace K
 		}
 	}
 
-	K::Matrix4x4* LookAt(K::Vector3 position, K::Vector3 target, K::Vector3 up)
+	K::Matrix4x4 LookAt(K::Vector3 position, K::Vector3 target, K::Vector3 up)
 	{
 		K::Vector3 newForward = (target - position).normalise();
 
@@ -39,7 +39,7 @@ namespace K
 		matrix.m[3][1] = position.y;
 		matrix.m[3][2] = position.z;
 		matrix.m[3][3] = 1.0f;
-		return &matrix;
+		return matrix;
 	}
 
 	//This Is Just Brute Force Inverse

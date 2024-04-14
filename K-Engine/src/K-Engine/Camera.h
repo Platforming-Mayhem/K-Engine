@@ -52,6 +52,8 @@ namespace K
 
 		void SetWindow(K::Window* window);
 
+		void CameraMatrix();
+
 		void Init() override;
 
 		void Update() override;

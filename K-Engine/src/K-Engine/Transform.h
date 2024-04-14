@@ -282,7 +282,7 @@ namespace K
 
 	void MultiplyMatrixVector(Vector3& i, Vector3& o, Matrix4x4& m);
 
-	K::Matrix4x4* LookAt(K::Vector3 position, K::Vector3 target, K::Vector3 up);
+	K::Matrix4x4 LookAt(K::Vector3 position, K::Vector3 target, K::Vector3 up);
 
 	K::Matrix4x4 QuickInverse(K::Matrix4x4& m);
 }

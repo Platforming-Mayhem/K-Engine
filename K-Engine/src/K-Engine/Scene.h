@@ -12,7 +12,6 @@ namespace K
 		std::string sceneName;
 		std::map<int, K::GameObject*> gameObjects;
 	public:
-		K::Matrix4x4 cameraMatrix;
 
 		Scene(std::string newSceneName) 
 		{

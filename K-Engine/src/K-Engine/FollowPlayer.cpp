@@ -25,6 +25,19 @@ void K::FollowPlayer::Init()
 			break;
 		}
 	}
+	this->Follow();
+}
+
+void K::FollowPlayer::Follow()
+{
+#if _DEBUG
+#else
+	if (this->player != nullptr)
+	{
+		K::Vector3 destination = K::Vector3(this->player->parent->GetTransform()->position->x, this->parent->GetTransform()->position->y, this->player->parent->GetTransform()->position->z);
+		*this->parent->GetTransform()->position = K::Vector3::Lerp(*this->parent->GetTransform()->position, destination, K::Time::deltaTime() * 6.0f);
+	}
+#endif
 }
 
 void K::FollowPlayer::Update()
@@ -42,14 +55,7 @@ void K::FollowPlayer::UpdateEditor()
 
 void K::FollowPlayer::Bind()
 {
-#if _DEBUG
-#else
-	if (this->player != nullptr)
-	{
-		K::Vector3 destination = K::Vector3(this->player->parent->GetTransform()->position->x, this->parent->GetTransform()->position->y, this->player->parent->GetTransform()->position->z);
-		*this->parent->GetTransform()->position = K::Vector3::Lerp(*this->parent->GetTransform()->position, destination, K::Time::deltaTime() * 6.0f);
-	}
-#endif
+	this->Follow();
 }
 
 void K::FollowPlayer::Unbind()
