@@ -8,6 +8,8 @@ namespace K
 		int id;
 		int type;
 		int frames;
+		int fps;
+		int dependencies = 0;
 	};
 
 	class K_API TextureManager 
@@ -21,7 +23,7 @@ namespace K
 
 		void Add(std::string location, K::TextureInfo id);
 
-		K::TextureInfo Check(std::string location);
+		K::TextureInfo* Check(std::string location);
 
 		bool Contains(std::string location);
 
@@ -39,6 +41,7 @@ namespace K
 		int width;
 		int height;
 		int frames;
+		int fps;
 		int* delay;
 		int c;
 		unsigned int type;
@@ -72,7 +75,7 @@ namespace K
 
 		unsigned char* GetFrameImage(int frameIndex);
 
-		int GetFrameDelay(int frame);
+		int GetFrameRate();
 
 		void Bind(const GLint texture_unit);
 

@@ -42,6 +42,7 @@ uniform bool canChromaKey = false;
 uniform bool canDepth = true;
 uniform vec3 lightDirection = vec3(0.0, 0.0, 1.0);
 uniform vec3 colorTint = vec3(1.0, 1.0, 1.0);
+uniform vec3 fogColour = vec3(1.0, 1.0, 1.0);
 uniform vec3 chromaKey = vec3(0.0, 0.0, 0.0);
 uniform int frame = 0;
 
@@ -71,26 +72,15 @@ void main()
 			discard;
 		}
 	}
+	colour.rgb *= colorTint;
 	if(hasNormal)
 	{
 		float lighting = dot(normalize(texture(texture1, TexCoord).rgb * 2.0 - 1.0), normalize(lightDirection));
-		if(lighting > 0.8)
-		{
-			colour.rgb *= 1.0;
-		}
-		else if(lighting < 0.8 && lighting > 0.6)
-		{
-			colour.rgb *= 0.7 * lighting;
-		}
-		else if(lighting < 0.6)
-		{
-			colour.rgb *= 0.5 * lighting;
-		}
+		colour.rgb *= lighting;
 	}
 	if(canDepth)
 	{
-		float depthRaw = (gl_FragCoord.z / gl_FragCoord.w) - 5.0;
-		colour.rgb *= abs(1.0 - clamp((depthRaw / 1000) * 72.0, 0.0, 1.0));
+		float depthRaw = gl_FragCoord.z * 2.0 - 1.0;
+		colour.rgb = mix(colour.rgb, fogColour,LinearizeDepth(depthRaw));
 	}
-	colour.rgb *= colorTint;
 }

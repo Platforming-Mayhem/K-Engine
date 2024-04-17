@@ -221,7 +221,7 @@ namespace K
 
 	void Sprite::Update()
 	{
-		float fps = 1.0f / 15.0f;
+		float fps = 1.0f / this->texture->GetFrameRate();
 		if (this->internalClock >= fps)
 		{
 			this->NextFrame();
@@ -249,6 +249,7 @@ namespace K
 				fileNormal.SetPwd(ASSET_DIR);
 				fileNormal.Open();
 			}
+			ImGui::Text("FPS: %i", this->texture->GetFrameRate());
 			ImGui::Checkbox("has Normal Texture", &this->hasNormal);
 			ImGui::Checkbox("Can Chroma Key", &this->canChromaKey);
 			if (this->canChromaKey) 

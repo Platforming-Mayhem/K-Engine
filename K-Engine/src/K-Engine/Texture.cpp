@@ -21,9 +21,9 @@ namespace K
 		this->textures.insert(std::make_pair(location, id));
 	}
 
-	K::TextureInfo TextureManager::Check(std::string location)
+	K::TextureInfo* TextureManager::Check(std::string location)
 	{
-		return this->textures.find(location)->second;
+		return &this->textures.find(location)->second;
 	}
 
 	bool TextureManager::Contains(std::string location)
@@ -42,9 +42,11 @@ namespace K
 		this->filename = filename;
 		if (this->textures->Contains(this->filename)) 
 		{
-			this->id = this->textures->Check(this->filename).id;
-			this->type = this->textures->Check(this->filename).type;
-			this->frames = this->textures->Check(this->filename).frames;
+			this->id = this->textures->Check(this->filename)->id;
+			this->type = this->textures->Check(this->filename)->type;
+			this->frames = this->textures->Check(this->filename)->frames;
+			this->fps = this->textures->Check(this->filename)->fps;
+			this->textures->Check(this->filename)->dependencies++;
 		}
 		else
 		{
@@ -108,6 +110,7 @@ namespace K
 			textureInfo.id = this->id;
 			textureInfo.type = this->type;
 			textureInfo.frames = this->frames;
+			textureInfo.fps = this->GetFrameRate();
 			this->textures->Add(this->filename, textureInfo);
 		}
 	}
@@ -169,11 +172,25 @@ namespace K
 	Texture::~Texture() 
 	{
 		std::cout << "Begin Texture Destruction..." << std::endl;
-		if (this->textures->Contains(this->filename)) 
+		if (this->filename.empty()) 
 		{
-			this->textures->Remove(this->filename);
+			glDeleteTextures(1, &this->id);
 		}
-		glDeleteTextures(1, &this->id);
+		else 
+		{
+			if (this->textures->Check(this->filename)->dependencies <= 0)
+			{
+				if (this->textures->Contains(this->filename))
+				{
+					this->textures->Remove(this->filename);
+				}
+				glDeleteTextures(1, &this->id);
+			}
+			else
+			{
+				this->textures->Check(this->filename)->dependencies--;
+			}
+		}
 		std::cout << "End Texture Destruction..." << std::endl;
 	}
 
@@ -199,13 +216,15 @@ namespace K
 		return this->image + (this->width * this->height * 4 * frame);
 	}
 
-	int Texture::GetFrameDelay(int frame) 
+	int Texture::GetFrameRate()
 	{
-		return this->delay[frame] / 10;
+		return this->fps;
 	}
 
 	void Texture::LoadAnimation() 
 	{
 		this->image = stbi_xload_file((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->frames, &this->delay);
+		if(this->delay != nullptr)
+			this->fps = 1.0f / (*this->delay / 1000.0f);
 	}
 }

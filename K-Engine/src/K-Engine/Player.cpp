@@ -203,6 +203,8 @@ namespace K
 					this->col->ResetVelocity();
 					*this->parent->GetTransform()->position += dashDirection * 5.0f;
 				}
+				float angle = std::atan2f(-dashDirection.z, dashDirection.x) * 57.2958f;
+				this->parent->GetTransform()->rotation->y = angle + 90.0f;
 				this->animationState = 3;
 				this->sprite->ResetFrame();
 			}
@@ -265,14 +267,17 @@ namespace K
 		case 0:
 			//Idle
 			this->animator->PlayAnimation(0, this->sprite, false);
+			this->parent->GetTransform()->rotation->y = 0.0f;
 			break;
 		case 1:
 			//Moving
 			this->animator->PlayAnimation(1, this->sprite, false);
+			this->parent->GetTransform()->rotation->y = 0.0f;
 			break;
 		case 2:
 			//Jumping
 			this->animator->PlayAnimation(2, this->sprite, false);
+			this->parent->GetTransform()->rotation->y = 0.0f;
 			break;
 		case 3:
 			//Dashing
@@ -311,6 +316,7 @@ namespace K
 			else
 			{
 				this->animator->PlayAnimation(4, this->sprite, false);
+				this->parent->GetTransform()->rotation->y = 0.0f;
 			}
 			break;
 		}

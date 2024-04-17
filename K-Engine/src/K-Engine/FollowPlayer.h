@@ -1,7 +1,7 @@
 #pragma once
 #include "build.h"
 #include "Component.h"
-#include "Player.h"
+#include "Move.h"
 
 namespace K 
 {
@@ -9,7 +9,7 @@ namespace K
 	{
 	private:
 		std::string properties;
-		K::Player* player = nullptr;
+		K::Move* player = nullptr;
 	public:
 		FollowPlayer();
 
@@ -17,7 +17,7 @@ namespace K
 
 		void Follow();
 
-		void SetPlayer(K::Player* newPlayer = nullptr);
+		void SetPlayer(K::Move* newPlayer = nullptr);
 
 		void Init() override;
 

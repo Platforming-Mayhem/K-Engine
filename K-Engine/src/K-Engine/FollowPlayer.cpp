@@ -10,7 +10,7 @@ K::FollowPlayer::~FollowPlayer()
 	this->player = nullptr;
 }
 
-void K::FollowPlayer::SetPlayer(K::Player* newPlayer) 
+void K::FollowPlayer::SetPlayer(K::Move* newPlayer)
 {
 	this->player = newPlayer;
 }
@@ -19,9 +19,9 @@ void K::FollowPlayer::Init()
 {
 	for (auto temp : K::Editor::GetCurrentScene()->GetGameObjects()) 
 	{
-		if (temp.second->GetComponentOfType(typeid(K::Player).name()) != nullptr)
+		if (temp.second->GetComponentOfType(typeid(K::Move).name()) != nullptr)
 		{
-			this->player = (K::Player*)temp.second->GetComponentOfType(typeid(K::Player).name());
+			this->player = (K::Move*)temp.second->GetComponentOfType(typeid(K::Move).name());
 			break;
 		}
 	}
@@ -34,7 +34,7 @@ void K::FollowPlayer::Follow()
 #else
 	if (this->player != nullptr)
 	{
-		K::Vector3 destination = K::Vector3(this->player->parent->GetTransform()->position->x, this->parent->GetTransform()->position->y, this->player->parent->GetTransform()->position->z);
+		K::Vector3 destination = K::Vector3(this->player->parent->GetTransform()->position->x + 24.0f, this->parent->GetTransform()->position->y, this->player->parent->GetTransform()->position->z - 5.0f);
 		*this->parent->GetTransform()->position = K::Vector3::Lerp(*this->parent->GetTransform()->position, destination, K::Time::deltaTime() * 6.0f);
 	}
 #endif
