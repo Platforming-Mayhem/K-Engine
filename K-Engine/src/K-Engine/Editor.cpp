@@ -349,6 +349,30 @@ namespace K
 			{
 				K::GameObject* temp = new K::GameObject("Name", new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f)));
 				*temp = *this->selectedGameObject;
+				std::string name = temp->GetName();
+				bool changedName = false;
+				for (int i = name.length(); i > 0; i--) 
+				{
+					if (std::isdigit(name[i])) 
+					{
+						std::string temp{ name[i] };
+						int value = std::stoi(temp);
+						int newValue = value + 1;
+						name.erase(i);
+						name += std::to_string(newValue);
+						changedName = true;
+						break;
+					}
+				}
+				if (changedName) 
+				{
+					temp->SetName(name);
+				}
+				else 
+				{
+					name += std::to_string(0);
+					temp->SetName(name);
+				}
 				this->selectedGameObject = temp;
 			}
 			if (ImGui::BeginPopup("Components"))
