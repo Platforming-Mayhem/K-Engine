@@ -32,6 +32,9 @@ namespace K
 			outFile << "," << transform->position->x << "," << transform->position->y << "," << transform->position->z;
 			outFile << "," << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
 			outFile << "," << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z;
+			outFile << "," << transform->localPosition->x << "," << transform->localPosition->y << "," << transform->localPosition->z;
+			outFile << "," << transform->localRotation->x << "," << transform->localRotation->y << "," << transform->localRotation->z;
+			outFile << "," << transform->localScale->x << "," << transform->localScale->y << "," << transform->localScale->z;
 			if (g->parent == nullptr)
 				outFile << "," << "-1";
 			else
@@ -121,13 +124,40 @@ namespace K
 							scale->z = std::stof(val);
 							break;
 						case 11:
+							temp->GetTransform()->localPosition->x = std::stof(val);
+							break;
+						case 12:
+							temp->GetTransform()->localPosition->y = std::stof(val);
+							break;
+						case 13:
+							temp->GetTransform()->localPosition->z = std::stof(val);
+							break;
+						case 14:
+							temp->GetTransform()->localRotation->x = std::stof(val);
+							break;
+						case 15:
+							temp->GetTransform()->localRotation->y = std::stof(val);
+							break;
+						case 16:
+							temp->GetTransform()->localRotation->z = std::stof(val);
+							break;
+						case 17:
+							temp->GetTransform()->localScale->x = std::stof(val);
+							break;
+						case 18:
+							temp->GetTransform()->localScale->y = std::stof(val);
+							break;
+						case 19:
+							temp->GetTransform()->localScale->z = std::stof(val);
+							break;
+						case 20:
 							if (std::stoi(val) != -1) 
 							{
 								parents.insert({ temp, std::stoi(val) });
 							}
 							break;
 						}
-						if (number > 11)
+						if (number > 20)
 						{
 							std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(val);
 							if (pos == K::Editor::lst.end())
