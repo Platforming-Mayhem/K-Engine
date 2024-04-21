@@ -34,7 +34,7 @@ void K::FollowPlayer::Follow()
 #else
 	if (this->player != nullptr)
 	{
-		K::Vector3 destination = K::Vector3(this->player->parent->GetTransform()->position->x + 24.0f, this->parent->GetTransform()->position->y, this->player->parent->GetTransform()->position->z - 5.0f);
+		K::Vector3 destination = K::Vector3(this->player->parent->GetTransform()->position->x + 24.0f, this->parent->GetTransform()->position->y, this->player->parent->GetTransform()->position->z - 7.0f);
 		*this->parent->GetTransform()->position = K::Vector3::Lerp(*this->parent->GetTransform()->position, destination, K::Time::deltaTime() * 6.0f);
 	}
 #endif
