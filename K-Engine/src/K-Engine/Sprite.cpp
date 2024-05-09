@@ -9,10 +9,10 @@ namespace K
 
 	Sprite::~Sprite() 
 	{
-		std::cout << "Begin Sprite Destruction..." << std::endl;
+		//std::cout << "Begin Sprite Destruction..." << std::endl;
 		delete this->texture;
 		delete this->normalTexture;
-		std::cout << "End Sprite Destruction..." << std::endl;
+		//std::cout << "End Sprite Destruction..." << std::endl;
 	}
 
 	const char* Sprite::GetName() 
@@ -54,8 +54,7 @@ namespace K
 			{
 			case 0:
 			{
-				K::Texture* tempTex = new K::Texture(temp.c_str(), GL_TEXTURE_2D_ARRAY);
-				this->SetTexture(tempTex, false);
+				this->SetColorTexture(temp.c_str());
 			}
 			break;
 			case 1:
@@ -78,7 +77,7 @@ namespace K
 				}
 				else 
 				{
-					this->normalTexture = new K::Texture(temp.c_str(), GL_TEXTURE_2D);
+					this->SetNormalTexture(temp.c_str());
 					this->hasNormal = true;
 				}
 			}
@@ -111,7 +110,7 @@ namespace K
 			{
 				if (this->canChromaKey)
 				{
-					this->normalTexture = new K::Texture(temp.c_str(), GL_TEXTURE_2D);
+					this->SetNormalTexture(temp.c_str());
 					this->hasNormal = true;
 				}
 				else 
@@ -127,6 +126,26 @@ namespace K
 	K::Texture* Sprite::GetTexture() 
 	{
 		return this->texture;
+	}
+
+	void Sprite::SetColorTexture(const char* value)
+	{
+		this->SetTexture(new K::Texture(value, GL_TEXTURE_2D_ARRAY), false);
+	}
+
+	void Sprite::SetNormalTexture(const char* value)
+	{
+		this->normalTexture = new K::Texture(value, GL_TEXTURE_2D);
+	}
+
+	void Sprite::SetColorTexture(unsigned int resource)
+	{
+		this->SetTexture(new K::Texture(resource, GL_TEXTURE_2D_ARRAY), false);
+	}
+
+	void Sprite::SetNormalTexture(unsigned int resource)
+	{
+		this->normalTexture = new K::Texture(resource, GL_TEXTURE_2D);
 	}
 
 	void Sprite::SetTexture(K::Texture* newTexture, bool reScale) 
@@ -151,10 +170,14 @@ namespace K
 
 	void Sprite::Init()
 	{
-		if(this->texture == nullptr)
-			this->SetTexture(new K::Texture(WATERMARK, GL_TEXTURE_2D_ARRAY), false);
-		if (this->normalTexture == nullptr)
-			this->normalTexture = new K::Texture(WATERMARK, GL_TEXTURE_2D);
+		if (this->texture == nullptr) 
+		{
+			this->SetColorTexture(WATERMARK);
+		}
+		if (this->normalTexture == nullptr) 
+		{
+			this->SetNormalTexture(WATERMARK);
+		}
 	}
 
 	void Sprite::Bind() 
@@ -262,17 +285,15 @@ namespace K
 			{
 				std::string location = file.GetSelected().string();
 				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-				K::Texture* temp = new K::Texture(relativeLocation.c_str(), GL_TEXTURE_2D_ARRAY);
-				this->SetTexture(temp, false);
+				this->SetColorTexture(relativeLocation.c_str());
 				file.ClearSelected();
 			}
 			if (fileNormal.HasSelected()) 
 			{
 				std::string location = fileNormal.GetSelected().string();
 				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-				K::Texture* temp = new K::Texture(relativeLocation.c_str(), GL_TEXTURE_2D);
+				this->SetNormalTexture(relativeLocation.c_str());
 				this->hasNormal = true;
-				this->normalTexture = temp;
 				fileNormal.ClearSelected();
 			}
 		}

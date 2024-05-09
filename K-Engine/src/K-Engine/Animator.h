@@ -21,6 +21,8 @@ namespace K
 
 		void PlayAnimation(int index, K::Sprite* currentSprite, bool reScale = true);
 
+		void AssignTexture(const char* value);
+
 		void Init() override;
 
 		void Update() override;

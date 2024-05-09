@@ -64,6 +64,7 @@
       <AdditionalOptions>/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -89,6 +90,7 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

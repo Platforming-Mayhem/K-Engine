@@ -11,13 +11,13 @@ namespace K
 
 	Mesh::~Mesh() 
 	{
-		std::cout << "Begin Mesh Destruction..." << std::endl;
+		//std::cout << "Begin Mesh Destruction..." << std::endl;
 		glDeleteVertexArrays(1, &this->VAO);
 		glDeleteBuffers(1, &this->VBO);
 		glDeleteBuffers(1, &this->EBO);
 		this->vertices.clear();
 		this->indices.clear();
-		std::cout << "End Mesh Destruction..." << std::endl;
+		//std::cout << "End Mesh Destruction..." << std::endl;
 	}
 
 	void Mesh::Init() 

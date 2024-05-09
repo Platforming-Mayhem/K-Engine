@@ -47,6 +47,7 @@ namespace K
 			this->frames = this->textures->Check(this->filename)->frames;
 			this->fps = this->textures->Check(this->filename)->fps;
 			this->textures->Check(this->filename)->dependencies++;
+			this->textures->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
 		else
 		{
@@ -54,31 +55,20 @@ namespace K
 			stbi_set_flip_vertically_on_load(true);
 			if (this->type == GL_TEXTURE_2D_ARRAY)
 			{
-				this->LoadAnimation();
+				std::thread thread(&Texture::LoadAnimation, this);
+				thread.detach();
 				glGenTextures(1, &this->id);
 				glBindTexture(this->type, this->id);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-				if (this->image)
-				{
-					glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, this->frames, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
-				}
-				else
-				{
-					std::cout << "Failed to load texture" << std::endl;
-				}
 				glActiveTexture(0);
 				glBindTexture(this->type, 0);
-				stbi_image_free(this->image);
-				this->image = nullptr;
-				std::cout << "Loaded Animation: " << this->GetFilePath() << std::endl;
 			}
 			else
 			{
-				this->image = stbi_load((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->c, 0);
+				this->Load();
 				glGenTextures(1, &this->id);
 				glBindTexture(this->type, this->id);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -171,7 +161,7 @@ namespace K
 
 	Texture::~Texture() 
 	{
-		std::cout << "Begin Texture Destruction..." << std::endl;
+		//std::cout << "Begin Texture Destruction..." << std::endl;
 		if (this->filename.empty()) 
 		{
 			glDeleteTextures(1, &this->id);
@@ -189,9 +179,18 @@ namespace K
 			else
 			{
 				this->textures->Check(this->filename)->dependencies--;
+				int count = 0;
+				for (auto i : this->textures->Check(this->filename)->dependenciesPointers) 
+				{
+					if (i == this) 
+					{
+						this->textures->Check(this->filename)->dependenciesPointers.erase(this->textures->Check(this->filename)->dependenciesPointers.begin() + count);
+					}
+					count++;
+				}
 			}
 		}
-		std::cout << "End Texture Destruction..." << std::endl;
+		//std::cout << "End Texture Destruction..." << std::endl;
 	}
 
 	const char* Texture::GetFilePath() 
@@ -203,6 +202,21 @@ namespace K
 	{
 		glActiveTexture(GL_TEXTURE0 + texture_unit);
 		glBindTexture(this->type, this->id);
+		if (this->loadedTexture) 
+		{
+			glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, this->frames, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+			stbi_image_free(this->image);
+			this->image = nullptr;
+			if (this->textures->Check(this->filename)->dependencies > 0) 
+			{
+				for (auto i : this->textures->Check(this->filename)->dependenciesPointers) 
+				{
+					((K::Texture*)i)->fps = this->fps;
+					((K::Texture*)i)->frames = this->frames;
+				}
+			}
+			this->loadedTexture = false;
+		}
 	}
 
 	void Texture::Unbind() 
@@ -226,5 +240,14 @@ namespace K
 		this->image = stbi_xload_file((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->frames, &this->delay);
 		if(this->delay != nullptr)
 			this->fps = 1.0f / (*this->delay / 1000.0f);
+		if (this->image) 
+		{
+			this->loadedTexture = true;
+		}
+	}
+
+	void Texture::Load() 
+	{
+		this->image = stbi_load((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->c, 0);
 	}
 }

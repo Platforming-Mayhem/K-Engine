@@ -9,7 +9,7 @@ namespace K
 
 	K::Animator::~Animator() 
 	{
-		std::cout << "Begin Animator Destructor..." << std::endl;
+		//std::cout << "Begin Animator Destructor..." << std::endl;
 		if (!this->animations.empty())
 		{
 			for (int i = 0; i < this->animations.size() - 1; i++) 
@@ -21,7 +21,7 @@ namespace K
 			this->animations.shrink_to_fit();
 			this->currentTexture = nullptr;
 		}
-		std::cout << "End Animator Destructor..." << std::endl;
+		//std::cout << "End Animator Destructor..." << std::endl;
 	}
 
 	void K::Animator::Init() 
@@ -41,6 +41,11 @@ namespace K
 			currentSprite->SetTexture(this->animations[index], reScale);
 			this->currentTexture = this->animations[index];
 		}
+	}
+
+	void Animator::AssignTexture(const char* value)
+	{
+		this->animations.push_back(new K::Texture(value, GL_TEXTURE_2D_ARRAY));
 	}
 
 	void K::Animator::Update() 
@@ -64,8 +69,7 @@ namespace K
 			{
 				std::string location = file.GetSelected().string();
 				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-				K::Texture* temp = new K::Texture(relativeLocation.c_str(), GL_TEXTURE_2D_ARRAY);
-				this->animations.push_back(temp);
+				this->AssignTexture(relativeLocation.c_str());
 				this->selectedTexture = this->animations.size() - 1;
 				file.ClearSelected();
 			}
@@ -112,7 +116,7 @@ namespace K
 			}
 			else 
 			{
-				this->animations.push_back(new K::Texture(value, GL_TEXTURE_2D_ARRAY));
+				this->AssignTexture(value);
 			}
 		}
 	}

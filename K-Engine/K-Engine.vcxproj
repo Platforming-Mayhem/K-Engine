@@ -178,7 +178,7 @@
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
       <AdditionalOptions>/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard_C>Default</LanguageStandard_C>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
@@ -209,7 +209,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;K_WINDOWS;K_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)vendors\GLFW\include;$(ProjectDir)vendors\GLEW\include;$(ProjectDir)vendors\STB;$(ProjectDir)vendors\IMGUI;$(ProjectDir)src;$(ProjectDir)assets</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <LanguageStandard_C>Default</LanguageStandard_C>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalOptions>/D _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>

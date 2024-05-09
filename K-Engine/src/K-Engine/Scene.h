@@ -53,7 +53,7 @@ namespace K
 			{
 				for (auto g : this->gameObjects)
 				{
-					std::cout << "Initializing " << g.second->GetName() << std::endl;
+					//std::cout << "Initializing " << g.second->GetName() << std::endl;
 					g.second->Init();
 				}
 			}
@@ -67,7 +67,7 @@ namespace K
 			{
 				if (gameObject == temp.second)
 				{
-					std::cout << temp.second->GetName() << std::endl;
+					//std::cout << temp.second->GetName() << std::endl;
 					int index = temp.first;
 					delete temp.second;
 					this->gameObjects.erase(index);
@@ -83,7 +83,7 @@ namespace K
 			{
 				for (auto temp : this->gameObjects)
 				{
-					std::cout << temp.second->GetName() << std::endl;
+					//std::cout << temp.second->GetName() << std::endl;
 					delete temp.second;
 				}
 				this->gameObjects.erase(this->gameObjects.begin(), this->gameObjects.end());

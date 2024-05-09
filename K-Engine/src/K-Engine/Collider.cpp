@@ -11,13 +11,13 @@ namespace K
 
 	Collider::~Collider()
 	{
-		std::cout << "Begin Collider Destruction..." << std::endl;
+		//std::cout << "Begin Collider Destruction..." << std::endl;
 		K::Physics::Remove(this);
 		this->linePoints.clear();
 		this->linePoints.shrink_to_fit();
 		this->linePointsModelMatrix.clear();
 		this->linePointsModelMatrix.shrink_to_fit();
-		std::cout << "End Collider Destruction..." << std::endl;
+		//std::cout << "End Collider Destruction..." << std::endl;
 	}
 
 	void Collider::CapsuleEditor()

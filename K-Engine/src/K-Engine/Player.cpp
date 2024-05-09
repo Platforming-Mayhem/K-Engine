@@ -15,7 +15,7 @@ namespace K
 		this->animator = nullptr;
 		this->col = nullptr;
 		this->sprite = nullptr;
-		std::cout << "Player Destructor" << std::endl;
+		//std::cout << "Player Destructor" << std::endl;
 	}
 
 	const char* Player::GetPropertyValues()

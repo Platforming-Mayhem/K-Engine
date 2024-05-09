@@ -33,6 +33,14 @@ namespace K
 
 		K::Texture* GetTexture();
 
+		void SetColorTexture(const char* value);
+
+		void SetNormalTexture(const char* value);
+
+		void SetColorTexture(unsigned int resource);
+
+		void SetNormalTexture(unsigned int resource);
+
 		void SetTexture(K::Texture* newTexture, bool reScale = true);
 
 		void ResetFrame();

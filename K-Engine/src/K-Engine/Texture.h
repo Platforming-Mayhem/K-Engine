@@ -10,6 +10,7 @@ namespace K
 		int frames;
 		int fps;
 		int dependencies = 0;
+		std::vector<void*> dependenciesPointers;
 	};
 
 	class K_API TextureManager 
@@ -38,6 +39,7 @@ namespace K
 		K::TextureManager* textures;
 		unsigned int id;
 		unsigned char* image;
+		bool loadedTexture = false;
 		int width;
 		int height;
 		int frames;
@@ -82,5 +84,7 @@ namespace K
 		void Unbind();
 
 		void LoadAnimation();
+
+		void Load();
 	};
 }

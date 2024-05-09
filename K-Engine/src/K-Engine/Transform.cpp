@@ -154,14 +154,14 @@ namespace K
 
 	K::Transform::~Transform() 
 	{
-		std::cout << "Started Transform Destructor..." << std::endl;
+		//std::cout << "Started Transform Destructor..." << std::endl;
 		delete this->position;
 		delete this->rotation;
 		delete this->scale;
 		delete this->localPosition;
 		delete this->localRotation;
 		delete this->localScale;
-		std::cout << "Transform Destroyed" << std::endl;
+		//std::cout << "Transform Destroyed" << std::endl;
 	}
 
 	K::Matrix4x4 K::Transform::PositionMatrix() 
@@ -249,20 +249,19 @@ namespace K
 			}
 
 			//Local space transforms are in control
-			K::Vector3 localScaleInWorldSpace = *this->localScale * *parent->scale;
-			K::Vector3 localRotationInWorldSpace = *this->localRotation + *parent->rotation;
-			K::Vector3 localPositionInWorldSpace;
-			K::MultiplyMatrixVector(*this->localPosition, localPositionInWorldSpace, parent->modelMatrix);
+			*this->scale = *this->localScale * *parent->scale;
+			*this->rotation = *this->localRotation + *parent->rotation;
+			K::MultiplyMatrixVector(*this->localPosition, *this->position, parent->modelMatrix);
 			//Scaling Matrix
-			globalModelMatrix.m[0][0] *= localScaleInWorldSpace.x;
-			globalModelMatrix.m[1][1] *= localScaleInWorldSpace.y;
-			globalModelMatrix.m[2][2] *= localScaleInWorldSpace.z;
+			globalModelMatrix.m[0][0] *= this->scale->x;
+			globalModelMatrix.m[1][1] *= this->scale->y;
+			globalModelMatrix.m[2][2] *= this->scale->z;
 			//Rotation Matrix
-			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, *K::Quaternion::Euler(&localRotationInWorldSpace)->QuaternionToMatrix());
+			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, *K::Quaternion::Euler(this->rotation)->QuaternionToMatrix());
 			//Translation Matrix
-			globalModelMatrix.m[3][0] += localPositionInWorldSpace.x;
-			globalModelMatrix.m[3][1] += localPositionInWorldSpace.y;
-			globalModelMatrix.m[3][2] += localPositionInWorldSpace.z;
+			globalModelMatrix.m[3][0] += this->position->x;
+			globalModelMatrix.m[3][1] += this->position->y;
+			globalModelMatrix.m[3][2] += this->position->z;
 		}
 
 		this->modelMatrix = globalModelMatrix;

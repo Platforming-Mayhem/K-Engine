@@ -12,7 +12,7 @@ namespace K
 		std::srand(std::chrono::system_clock::now().time_since_epoch().count());
 		this->g_Index = std::rand();
 		K::Editor::GetCurrentScene()->Attach(this);
-		std::cout << name << " GameObject Created" << std::endl;
+		//std::cout << name << " GameObject Created" << std::endl;
 	}
 
 	GameObject::GameObject(const GameObject &other) : name(other.name)
@@ -99,29 +99,29 @@ namespace K
 		this->material = K::Editor::GetMaterial();
 		this->g_Index = index;
 		K::Editor::GetCurrentScene()->Attach(this);
-		std::cout << name << " GameObject Created" << std::endl;
+		//std::cout << name << " GameObject Created" << std::endl;
 	}
 
 	GameObject::~GameObject() 
 	{
-		std::cout << "Begin GameObject Destruction..." << std::endl;
-		std::cout << "Begin Component Destruction..." << std::endl;
+		//std::cout << "Begin GameObject Destruction..." << std::endl;
+		//std::cout << "Begin Component Destruction..." << std::endl;
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
 			delete this->components[i];
 		}
 		this->components.clear();
-		std::cout << "End Component Destruction..." << std::endl;
+		//std::cout << "End Component Destruction..." << std::endl;
 		this->material = nullptr;
 		delete this->transform;
-		std::cout << "End GameObject Destruction..." << std::endl;
+		//std::cout << "End GameObject Destruction..." << std::endl;
 	}
 
 	void GameObject::Init() 
 	{
 		for (K::Component* c : this->components)
 		{
-			std::cout << "Initializing " << c->GetName() << std::endl;
+			//std::cout << "Initializing " << c->GetName() << std::endl;
 			c->Init();
 		}
 	}

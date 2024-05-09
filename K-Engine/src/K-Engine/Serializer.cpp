@@ -64,126 +64,136 @@ namespace K
 		outFile.close();
 	}
 
-	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
+	void Deserializer::CreateGameObject(std::string gameObject) 
 	{
-		std::ifstream inFile;
-		inFile.open(ASSET_DIR + location);
-		std::map<K::GameObject* , int> parents;
-		if (inFile)
+		K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
+		K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
+		K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
+
+		K::Transform* transform = new K::Transform(position, rotation, scale);
+
+		std::string name = "";
+
+		int componentCount = 0;
+
+		K::GameObject* temp = nullptr;
+		K::Component* currentComponent = nullptr;
+		int pos = 0;
+		int number = 0;
+		while ((pos = gameObject.find(',')) != std::string::npos)
 		{
-			std::string line;
-			K::Component* currentComponent = nullptr;
-			while (std::getline(inFile, line))
+			std::string val = gameObject.substr(0, pos);
+			switch (number)
 			{
-				K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
-				K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
-				K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
-				K::Transform* transform = new K::Transform(position, rotation, scale);
-				std::string val = "";
-				K::GameObject* temp = nullptr;
-				std::string name = "";
-				int componentCount = 0;
-				int number = 0;
-				for (int i = 0; i < line.size(); i++)
+			case 0:
+				name = val;
+				break;
+			case 1:
+				temp = new K::GameObject(name.c_str(), transform, std::stoi(val));
+				break;
+			case 2:
+				position->x = std::stof(val);
+				break;
+			case 3:
+				position->y = std::stof(val);
+				break;
+			case 4:
+				position->z = std::stof(val);
+				break;
+			case 5:
+				rotation->x = std::stof(val);
+				break;
+			case 6:
+				rotation->y = std::stof(val);
+				break;
+			case 7:
+				rotation->z = std::stof(val);
+				break;
+			case 8:
+				scale->x = std::stof(val);
+				break;
+			case 9:
+				scale->y = std::stof(val);
+				break;
+			case 10:
+				scale->z = std::stof(val);
+				break;
+			case 11:
+				temp->GetTransform()->localPosition->x = std::stof(val);
+				break;
+			case 12:
+				temp->GetTransform()->localPosition->y = std::stof(val);
+				break;
+			case 13:
+				temp->GetTransform()->localPosition->z = std::stof(val);
+				break;
+			case 14:
+				temp->GetTransform()->localRotation->x = std::stof(val);
+				break;
+			case 15:
+				temp->GetTransform()->localRotation->y = std::stof(val);
+				break;
+			case 16:
+				temp->GetTransform()->localRotation->z = std::stof(val);
+				break;
+			case 17:
+				temp->GetTransform()->localScale->x = std::stof(val);
+				break;
+			case 18:
+				temp->GetTransform()->localScale->y = std::stof(val);
+				break;
+			case 19:
+				temp->GetTransform()->localScale->z = std::stof(val);
+				break;
+			case 20:
+				if (std::stoi(val) != -1)
 				{
-					if (line[i] == ',')
+					parents.insert({ temp, std::stoi(val) });
+				}
+				break;
+			}
+			if (number > 20)
+			{
+				if (val.find("class") != std::string::npos) 
+				{
+					std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(val);
+					if (pos != K::Editor::lst.end()) 
 					{
-						switch (number)
-						{
-						case 0:
-							name = val;
-							break;
-						case 1:
-							temp = new K::GameObject(name.c_str(), transform, std::stoi(val));
-							break;
-						case 2:
-							position->x = std::stof(val);
-							break;
-						case 3:
-							position->y = std::stof(val);
-							break;
-						case 4:
-							position->z = std::stof(val);
-							break;
-						case 5:
-							rotation->x = std::stof(val);
-							break;
-						case 6:
-							rotation->y = std::stof(val);
-							break;
-						case 7:
-							rotation->z = std::stof(val);
-							break;
-						case 8:
-							scale->x = std::stof(val);
-							break;
-						case 9:
-							scale->y = std::stof(val);
-							break;
-						case 10:
-							scale->z = std::stof(val);
-							break;
-						case 11:
-							temp->GetTransform()->localPosition->x = std::stof(val);
-							break;
-						case 12:
-							temp->GetTransform()->localPosition->y = std::stof(val);
-							break;
-						case 13:
-							temp->GetTransform()->localPosition->z = std::stof(val);
-							break;
-						case 14:
-							temp->GetTransform()->localRotation->x = std::stof(val);
-							break;
-						case 15:
-							temp->GetTransform()->localRotation->y = std::stof(val);
-							break;
-						case 16:
-							temp->GetTransform()->localRotation->z = std::stof(val);
-							break;
-						case 17:
-							temp->GetTransform()->localScale->x = std::stof(val);
-							break;
-						case 18:
-							temp->GetTransform()->localScale->y = std::stof(val);
-							break;
-						case 19:
-							temp->GetTransform()->localScale->z = std::stof(val);
-							break;
-						case 20:
-							if (std::stoi(val) != -1) 
-							{
-								parents.insert({ temp, std::stoi(val) });
-							}
-							break;
-						}
-						if (number > 20)
-						{
-							std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(val);
-							if (pos == K::Editor::lst.end())
-							{
-								std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
-								currentComponent->SetPropertyValues(val.c_str(), componentCount);
-								componentCount++;
-							}
-							else
-							{
-								currentComponent = pos->second->create();
-								std::cout << "Creating " << currentComponent->GetName() << std::endl;
-								temp->AddComponent(currentComponent);
-								componentCount = 0;
-							}
-						}
-						line.erase(0, i);
-						i = 0;
-						val = "";
-						number++;
+						currentComponent = pos->second->create();
+						temp->AddComponent(currentComponent);
+						componentCount = 0;
+						//std::cout << "Creating " << currentComponent->GetName() << std::endl;
 					}
-					else
+					else 
 					{
-						val += line[i];
+						std::cerr << val << ": CLASS DOESN'T EXIST" << std::endl;
+						throw;
 					}
 				}
+				else 
+				{
+					//std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
+					currentComponent->SetPropertyValues(val.c_str(), componentCount);
+					componentCount++;
+				}
+			}
+			number++;
+			gameObject.erase(0, pos + sizeof(char));
+		}
+	}
+
+	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
+	{
+		auto start = std::chrono::steady_clock::now();
+		std::ifstream inFile;
+		inFile.open(ASSET_DIR + location);
+		if (inFile)
+		{
+			std::cout << "Number Of Threads: " << std::thread::hardware_concurrency() << std::endl;
+			std::string line;
+			while (std::getline(inFile, line))
+			{
+				this->CreateGameObject(line);
 			}
 			inFile.close();
 			if (!parents.empty())
@@ -203,10 +213,11 @@ namespace K
 			}
 			std::cout << "Finished setting parents..." << std::endl;
 		}
-		std::cout << ASSET_DIR + location;
-		std::cout << "..." << std::endl;
+		std::cout << ASSET_DIR + location << std::endl;
 		newScene->SetSceneName(location);
 		newScene->SetLocation(location);
 		newScene->Init();
+		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+		std::cout << "Time To Deserialize Scene (" << newScene->GetSceneName() << "): " << elapsed << std::endl;
 	}
 }
