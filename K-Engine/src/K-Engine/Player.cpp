@@ -7,7 +7,7 @@ namespace K
 {
 	Player::Player()
 	{
-		this->direction = K::Vector3();
+		
 	}
 
 	Player::~Player() 
@@ -75,6 +75,7 @@ namespace K
 			this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
 		}
 
+		this->direction = K::Vector3();
 		this->originalScale = *this->parent->GetTransform()->scale;
 
 		this->parent->layer = (int)K::Layer::LayerType::Player;
