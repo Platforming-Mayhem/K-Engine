@@ -81,6 +81,8 @@ namespace K
 	{
 		this->viewMatrix = K::Matrix4x4::IdentityMatrix();
 
+		this->parent->PassTransformationMatrix();
+
 		if (this->isActive && !this->isEditorCamera)
 		{
 			glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
@@ -143,7 +145,6 @@ namespace K
 	void Camera::Bind()
 	{
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "fogColour"), this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2]);
-		this->CameraMatrix();
 	}
 
 	const char* Camera::GetPropertyValues()
@@ -238,7 +239,6 @@ namespace K
 	{
 		SetWindow(K::window);
 		SetMaterial(this->parent->GetMaterial());
-		this->CameraMatrix();
 	}
 
 	void Camera::Unbind()
@@ -248,7 +248,7 @@ namespace K
 
 	void Camera::Update() 
 	{
-		
+		this->CameraMatrix();
 	}
 
 	void Camera::UpdateEditor()
