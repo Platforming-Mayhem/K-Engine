@@ -4,13 +4,18 @@ namespace K
 {
 	Ship::Ship() 
 	{
-		this->minAttackFrame = 0;
-		this->maxAttackFrame = 2;
+		
 	}
 
 	Ship::~Ship() 
 	{
 
+	}
+
+	void Ship::Init() 
+	{
+		this->minAttackFrame = 0;
+		this->maxAttackFrame = 2;
 	}
 
 	void Ship::Update() 

@@ -13,6 +13,8 @@ namespace K
 
 		~Ship();
 
+		void Init() override;
+
 		void Update() override;
 
 		void UpdateEditor() override;
