@@ -39,6 +39,7 @@ namespace K
 		K::TextureManager* textures;
 		unsigned int id;
 		unsigned char* image;
+		bool loadedAnimation = false;
 		bool loadedTexture = false;
 		int width;
 		int height;

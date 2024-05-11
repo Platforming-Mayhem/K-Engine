@@ -68,33 +68,16 @@ namespace K
 			}
 			else
 			{
-				this->Load();
+				std::thread thread(&Texture::Load, this);
+				thread.detach();
 				glGenTextures(1, &this->id);
 				glBindTexture(this->type, this->id);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				if (this->image)
-				{
-					if (this->c >= 4)
-					{
-						glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
-					}
-					else
-					{
-						glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
-					}
-					glActiveTexture(0);
-					glBindTexture(this->type, 0);
-					stbi_image_free(this->image);
-					this->image = nullptr;
-					std::cout << "Loaded Single Texture: " << this->GetFilePath() << std::endl;
-				}
-				else
-				{
-					std::cout << "Failed to load texture at: " << this->filename << std::endl;
-				}
+				glActiveTexture(0);
+				glBindTexture(this->type, 0);
 			}
 			K::TextureInfo textureInfo = K::TextureInfo();
 			textureInfo.id = this->id;
@@ -202,12 +185,12 @@ namespace K
 	{
 		glActiveTexture(GL_TEXTURE0 + texture_unit);
 		glBindTexture(this->type, this->id);
-		if (this->loadedTexture) 
+		if (this->loadedAnimation)
 		{
 			glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, this->frames, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			stbi_image_free(this->image);
 			this->image = nullptr;
-			if (this->textures->Check(this->filename)->dependencies > 0) 
+			if (this->textures->Check(this->filename)->dependencies > 0 && this->frames > 1) 
 			{
 				for (auto i : this->textures->Check(this->filename)->dependenciesPointers) 
 				{
@@ -215,6 +198,21 @@ namespace K
 					((K::Texture*)i)->frames = this->frames;
 				}
 			}
+			this->loadedAnimation = false;
+		}
+		if (this->loadedTexture) 
+		{
+			if (this->c >= 4)
+			{
+				glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+			}
+			else
+			{
+				glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+			}
+			stbi_image_free(this->image);
+			this->image = nullptr;
+			//std::cout << "Loaded Single Texture: " << this->GetFilePath() << std::endl;
 			this->loadedTexture = false;
 		}
 	}
@@ -242,12 +240,24 @@ namespace K
 			this->fps = 1.0f / (*this->delay / 1000.0f);
 		if (this->image) 
 		{
-			this->loadedTexture = true;
+			this->loadedAnimation = true;
+		}
+		else 
+		{
+			std::cerr << "Failed to load animation: " << this->filename << std::endl;
 		}
 	}
 
 	void Texture::Load() 
 	{
 		this->image = stbi_load((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->c, 0);
+		if (this->image) 
+		{
+			this->loadedTexture = true;
+		}
+		else 
+		{
+			std::cerr << "Failed to load texture: " << this->filename << std::endl;
+		}
 	}
 }
