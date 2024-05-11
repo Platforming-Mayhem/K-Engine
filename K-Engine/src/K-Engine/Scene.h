@@ -1,6 +1,7 @@
 #pragma once
 #include "build.h"
 #include "GameObject.h"
+#include "Camera.h"
 #include "Time.h"
 
 namespace K 
@@ -111,7 +112,10 @@ namespace K
 			K::Time::startTime = glfwGetTime();
 			for (auto temp : this->GetGameObjects())
 			{
-				temp.second->PassTransformationMatrix();
+				if (!temp.second->GetComponentOfType(typeid(K::Camera).name())) 
+				{
+					temp.second->PassTransformationMatrix();
+				}
 				temp.second->Bind();
 				temp.second->Update();
 				temp.second->Unbind();
