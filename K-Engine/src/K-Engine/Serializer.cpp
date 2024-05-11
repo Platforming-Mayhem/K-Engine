@@ -154,7 +154,7 @@ namespace K
 			}
 			if (number > 20)
 			{
-				if (val.find("class") != std::string::npos) 
+				if (K::Editor::lst.count(val) > 0) 
 				{
 					std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(val);
 					if (pos != K::Editor::lst.end()) 
@@ -180,6 +180,11 @@ namespace K
 			number++;
 			gameObject.erase(0, pos + sizeof(char));
 		}
+	}
+
+	void Deserializer::CreateComponent(std::string val)
+	{
+
 	}
 
 	Deserializer::Deserializer(K::Scene* newScene, std::string location) 

@@ -18,6 +18,8 @@ namespace K
 	public:
 		Deserializer(K::Scene* newScene, std::string location);
 
+		void CreateComponent(std::string val);
+
 		void CreateGameObject(std::string gameObject);
 	};
 }
