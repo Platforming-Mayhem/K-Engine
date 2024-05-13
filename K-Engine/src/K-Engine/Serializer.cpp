@@ -148,7 +148,7 @@ namespace K
 			case 20:
 				if (std::stoi(val) != -1)
 				{
-					parents.insert({ temp, std::stoi(val) });
+					this->parents.insert({ temp, std::stoi(val) });
 				}
 				break;
 			}
@@ -182,9 +182,42 @@ namespace K
 		}
 	}
 
-	void Deserializer::CreateComponent(std::string val)
+	void Deserializer::CreateGameObjectFast(std::vector<std::string>& data)
 	{
+		K::GameObject* tempGameObject = new K::GameObject(data[0].c_str(), new K::Transform(new K::Vector3(std::stof(data[2]), std::stof(data[3]), std::stof(data[4])), new K::Vector3(std::stof(data[5]), std::stof(data[6]), std::stof(data[7])), new K::Vector3(std::stof(data[8]), std::stof(data[9]), std::stof(data[10]))), std::stoi(data[1]));
+		tempGameObject->GetTransform()->localPosition = new K::Vector3(std::stof(data[11]), std::stof(data[12]), std::stof(data[13]));
+		tempGameObject->GetTransform()->localRotation = new K::Vector3(std::stof(data[14]), std::stof(data[15]), std::stof(data[16]));
+		tempGameObject->GetTransform()->localScale = new K::Vector3(std::stof(data[17]), std::stof(data[18]), std::stof(data[19]));
+		if (std::stoi(data[20]) != -1)
+		{
+			this->parents.insert({ tempGameObject, std::stoi(data[20]) });
+		}
+		//this->CreateComponent(tempGameObject, data);
+	}
 
+	void Deserializer::CreateComponent(K::GameObject* tempGameObject, std::vector<std::string>& data)
+	{
+		K::Component* component = nullptr;
+		int count = 0;
+		for (int i = 21; i < data.size(); i++)
+		{
+			std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(data[i]);
+			if (pos != K::Editor::lst.end())
+			{
+				//pos->second->create is slow
+
+				component = pos->second->create();
+				tempGameObject->AddComponent(component);
+				count = 0;
+			}
+			else
+			{
+				//SetPropertyValues is slow
+
+				component->SetPropertyValues(data[i].c_str(), count);
+				count++;
+			}
+		}
 	}
 
 	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
@@ -194,12 +227,45 @@ namespace K
 		inFile.open(ASSET_DIR + location);
 		if (inFile)
 		{
-			std::cout << "Number Of Threads: " << std::thread::hardware_concurrency() << std::endl;
+			std::vector<char> characters;
+
+			inFile.seekg(0, std::ios::end);
+			int length = inFile.tellg();
+
+			inFile.seekg(0, std::ios::beg);
+
+			characters.resize(length);
+			inFile.read(&characters[0], length);
+
+
 			std::string line;
-			while (std::getline(inFile, line))
+			std::vector<std::string> dataArray;
+			int count = 0;
+			for (auto char0 : characters) 
 			{
-				this->CreateGameObject(line);
+				if (char0 == '\n') 
+				{
+					if (!dataArray.empty()) 
+					{
+						this->CreateGameObjectFast(dataArray);
+					}
+					count = 0;
+					line.clear();
+					dataArray.clear();
+				}
+				else if (char0 == ',') 
+				{
+					dataArray.push_back(line);
+					count++;
+					line.clear();
+				}
+				else 
+				{
+					line += char0;
+				}
 			}
+
+
 			inFile.close();
 			if (!parents.empty())
 			{
@@ -207,16 +273,16 @@ namespace K
 				{
 					if (temp.first->SetParent(K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)))
 					{
-						std::cout << "Parent: " << K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)->GetName() << "," << " Child: " << temp.first->GetName() << std::endl;
+						//std::cout << "Parent: " << K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)->GetName() << "," << " Child: " << temp.first->GetName() << std::endl;
 					}
 					else
 					{
-						std::cout << "Failed Setting Parent: " << K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)->GetName() << "," << " Child: " << temp.first->GetName() << std::endl;
+						//std::cout << "Failed Setting Parent: " << K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)->GetName() << "," << " Child: " << temp.first->GetName() << std::endl;
 					}
 				}
 				parents.clear();
 			}
-			std::cout << "Finished setting parents..." << std::endl;
+			//std::cout << "Finished setting parents..." << std::endl;
 		}
 		std::cout << ASSET_DIR + location << std::endl;
 		newScene->SetSceneName(location);
