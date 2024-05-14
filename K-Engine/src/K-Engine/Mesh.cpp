@@ -6,7 +6,9 @@ namespace K
 {
 	Mesh::Mesh() 
 	{
-		
+		this->VAO = 0;
+		this->EBO = 0;
+		this->VBO = 0;
 	}
 
 	Mesh::~Mesh() 
@@ -22,6 +24,10 @@ namespace K
 
 	void Mesh::Init() 
 	{
+		this->vertices = K::Quad;
+
+		this->indices = { 0, 3, 1, 0, 2, 3 };
+
 		glCreateVertexArrays(1, &this->VAO);
 		glGenBuffers(1, &this->VBO);
 		glGenBuffers(1, &this->EBO);
@@ -120,11 +126,6 @@ namespace K
 			this->properties += "false";
 		}
 		return this->properties.c_str();
-	}
-
-	const char* Mesh::GetFilePath() 
-	{
-		return this->filename.c_str();
 	}
 
 	const char* Mesh::GetName()

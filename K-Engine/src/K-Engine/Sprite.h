@@ -21,10 +21,6 @@ namespace K
 		bool isPlaying = true;
 		std::string properties;
 
-		ImGui::FileBrowser file;
-
-		ImGui::FileBrowser fileNormal;
-
 	public:
 
 		Sprite();

@@ -36,11 +36,10 @@ namespace K
 
 	void Player::SetPropertyValues(const char* value, int valueIndex)
 	{
-		std::string temp = value;
 		switch (valueIndex)
 		{
 		case 0:
-			this->movementSpeed = std::stof(temp);
+			this->movementSpeed = std::stof(value);
 			break;
 		}
 	}

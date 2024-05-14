@@ -13,7 +13,6 @@ namespace K
 		K::Texture* currentTexture;
 		int selectedTexture = 0;
 	public:
-		ImGui::FileBrowser file;
 
 		Animator();
 

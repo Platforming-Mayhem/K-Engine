@@ -57,6 +57,7 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Animator Settings")) 
 		{
+			ImGui::FileBrowser file;
 			if (ImGui::Button("Add Animation")) 
 			{
 				file.SetTitle("Load Sprite");

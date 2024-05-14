@@ -258,6 +258,8 @@ namespace K
 		if (ImGui::CollapsingHeader("Sprite Settings"))
 		{
 			ImGui::Text("These are the sprite settings");
+			ImGui::FileBrowser file;
+			ImGui::FileBrowser fileNormal;
 			if (ImGui::Button("Load New Sprite"))
 			{
 				file.SetTitle("Load Sprite");

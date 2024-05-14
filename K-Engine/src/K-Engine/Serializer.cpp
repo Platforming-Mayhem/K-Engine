@@ -191,14 +191,16 @@ namespace K
 		if (std::stoi(data[20]) != -1)
 		{
 			this->parents.insert({ tempGameObject, std::stoi(data[20]) });
+		
 		}
-		//this->CreateComponent(tempGameObject, data);
+		this->selectedGameObject = tempGameObject;
 	}
 
 	void Deserializer::CreateComponent(K::GameObject* tempGameObject, std::vector<std::string>& data)
 	{
 		K::Component* component = nullptr;
 		int count = 0;
+		//For Loop within a For loop is what is slowing it down
 		for (int i = 21; i < data.size(); i++)
 		{
 			std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(data[i]);
@@ -220,6 +222,22 @@ namespace K
 		}
 	}
 
+	void Deserializer::CreateComponentFast(std::string datum) 
+	{
+		std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst.find(datum);
+		if (pos != K::Editor::lst.end())
+		{
+			this->selectedComponent = pos->second->create();
+			this->selectedGameObject->AddComponent(this->selectedComponent);
+			this->componentDataCount = 0;
+		}
+		else
+		{
+			this->selectedComponent->SetPropertyValues(datum.c_str(), this->componentDataCount);
+			this->componentDataCount++;
+		}
+	}
+
 	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
 	{
 		auto start = std::chrono::steady_clock::now();
@@ -237,27 +255,58 @@ namespace K
 			characters.resize(length);
 			inFile.read(&characters[0], length);
 
-
 			std::string line;
 			std::vector<std::string> dataArray;
+			std::map<std::string, std::chrono::milliseconds> times;
 			int count = 0;
 			for (auto char0 : characters) 
 			{
 				if (char0 == '\n') 
 				{
-					if (!dataArray.empty()) 
+					if (count > 21)
 					{
-						this->CreateGameObjectFast(dataArray);
+						auto start = std::chrono::steady_clock::now();
+						this->CreateComponentFast(dataArray[count - 1]);
+						auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+						if (times.count(this->selectedComponent->GetName()) > 0) 
+						{
+							times.find(this->selectedComponent->GetName())->second += elapsed;
+						}
+						else 
+						{
+							times.insert(std::pair<std::string, std::chrono::milliseconds>(this->selectedComponent->GetName(), elapsed));
+						}
 					}
 					count = 0;
 					line.clear();
 					dataArray.clear();
+					this->selectedGameObject = nullptr;
+					this->selectedComponent = nullptr;
+					this->componentDataCount = 0;
 				}
 				else if (char0 == ',') 
 				{
+					if (count == 21)
+					{
+						this->CreateGameObjectFast(dataArray);
+					}
+					else if (count > 21)
+					{
+						auto start = std::chrono::steady_clock::now();
+						this->CreateComponentFast(dataArray[count - 1]);
+						auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+						if (times.count(this->selectedComponent->GetName()) > 0)
+						{
+							times.find(this->selectedComponent->GetName())->second += elapsed;
+						}
+						else
+						{
+							times.insert(std::pair<std::string, std::chrono::milliseconds>(this->selectedComponent->GetName(), elapsed));
+						}
+					}
 					dataArray.push_back(line);
-					count++;
 					line.clear();
+					count++;
 				}
 				else 
 				{
@@ -265,8 +314,13 @@ namespace K
 				}
 			}
 
-
 			inFile.close();
+
+			for (auto time : times)
+			{
+				std::cout << time.first << ":" << time.second << std::endl;
+			}
+
 			if (!parents.empty())
 			{
 				for (auto temp : parents)
@@ -282,7 +336,6 @@ namespace K
 				}
 				parents.clear();
 			}
-			//std::cout << "Finished setting parents..." << std::endl;
 		}
 		std::cout << ASSET_DIR + location << std::endl;
 		newScene->SetSceneName(location);

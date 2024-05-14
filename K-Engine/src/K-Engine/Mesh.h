@@ -40,8 +40,6 @@ namespace K
 	class K_API Mesh : public K::Component
 	{
 	private:
-		ImGui::FileBrowser file;
-		std::string filename;
 		bool canDepth = true;
 		float colourTint[3] = {1.0f, 1.0f, 1.0f};
 		unsigned int VAO;
@@ -50,10 +48,10 @@ namespace K
 		std::string properties;
 	public:
 		//Model Vertices
-		std::vector<K::Vertex> vertices = K::Quad;
+		std::vector<K::Vertex> vertices;
 
 		//Model Indices
-		std::vector<int> indices = { 0, 3, 1, 0, 2, 3 };
+		std::vector<int> indices;
 
 		//Constructor
 		Mesh();
@@ -113,7 +111,5 @@ namespace K
 		const char* GetPropertyValues() override;
 
 		const char* GetName() override;
-
-		const char* GetFilePath();
 	};
 }
