@@ -63,9 +63,15 @@ namespace K
 
 		void ShowChildren(K::GameObject* current);
 
+		void ImGuiInspector();
+
 		void ImGuiHierarchy();
 
 		void ImGuiExtra();
+
+		void ImGuiBegin();
+
+		void ImGuiEnd();
 
 		bool Render();
 

@@ -50,11 +50,7 @@
     <ClInclude Include="vendors\GLEW\include\glew.h" />
     <ClInclude Include="vendors\IMGUI\imconfig.h" />
     <ClInclude Include="vendors\IMGUI\imgui.h" />
-    <ClInclude Include="vendors\IMGUI\imgui_impl_glfw.h" />
-    <ClInclude Include="vendors\IMGUI\imgui_impl_opengl3.h" />
-    <ClInclude Include="vendors\IMGUI\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="vendors\IMGUI\imgui_internal.h" />
-    <ClInclude Include="vendors\IMGUI\imgui_stdlib.h" />
     <ClInclude Include="vendors\IMGUI\imstb_rectpack.h" />
     <ClInclude Include="vendors\IMGUI\imstb_textedit.h" />
     <ClInclude Include="vendors\IMGUI\imstb_truetype.h" />
@@ -88,14 +84,14 @@
     <ClCompile Include="src\K-Engine\Transform.cpp" />
     <ClCompile Include="src\K-Engine\TriggerDeath.cpp" />
     <ClCompile Include="src\K-Engine\Window.cpp" />
+    <ClCompile Include="vendors\IMGUI\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="vendors\IMGUI\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui_demo.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui_draw.cpp" />
-    <ClCompile Include="vendors\IMGUI\imgui_impl_glfw.cpp" />
-    <ClCompile Include="vendors\IMGUI\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="vendors\IMGUI\imgui_stdlib.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui_widgets.cpp" />
+    <ClCompile Include="vendors\IMGUI\misc\cpp\imgui_stdlib.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="assets\KEngineResources.rc" />

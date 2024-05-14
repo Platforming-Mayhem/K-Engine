@@ -69,15 +69,6 @@
     <ClInclude Include="vendors\IMGUI\imgui_internal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vendors\IMGUI\imgui_impl_opengl3_loader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendors\IMGUI\imgui_impl_opengl3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendors\IMGUI\imgui_impl_glfw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vendors\BOX2D\include\Arbiter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -100,9 +91,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\K-Engine\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vendors\IMGUI\imgui_stdlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendors\IMGUI\imstb_rectpack.h">
@@ -170,9 +158,6 @@
     <ClCompile Include="vendors\IMGUI\imgui_tables.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="vendors\IMGUI\imgui_impl_glfw.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="vendors\IMGUI\imgui_draw.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
@@ -180,9 +165,6 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="vendors\IMGUI\imgui.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendors\IMGUI\imgui_impl_opengl3.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="src\K-Engine\Application.cpp">
@@ -214,9 +196,6 @@
     </ClCompile>
     <ClCompile Include="src\K-Engine\Camera.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendors\IMGUI\imgui_stdlib.cpp">
-      <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="src\K-Engine\Player.cpp">
       <Filter>Source Files</Filter>
@@ -265,6 +244,15 @@
     </ClCompile>
     <ClCompile Include="src\K-Engine\FollowPlayer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\IMGUI\backends\imgui_impl_glfw.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\IMGUI\backends\imgui_impl_opengl3.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\IMGUI\misc\cpp\imgui_stdlib.cpp">
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
