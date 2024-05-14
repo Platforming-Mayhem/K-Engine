@@ -257,9 +257,7 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Sprite Settings"))
 		{
-			ImGui::Text("These are the sprite settings");
-			ImGui::FileBrowser file;
-			ImGui::FileBrowser fileNormal;
+			/*ImGui::Text("These are the sprite settings");
 			if (ImGui::Button("Load New Sprite"))
 			{
 				file.SetTitle("Load Sprite");
@@ -297,7 +295,7 @@ namespace K
 				this->SetNormalTexture(relativeLocation.c_str());
 				this->hasNormal = true;
 				fileNormal.ClearSelected();
-			}
+			}*/
 		}
 	}
 }

@@ -59,7 +59,7 @@ namespace K
 		{
 			if (ImGui::Begin("K-Engine Properties", NULL, ImGuiWindowFlags_MenuBar)) 
 			{
-				if (ImGui::BeginMenuBar())
+				/*if (ImGui::BeginMenuBar())
 				{
 					if (ImGui::BeginMenu("File"))
 					{
@@ -184,7 +184,7 @@ namespace K
 						K::Deserializer deserialize = K::Deserializer(K::Editor::GetCurrentScene(), relativeLocation);
 						file.ClearSelected();
 					}
-				}
+				}*/
 
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / (ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
 

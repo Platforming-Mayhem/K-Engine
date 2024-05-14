@@ -78,9 +78,6 @@
     <ClInclude Include="vendors\IMGUI\imgui_impl_glfw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vendors\IMGUI\imfilebrowser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vendors\BOX2D\include\Arbiter.h">
       <Filter>Header Files</Filter>
     </ClInclude>

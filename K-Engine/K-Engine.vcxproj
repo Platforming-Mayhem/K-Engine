@@ -49,7 +49,6 @@
     <ClInclude Include="vendors\BOX2D\include\World.h" />
     <ClInclude Include="vendors\GLEW\include\glew.h" />
     <ClInclude Include="vendors\IMGUI\imconfig.h" />
-    <ClInclude Include="vendors\IMGUI\imfilebrowser.h" />
     <ClInclude Include="vendors\IMGUI\imgui.h" />
     <ClInclude Include="vendors\IMGUI\imgui_impl_glfw.h" />
     <ClInclude Include="vendors\IMGUI\imgui_impl_opengl3.h" />

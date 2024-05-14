@@ -57,8 +57,7 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Animator Settings")) 
 		{
-			ImGui::FileBrowser file;
-			if (ImGui::Button("Add Animation")) 
+			/*if (ImGui::Button("Add Animation"))
 			{
 				file.SetTitle("Load Sprite");
 				file.SetTypeFilters({ ".PNG", ".JPG", ".GIF" });
@@ -93,7 +92,7 @@ namespace K
 			if (ImGui::Button("Delete Animation")) 
 			{
 				this->animations.erase(this->animations.begin() + this->selectedTexture);
-			}
+			}*/
 		}
 	}
 
