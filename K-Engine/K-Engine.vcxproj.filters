@@ -147,6 +147,18 @@
     <ClInclude Include="src\K-Engine\FollowPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\IMGUI\backends\imgui_impl_glfw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\K-Engine\Window.cpp">
@@ -253,6 +265,9 @@
     </ClCompile>
     <ClCompile Include="vendors\IMGUI\misc\cpp\imgui_stdlib.cpp">
       <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\IMGUI\backends\imgui_impl_opengl2.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

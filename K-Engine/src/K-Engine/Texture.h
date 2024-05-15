@@ -8,6 +8,8 @@ namespace K
 		int id;
 		int type;
 		int frames;
+		int width;
+		int height;
 		int fps;
 		int dependencies = 0;
 		std::vector<void*> dependenciesPointers;
@@ -72,6 +74,11 @@ namespace K
 		int GetNumberOfFrames() 
 		{
 			return this->frames;
+		}
+
+		unsigned int GetID() 
+		{
+			return this->id;
 		}
 
 		const char* GetFilePath();

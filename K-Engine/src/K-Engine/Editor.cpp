@@ -19,7 +19,7 @@ namespace K
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
-		ImGui::StyleColorsDark();
+		ImGui::StyleColorsLight();
 		this->sceneManager = sceneManager;
 		this->window = window;
 		this->material = material;
@@ -59,6 +59,11 @@ namespace K
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) 
+		{
+			ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+		}
 	}
 
 	void Editor::ImGuiEnd() 
@@ -76,6 +81,15 @@ namespace K
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup_current_context);
 		}
+	}
+
+	void Editor::ImGuiViewport() 
+	{
+		if (ImGui::Begin("Viewport")) 
+		{
+			
+		}
+		ImGui::End();
 	}
 
 	void Editor::ImGuiInspector() 
@@ -214,9 +228,8 @@ namespace K
 			ImGui::Text("Number of GameObjects: %i", K::Editor::GetCurrentScene()->GetNumberOfObjects());
 
 			ImGuiExtra();
-
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 
 	bool Editor::Render() 
@@ -226,6 +239,8 @@ namespace K
 		ImGuiInspector();
 
 		ImGuiHierarchy();
+
+		ImGuiViewport();
 
 		ImGuiEnd();
 

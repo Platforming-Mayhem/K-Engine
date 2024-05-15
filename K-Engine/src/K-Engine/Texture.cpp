@@ -46,6 +46,8 @@ namespace K
 			this->type = this->textures->Check(this->filename)->type;
 			this->frames = this->textures->Check(this->filename)->frames;
 			this->fps = this->textures->Check(this->filename)->fps;
+			this->width = this->textures->Check(this->filename)->width;
+			this->height = this->textures->Check(this->filename)->height;
 			this->textures->Check(this->filename)->dependencies++;
 			this->textures->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
@@ -90,55 +92,80 @@ namespace K
 
 	Texture::Texture(unsigned int resource, GLenum type) {
 		this->textures = &K::textureManager;
-		stbi_set_flip_vertically_on_load(true);
-		this->type = type;
-		if (IS_INTRESOURCE(resource))
+		this->filename = std::to_string(resource);
+		if (this->textures->Contains(this->filename))
 		{
-			HMODULE hModule;
-			GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
-			HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(resource), "PNG");
-			int size = SizeofResource(hModule, hr);
-			if (hr == NULL)
+			this->id = this->textures->Check(this->filename)->id;
+			this->type = this->textures->Check(this->filename)->type;
+			this->frames = this->textures->Check(this->filename)->frames;
+			this->fps = this->textures->Check(this->filename)->fps;
+			this->width = this->textures->Check(this->filename)->width;
+			this->height = this->textures->Check(this->filename)->height;
+			this->textures->Check(this->filename)->dependencies++;
+			this->textures->Check(this->filename)->dependenciesPointers.push_back(this);
+		}
+		else 
+		{
+			this->type = type;
+			stbi_set_flip_vertically_on_load(true);
+			if (IS_INTRESOURCE(resource))
 			{
-				std::cout << "Failed to find resource" << std::endl;
-				std::cout << size << std::endl;
-			}
-			else
-			{
-				HGLOBAL temp = LoadResource(hModule, hr);
-				LPVOID lp = LockResource(temp);
-				this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
-				glGenTextures(1, &this->id);
-				glBindTexture(this->type, this->id);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				if (this->image)
+				HMODULE hModule;
+				GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
+				HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(resource), "PNG");
+				int size = SizeofResource(hModule, hr);
+				if (hr == NULL)
 				{
-					if (this->c > 3)
-					{
-						glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
-					}
-					else
-					{
-						glTexImage3D(this->type, 0, GL_RGB, this->width, this->height, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
-					}
-					glActiveTexture(0);
-					glBindTexture(this->type, 0);
-					stbi_image_free(this->image);
-					this->image = nullptr;
+					std::cout << "Failed to find resource" << std::endl;
+					std::cout << size << std::endl;
 				}
 				else
 				{
-					std::cout << "Failed to load texture" << std::endl;
+					HGLOBAL temp = LoadResource(hModule, hr);
+					LPVOID lp = LockResource(temp);
+					this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
+					this->frames = 1;
+					this->fps = 0;
+					glGenTextures(1, &this->id);
+					glBindTexture(this->type, this->id);
+					glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
+					glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
+					glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+					glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+					if (this->image)
+					{
+						if (this->c > 3)
+						{
+							glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, this->frames, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+						}
+						else
+						{
+							glTexImage3D(this->type, 0, GL_RGB, this->width, this->height, this->frames, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+						}
+						glActiveTexture(0);
+						glBindTexture(this->type, 0);
+						stbi_image_free(this->image);
+						this->image = nullptr;
+					}
+					else
+					{
+						std::cout << "Failed to load texture" << std::endl;
+					}
+					UnlockResource(temp);
 				}
-				UnlockResource(temp);
 			}
-		}
-		else
-		{
-			std::cout << "Failed to find texture" << std::endl;
+			else
+			{
+				std::cout << "Failed to find texture" << std::endl;
+			}
+			K::TextureInfo textureInfo = K::TextureInfo();
+			textureInfo.id = this->id;
+			textureInfo.type = this->type;
+			textureInfo.frames = this->frames;
+			textureInfo.width = this->width;
+			textureInfo.height = this->height;
+			textureInfo.fps = this->GetFrameRate();
+			this->textures->Add(this->filename, textureInfo);
 		}
 	}
 
@@ -190,12 +217,14 @@ namespace K
 			glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, this->frames, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			stbi_image_free(this->image);
 			this->image = nullptr;
-			if (this->textures->Check(this->filename)->dependencies > 0 && this->frames > 1) 
+			if (this->textures->Check(this->filename)->dependencies > 0) 
 			{
 				for (auto i : this->textures->Check(this->filename)->dependenciesPointers) 
 				{
 					((K::Texture*)i)->fps = this->fps;
 					((K::Texture*)i)->frames = this->frames;
+					((K::Texture*)i)->width = this->width;
+					((K::Texture*)i)->height = this->height;
 				}
 			}
 			this->loadedAnimation = false;
@@ -212,7 +241,14 @@ namespace K
 			}
 			stbi_image_free(this->image);
 			this->image = nullptr;
-			//std::cout << "Loaded Single Texture: " << this->GetFilePath() << std::endl;
+			if (this->textures->Check(this->filename)->dependencies > 0)
+			{
+				for (auto i : this->textures->Check(this->filename)->dependenciesPointers)
+				{
+					((K::Texture*)i)->width = this->width;
+					((K::Texture*)i)->height = this->height;
+				}
+			}
 			this->loadedTexture = false;
 		}
 	}

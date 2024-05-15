@@ -67,6 +67,8 @@ namespace K
 
 		void ImGuiHierarchy();
 
+		void ImGuiViewport();
+
 		void ImGuiExtra();
 
 		void ImGuiBegin();
