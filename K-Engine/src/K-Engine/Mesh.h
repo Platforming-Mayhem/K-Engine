@@ -41,7 +41,7 @@ namespace K
 	{
 	private:
 		bool canDepth = true;
-		float colourTint[3] = {1.0f, 1.0f, 1.0f};
+		float colourTint[3] = { 1.0f, 1.0f, 1.0f };
 		unsigned int VAO;
 		unsigned int VBO;
 		unsigned int EBO;

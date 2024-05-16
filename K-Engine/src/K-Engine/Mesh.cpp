@@ -6,9 +6,9 @@ namespace K
 {
 	Mesh::Mesh() 
 	{
-		this->VAO = 0;
-		this->EBO = 0;
-		this->VBO = 0;
+		this->vertices = K::Quad;
+
+		this->indices = { 0, 3, 1, 0, 2, 3 };
 	}
 
 	Mesh::~Mesh() 
@@ -24,19 +24,16 @@ namespace K
 
 	void Mesh::Init() 
 	{
-		this->vertices = K::Quad;
-
-		this->indices = { 0, 3, 1, 0, 2, 3 };
-
 		glCreateVertexArrays(1, &this->VAO);
 		glGenBuffers(1, &this->VBO);
 		glGenBuffers(1, &this->EBO);
 
-		this->Bind();
+		glBindVertexArray(this->VAO);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(int), &this->indices[0], GL_DYNAMIC_DRAW);
 
+		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 		glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(K::Vertex), &this->vertices[0], GL_DYNAMIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -55,8 +52,6 @@ namespace K
 	{
 		glBindVertexArray(this->VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(int), &this->indices[0], GL_DYNAMIC_DRAW);
-		glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(K::Vertex), &this->vertices[0], GL_DYNAMIC_DRAW);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), this->colourTint[0], this->colourTint[1], this->colourTint[2]);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canDepth"), this->canDepth);
 	}
