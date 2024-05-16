@@ -67,8 +67,6 @@ namespace K
 				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glBindTexture(this->type, 0);
-
-				glGenTextures(1, &this->viewId);
 			}
 			else
 			{
@@ -273,7 +271,7 @@ namespace K
 				}
 			}
 		}
-		if (this->viewId != NULL) 
+		if (this->viewId != this->id && this->viewId != NULL) 
 		{
 			glDeleteTextures(1, &this->viewId);
 		}
@@ -296,6 +294,7 @@ namespace K
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
+			glGenTextures(1, &this->viewId);
 			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
 
 			if (this->textures->Check(this->filename)->dependencies > 0) 
@@ -306,6 +305,7 @@ namespace K
 					((K::Texture*)i)->frames = this->frames;
 					((K::Texture*)i)->width = this->width;
 					((K::Texture*)i)->height = this->height;
+					((K::Texture*)i)->viewId = this->viewId;
 				}
 			}
 			this->loadedAnimation = false;
