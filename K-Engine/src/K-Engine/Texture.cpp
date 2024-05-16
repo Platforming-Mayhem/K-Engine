@@ -68,8 +68,7 @@ namespace K
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glBindTexture(this->type, 0);
 
-				//glGenTextures(1, &this->viewId);
-				//glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA, 0, 1, 0, 1);
+				glGenTextures(1, &this->viewId);
 			}
 			else
 			{
@@ -82,6 +81,8 @@ namespace K
 				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glBindTexture(this->type, 0);
+
+				this->viewId = this->id;
 			}
 			K::TextureInfo textureInfo = K::TextureInfo();
 			textureInfo.id = this->id;
@@ -142,30 +143,29 @@ namespace K
 						{
 							if (this->c > 3)
 							{
-								glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, this->frames, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+								glTexStorage3D(this->type, 1, GL_RGBA8, this->width, this->height, this->frames);
+								glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 							}
 							else
 							{
-								glTexImage3D(this->type, 0, GL_RGB, this->width, this->height, this->frames, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+								glTexStorage3D(this->type, 1, GL_RGB8, this->width, this->height, this->frames);
+								glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 							}
 							stbi_image_free(this->image);
 							this->image = nullptr;
 
 							glBindTexture(this->type, 0);
 
-							/*
 							glGenTextures(1, &this->viewId);
 
-							glBindTexture(GL_TEXTURE_2D, this->viewId);
 							if (this->c > 3) 
 							{
-								glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA, 0, 1, 0, this->frames);
+								glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
 							}
 							else 
 							{
-								glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGB, 0, 1, 0, this->frames);
+								glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGB8, 0, 1, 0, 1);
 							}
-							glBindTexture(GL_TEXTURE_2D, 0);*/
 						}
 						else
 						{
@@ -221,6 +221,7 @@ namespace K
 						{
 							std::cout << "Failed to load texture" << std::endl;
 						}
+						this->viewId = this->id;
 						UnlockResource(temp);
 					}
 				}
@@ -290,9 +291,13 @@ namespace K
 		glBindTexture(this->type, this->id);
 		if (this->loadedAnimation)
 		{
-			glTexImage3D(this->type, 0, GL_RGBA, this->width, this->height, this->frames, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+			glTexStorage3D(this->type, 1, GL_RGBA8, this->width, this->height, this->frames);
+			glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			stbi_image_free(this->image);
 			this->image = nullptr;
+
+			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
+
 			if (this->textures->Check(this->filename)->dependencies > 0) 
 			{
 				for (auto i : this->textures->Check(this->filename)->dependenciesPointers) 
