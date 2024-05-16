@@ -6,6 +6,7 @@ namespace K
 	struct TextureInfo 
 	{
 		int id;
+		int viewId;
 		int type;
 		int frames;
 		int width;
@@ -40,6 +41,7 @@ namespace K
 	private:
 		K::TextureManager* textures;
 		unsigned int id;
+		unsigned int viewId;
 		unsigned char* image;
 		bool loadedAnimation = false;
 		bool loadedTexture = false;
@@ -79,6 +81,11 @@ namespace K
 		unsigned int GetID() 
 		{
 			return this->id;
+		}
+
+		unsigned int GetViewID() 
+		{
+			return this->viewId;
 		}
 
 		const char* GetFilePath();

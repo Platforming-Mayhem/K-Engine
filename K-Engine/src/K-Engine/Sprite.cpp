@@ -296,8 +296,8 @@ namespace K
 				this->hasNormal = true;
 				fileNormal.ClearSelected();
 			}*/
-			ImGui::Text("%p,%i,%i",this->texture->GetID(), this->texture->GetWidth(), this->texture->GetHeight());
-			ImGui::Image((void*)(intptr_t)(this->texture->GetID()), ImVec2(this->texture->GetWidth() / 2.0f, this->texture->GetHeight() / 2.0f), ImVec2(0,0), ImVec2(1,1), ImVec4(1,1,1,1), ImVec4(0,0,0,1));
+			ImGui::Text("%p,%i,%i",this->texture->GetViewID(), this->texture->GetWidth(), this->texture->GetHeight());
+			ImGui::Image((void*)(intptr_t)(this->texture->GetViewID()), ImVec2(128.0f, 128.0f), ImVec2(0,1), ImVec2(1,0), ImVec4(1,1,1,1), ImVec4(0,0,0,1));
 		}
 	}
 }
