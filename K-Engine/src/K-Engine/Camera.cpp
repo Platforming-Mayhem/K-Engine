@@ -85,7 +85,6 @@ namespace K
 
 		if (this->isActive && !this->isEditorCamera)
 		{
-			glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
 			//Projection Matrix
 			float aspect = this->window->width / this->window->height;
 
@@ -144,6 +143,7 @@ namespace K
 
 	void Camera::Bind()
 	{
+		glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "fogColour"), this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2]);
 	}
 

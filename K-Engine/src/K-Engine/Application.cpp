@@ -31,6 +31,8 @@ namespace K
 
 		while (!glfwWindowShouldClose(window->window))
 		{
+			glfwPollEvents();
+
 			int esc = glfwGetKey(window->window, GLFW_KEY_ESCAPE);
 
 			if (esc == GLFW_PRESS)
@@ -44,6 +46,8 @@ namespace K
 
 			K::SceneManager::currentScene->Render();
 
+			glUseProgram(0);
+
 			#if _DEBUG
 			if (editor->Render())
 			{
@@ -54,8 +58,6 @@ namespace K
 			K::SceneManager::Update();
 
 			glfwSwapBuffers(window->window);
-
-			glfwPollEvents();
 		}
 		delete editor;
 		delete manager;

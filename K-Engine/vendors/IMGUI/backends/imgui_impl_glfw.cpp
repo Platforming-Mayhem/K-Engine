@@ -99,7 +99,7 @@
 #ifndef GLFW_EXPOSE_NATIVE_COCOA
 #define GLFW_EXPOSE_NATIVE_COCOA
 #endif
-#include <GLFW/glfw3native.h>   // for glfwGetCocoaWindow()
+#include <glfw3native.h>   // for glfwGetCocoaWindow()
 #endif
 
 #ifdef __EMSCRIPTEN__

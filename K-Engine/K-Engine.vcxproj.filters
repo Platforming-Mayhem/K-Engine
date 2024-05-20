@@ -153,10 +153,10 @@
     <ClInclude Include="vendors\IMGUI\backends\imgui_impl_glfw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl2.h">
+    <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl3_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl3_loader.h">
+    <ClInclude Include="src\K-Engine\RenderTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -266,7 +266,7 @@
     <ClCompile Include="vendors\IMGUI\misc\cpp\imgui_stdlib.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="vendors\IMGUI\backends\imgui_impl_opengl2.cpp">
+    <ClCompile Include="src\K-Engine\RenderTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

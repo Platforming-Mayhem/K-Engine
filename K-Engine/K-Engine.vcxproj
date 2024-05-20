@@ -23,6 +23,7 @@
     <ClInclude Include="src\K-Engine\Move.h" />
     <ClInclude Include="src\K-Engine\PhysicsEngine.h" />
     <ClInclude Include="src\K-Engine\Player.h" />
+    <ClInclude Include="src\K-Engine\RenderTexture.h" />
     <ClInclude Include="src\K-Engine\Scene.h" />
     <ClInclude Include="src\K-Engine\Editor.h" />
     <ClInclude Include="src\K-Engine\Mesh.h" />
@@ -49,7 +50,6 @@
     <ClInclude Include="vendors\BOX2D\include\World.h" />
     <ClInclude Include="vendors\GLEW\include\glew.h" />
     <ClInclude Include="vendors\IMGUI\backends\imgui_impl_glfw.h" />
-    <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl2.h" />
     <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="vendors\IMGUI\imconfig.h" />
@@ -77,6 +77,7 @@
     <ClCompile Include="src\K-Engine\Move.cpp" />
     <ClCompile Include="src\K-Engine\PhysicsEngine.cpp" />
     <ClCompile Include="src\K-Engine\Player.cpp" />
+    <ClCompile Include="src\K-Engine\RenderTexture.cpp" />
     <ClCompile Include="src\K-Engine\SceneManager.cpp" />
     <ClCompile Include="src\K-Engine\Serializer.cpp" />
     <ClCompile Include="src\K-Engine\Shader.cpp" />
@@ -89,7 +90,6 @@
     <ClCompile Include="src\K-Engine\TriggerDeath.cpp" />
     <ClCompile Include="src\K-Engine\Window.cpp" />
     <ClCompile Include="vendors\IMGUI\backends\imgui_impl_glfw.cpp" />
-    <ClCompile Include="vendors\IMGUI\backends\imgui_impl_opengl2.cpp" />
     <ClCompile Include="vendors\IMGUI\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui.cpp" />
     <ClCompile Include="vendors\IMGUI\imgui_demo.cpp" />

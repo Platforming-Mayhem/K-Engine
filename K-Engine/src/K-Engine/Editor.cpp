@@ -31,11 +31,12 @@ namespace K
 
 	Editor::~Editor()
 	{
-		delete this->material;
-		delete this->window;
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
+
+		delete this->material;
+		delete this->window;
 	}
 
 	K::Scene* Editor::GetCurrentScene() 
@@ -59,22 +60,20 @@ namespace K
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		ImGuiIO& io = ImGui::GetIO();
+		/*ImGuiIO& io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) 
 		{
 			ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-		}
+		}*/
 	}
 
 	void Editor::ImGuiEnd() 
 	{
-		ImGuiIO& io = ImGui::GetIO();
-
+		//glClear(GL_COLOR_BUFFER_BIT);
 		ImGui::Render();
-
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			GLFWwindow* backup_current_context = glfwGetCurrentContext();
 			ImGui::UpdatePlatformWindows();
