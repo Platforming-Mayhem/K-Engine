@@ -159,6 +159,9 @@
     <ClInclude Include="src\K-Engine\RenderTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vendors\IMGUI\imfilebrowser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\K-Engine\Window.cpp">

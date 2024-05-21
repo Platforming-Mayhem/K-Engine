@@ -41,6 +41,7 @@ namespace K
 	class K_API Editor
 	{
 	private:
+		K::RenderTexture* viewport;
 		K::Window* window;
 		bool buildWindow;
 		bool saveWindow;
@@ -69,6 +70,8 @@ namespace K
 
 		void ImGuiViewport();
 
+		void ImGuiContentBrowser();
+
 		void ImGuiExtra();
 
 		void ImGuiBegin();
@@ -76,6 +79,8 @@ namespace K
 		void ImGuiEnd();
 
 		bool Render();
+
+		K::RenderTexture* GetViewport();
 
 		static K::Material* GetMaterial();
 

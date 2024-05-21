@@ -21,13 +21,6 @@ namespace K
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->colourID, 0);
 
-		unsigned int rbo;
-		glGenRenderbuffers(1, &rbo);
-
-		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->width, this->height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
 		glBindTexture(this->type, 0);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -41,13 +34,11 @@ namespace K
 	void RenderTexture::Bind() 
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, this->frameBufferID);
-		glEnable(GL_DEPTH_TEST);
 	}
 
 	void RenderTexture::Unbind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glDisable(GL_DEPTH_TEST);
 	}
 
 	RenderTexture::~RenderTexture()

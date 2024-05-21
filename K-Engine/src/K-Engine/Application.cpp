@@ -40,6 +40,8 @@ namespace K
 				break;
 			}
 
+			editor->GetViewport()->Bind();
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glUseProgram(material->GetShader()->shader);
@@ -47,6 +49,8 @@ namespace K
 			K::SceneManager::currentScene->Render();
 
 			glUseProgram(0);
+
+			editor->GetViewport()->Unbind();
 
 			#if _DEBUG
 			if (editor->Render())

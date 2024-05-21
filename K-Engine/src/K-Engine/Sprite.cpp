@@ -200,6 +200,7 @@ namespace K
 	{
 		this->texture->Unbind();
 		this->normalTexture->Unbind();
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "frame"), 0);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);

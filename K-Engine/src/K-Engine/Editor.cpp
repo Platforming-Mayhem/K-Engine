@@ -18,13 +18,13 @@ namespace K
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
 		ImGui::StyleColorsDark();
 		this->sceneManager = sceneManager;
 		this->window = window;
 		this->material = material;
 		this->buildWindow = false;
 		this->saveWindow = false;
+		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 	}
@@ -37,6 +37,12 @@ namespace K
 
 		delete this->material;
 		delete this->window;
+		delete this->viewport;
+	}
+
+	K::RenderTexture* Editor::GetViewport() 
+	{
+		return this->viewport;
 	}
 
 	K::Scene* Editor::GetCurrentScene() 
@@ -60,33 +66,27 @@ namespace K
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		/*ImGuiIO& io = ImGui::GetIO();
-		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) 
+
+		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable) 
 		{
-			ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-		}*/
+			ImGui::DockSpaceOverViewport();
+		}
 	}
 
 	void Editor::ImGuiEnd() 
 	{
-		//glClear(GL_COLOR_BUFFER_BIT);
 		ImGui::Render();
+		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			GLFWwindow* backup_current_context = glfwGetCurrentContext();
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(backup_current_context);
-		}
 	}
 
 	void Editor::ImGuiViewport() 
 	{
-		if (ImGui::Begin("Viewport")) 
+		if (ImGui::Begin("Viewport", 0))
 		{
-			
+			int width = ImGui::GetWindowWidth();
+			int height = ImGui::GetWindowHeight() - ImGui::GetFrameHeight() - 2.0f;
+			ImGui::Image((void*)(intptr_t)this->viewport->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		ImGui::End();
 	}
@@ -231,6 +231,13 @@ namespace K
 		ImGui::End();
 	}
 
+	void Editor::ImGuiContentBrowser() 
+	{
+		ImGui::Begin("K-Engine Content Browser");
+
+		ImGui::End();
+	}
+
 	bool Editor::Render() 
 	{
 		ImGuiBegin();
@@ -238,6 +245,8 @@ namespace K
 		ImGuiInspector();
 
 		ImGuiHierarchy();
+
+		ImGuiContentBrowser();
 
 		ImGuiViewport();
 

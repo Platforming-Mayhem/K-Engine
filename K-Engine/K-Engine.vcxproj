@@ -53,6 +53,7 @@
     <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="vendors\IMGUI\imconfig.h" />
+    <ClInclude Include="vendors\IMGUI\imfilebrowser.h" />
     <ClInclude Include="vendors\IMGUI\imgui.h" />
     <ClInclude Include="vendors\IMGUI\imgui_internal.h" />
     <ClInclude Include="vendors\IMGUI\imstb_rectpack.h" />
