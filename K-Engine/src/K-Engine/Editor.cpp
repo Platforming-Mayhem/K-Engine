@@ -82,10 +82,14 @@ namespace K
 
 	void Editor::ImGuiViewport() 
 	{
-		if (ImGui::Begin("Viewport", 0))
+		ImGuiWindowClass window_class;
+		window_class.DockNodeFlagsOverrideSet |= ImGuiDockNodeFlags_AutoHideTabBar;
+		ImGui::SetNextWindowClass(&window_class);
+		if (ImGui::Begin("Viewport"))
 		{
-			int width = ImGui::GetWindowWidth();
 			int height = ImGui::GetWindowHeight() - ImGui::GetFrameHeight() - 2.0f;
+			int width = height * (16.0f / 9.0f);
+			ImGui::SetCursorPos(ImVec2((ImGui::GetWindowWidth() - width) * 0.5f, (ImGui::GetWindowHeight() - height) * 0.5f));
 			ImGui::Image((void*)(intptr_t)this->viewport->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		ImGui::End();
