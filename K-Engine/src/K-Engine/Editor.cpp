@@ -249,10 +249,23 @@ namespace K
 	{
 		ImGui::Begin("K-Engine Content Browser");
 
+		if (this->currentDirectory.string() != ASSET_DIR && this->currentDirectory.string() + "/" != ASSET_DIR)
+		{
+			if (ImGui::Button("...")) 
+			{
+				this->currentDirectory = this->currentDirectory.parent_path();
+			}
+		}
+
 		for (auto& p : std::filesystem::directory_iterator(this->currentDirectory)) 
 		{
-			std::string path = p.path().string();
-			ImGui::Text(path.c_str());
+			if (p.is_directory()) 
+			{
+				if (ImGui::Button(p.path().string().c_str())) 
+				{
+					this->currentDirectory = p.path();
+				}
+			}
 		}
 
 		ImGui::End();
