@@ -135,12 +135,20 @@ namespace K
 
 	unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 	{
+		int success;
+		char infoLog[512];
 		unsigned int program = glCreateProgram();
 		unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
 		unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 		glAttachShader(program, vs);
 		glAttachShader(program, fs);
 		glLinkProgram(program);
+		// check for linking errors
+		glGetProgramiv(program, GL_LINK_STATUS, &success);
+		if (!success) {
+			glGetProgramInfoLog(program, 512, NULL, infoLog);
+			std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+		}
 		glValidateProgram(program);
 		glDeleteShader(vs);
 		glDeleteShader(fs);

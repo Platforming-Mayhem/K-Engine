@@ -175,16 +175,6 @@ namespace K
 		return temp;
 	}
 
-	K::Matrix4x4 K::Transform::RotationMatrix()
-	{
-		K::Matrix4x4 temp = K::Matrix4x4::IdentityMatrix();
-
-		//Rotation Matrix
-		temp = K::Matrix4x4::Matrix_MultiplyMatrix(temp, *K::Quaternion::Euler(this->rotation)->QuaternionToMatrix());
-		
-		return temp;
-	}
-
 	K::Matrix4x4 K::Transform::ScaleMatrix()
 	{
 		K::Matrix4x4 temp = K::Matrix4x4::IdentityMatrix();
@@ -225,7 +215,9 @@ namespace K
 			globalModelMatrix.m[1][1] *= this->scale->y;
 			globalModelMatrix.m[2][2] *= this->scale->z;
 			//Rotation Matrix
-			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, *K::Quaternion::Euler(this->rotation)->QuaternionToMatrix());
+			K::Quaternion rotation = *K::Quaternion::Euler(this->rotation);
+			K::Matrix4x4 rotationMatrix = rotation.QuaternionToMatrix();
+			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, rotationMatrix);
 			//Translation Matrix
 			globalModelMatrix.m[3][0] += this->position->x;
 			globalModelMatrix.m[3][1] += this->position->y;
@@ -257,7 +249,9 @@ namespace K
 			globalModelMatrix.m[1][1] *= this->scale->y;
 			globalModelMatrix.m[2][2] *= this->scale->z;
 			//Rotation Matrix
-			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, *K::Quaternion::Euler(this->rotation)->QuaternionToMatrix());
+			K::Quaternion rotation = *K::Quaternion::Euler(this->rotation);
+			K::Matrix4x4 rotationMatrix = rotation.QuaternionToMatrix();
+			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, rotationMatrix);
 			//Translation Matrix
 			globalModelMatrix.m[3][0] += this->position->x;
 			globalModelMatrix.m[3][1] += this->position->y;
@@ -294,7 +288,7 @@ namespace K
 		return this;
 	}
 
-	K::Matrix4x4* K::Quaternion::QuaternionToMatrix()
+	K::Matrix4x4 K::Quaternion::QuaternionToMatrix()
 	{
 		K::Matrix4x4 mat = K::Matrix4x4::IdentityMatrix();
 		this->Normalize();
@@ -313,7 +307,7 @@ namespace K
 		mat.m[0][2] = 2.0f * qx * qz - 2.0f * qy * qw;
 		mat.m[1][2] = 2.0f * qy * qz + 2.0f * qx * qw;
 		mat.m[2][2] = 1.0f - 2.0f * qx * qx - 2.0f * qy * qy;
-		return &mat;
+		return mat;
 	}
 
 	K::Quaternion* K::Quaternion::Euler(K::Vector3* rotation)

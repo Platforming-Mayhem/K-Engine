@@ -128,11 +128,6 @@ namespace K
 
 	void GameObject::Update()
 	{
-		GLenum err;
-		while ((err = glGetError()) != GL_NO_ERROR)
-		{
-			std::cout << gluErrorString(err) << std::endl;
-		}
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)
 		{
 			this->GetComponent(i)->Update();

@@ -1,5 +1,6 @@
 #include "TriggerDeath.h"
 #include "Editor.h"
+#include "FollowPlayer.h"
 
 namespace K
 {

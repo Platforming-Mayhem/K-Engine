@@ -1,5 +1,5 @@
 #include "Editor.h"
-#include "Serializer.h"
+#include <K_Engine.h>
 
 namespace K 
 {
@@ -17,6 +17,7 @@ namespace K
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Viewport
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 		ImGui::StyleColorsDark();
 		this->sceneManager = sceneManager;
@@ -25,6 +26,7 @@ namespace K
 		this->buildWindow = false;
 		this->saveWindow = false;
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
+		this->currentDirectory = ASSET_DIR;
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 	}
@@ -78,6 +80,14 @@ namespace K
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_current_context);
+		}
 	}
 
 	void Editor::ImGuiViewport() 
@@ -238,6 +248,12 @@ namespace K
 	void Editor::ImGuiContentBrowser() 
 	{
 		ImGui::Begin("K-Engine Content Browser");
+
+		for (auto& p : std::filesystem::directory_iterator(this->currentDirectory)) 
+		{
+			std::string path = p.path().string();
+			ImGui::Text(path.c_str());
+		}
 
 		ImGui::End();
 	}

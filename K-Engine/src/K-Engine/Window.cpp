@@ -33,6 +33,7 @@ namespace K
 			glfwTerminate();
 			std::cout << "Failed to create window" << std::endl;
 		}
+
 		glfwMakeContextCurrent(this->window);
 
 		glfwSwapInterval(1);
@@ -41,6 +42,8 @@ namespace K
 		{
 			std::cout << "Error GLEW" << std::endl;
 		}
+
+		std::cout << glGetString(GL_VERSION) << std::endl;
 
 		glPolygonMode(GL_FRONT, GL_FILL);
 

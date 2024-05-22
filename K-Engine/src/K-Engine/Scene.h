@@ -112,10 +112,7 @@ namespace K
 			K::Time::startTime = glfwGetTime();
 			for (auto temp : this->GetGameObjects())
 			{
-				if (!temp.second->GetComponentOfType(typeid(K::Camera).name())) 
-				{
-					temp.second->PassTransformationMatrix();
-				}
+				temp.second->PassTransformationMatrix();
 				temp.second->Bind();
 				temp.second->Update();
 				temp.second->Unbind();

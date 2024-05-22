@@ -3,18 +3,7 @@
 #include "SceneManager.h"
 #include "Material.h"
 #include "Window.h"
-#include "Sprite.h"
-#include "Player.h"
-#include "Ship.h"
-#include "Camera.h"
-#include "Collider.h"
-#include "Animator.h"
-#include "FollowPlayer.h"
-#include "Timer.h"
-#include "Move.h"
-#include "Light.h"
-#include "TriggerDeath.h"
-#include "Component.h"
+#include "RenderTexture.h"
 
 namespace K 
 {
@@ -41,6 +30,7 @@ namespace K
 	class K_API Editor
 	{
 	private:
+		std::filesystem::path currentDirectory;
 		K::RenderTexture* viewport;
 		K::Window* window;
 		bool buildWindow;

@@ -240,7 +240,7 @@ namespace K
 
 		K::Quaternion* Normalize();
 
-		K::Matrix4x4* QuaternionToMatrix();
+		K::Matrix4x4 QuaternionToMatrix();
 
 		static K::Quaternion* Euler(Vector3* rotation);
 	};
@@ -261,9 +261,7 @@ namespace K
 		Vector3* localRotation;
 		Vector3* localScale;
 
-		K::Matrix4x4 modelMatrix = K::Matrix4x4::IdentityMatrix();
-
-		K::Matrix4x4 RotationMatrix();
+		K::Matrix4x4 modelMatrix;
 
 		K::Matrix4x4 PositionMatrix();
 

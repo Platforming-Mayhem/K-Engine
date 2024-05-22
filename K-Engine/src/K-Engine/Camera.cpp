@@ -79,10 +79,6 @@ namespace K
 
 	void Camera::CameraMatrix() 
 	{
-		this->viewMatrix = K::Matrix4x4::IdentityMatrix();
-
-		this->parent->PassTransformationMatrix();
-
 		if (this->isActive && !this->isEditorCamera)
 		{
 			//Projection Matrix
@@ -112,16 +108,8 @@ namespace K
 				this->projectionMatrix.m[3][1] = -(t + b) / (t - b);
 				this->projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
 			}
-
 			//View Matrix
-			K::Vector3 forward = K::Vector3(0.0f, 0.0f, 1.0f);
-			K::Vector3 up = K::Vector3(0.0f, 1.0f, 0.0f);
-
-			K::Vector3 rotatedForward = K::Vector3(0.0f, -1.0f, 0.0f);
-			K::Vector3 rotatedUp = K::Vector3(0.0f, 0.0f, 1.0f);
-
 			this->viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
-
 			if (this->parent->parent != nullptr)
 			{
 				K::Matrix4x4 scalingMatrix = this->parent->GetTransform()->LocalScaleMatrix(this->parent->parent->GetTransform());

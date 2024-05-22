@@ -33,6 +33,12 @@ namespace K
 		{
 			glfwPollEvents();
 
+			GLenum err;
+			while ((err = glGetError()) != GL_NO_ERROR)
+			{
+				std::cout << gluErrorString(err) << std::endl;
+			}
+
 			int esc = glfwGetKey(window->window, GLFW_KEY_ESCAPE);
 
 			if (esc == GLFW_PRESS)
@@ -40,6 +46,7 @@ namespace K
 				break;
 			}
 
+			#if _DEBUG
 			editor->GetViewport()->Bind();
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -52,11 +59,18 @@ namespace K
 
 			editor->GetViewport()->Unbind();
 
-			#if _DEBUG
 			if (editor->Render())
 			{
 				break;
 			}
+			#else
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glUseProgram(material->GetShader()->shader);
+
+			K::SceneManager::currentScene->Render();
+
+			glUseProgram(0);
 			#endif
 
 			K::SceneManager::Update();

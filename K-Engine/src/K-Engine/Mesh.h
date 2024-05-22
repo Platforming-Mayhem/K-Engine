@@ -81,12 +81,12 @@ namespace K
 
 		std::vector<K::Vertex>& operator *= (K::Quaternion* other)
 		{
-			K::Matrix4x4 mat = *other->QuaternionToMatrix();
+			K::Matrix4x4 mat = other->QuaternionToMatrix();
 			for (int i = 0; i < this->vertices.size(); i++)
 			{
-				K::Vector3* temp = new K::Vector3(0.0f, 0.0f, 0.0f);
-				MultiplyMatrixVector(this->vertices[i].position, *temp, mat);
-				this->vertices[i].position = *temp;
+				K::Vector3 temp = K::Vector3();
+				MultiplyMatrixVector(this->vertices[i].position, temp, mat);
+				this->vertices[i].position = temp;
 			}
 			return this->vertices;
 		}

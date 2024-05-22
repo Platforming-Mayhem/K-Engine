@@ -1,6 +1,5 @@
 #pragma once
 #include "build.h"
-#include "RenderTexture.h"
 
 namespace K 
 {

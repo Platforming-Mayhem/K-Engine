@@ -45,12 +45,15 @@ namespace K
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
 		glEnableVertexAttribArray(2);
 
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 		this->Unbind();
 	}
 
 	void Mesh::Bind() 
 	{
 		glBindVertexArray(this->VAO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), this->colourTint[0], this->colourTint[1], this->colourTint[2]);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canDepth"), this->canDepth);
 	}
@@ -73,6 +76,7 @@ namespace K
 
 	void Mesh::Unbind() 
 	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
 
