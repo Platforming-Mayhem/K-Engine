@@ -263,20 +263,6 @@ namespace K
 			{
 				if (char0 == '\n') 
 				{
-					if (count > 21)
-					{
-						auto start = std::chrono::steady_clock::now();
-						this->CreateComponentFast(dataArray[count - 1]);
-						auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
-						if (times.count(this->selectedComponent->GetName()) > 0) 
-						{
-							times.find(this->selectedComponent->GetName())->second += elapsed;
-						}
-						else 
-						{
-							times.insert(std::pair<std::string, std::chrono::milliseconds>(this->selectedComponent->GetName(), elapsed));
-						}
-					}
 					count = 0;
 					line.clear();
 					dataArray.clear();
@@ -286,27 +272,17 @@ namespace K
 				}
 				else if (char0 == ',') 
 				{
+					dataArray.push_back(line);
+					line.clear();
+					count++;
 					if (count == 21)
 					{
 						this->CreateGameObjectFast(dataArray);
 					}
 					else if (count > 21)
 					{
-						auto start = std::chrono::steady_clock::now();
 						this->CreateComponentFast(dataArray[count - 1]);
-						auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
-						if (times.count(this->selectedComponent->GetName()) > 0)
-						{
-							times.find(this->selectedComponent->GetName())->second += elapsed;
-						}
-						else
-						{
-							times.insert(std::pair<std::string, std::chrono::milliseconds>(this->selectedComponent->GetName(), elapsed));
-						}
 					}
-					dataArray.push_back(line);
-					line.clear();
-					count++;
 				}
 				else 
 				{
@@ -316,23 +292,11 @@ namespace K
 
 			inFile.close();
 
-			for (auto time : times)
-			{
-				std::cout << time.first << ":" << time.second << std::endl;
-			}
-
 			if (!parents.empty())
 			{
 				for (auto temp : parents)
 				{
-					if (temp.first->SetParent(K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)))
-					{
-						//std::cout << "Parent: " << K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)->GetName() << "," << " Child: " << temp.first->GetName() << std::endl;
-					}
-					else
-					{
-						//std::cout << "Failed Setting Parent: " << K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second)->GetName() << "," << " Child: " << temp.first->GetName() << std::endl;
-					}
+					temp.first->SetParent(K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second));
 				}
 				parents.clear();
 			}

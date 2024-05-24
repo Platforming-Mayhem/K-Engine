@@ -6,6 +6,7 @@ namespace K
 	{
 	private:
 		unsigned int colourID;
+		unsigned int depthID;
 		unsigned int frameBufferID;
 		unsigned int type;
 		int width;

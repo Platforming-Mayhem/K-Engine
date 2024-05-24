@@ -17,7 +17,6 @@ namespace K
 		K::GameObject* selectedGameObject = nullptr;
 
 		int componentDataCount = 0;
-
 		std::map<K::GameObject*, int> parents;
 
 	public:

@@ -266,6 +266,19 @@ namespace K
 					this->currentDirectory = p.path();
 				}
 			}
+			else 
+			{
+				if (ImGui::Button(p.path().string().c_str())) 
+				{
+					if (p.path().extension() == ".JAWS") 
+					{
+						K::Editor::GetCurrentScene()->CreateEmptyScene();
+						this->selectedGameObject = nullptr;
+						std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
+						K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
+					}
+				}
+			}
 		}
 
 		ImGui::End();
