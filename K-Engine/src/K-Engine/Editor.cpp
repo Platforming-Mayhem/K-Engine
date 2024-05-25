@@ -26,6 +26,7 @@ namespace K
 		this->buildWindow = false;
 		this->saveWindow = false;
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
+		this->file = new K::Texture("textures/editor/file.png", GL_TEXTURE_2D);
 		this->currentDirectory = ASSET_DIR;
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
@@ -39,6 +40,7 @@ namespace K
 
 		delete this->material;
 		delete this->window;
+		delete this->file;
 		delete this->viewport;
 	}
 
@@ -259,22 +261,25 @@ namespace K
 
 		for (auto& p : std::filesystem::directory_iterator(this->currentDirectory)) 
 		{
+			std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 			if (p.is_directory()) 
 			{
-				if (ImGui::Button(p.path().string().c_str())) 
+				this->file->Bind(0);
+				if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)this->file->GetViewID(), ImVec2(this->file->GetWidth(), this->file->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
 				{
 					this->currentDirectory = p.path();
 				}
+				this->file->Unbind();
+				ImGui::TextWrapped(relativeLocation.c_str());
 			}
 			else 
 			{
-				if (ImGui::Button(p.path().string().c_str())) 
+				if (ImGui::Button(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str()))
 				{
 					if (p.path().extension() == ".JAWS") 
 					{
 						K::Editor::GetCurrentScene()->CreateEmptyScene();
 						this->selectedGameObject = nullptr;
-						std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 						K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
 					}
 				}

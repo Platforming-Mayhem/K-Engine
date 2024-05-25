@@ -3,7 +3,7 @@
 #include "SceneManager.h"
 #include "Material.h"
 #include "Window.h"
-#include "RenderTexture.h"
+#include "Texture.h"
 
 namespace K 
 {
@@ -32,6 +32,7 @@ namespace K
 	private:
 		std::filesystem::path currentDirectory;
 		K::RenderTexture* viewport;
+		K::Texture* file;
 		K::Window* window;
 		bool buildWindow;
 		bool saveWindow;
