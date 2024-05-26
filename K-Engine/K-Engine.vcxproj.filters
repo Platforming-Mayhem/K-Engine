@@ -33,7 +33,7 @@
     <ClInclude Include="src\K-Engine\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="assets\resource.h">
+    <ClInclude Include="assets\ignore\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\K-Engine\Editor.h">
@@ -303,7 +303,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="assets\KEngineResources.rc">
+    <ResourceCompile Include="assets\ignore\KEngineResources.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -321,7 +321,7 @@
     <Library Include="vendors\GLEW\lib\Release\x64\glew32s.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="assets\excludeFromBuild.txt" />
-    <Text Include="assets\SceneManager.txt" />
+    <Text Include="assets\ignore\excludeFromBuild.txt" />
+    <Text Include="assets\ignore\SceneManager.txt" />
   </ItemGroup>
 </Project>

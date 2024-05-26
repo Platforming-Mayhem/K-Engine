@@ -33,6 +33,7 @@ namespace K
 		std::filesystem::path currentDirectory;
 		K::RenderTexture* viewport;
 		K::Texture* file;
+		K::Texture* scene;
 		K::Window* window;
 		bool buildWindow;
 		bool saveWindow;

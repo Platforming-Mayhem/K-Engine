@@ -27,6 +27,7 @@ namespace K
 		this->saveWindow = false;
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
 		this->file = new K::Texture("textures/editor/file.png", GL_TEXTURE_2D);
+		this->scene = new K::Texture("textures/editor/scene.png", GL_TEXTURE_2D);
 		this->currentDirectory = ASSET_DIR;
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
@@ -259,6 +260,10 @@ namespace K
 			}
 		}
 
+		float contentWidth = ImGui::GetContentRegionAvail().x;
+		int numberOfColumns = contentWidth / this->file->GetWidth();
+		ImGui::Columns(numberOfColumns, "Content Columns", false);
+
 		for (auto& p : std::filesystem::directory_iterator(this->currentDirectory)) 
 		{
 			std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
@@ -271,18 +276,23 @@ namespace K
 				}
 				this->file->Unbind();
 				ImGui::TextWrapped(relativeLocation.c_str());
+				ImGui::NextColumn();
 			}
 			else 
 			{
-				if (ImGui::Button(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str()))
+				if (p.path().extension() == ".JAWS")
 				{
-					if (p.path().extension() == ".JAWS") 
+					this->scene->Bind(0);
+					if (ImGui::ImageButton(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str(), (void*)(intptr_t)this->scene->GetViewID(), ImVec2(this->scene->GetWidth(), this->scene->GetHeight()), ImVec2(0, 1), ImVec2(1, 0))) 
 					{
 						K::Editor::GetCurrentScene()->CreateEmptyScene();
 						this->selectedGameObject = nullptr;
 						K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
 					}
+					this->scene->Unbind();
 				}
+				ImGui::TextWrapped(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str());
+				ImGui::NextColumn();
 			}
 		}
 

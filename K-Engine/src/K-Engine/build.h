@@ -14,7 +14,7 @@
 #include <format>
 #include <thread>
 #include <Windows.h>
-#include "resource.h"
+#include <ignore/resource.h>
 
 //ImGUI
 #include "imgui.h"

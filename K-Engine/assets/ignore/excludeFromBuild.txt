@@ -1,0 +1,4 @@
+ignore
+shaders
+textures\watermark
+textures\editor

@@ -27,7 +27,7 @@
     <ClInclude Include="src\K-Engine\Scene.h" />
     <ClInclude Include="src\K-Engine\Editor.h" />
     <ClInclude Include="src\K-Engine\Mesh.h" />
-    <ClInclude Include="assets\resource.h" />
+    <ClInclude Include="assets\ignore\resource.h" />
     <ClInclude Include="src\K-Engine\GameObject.h" />
     <ClInclude Include="src\K-Engine\SceneManager.h" />
     <ClInclude Include="src\K-Engine\Serializer.h" />
@@ -100,7 +100,7 @@
     <ClCompile Include="vendors\IMGUI\misc\cpp\imgui_stdlib.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="assets\KEngineResources.rc" />
+    <ResourceCompile Include="assets\ignore\KEngineResources.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\Fox_Attack.gif" />
@@ -123,8 +123,8 @@
     <Library Include="vendors\GLEW\lib\Release\x64\glew32s.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="assets\excludeFromBuild.txt" />
-    <Text Include="assets\SceneManager.txt" />
+    <Text Include="assets\ignore\excludeFromBuild.txt" />
+    <Text Include="assets\ignore\SceneManager.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -231,7 +231,7 @@
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>RD /S /Q "$(TargetDir)assets"
-XCOPY "$(SolutionDir)K-Engine\assets" "$(TargetDir)assets" /I /E /Y /EXCLUDE:$(SolutionDir)K-Engine\assets\excludeFromBuild.txt</Command>
+XCOPY "$(SolutionDir)K-Engine\assets" "$(TargetDir)assets" /I /E /Y /EXCLUDE:$(SolutionDir)K-Engine\assets\ignore\excludeFromBuild.txt</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
