@@ -64,6 +64,8 @@ namespace K
 
 		void Bind() override;
 
+		void RenderBind() override;
+
 		void Unbind()  override;
 
 		void SetPropertyValues(const char* value, int valueIndex) override;

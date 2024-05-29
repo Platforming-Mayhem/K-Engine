@@ -61,6 +61,7 @@ namespace K
 				std::thread thread(&Texture::LoadAnimation, this);
 				thread.detach();
 				glGenTextures(1, &this->id);
+				glGenTextures(1, &this->viewId);
 				glBindTexture(this->type, this->id);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -132,6 +133,7 @@ namespace K
 						this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
 						this->frames = 1;
 						glGenTextures(1, &this->id);
+						glGenTextures(1, &this->viewId);
 						glBindTexture(this->type, this->id);
 						glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
 						glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -153,8 +155,6 @@ namespace K
 							this->image = nullptr;
 
 							glBindTexture(this->type, 0);
-
-							glGenTextures(1, &this->viewId);
 
 							if (this->c > 3) 
 							{
@@ -283,10 +283,8 @@ namespace K
 		return this->filename.c_str();
 	}
 
-	void Texture::Bind(const GLint texture_unit)
+	void Texture::LoadIntoGPU() 
 	{
-		glActiveTexture(GL_TEXTURE0 + texture_unit);
-		glBindTexture(this->type, this->id);
 		if (this->loadedAnimation)
 		{
 			glTexStorage3D(this->type, 1, GL_RGBA8, this->width, this->height, this->frames);
@@ -294,23 +292,21 @@ namespace K
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
-			glGenTextures(1, &this->viewId);
 			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
 
-			if (this->textures->Check(this->filename)->dependencies > 0) 
+			if (this->textures->Check(this->filename)->dependencies > 0)
 			{
-				for (auto i : this->textures->Check(this->filename)->dependenciesPointers) 
+				for (auto i : this->textures->Check(this->filename)->dependenciesPointers)
 				{
 					((K::Texture*)i)->fps = this->fps;
 					((K::Texture*)i)->frames = this->frames;
 					((K::Texture*)i)->width = this->width;
 					((K::Texture*)i)->height = this->height;
-					((K::Texture*)i)->viewId = this->viewId;
 				}
 			}
 			this->loadedAnimation = false;
 		}
-		if (this->loadedTexture) 
+		if (this->loadedTexture)
 		{
 			if (this->c >= 4)
 			{
@@ -334,6 +330,13 @@ namespace K
 		}
 	}
 
+	void Texture::Bind(const GLint texture_unit)
+	{
+		glActiveTexture(GL_TEXTURE0 + texture_unit);
+		glBindTexture(this->type, this->id);
+		this->LoadIntoGPU();
+	}
+
 	void Texture::Unbind() 
 	{
 		glBindTexture(this->type, 0);
@@ -351,6 +354,7 @@ namespace K
 
 	void Texture::LoadAnimation() 
 	{
+		std::cout << "Load into memory:" << this->filename << std::endl;
 		this->image = stbi_xload_file((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->frames, &this->delay);
 		if(this->delay != nullptr)
 			this->fps = 1.0f / (*this->delay / 1000.0f);

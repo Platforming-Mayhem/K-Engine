@@ -54,7 +54,6 @@ namespace K
 			{
 				for (auto g : this->gameObjects)
 				{
-					//std::cout << "Initializing " << g.second->GetName() << std::endl;
 					g.second->Init();
 				}
 			}
@@ -107,22 +106,32 @@ namespace K
 			return this->sceneName.c_str();
 		}
 
-		void Render() 
+		void GameLoop() 
 		{
-			K::Time::startTime = glfwGetTime();
 			for (auto temp : this->GetGameObjects())
 			{
 				temp.second->Bind();
 				temp.second->Update();
 				temp.second->Unbind();
 			}
-			for (auto temp : this->GetGameObjects()) 
+		}
+
+		void RenderLoop() 
+		{
+			for (auto temp : this->GetGameObjects())
 			{
 				temp.second->PassTransformationMatrix();
 				temp.second->RenderBind();
 				temp.second->Render();
 				temp.second->RenderUnbind();
 			}
+		}
+
+		void Render() 
+		{
+			K::Time::startTime = glfwGetTime();
+			this->GameLoop();
+			this->RenderLoop();
 			K::Time::endTime = K::Time::startTime;
 		}
 	};

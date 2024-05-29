@@ -78,6 +78,8 @@ namespace K
 		this->originalScale = *this->parent->GetTransform()->scale;
 
 		this->parent->layer = (int)K::Layer::LayerType::Player;
+
+		this->col->ResetVelocity();
 	}
 
 	void Player::UpdateEditor() 
@@ -86,6 +88,70 @@ namespace K
 		{
 			ImGui::DragFloat("Movement Speed", &this->movementSpeed);
 			ImGui::Checkbox("is Slowing Down", &this->isSlowingDown);
+		}
+	}
+
+	void Player::RenderBind() 
+	{
+		//Animation States
+
+		switch (this->animationState)
+		{
+		case 0:
+			//Idle
+			this->animator->PlayAnimation(0, this->sprite, false);
+			this->parent->GetTransform()->rotation->y = 0.0f;
+			break;
+		case 1:
+			//Moving
+			this->animator->PlayAnimation(1, this->sprite, false);
+			this->parent->GetTransform()->rotation->y = 0.0f;
+			break;
+		case 2:
+			//Jumping
+			this->animator->PlayAnimation(2, this->sprite, false);
+			this->parent->GetTransform()->rotation->y = 0.0f;
+			break;
+		case 3:
+			//Dashing
+			if (!this->sprite->IsPlaying())
+			{
+				if (this->isJumping)
+				{
+					this->animationState = 2;
+				}
+				else if (this->direction.x != 0.0f)
+				{
+					this->animationState = 1;
+				}
+				else
+				{
+					this->animationState = 0;
+				}
+			}
+			else
+			{
+				this->animator->PlayAnimation(3, this->sprite, false);
+			}
+			break;
+		case 4:
+			if (!this->sprite->IsPlaying())
+			{
+				if (this->isJumping)
+				{
+					this->animationState = 2;
+				}
+				else
+				{
+					this->animationState = 0;
+				}
+			}
+			else
+			{
+				this->animator->PlayAnimation(4, this->sprite, false);
+				this->parent->GetTransform()->rotation->y = 0.0f;
+			}
+			break;
 		}
 	}
 
@@ -259,66 +325,6 @@ namespace K
 		else
 		{
 			this->parent->GetTransform()->scale->x = this->originalScale.x;
-		}
-		//Animation States
-
-		switch (this->animationState)
-		{
-		case 0:
-			//Idle
-			this->animator->PlayAnimation(0, this->sprite, false);
-			this->parent->GetTransform()->rotation->y = 0.0f;
-			break;
-		case 1:
-			//Moving
-			this->animator->PlayAnimation(1, this->sprite, false);
-			this->parent->GetTransform()->rotation->y = 0.0f;
-			break;
-		case 2:
-			//Jumping
-			this->animator->PlayAnimation(2, this->sprite, false);
-			this->parent->GetTransform()->rotation->y = 0.0f;
-			break;
-		case 3:
-			//Dashing
-			if (!this->sprite->IsPlaying())
-			{
-				if (this->isJumping) 
-				{
-					this->animationState = 2;
-				}
-				else if (this->direction.x != 0.0f) 
-				{
-					this->animationState = 1;
-				}
-				else
-				{
-					this->animationState = 0;
-				}
-			}
-			else
-			{
-				this->animator->PlayAnimation(3, this->sprite, false);
-			}
-			break;
-		case 4:
-			if (!this->sprite->IsPlaying())
-			{
-				if (this->isJumping)
-				{
-					this->animationState = 2;
-				}
-				else
-				{
-					this->animationState = 0;
-				}
-			}
-			else
-			{
-				this->animator->PlayAnimation(4, this->sprite, false);
-				this->parent->GetTransform()->rotation->y = 0.0f;
-			}
-			break;
 		}
 	}
 

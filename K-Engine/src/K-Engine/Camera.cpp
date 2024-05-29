@@ -131,6 +131,11 @@ namespace K
 
 	void Camera::Bind()
 	{
+		
+	}
+
+	void Camera::RenderBind() 
+	{
 		glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "fogColour"), this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2]);
 	}
