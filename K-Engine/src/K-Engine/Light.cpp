@@ -31,9 +31,14 @@ namespace K
 		}
 	}
 
-	void Light::Bind()
+	void Light::RenderBind() 
 	{
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "lightDirection"), this->lightDirection.x, this->lightDirection.y, this->lightDirection.z);
+	}
+
+	void Light::Bind()
+	{
+		
 	}
 
 	void Light::Unbind()

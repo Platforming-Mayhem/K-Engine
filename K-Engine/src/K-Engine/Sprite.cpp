@@ -201,6 +201,11 @@ namespace K
 		this->normalTexture->Bind(1);
 	}
 
+	void Sprite::Render() 
+	{
+		
+	}
+
 	void Sprite::RenderUnbind() 
 	{
 		this->texture->Unbind();

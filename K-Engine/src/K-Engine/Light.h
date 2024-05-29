@@ -25,6 +25,8 @@ namespace K
 
 		void UpdateEditor() override;
 
+		void RenderBind() override;
+
 		void Bind() override;
 
 		void Unbind()  override;

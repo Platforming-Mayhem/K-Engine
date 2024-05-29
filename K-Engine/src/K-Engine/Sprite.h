@@ -53,6 +53,8 @@ namespace K
 
 		void RenderBind() override;
 
+		void Render() override;
+
 		void RenderUnbind() override;
 
 		void Update() override;

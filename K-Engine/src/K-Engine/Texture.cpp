@@ -61,7 +61,6 @@ namespace K
 				std::thread thread(&Texture::LoadAnimation, this);
 				thread.detach();
 				glGenTextures(1, &this->id);
-				glGenTextures(1, &this->viewId);
 				glBindTexture(this->type, this->id);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -277,11 +276,13 @@ namespace K
 	{
 		if (this->loadedAnimation)
 		{
+			std::cout << "Load Animation Into GPU:" << this->filename << std::endl;
 			glTexStorage3D(this->type, 1, GL_RGBA8, this->width, this->height, this->frames);
 			glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
+			glGenTextures(1, &this->viewId);
 			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
 
 			if (this->textures->Check(this->filename)->dependencies > 0)
@@ -292,6 +293,7 @@ namespace K
 					((K::Texture*)i)->frames = this->frames;
 					((K::Texture*)i)->width = this->width;
 					((K::Texture*)i)->height = this->height;
+					((K::Texture*)i)->viewId = this->viewId;
 				}
 			}
 			this->loadedAnimation = false;
@@ -355,6 +357,7 @@ namespace K
 		{
 			std::cerr << "Failed to load animation: " << this->filename << std::endl;
 		}
+		std::cout << "Load Animation Into Memory:" << this->filename << std::endl;
 	}
 
 	void Texture::Load() 
