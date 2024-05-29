@@ -180,7 +180,7 @@ namespace K
 		}
 	}
 
-	void Sprite::Bind() 
+	void Sprite::RenderBind() 
 	{
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), this->canChromaKey);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), this->hasNormal);
@@ -196,7 +196,7 @@ namespace K
 		this->normalTexture->Bind(1);
 	}
 
-	void Sprite::Unbind()
+	void Sprite::RenderUnbind() 
 	{
 		this->texture->Unbind();
 		this->normalTexture->Unbind();
@@ -204,6 +204,16 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+	}
+
+	void Sprite::Bind() 
+	{
+		
+	}
+
+	void Sprite::Unbind()
+	{
+		
 	}
 
 	int Sprite::GetFrameNumber() 

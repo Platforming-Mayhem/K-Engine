@@ -49,6 +49,10 @@ namespace K
 
 		void Init() override;
 
+		void RenderBind() override;
+
+		void RenderUnbind() override;
+
 		void Update() override;
 
 		void UpdateEditor() override;

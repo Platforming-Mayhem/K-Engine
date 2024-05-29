@@ -47,10 +47,20 @@ namespace K
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		this->Unbind();
+		this->RenderUnbind();
 	}
 
 	void Mesh::Bind() 
+	{
+		
+	}
+
+	void Mesh::Update() 
+	{
+		
+	}
+
+	void Mesh::RenderBind() 
 	{
 		glBindVertexArray(this->VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
@@ -58,9 +68,15 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canDepth"), this->canDepth);
 	}
 
-	void Mesh::Update() 
+	void Mesh::Render() 
 	{
 		glDrawElements(GL_TRIANGLES, this->indices.size() * sizeof(int), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void Mesh::RenderUnbind() 
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 	}
 
 	void Mesh::UpdateEditor()
@@ -76,8 +92,7 @@ namespace K
 
 	void Mesh::Unbind() 
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+		
 	}
 
 	void Mesh::SetPropertyValues(const char* value, int valueIndex)

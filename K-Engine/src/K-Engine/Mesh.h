@@ -100,6 +100,12 @@ namespace K
 
 		void Update() override;
 
+		void RenderBind() override;
+
+		void Render() override;
+
+		void RenderUnbind() override;
+
 		void UpdateEditor() override;
 
 		void Bind() override;

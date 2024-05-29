@@ -234,9 +234,14 @@ namespace K
 		
 	}
 
-	void Camera::Update() 
+	void Camera::Render()
 	{
 		this->CameraMatrix();
+	}
+
+	void Camera::Update() 
+	{
+		
 	}
 
 	void Camera::UpdateEditor()

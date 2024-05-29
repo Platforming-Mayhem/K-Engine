@@ -18,6 +18,12 @@ namespace K
 
 		virtual void Update() = 0;
 
+		virtual void RenderBind() {};
+
+		virtual void Render() {};
+
+		virtual void RenderUnbind() {};
+
 		virtual void Bind() = 0;
 
 		virtual void Unbind() = 0;

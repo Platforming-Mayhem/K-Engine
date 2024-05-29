@@ -50,6 +50,12 @@ namespace K
 
 		void UpdateEditor();
 
+		void RenderBind();
+
+		void Render();
+
+		void RenderUnbind();
+
 		void PassTransformationMatrix();
 
 		void Bind();

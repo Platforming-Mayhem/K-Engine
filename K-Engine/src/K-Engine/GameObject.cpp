@@ -134,6 +134,30 @@ namespace K
 		}
 	}
 
+	void GameObject::RenderBind() 
+	{
+		for (int i = 0; i < this->GetNumberOfComponents(); i++)
+		{
+			this->GetComponent(i)->RenderBind();
+		}
+	}
+
+	void GameObject::Render() 
+	{
+		for (int i = 0; i < this->GetNumberOfComponents(); i++)
+		{
+			this->GetComponent(i)->Render();
+		}
+	}
+
+	void GameObject::RenderUnbind() 
+	{
+		for (int i = 0; i < this->GetNumberOfComponents(); i++)
+		{
+			this->GetComponent(i)->RenderUnbind();
+		}
+	}
+
 	void GameObject::UpdateEditor()
 	{
 		ImGui::Separator();

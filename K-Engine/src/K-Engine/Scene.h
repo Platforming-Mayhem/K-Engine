@@ -112,10 +112,16 @@ namespace K
 			K::Time::startTime = glfwGetTime();
 			for (auto temp : this->GetGameObjects())
 			{
-				temp.second->PassTransformationMatrix();
 				temp.second->Bind();
 				temp.second->Update();
 				temp.second->Unbind();
+			}
+			for (auto temp : this->GetGameObjects()) 
+			{
+				temp.second->PassTransformationMatrix();
+				temp.second->RenderBind();
+				temp.second->Render();
+				temp.second->RenderUnbind();
 			}
 			K::Time::endTime = K::Time::startTime;
 		}
