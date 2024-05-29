@@ -96,6 +96,8 @@ namespace K
 			return this->vertices[0];
 		}
 
+		void RenderInit() override;
+
 		void Init() override;
 
 		void Update() override;

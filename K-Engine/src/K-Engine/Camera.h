@@ -56,6 +56,8 @@ namespace K
 
 		void Init() override;
 
+		void RenderInit() override;
+
 		void Render() override;
 
 		void Update() override;

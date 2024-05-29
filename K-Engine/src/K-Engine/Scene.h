@@ -56,6 +56,10 @@ namespace K
 				{
 					g.second->Init();
 				}
+				for (auto g : this->gameObjects)
+				{
+					g.second->RenderInit();
+				}
 			}
 			K::Time::startTime = glfwGetTime();
 			K::Time::endTime = K::Time::startTime;

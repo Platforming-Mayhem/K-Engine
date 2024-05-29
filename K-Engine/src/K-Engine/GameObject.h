@@ -46,6 +46,8 @@ namespace K
 
 		void Init();
 
+		void RenderInit();
+
 		void Update();
 
 		void UpdateEditor();

@@ -22,7 +22,7 @@ namespace K
 		//std::cout << "End Mesh Destruction..." << std::endl;
 	}
 
-	void Mesh::Init() 
+	void Mesh::RenderInit() 
 	{
 		glCreateVertexArrays(1, &this->VAO);
 		glGenBuffers(1, &this->VBO);
@@ -48,6 +48,11 @@ namespace K
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		this->RenderUnbind();
+	}
+
+	void Mesh::Init() 
+	{
+		
 	}
 
 	void Mesh::Bind() 

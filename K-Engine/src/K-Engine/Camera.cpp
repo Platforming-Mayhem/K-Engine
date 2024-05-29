@@ -230,6 +230,11 @@ namespace K
 
 	void Camera::Init() 
 	{
+		
+	}
+
+	void Camera::RenderInit() 
+	{
 		SetWindow(K::window);
 		SetMaterial(this->parent->GetMaterial());
 	}

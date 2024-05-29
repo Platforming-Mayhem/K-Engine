@@ -243,37 +243,27 @@ namespace K
 	Texture::~Texture() 
 	{
 		//std::cout << "Begin Texture Destruction..." << std::endl;
-		if (this->filename.empty()) 
+		if (this->textures->Check(this->filename)->dependencies > 0)
 		{
+			int count = 0;
+			for (auto i : this->textures->Check(this->filename)->dependenciesPointers)
+			{
+				if (i == this)
+				{
+					this->textures->Check(this->filename)->dependenciesPointers.erase(this->textures->Check(this->filename)->dependenciesPointers.begin() + count);
+					this->textures->Check(this->filename)->dependencies--;
+				}
+				count++;
+			}
+		}
+		if (this->textures->Check(this->filename)->dependencies <= 0)
+		{
+			this->textures->Remove(this->filename);
 			glDeleteTextures(1, &this->id);
-		}
-		else 
-		{
-			if (this->textures->Check(this->filename)->dependencies <= 0)
+			if (this->viewId != this->id)
 			{
-				if (this->textures->Contains(this->filename))
-				{
-					this->textures->Remove(this->filename);
-				}
-				glDeleteTextures(1, &this->id);
+				glDeleteTextures(1, &this->viewId);
 			}
-			else
-			{
-				this->textures->Check(this->filename)->dependencies--;
-				int count = 0;
-				for (auto i : this->textures->Check(this->filename)->dependenciesPointers) 
-				{
-					if (i == this) 
-					{
-						this->textures->Check(this->filename)->dependenciesPointers.erase(this->textures->Check(this->filename)->dependenciesPointers.begin() + count);
-					}
-					count++;
-				}
-			}
-		}
-		if (this->viewId != this->id && this->viewId != NULL) 
-		{
-			glDeleteTextures(1, &this->viewId);
 		}
 		//std::cout << "End Texture Destruction..." << std::endl;
 	}
@@ -354,7 +344,6 @@ namespace K
 
 	void Texture::LoadAnimation() 
 	{
-		std::cout << "Load into memory:" << this->filename << std::endl;
 		this->image = stbi_xload_file((ASSET_DIR + this->filename).c_str(), &this->width, &this->height, &this->frames, &this->delay);
 		if(this->delay != nullptr)
 			this->fps = 1.0f / (*this->delay / 1000.0f);

@@ -168,16 +168,21 @@ namespace K
 		return this->isPlaying;
 	}
 
-	void Sprite::Init()
+	void Sprite::RenderInit() 
 	{
-		if (this->texture == nullptr) 
+		if (this->texture == nullptr)
 		{
 			this->SetColorTexture(WATERMARK);
 		}
-		if (this->normalTexture == nullptr) 
+		if (this->normalTexture == nullptr)
 		{
 			this->SetNormalTexture(WATERMARK);
 		}
+	}
+
+	void Sprite::Init()
+	{
+		
 	}
 
 	void Sprite::RenderBind() 

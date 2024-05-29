@@ -37,9 +37,9 @@ namespace K
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
 		K::Vector3 topPosition = *this->GetPosition() + K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
 		K::Vector3 bottomPosition = *this->GetPosition() - K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
-		K::Transform* temp = new K::Transform(&topPosition, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
-		temp->PassModelMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
+		K::Transform temp = K::Transform(&topPosition, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		temp.PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 		float theta = 360.0f / 16.0f;
 		glBegin(GL_LINE_STRIP);
 		for (int i = 0; i <= 8; i++)
@@ -47,18 +47,18 @@ namespace K
 			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
 		}
 		glEnd();
-		*temp->position = bottomPosition;
-		temp->PassModelMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
+		*temp.position = bottomPosition;
+		temp.PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 		glBegin(GL_LINE_STRIP);
 		for (int i = 8; i <= 16; i++)
 		{
 			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
 		}
 		glEnd();
-		*temp->position = *this->GetPosition();
-		temp->PassModelMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
+		*temp.position = *this->GetPosition();
+		temp.PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 
 		glBegin(GL_LINE_STRIP);
 		glVertex3f(this->radius, 0.0f, this->GetHeight() * 0.5f);
@@ -88,8 +88,8 @@ namespace K
 			}
 			else
 			{
-				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * K::Time::deltaTime() * 60.0f);
-				this->time += K::Time::deltaTime();
+				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * K::Time::deltaTime());
+				this->time += K::Time::deltaTime() * 60.0f;
 			}
 			*this->parent->GetTransform()->position += K::Physics::GetCollisionResolution(this);
 		}

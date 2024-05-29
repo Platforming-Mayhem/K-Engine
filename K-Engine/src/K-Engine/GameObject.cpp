@@ -126,6 +126,15 @@ namespace K
 		}
 	}
 
+	void GameObject::RenderInit()
+	{
+		for (K::Component* c : this->components)
+		{
+			//std::cout << "Initializing " << c->GetName() << std::endl;
+			c->RenderInit();
+		}
+	}
+
 	void GameObject::Update()
 	{
 		for (int i = 0; i < this->GetNumberOfComponents(); i++)

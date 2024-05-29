@@ -19,11 +19,11 @@ namespace K
 
 	class K_API TextureManager 
 	{
-	private:
-		std::map<std::string, K::TextureInfo> textures;
 	public:
+		std::map<std::string, K::TextureInfo> textures;
+
 		TextureManager();
-		
+
 		void Remove(std::string location);
 
 		void Add(std::string location, K::TextureInfo id);

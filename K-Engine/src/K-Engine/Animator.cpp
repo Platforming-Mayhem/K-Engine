@@ -12,7 +12,7 @@ namespace K
 		//std::cout << "Begin Animator Destructor..." << std::endl;
 		if (!this->animations.empty())
 		{
-			for (int i = 0; i < this->animations.size() - 1; i++) 
+			for (int i = 0; i < this->animations.size(); i++) 
 			{
 				if(this->animations[i] != this->currentTexture)
 					delete this->animations[i];

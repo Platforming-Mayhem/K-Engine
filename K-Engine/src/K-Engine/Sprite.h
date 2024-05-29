@@ -47,6 +47,8 @@ namespace K
 
 		bool IsPlaying();
 
+		void RenderInit() override;
+
 		void Init() override;
 
 		void RenderBind() override;
