@@ -4,6 +4,11 @@ namespace K
 {
 	std::vector<K::Collider*> K::Physics::colliders;
 
+	float Physics::GetFixedTimeStep()
+	{
+		return K::Physics::fixedTimeStep;
+	}
+
 	void Physics::Remove(K::Collider* col)
 	{
 		//std::cout << "Removing Collider..." << std::endl;

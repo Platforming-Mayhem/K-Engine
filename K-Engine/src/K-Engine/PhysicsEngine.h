@@ -28,7 +28,11 @@ namespace K
 	{
 	private:
 		static std::vector<K::Collider*> colliders;
+
+		static const int fixedTimeStep = 120;
 	public:
+		static float GetFixedTimeStep();
+
 		static void Remove(K::Collider* col);
 
 		static void RemoveAll();
