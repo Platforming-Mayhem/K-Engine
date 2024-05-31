@@ -41,7 +41,7 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Timer Settings")) 
 		{
-
+			ImGui::DragFloat("Countdown", &this->countDown);
 		}
 	}
 
@@ -63,6 +63,7 @@ namespace K
 			switch (valueIndex)
 			{
 			case 0:
+				this->countDown = std::stof(temp);
 				break;
 			}
 		}
@@ -75,6 +76,7 @@ namespace K
 
 	const char* Timer::GetPropertyValues() 
 	{
+		this->properties += std::to_string(this->countDown);
 		return this->properties.c_str();
 	}
 }
