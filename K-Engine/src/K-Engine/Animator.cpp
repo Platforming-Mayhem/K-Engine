@@ -50,7 +50,14 @@ namespace K
 
 	void K::Animator::Update() 
 	{
-		
+		if (!this->animations.empty())
+		{
+			for (int i = 0; i < this->animations.size(); i++)
+			{
+				if (this->animations[i] != this->currentTexture)
+					this->animations[i]->LoadIntoGPU();
+			}
+		}
 	}
 
 	void K::Animator::UpdateEditor() 

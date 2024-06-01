@@ -58,27 +58,26 @@ namespace K
 			stbi_set_flip_vertically_on_load(true);
 			if (this->type == GL_TEXTURE_2D_ARRAY)
 			{
-				std::thread thread(&Texture::LoadAnimation, this);
-				thread.detach();
+				this->thread = std::thread(&Texture::LoadAnimation, this);
 				glGenTextures(1, &this->id);
-				glGenTextures(1, &this->viewId);
 				glBindTexture(this->type, this->id);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 				glBindTexture(this->type, 0);
 			}
 			else
 			{
-				std::thread thread(&Texture::Load, this);
-				thread.detach();
+				this->thread = std::thread(&Texture::Load, this);
 				glGenTextures(1, &this->id);
 				glBindTexture(this->type, this->id);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 				glBindTexture(this->type, 0);
 
 				this->viewId = this->id;
@@ -271,16 +270,27 @@ namespace K
 		return this->filename.c_str();
 	}
 
+	void Texture::JoinThread() 
+	{
+		if (this->thread.joinable())
+		{
+			this->thread.join();
+			std::cout << this->filename << std::endl;
+		}
+	}
+
 	void Texture::LoadIntoGPU() 
 	{
-		if (this->loadedAnimation)
+		this->JoinThread();
+		glBindTexture(this->type, this->id);
+		if (this->loadedAnimation && this->image != nullptr)
 		{
-			//std::cout << "Load Animation Into GPU:" << this->filename << std::endl;
 			glTexStorage3D(this->type, 1, GL_RGBA8, this->width, this->height, this->frames);
 			glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
+			glGenTextures(1, &this->viewId);
 			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
 
 			if (this->textures->Check(this->filename)->dependencies > 0)
@@ -296,7 +306,7 @@ namespace K
 			}
 			this->loadedAnimation = false;
 		}
-		if (this->loadedTexture)
+		if (this->loadedTexture && this->image != nullptr)
 		{
 			if (this->c >= 4)
 			{
@@ -355,7 +365,7 @@ namespace K
 		{
 			std::cerr << "Failed to load animation: " << this->filename << std::endl;
 		}
-		//std::cout << "Load Animation Into Memory:" << this->filename << std::endl;
+		//std::cout << "Load Animation Into Memory:" << this->filename << this->width << this->height << std::endl;
 	}
 
 	void Texture::Load() 

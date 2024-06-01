@@ -40,6 +40,7 @@ namespace K
 	class K_API Texture
 	{
 	private:
+		std::thread thread;
 		K::TextureManager* textures;
 		unsigned int id;
 		unsigned int viewId;
@@ -94,6 +95,8 @@ namespace K
 		unsigned char* GetFrameImage(int frameIndex);
 
 		int GetFrameRate();
+
+		void JoinThread();
 
 		void LoadIntoGPU();
 
