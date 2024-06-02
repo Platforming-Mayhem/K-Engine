@@ -275,7 +275,7 @@ namespace K
 		if (this->thread.joinable())
 		{
 			this->thread.join();
-			std::cout << this->filename << std::endl;
+			//std::cout << this->filename << std::endl;
 		}
 	}
 
