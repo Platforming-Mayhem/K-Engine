@@ -55,8 +55,6 @@ namespace K
 
 			K::SceneManager::currentScene->Render();
 
-			glUseProgram(0);
-
 			editor->GetViewport()->Unbind();
 
 			if (editor->Render())

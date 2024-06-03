@@ -100,7 +100,7 @@ namespace K
 		ImGui::SetNextWindowClass(&window_class);
 		if (ImGui::Begin("Viewport"))
 		{
-			int height = ImGui::GetWindowHeight() - ImGui::GetFrameHeight() - 2.0f;
+			int height = ImGui::GetWindowHeight();
 			int width = height * (16.0f / 9.0f);
 			ImGui::SetCursorPos(ImVec2((ImGui::GetWindowWidth() - width) * 0.5f, (ImGui::GetWindowHeight() - height) * 0.5f));
 			ImGui::Image((void*)(intptr_t)this->viewport->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
@@ -444,7 +444,7 @@ namespace K
 		}
 		if (this->selectedGameObject != NULL)
 		{
-
+			this->GetViewport()->Bind();
 			this->selectedGameObject->UpdateEditor();
 
 			if (ImGui::Button("Delete")) 
@@ -501,6 +501,7 @@ namespace K
 				}
 				ImGui::EndPopup();
 			}
+			this->GetViewport()->Unbind();
 		}
 	}
 }

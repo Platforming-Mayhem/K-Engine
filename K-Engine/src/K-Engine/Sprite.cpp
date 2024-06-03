@@ -317,9 +317,11 @@ namespace K
 				this->hasNormal = true;
 				fileNormal.ClearSelected();
 			}*/
-			ImGui::Text("%p,%i,%i",this->texture->GetViewID(), this->texture->GetWidth(), this->texture->GetHeight());
+			ImGui::Text("ID: %p,%i,%i", this->texture->GetID(), this->texture->GetWidth(), this->texture->GetHeight());
+			ImGui::Text("ViewID: %p,%i,%i",this->texture->GetViewID(), this->texture->GetWidth(), this->texture->GetHeight());
 			ImGui::Image((void*)(intptr_t)(this->texture->GetViewID()), ImVec2(128.0f, 128.0f), ImVec2(0,1), ImVec2(1,0), ImVec4(1,1,1,1), ImVec4(0,0,0,1));
-			ImGui::Text("%p,%i,%i", this->normalTexture->GetViewID(), this->normalTexture->GetWidth(), this->normalTexture->GetHeight());
+			ImGui::Text("ID: %p,%i,%i", this->normalTexture->GetID(), this->texture->GetWidth(), this->texture->GetHeight());
+			ImGui::Text("ViewID: %p,%i,%i", this->normalTexture->GetViewID(), this->normalTexture->GetWidth(), this->normalTexture->GetHeight());
 			ImGui::Image((void*)(intptr_t)(this->normalTexture->GetViewID()), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 1));
 		}
 	}

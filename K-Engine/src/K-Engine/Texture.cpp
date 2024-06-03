@@ -94,7 +94,8 @@ namespace K
 
 	Texture::Texture(unsigned int resource, GLenum type) {
 		this->textures = &K::textureManager;
-		this->filename = std::to_string(resource);
+		this->type = type;
+		this->filename = std::to_string(resource) + std::to_string(this->type);
 		if (this->textures->Contains(this->filename))
 		{
 			this->id = this->textures->Check(this->filename)->id;
@@ -109,7 +110,6 @@ namespace K
 		}
 		else 
 		{
-			this->type = type;
 			stbi_set_flip_vertically_on_load(true);
 			if (this->type == GL_TEXTURE_2D_ARRAY) 
 			{
