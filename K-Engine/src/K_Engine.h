@@ -17,9 +17,9 @@
 #include <K-Engine/Camera.h>
 #include <K-Engine/Player.h>
 #include <K-Engine/Serializer.h>
-#include <K-Engine/Ship.h>
 #include <K-Engine/Timer.h>
 #include <K-Engine/Move.h>
 #include <K-Engine/TriggerDeath.h>
 #include <K-Engine/Light.h>
 #include <K-Engine/FollowPlayer.h>
+#include <K-Engine/Shooter.h>

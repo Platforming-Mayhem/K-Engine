@@ -2,86 +2,89 @@
 #include "GameObject.h"
 #include "PhysicsEngine.h"
 
-K::Move::Move()
+namespace K 
 {
-	
-}
+	Move::Move()
+	{
 
-K::Move::~Move()
-{
-	
-}
+	}
 
-float K::Move::EaseInQuart(float x) 
-{
-	return x * x * x * x;
-}
+	Move::~Move()
+	{
 
-void K::Move::Init()
-{
-	this->time = 0.2f;
-	destination = *this->parent->GetTransform()->position;
-}
+	}
 
-void K::Move::Update()
-{
-	#if _DEBUG
-		
-	#else
+	float Move::EaseInQuart(float x)
+	{
+		return x * x * x * x;
+	}
+
+	void Move::Init()
+	{
+		this->time = 0.2f;
+		destination = *this->parent->GetTransform()->position;
+	}
+
+	void Move::Update()
+	{
+#if _DEBUG
+
+#else
 		float speed = EaseInQuart(this->time);
 		if (speed < 1.0f)
 		{
 			this->time += K::Time::deltaTime() * 0.25f;
 		}
-		else if(speed >= 1.0f)
+		else if (speed >= 1.0f)
 		{
 			this->time = 1.0f;
 		}
 		destination.x += speed * K::Time::deltaTime() * this->moveSpeed;
 		destination.z = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position + K::Vector3(30.0f, 0.0f, -10.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }).z + 15.0f;
 		*this->parent->GetTransform()->position = K::Vector3::Lerp(*this->parent->GetTransform()->position, this->destination, K::Time::deltaTime() * 2.0f);
-	#endif
-}
-
-void K::Move::UpdateEditor()
-{
-	if (ImGui::CollapsingHeader("Move Settings")) 
-	{
-		ImGui::DragFloat("Move Speed", &this->moveSpeed);
+#endif
 	}
-}
 
-void K::Move::Bind()
-{
-
-}
-
-void K::Move::Unbind()
-{
-	
-}
-
-void K::Move::SetPropertyValues(const char* value, int valueIndex)
-{
-	if (value[0] != '\0' && value != nullptr)
+	void Move::UpdateEditor()
 	{
-		std::string temp = value;
-		switch (valueIndex)
+		if (ImGui::CollapsingHeader("Move Settings"))
 		{
-		case 0:
-			this->moveSpeed = std::stof(temp);
-			break;
+			ImGui::DragFloat("Move Speed", &this->moveSpeed);
 		}
 	}
-}
 
-const char* K::Move::GetPropertyValues()
-{
-	this->properties = std::to_string(this->moveSpeed);
-	return this->properties.c_str();
-}
+	void Move::Bind()
+	{
 
-const char* K::Move::GetName()
-{
-	return typeid(K::Move).name();
+	}
+
+	void Move::Unbind()
+	{
+
+	}
+
+	void Move::SetPropertyValues(const char* value, int valueIndex)
+	{
+		if (value[0] != '\0' && value != nullptr)
+		{
+			std::string temp = value;
+			switch (valueIndex)
+			{
+			case 0:
+				this->moveSpeed = std::stof(temp);
+				break;
+			}
+		}
+	}
+
+	const char* Move::GetPropertyValues()
+	{
+		this->properties = std::to_string(this->moveSpeed);
+		return this->properties.c_str();
+	}
+
+	const char* Move::GetName()
+	{
+		return typeid(K::Move).name();
+	}
 }

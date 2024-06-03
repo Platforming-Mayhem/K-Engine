@@ -12,11 +12,11 @@ namespace K
 
 		virtual ~Component();
 
-		virtual void Init() = 0;
+		virtual void Init() {};
 
 		virtual void UpdateEditor() = 0;
 
-		virtual void Update() = 0;
+		virtual void Update() {};
 
 		virtual void RenderInit() {};
 
@@ -26,9 +26,9 @@ namespace K
 
 		virtual void RenderUnbind() {};
 
-		virtual void Bind() = 0;
+		virtual void Bind() {};
 
-		virtual void Unbind() = 0;
+		virtual void Unbind() {};
 
 		virtual const char* GetName() = 0;
 

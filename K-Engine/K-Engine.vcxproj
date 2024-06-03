@@ -31,7 +31,7 @@
     <ClInclude Include="src\K-Engine\GameObject.h" />
     <ClInclude Include="src\K-Engine\SceneManager.h" />
     <ClInclude Include="src\K-Engine\Serializer.h" />
-    <ClInclude Include="src\K-Engine\Ship.h" />
+    <ClInclude Include="src\K-Engine\Shooter.h" />
     <ClInclude Include="src\K-Engine\Sprite.h" />
     <ClInclude Include="src\K-Engine\Time.h" />
     <ClInclude Include="src\K-Engine\Timer.h" />
@@ -82,7 +82,7 @@
     <ClCompile Include="src\K-Engine\SceneManager.cpp" />
     <ClCompile Include="src\K-Engine\Serializer.cpp" />
     <ClCompile Include="src\K-Engine\Shader.cpp" />
-    <ClCompile Include="src\K-Engine\Ship.cpp" />
+    <ClCompile Include="src\K-Engine\Shooter.cpp" />
     <ClCompile Include="src\K-Engine\Sprite.cpp" />
     <ClCompile Include="src\K-Engine\Texture.cpp" />
     <ClCompile Include="src\K-Engine\Time.cpp" />
