@@ -10,6 +10,7 @@ namespace K
 	class K_API Bullet 
 	{
 	private:
+		K::Mesh mesh;
 		K::Vector3 origin;
 		K::Vector3 direction;
 		float timeElapsed = 0.0f;
@@ -24,44 +25,57 @@ namespace K
 			this->lifeTime = lifeTime;
 			this->direction = direction;
 			this->radius = radius;
+			mesh = K::Mesh();
+			mesh.RenderInit();
 		}
 
 		~Bullet() 
 		{
-
+			
 		}
 
-		void Update() 
+		void Render() 
+		{
+			mesh.Render();
+		}
+
+		bool Update() 
 		{
 			if (this->timeElapsed >= this->lifeTime) 
 			{
-				delete this;
+				return true;
 			}
 			else 
 			{
-				K::Collider* temp = nullptr;
-				K::Physics::Raycast(this->GetLocation(), this->direction, { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &temp);
-				K::Vector3 displacement = *temp->GetPosition() - this->GetLocation();
-				displacement *= K::Vector3(1.0f, 0.0f, 1.0f);
+				K::Collider* other = nullptr;
+				K::Vector3 closest = K::Physics::GetClosestPoint(this->GetLocation(), { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &other);
+				K::Vector3 displacement = (this->GetLocation() - closest) * K::Vector3(1.0f, 0.0f, 1.0f);
 				if (displacement.magnitude() <= this->radius) 
 				{
-					K::Editor::Delete(temp->parent);
+					if (other != nullptr) 
+					{
+						K::Editor::Delete(other->parent);
+					}
+					return true;
 				}
 				this->timeElapsed += K::Time::deltaTime();
+				return false;
 			}
 		}
 
 		K::Vector3 GetLocation() 
 		{
-			return this->origin + (this->direction * this->timeElapsed);
+			return this->origin + (this->direction * this->timeElapsed * 5.0f);
 		}
 	};
 
 	class K_API Shooter : public K::Component 
 	{
 	private:
+		std::vector<K::Bullet*> bullets;
 		K::Collider* col;
 		float projectileSpeed = 1.0f;
+		float reloadTime = 0.0f;
 		std::string properties;
 	public:
 
@@ -70,6 +84,8 @@ namespace K
 		~Shooter();
 
 		void Init() override;
+
+		void Render() override;
 
 		void Update() override;
 

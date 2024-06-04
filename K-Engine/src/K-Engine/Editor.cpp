@@ -24,7 +24,6 @@ namespace K
 		this->window = window;
 		this->material = material;
 		this->buildWindow = false;
-		this->saveWindow = false;
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
 		this->file = new K::Texture("textures/editor/file.png", GL_TEXTURE_2D);
 		this->scene = new K::Texture("textures/editor/scene.png", GL_TEXTURE_2D);
@@ -112,7 +111,7 @@ namespace K
 	{
 		if (ImGui::Begin("K-Engine Properties"))
 		{
-			/*if (ImGui::BeginMenuBar())
+			if (ImGui::BeginMainMenuBar())
 			{
 				if (ImGui::BeginMenu("File"))
 				{
@@ -121,123 +120,64 @@ namespace K
 						K::Editor::GetCurrentScene()->CreateEmptyScene();
 						this->selectedGameObject = nullptr;
 					}
-					if (ImGui::MenuItem("Open..."))
-					{
-						file = ImGui::FileBrowser();
-						file.SetTitle("Load Scene");
-						file.SetTypeFilters({ ".JAWS" });
-						file.SetPwd(ASSET_DIR);
-						file.Open();
-					}
 					if (ImGui::MenuItem("Save..."))
 					{
 						K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene(), ASSET_DIR + K::Editor::GetCurrentScene()->GetLocation());
-					}
-					if (ImGui::MenuItem("Save Scene..."))
-					{
-						file = ImGui::FileBrowser(ImGuiFileBrowserFlags_EnterNewFilename);
-						file.SetTitle("Save Scene");
-						file.SetTypeFilters({ ".JAWS" });
-						file.SetPwd(ASSET_DIR);
-						file.Open();
-						this->saveWindow = true;
 					}
 					if (ImGui::MenuItem("Build..."))
 					{
 						this->buildWindow = true;
 					}
-					if (ImGui::MenuItem("Exit"))
-					{
-						return true;
-					}
 					ImGui::EndMenu();
 				}
-				ImGui::EndMenuBar();
+				ImGui::EndMainMenuBar();
 			}
-			file.Display();
 			if (this->buildWindow)
 			{
-				if (ImGui::BeginChild("Build Menu"))
+				if (ImGui::BeginListBox("Scenes"))
 				{
-					if (ImGui::Button("Add Scene"))
+					for (int i = 0; i < this->sceneManager->GetNumberOfScenes(); i++)
 					{
-						file = ImGui::FileBrowser();
-						file.SetTitle("Load Scene");
-						file.SetTypeFilters({ ".JAWS" });
-						file.SetPwd(ASSET_DIR);
-						file.Open();
-					}
-					if (file.HasSelected())
-					{
-						std::string location = file.GetSelected().string();
-						std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-						this->sceneManager->AddScene(relativeLocation);
-						file.ClearSelected();
-					}
-					if (ImGui::BeginListBox("Scenes"))
-					{
-						for (int i = 0; i < this->sceneManager->GetNumberOfScenes(); i++)
+						if (ImGui::Selectable(this->sceneManager->GetSceneName(i)))
 						{
-							if (ImGui::Selectable(this->sceneManager->GetSceneName(i)))
-							{
-								this->selectedScene = i;
-							}
+							this->selectedScene = i;
 						}
-						ImGui::EndListBox();
-					}
-
-					if (this->selectedScene >= 0)
-					{
-						ImGui::Text(this->sceneManager->GetSceneName(this->selectedScene));
-					}
-
-					if (ImGui::Button("Save Build Menu"))
-					{
-						this->sceneManager->SaveSceneManager();
-						this->buildWindow = false;
-					}
-
-					ImGui::SameLine();
-
-					if (ImGui::Button("Delete Scene From Build"))
-					{
-						this->sceneManager->DeleteScene(this->selectedScene);
-						this->selectedScene = -1;
-					}
-
-					if (ImGui::Button("Exit Build Menu"))
-					{
-						this->buildWindow = false;
 					}
 				}
-				ImGui::EndChild();
-			}
-			else if (this->saveWindow)
-			{
-				if (file.HasSelected())
+				ImGui::EndListBox();
+
+				if (this->selectedScene >= 0)
 				{
-					std::string location = file.GetSelected().string();
-					if (location.find(".JAWS") == std::string::npos)
-					{
-						location += ".JAWS";
-					}
-					K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene(), location);
-					file.ClearSelected();
-					this->saveWindow = false;
+					ImGui::Text(this->sceneManager->GetSceneName(this->selectedScene));
+				}
+
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+
+				if (ImGui::Button("Save Build Menu"))
+				{
+					this->sceneManager->SaveSceneManager();
+					this->buildWindow = false;
+				}
+
+				ImGui::PopStyleColor();
+
+				ImGui::SameLine();
+
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+				if (ImGui::Button("Delete Scene From Build"))
+				{
+					this->sceneManager->DeleteScene(this->selectedScene);
+					this->selectedScene = -1;
+				}
+
+				ImGui::PopStyleColor();
+
+				if (ImGui::Button("Exit Build Menu"))
+				{
+					this->buildWindow = false;
 				}
 			}
-			else
-			{
-				if (file.HasSelected())
-				{
-					K::Editor::GetCurrentScene()->CreateEmptyScene();
-					this->selectedGameObject = nullptr;
-					std::string location = file.GetSelected().string();
-					std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-					K::Deserializer deserialize = K::Deserializer(K::Editor::GetCurrentScene(), relativeLocation);
-					file.ClearSelected();
-				}
-			}*/
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / (ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
 

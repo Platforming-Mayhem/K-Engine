@@ -55,6 +55,6 @@ namespace K
 
 		static K::Vector3 GetCollisionResolution(K::Collider* col, std::vector<K::Layer> avoidLayer = {});
 
-		static K::Vector3 GetClosestPoint(K::Vector3 position, std::vector<K::Layer> avoidLayer = {});
+		static K::Vector3 GetClosestPoint(K::Vector3 position, std::vector<K::Layer> avoidLayer = {}, K::Collider** hit = nullptr);
 	};
 }

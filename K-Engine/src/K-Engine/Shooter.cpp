@@ -9,11 +9,16 @@ namespace K
 
 	Shooter::~Shooter()
 	{
-
+		for (K::Bullet* bullet : this->bullets)
+		{
+			delete bullet;
+		}
+		bullets.clear();
 	}
 
 	void Shooter::Init()
 	{
+		this->parent->layer = (int)K::Layer::LayerType::Enemy;
 		if (this->parent->GetComponentOfType(typeid(K::Collider).name()) != nullptr)
 		{
 			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
@@ -22,9 +27,40 @@ namespace K
 
 	void Shooter::Update()
 	{
-		if (Physics::Hitbox(*this->col->GetPosition() + K::Vector3(-this->col->GetRadius() - 2.0f, 0.0f, -this->col->GetRadius()), *this->col->GetPosition() + K::Vector3(-this->col->GetRadius(), 0.0f, this->col->GetRadius() + 1.0f), { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground })) 
+		if (Physics::Hitbox(*this->col->GetPosition() + K::Vector3(-this->col->GetRadius() - 2.0f, 0.0f, -this->col->GetRadius()), *this->col->GetPosition() + K::Vector3(-this->col->GetRadius(), 0.0f, this->col->GetRadius() + 1.0f), { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }) && this->reloadTime <= 0.0f) 
 		{
+			this->bullets.push_back(new K::Bullet(*this->col->GetPosition(), K::Vector3(-1.0f, 0.0f, 0.0f), 10.0f, 1.0f));
+			this->reloadTime = 2.0f;
+		}
+		if (this->reloadTime > 0.0f) 
+		{
+			this->reloadTime -= K::Time::deltaTime();
+		}
+		if (!this->bullets.empty())
+		{
+			for (int i = 0; i < this->bullets.size(); i++)
+			{
+				if (this->bullets[i]->Update())
+				{
+					delete this->bullets[i];
+					this->bullets.erase(this->bullets.begin() + i);
+				}
+			}
+		}
+	}
 
+	void Shooter::Render() 
+	{
+		if (!bullets.empty())
+		{
+			for (K::Bullet* bullet : bullets)
+			{
+				K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+				*temp.position = bullet->GetLocation();
+				temp.PassModelMatrix();
+				glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
+				bullet->Render();
+			}
 		}
 	}
 

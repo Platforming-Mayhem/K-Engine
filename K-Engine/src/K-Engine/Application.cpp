@@ -33,11 +33,13 @@ namespace K
 		{
 			glfwPollEvents();
 
+			#if _DEBUG
 			GLenum err;
 			while ((err = glGetError()) != GL_NO_ERROR)
 			{
 				std::cout << gluErrorString(err) << std::endl;
 			}
+			#endif
 
 			int esc = glfwGetKey(window->window, GLFW_KEY_ESCAPE);
 
@@ -68,7 +70,6 @@ namespace K
 
 			K::SceneManager::currentScene->Render();
 
-			glUseProgram(0);
 			#endif
 
 			K::SceneManager::Update();

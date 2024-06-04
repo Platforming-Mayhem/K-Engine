@@ -344,7 +344,7 @@ namespace K
 		return temp;
 	}
 
-	K::Vector3 Physics::GetClosestPoint(K::Vector3 position, std::vector<K::Layer> avoidLayer)
+	K::Vector3 Physics::GetClosestPoint(K::Vector3 position, std::vector<K::Layer> avoidLayer, K::Collider** hit)
 	{
 		K::Vector3 newPosition;
 		float distance = INFINITY;
@@ -355,6 +355,8 @@ namespace K
 			{
 				distance = PJ.magnitude();
 				newPosition = contactPoint.position;
+				if (hit != nullptr)
+					*hit = contactPoint.other;
 			}
 		}
 		return newPosition;
