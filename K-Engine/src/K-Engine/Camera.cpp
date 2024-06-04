@@ -123,6 +123,8 @@ namespace K
 				this->viewMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(this->viewMatrix, invertedScalingMatrix);
 			}
 
+			glViewport(0, 0, this->window->width, this->window->height);
+
 			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
 
 			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
