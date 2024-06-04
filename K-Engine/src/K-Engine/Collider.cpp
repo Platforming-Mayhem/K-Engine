@@ -37,7 +37,8 @@ namespace K
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
 		K::Vector3 topPosition = *this->GetPosition() + K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
 		K::Vector3 bottomPosition = *this->GetPosition() - K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
-		K::Transform temp = K::Transform(&topPosition, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		*temp.position = topPosition;
 		temp.PassModelMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 		float theta = 360.0f / 16.0f;
@@ -246,10 +247,10 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
-		K::Vector3 position = *this->GetPosition();
-		K::Transform* temp = new K::Transform(&position, new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
-		temp->PassModelMatrix();
-		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
+		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		*temp.position = *this->GetPosition();
+		temp.PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 		float theta = 360.0f / 16.0f;
 		glBegin(GL_LINE_LOOP);
 		for (int i = 0; i < 16; i++)
@@ -275,9 +276,10 @@ namespace K
 				{
 					glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 0.0f, 1.0f);
 				}
-				temp = new K::Transform(&pointOnLine.position, new K::Vector3(), new K::Vector3(0.1f, 0.1f, 0.1f));
-				temp->PassModelMatrix();
-				glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp->modelMatrix.m[0][0]);
+				*temp.position = pointOnLine.position;
+				*temp.scale = K::Vector3(0.1f, 0.1f, 0.1f);
+				temp.PassModelMatrix();
+				glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 				glBegin(GL_QUADS);
 				glVertex3f(-1.0f, 0.0f, 1.0f);
 				glVertex3f(-1.0f, 0.0f, -1.0f);
