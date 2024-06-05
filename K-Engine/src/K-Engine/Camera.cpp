@@ -140,6 +140,7 @@ namespace K
 	{
 		glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "fogColour"), this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2]);
+		this->CameraMatrix();
 	}
 
 	const char* Camera::GetPropertyValues()
@@ -248,7 +249,7 @@ namespace K
 
 	void Camera::Render()
 	{
-		this->CameraMatrix();
+		
 	}
 
 	void Camera::Update() 

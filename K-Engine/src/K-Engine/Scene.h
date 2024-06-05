@@ -119,7 +119,6 @@ namespace K
 				temp.second->Update();
 				temp.second->Unbind();
 			}
-			K::Time::endTime = K::Time::startTime;
 		}
 
 		void RenderLoop() 
@@ -131,6 +130,7 @@ namespace K
 				temp.second->Render();
 				temp.second->RenderUnbind();
 			}
+			K::Time::endTime = K::Time::startTime;
 		}
 
 		void Render() 
