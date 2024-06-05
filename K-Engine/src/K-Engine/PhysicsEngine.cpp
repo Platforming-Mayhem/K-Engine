@@ -75,6 +75,22 @@ namespace K
 		return isInLayer;
 	}
 
+	bool Physics::HitCircle(K::Vector3 origin, float radius, std::vector<K::Layer> avoidLayer, K::Collider** hit) 
+	{
+		K::Collider* temp = nullptr;
+		K::Vector3 displacement = origin - Physics::GetClosestPoint(origin, avoidLayer, &temp) * K::Vector3(1.0f, 0.0f, 1.0f);
+		if (displacement.magnitude() <= radius) 
+		{
+			if (hit != nullptr)
+				*hit = temp;
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
+
 	bool Physics::Hitbox(K::Vector3 bottomLeft, K::Vector3 topRight, std::vector<K::Layer> avoidLayer, K::Collider** hit)
 	{
 		K::Vector3 centre = (topRight + bottomLeft) * 0.5f;
@@ -143,6 +159,28 @@ namespace K
 					K::Vector3 J = Physics::colliders[i]->PointOnLine(C, D, *Physics::colliders[i]->GetPosition());
 					K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
 					K::Vector3 offset = J2 - *Physics::colliders[i]->GetPosition();
+					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
+					{
+						if (hit != nullptr)
+							*hit = Physics::colliders[i];
+						return true;
+					}
+				}
+				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Capsule)
+				{
+					//THIS ONLY WORKS FOR VERTICAL CAPSULE COLLIDERS
+					K::Vector3 J = Physics::colliders[i]->PointOnLine(C, D, *Physics::colliders[i]->GetPosition() + K::Vector3(0.0f, 0.0f, Physics::colliders[i]->GetHeight() / 2.0f));
+					K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
+					K::Vector3 offset = J2 - *Physics::colliders[i]->GetPosition();
+					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
+					{
+						if (hit != nullptr)
+							*hit = Physics::colliders[i];
+						return true;
+					}
+					J = Physics::colliders[i]->PointOnLine(C, D, *Physics::colliders[i]->GetPosition() - K::Vector3(0.0f, 0.0f, Physics::colliders[i]->GetHeight() / 2.0f));
+					J2 = K::Vector3(J.x, 0.0f, J.y);
+					offset = J2 - *Physics::colliders[i]->GetPosition();
 					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
 					{
 						if (hit != nullptr)

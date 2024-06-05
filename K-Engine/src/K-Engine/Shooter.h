@@ -16,15 +16,20 @@ namespace K
 		float timeElapsed = 0.0f;
 		float lifeTime = 1.0f;
 		float radius = 1.0f;
+		float bulletSpeed = 1.0f;
 	public:
 
-		Bullet(K::Vector3 origin, K::Vector3 direction, float lifeTime = 1.0f, float radius = 1.0f) 
+		Bullet(K::Vector3 origin, K::Vector3 direction, float lifeTime = 1.0f, float radius = 1.0f, float bulletSpeed = 1.0f) 
 		{
 			this->origin = origin;
 			this->timeElapsed = 0.0f;
 			this->lifeTime = lifeTime;
+			std::cout << direction.x << "," << direction.y << "," << direction.z << ":mag:" << direction.magnitude() << std::endl;
 			this->direction = direction;
 			this->radius = radius;
+			this->bulletSpeed = bulletSpeed;
+			this->direction = this->direction.normalise();
+			std::cout << this->direction.x << "," << this->direction.y << "," << this->direction.z << ":mag:" << this->direction.magnitude() << std::endl;
 			mesh = K::Mesh();
 			mesh.RenderInit();
 		}
@@ -56,7 +61,6 @@ namespace K
 					{
 						K::Editor::Delete(other->parent);
 					}
-					return true;
 				}
 				this->timeElapsed += K::Time::deltaTime();
 				return false;
@@ -65,7 +69,7 @@ namespace K
 
 		K::Vector3 GetLocation() 
 		{
-			return this->origin + (this->direction * this->timeElapsed * 5.0f);
+			return this->origin + (this->direction * this->timeElapsed * this->bulletSpeed);
 		}
 	};
 
@@ -74,6 +78,7 @@ namespace K
 	private:
 		std::vector<K::Bullet*> bullets;
 		K::Collider* col;
+		float radius = 1.0f;
 		float projectileSpeed = 1.0f;
 		float reloadTime = 0.0f;
 		std::string properties;
