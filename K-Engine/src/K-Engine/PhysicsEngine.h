@@ -45,6 +45,8 @@ namespace K
 
 		static bool IsInLayer(K::Collider* col, std::vector<K::Layer> avoidLayer);
 
+		static bool HitSector(K::Vector3 origin, float radius, float minAngle, float maxAngle, std::vector<K::Layer> avoidLayer, K::Collider** hit = nullptr);
+
 		static bool HitCircle(K::Vector3 origin, float radius, std::vector<K::Layer> avoidLayer, K::Collider** hit = nullptr);
 
 		static bool Hitbox(K::Vector3 bottomLeft, K::Vector3 topRight, std::vector<K::Layer> avoidLayer, K::Collider** hit = nullptr);

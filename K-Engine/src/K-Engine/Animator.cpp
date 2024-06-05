@@ -79,7 +79,7 @@ namespace K
 				this->AssignTexture(relativeLocation.c_str());
 				this->selectedTexture = this->animations.size() - 1;
 				file.ClearSelected();
-			}
+			}*/
 			if (ImGui::BeginListBox("Animations"))
 			{
 				for (int i = 0; i < this->animations.size(); i++)
@@ -99,7 +99,7 @@ namespace K
 			if (ImGui::Button("Delete Animation")) 
 			{
 				this->animations.erase(this->animations.begin() + this->selectedTexture);
-			}*/
+			}
 		}
 	}
 

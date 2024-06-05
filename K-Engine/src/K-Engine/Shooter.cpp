@@ -28,11 +28,11 @@ namespace K
 	void Shooter::Update()
 	{
 		K::Collider* hit = nullptr;
-		if (Physics::HitCircle(*this->col->GetPosition(), this->radius, { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &hit) && this->reloadTime <= 0.0f)
+		if (Physics::HitSector(*this->col->GetPosition(), this->radius, this->minAngle, this->maxAngle, { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &hit) && this->reloadTime <= 0.0f)
 		{
 			K::Vector3 direction = (*hit->GetPosition() - *this->col->GetPosition());
 			this->bullets.push_back(new K::Bullet(*this->col->GetPosition(), direction, 10.0f, 1.0f, this->projectileSpeed));
-			this->reloadTime = 2.0f;
+			this->reloadTime = this->maxReloadTime;
 		}
 		if (this->reloadTime > 0.0f) 
 		{
@@ -71,8 +71,10 @@ namespace K
 		if (ImGui::CollapsingHeader("Shooter Settings"))
 		{
 			ImGui::DragFloat("Projectile Speed", &this->projectileSpeed);
-
+			ImGui::DragFloat("Reload Time", &this->maxReloadTime);
 			ImGui::DragFloat("Radius", &this->radius);
+			ImGui::DragFloat("Minimum Angle", &this->minAngle);
+			ImGui::DragFloat("Maximum Angle", &this->maxAngle);
 
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
@@ -89,6 +91,36 @@ namespace K
 			{
 				glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
 			}
+			glEnd();
+
+			K::Vector3 up = K::Vector3(0.0f, 0.0f, this->radius);
+			K::Vector3 rotatedUp;
+			K::Vector3 rotateMinAngle = K::Vector3(0.0f, minAngle, 0.0f);
+			K::Matrix4x4 rotate = K::Quaternion::Euler(&rotateMinAngle)->QuaternionToMatrix();
+			K::MultiplyMatrixVector(up, rotatedUp, rotate);
+
+			glBegin(GL_LINE_LOOP);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(rotatedUp.x, rotatedUp.y, rotatedUp.z);
+			glEnd();
+
+			K::Vector3 rotatedMax;
+			K::Vector3 rotateMaxAngle = K::Vector3(0.0f, maxAngle, 0.0f);
+			rotate = K::Quaternion::Euler(&rotateMaxAngle)->QuaternionToMatrix();
+			K::MultiplyMatrixVector(rotatedUp, rotatedMax, rotate);
+
+			glBegin(GL_LINE_LOOP);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(rotatedMax.x, rotatedMax.y, rotatedMax.z);
+			glEnd();
+
+			rotateMaxAngle = K::Vector3(0.0f, -maxAngle, 0.0f);
+			rotate = K::Quaternion::Euler(&rotateMaxAngle)->QuaternionToMatrix();
+			K::MultiplyMatrixVector(rotatedUp, rotatedMax, rotate);
+
+			glBegin(GL_LINE_LOOP);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(rotatedMax.x, rotatedMax.y, rotatedMax.z);
 			glEnd();
 
 			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
@@ -108,6 +140,15 @@ namespace K
 			case 1:
 				this->radius = std::stof(temp);
 				break;
+			case 2:
+				this->minAngle = std::stof(temp);
+				break;
+			case 3:
+				this->maxAngle = std::stof(temp);
+				break;
+			case 4:
+				this->maxReloadTime = std::stof(temp);
+				break;
 			}
 		}
 	}
@@ -116,6 +157,9 @@ namespace K
 	{
 		this->properties = std::to_string(this->projectileSpeed);
 		this->properties += "," + std::to_string(this->radius);
+		this->properties += "," + std::to_string(this->minAngle);
+		this->properties += "," + std::to_string(this->maxAngle);
+		this->properties += "," + std::to_string(this->maxReloadTime);
 		return this->properties.c_str();
 	}
 

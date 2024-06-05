@@ -75,6 +75,28 @@ namespace K
 		return isInLayer;
 	}
 
+	bool Physics::HitSector(K::Vector3 origin, float radius, float minAngle, float maxAngle, std::vector<K::Layer> avoidLayer, K::Collider** hit)
+	{
+		K::Collider* temp = nullptr;
+		if (Physics::HitCircle(origin, radius, avoidLayer, &temp)) 
+		{
+			K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
+			K::Vector3 rotatedUp;
+			K::Vector3 rotateMinAngle = K::Vector3(0.0f, minAngle, 0.0f);
+			K::Matrix4x4 rotate = K::Quaternion::Euler(&rotateMinAngle)->QuaternionToMatrix();
+			K::MultiplyMatrixVector(up, rotatedUp, rotate);
+			K::Vector3 displacement = (*temp->GetPosition() - origin).normalise();
+			float angle = K::Vector3::AngleBetweenVectors(rotatedUp, displacement);
+			if (angle < maxAngle) 
+			{
+				if (hit != nullptr)
+					*hit = temp;
+				return true;
+			}
+		}
+		return false;
+	}
+
 	bool Physics::HitCircle(K::Vector3 origin, float radius, std::vector<K::Layer> avoidLayer, K::Collider** hit) 
 	{
 		K::Collider* temp = nullptr;

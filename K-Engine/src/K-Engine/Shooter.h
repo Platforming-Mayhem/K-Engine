@@ -24,12 +24,10 @@ namespace K
 			this->origin = origin;
 			this->timeElapsed = 0.0f;
 			this->lifeTime = lifeTime;
-			std::cout << direction.x << "," << direction.y << "," << direction.z << ":mag:" << direction.magnitude() << std::endl;
 			this->direction = direction;
 			this->radius = radius;
 			this->bulletSpeed = bulletSpeed;
 			this->direction = this->direction.normalise();
-			std::cout << this->direction.x << "," << this->direction.y << "," << this->direction.z << ":mag:" << this->direction.magnitude() << std::endl;
 			mesh = K::Mesh();
 			mesh.RenderInit();
 		}
@@ -79,8 +77,11 @@ namespace K
 		std::vector<K::Bullet*> bullets;
 		K::Collider* col;
 		float radius = 1.0f;
+		float minAngle = 90.0f;
+		float maxAngle = 270.0f;
 		float projectileSpeed = 1.0f;
 		float reloadTime = 0.0f;
+		float maxReloadTime = 1.0f;
 		std::string properties;
 	public:
 
