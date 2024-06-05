@@ -116,20 +116,21 @@ namespace K
 
 	K::Vector3 K::Vector3::normalise() 
 	{
-		this->x /= magnitude();
-		this->y /= magnitude();
-		this->z /= magnitude();
+		float magnitude = this->magnitude();
+		this->x /= magnitude;
+		this->y /= magnitude;
+		this->z /= magnitude;
 		return *this;
 	}
 
 	float K::Vector2::magnitude()
 	{
-		return sqrtf(powf(x, 2) + powf(y, 2));
+		return sqrtf(powf(this->x, 2) + powf(this->y, 2));
 	}
 
 	float K::Vector3::magnitude()
 	{
-		return sqrtf((x * x) + (y * y) + (z * z));
+		return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2));
 	}
 
 	K::Transform::Transform() 
