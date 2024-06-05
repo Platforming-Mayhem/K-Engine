@@ -267,7 +267,11 @@ namespace K
 
 	const char* Texture::GetFilePath() 
 	{
-		return this->filename.c_str();
+		std::ifstream temp(ASSET_DIR + this->filename);
+		if (temp.good())
+			return this->filename.c_str();
+		else
+			return "";
 	}
 
 	void Texture::JoinThread() 

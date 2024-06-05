@@ -122,7 +122,7 @@ namespace K
 					}
 					if (ImGui::MenuItem("Save..."))
 					{
-						K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene(), ASSET_DIR + K::Editor::GetCurrentScene()->GetLocation());
+						this->confirmationWindow = true;
 					}
 					if (ImGui::MenuItem("Build..."))
 					{
@@ -131,6 +131,25 @@ namespace K
 					ImGui::EndMenu();
 				}
 				ImGui::EndMainMenuBar();
+			}
+			if (this->confirmationWindow) 
+			{
+				ImGui::OpenPopup("Confirmation Window");
+				this->confirmationWindow = false;
+			}
+			if (ImGui::BeginPopup("Confirmation Window")) 
+			{
+				ImGui::Text("Are you sure you want to overwrite this scene?");
+				if (ImGui::Button("Yes")) 
+				{
+					K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene(), ASSET_DIR + K::Editor::GetCurrentScene()->GetLocation());
+					ImGui::CloseCurrentPopup();
+				}
+				else if (ImGui::Button("No")) 
+				{
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
 			}
 			if (this->buildWindow)
 			{

@@ -36,6 +36,7 @@ namespace K
 		K::Texture* scene;
 		K::Window* window;
 		bool buildWindow;
+		bool confirmationWindow = false;
 		int selectedScene = -1;
 		static K::Material* material;
 		static K::SceneManager* sceneManager;
