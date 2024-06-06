@@ -27,6 +27,19 @@ namespace K
 
 	void Move::Update()
 	{
+
+	}
+
+	void Move::UpdateEditor()
+	{
+		if (ImGui::CollapsingHeader("Move Settings"))
+		{
+			ImGui::DragFloat("Move Speed", &this->moveSpeed);
+		}
+	}
+
+	void Move::Bind()
+	{
 #if _DEBUG
 
 #else
@@ -41,21 +54,8 @@ namespace K
 		}
 		destination.x += speed * K::Time::deltaTime() * this->moveSpeed;
 		destination.z = K::Physics::GetClosestPoint(*this->parent->GetTransform()->position + K::Vector3(30.0f, 0.0f, -10.0f), { K::Layer(K::Layer::LayerType::Enemy), K::Layer(K::Layer::LayerType::Player) }).z + 15.0f;
-		*this->parent->GetTransform()->position = K::Vector3::Lerp(*this->parent->GetTransform()->position, this->destination, K::Time::deltaTime() * 2.0f);
+		*this->parent->GetTransform()->position = K::Vector3::Lerp(*this->parent->GetTransform()->position, this->destination, K::Time::deltaTime());
 #endif
-	}
-
-	void Move::UpdateEditor()
-	{
-		if (ImGui::CollapsingHeader("Move Settings"))
-		{
-			ImGui::DragFloat("Move Speed", &this->moveSpeed);
-		}
-	}
-
-	void Move::Bind()
-	{
-
 	}
 
 	void Move::Unbind()

@@ -21,5 +21,4 @@
 #include <K-Engine/Move.h>
 #include <K-Engine/TriggerDeath.h>
 #include <K-Engine/Light.h>
-#include <K-Engine/FollowPlayer.h>
 #include <K-Engine/Shooter.h>

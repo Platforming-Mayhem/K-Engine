@@ -204,12 +204,20 @@ namespace K
 		}
 		else
 		{
-			if (this->isSlowingDown) 
+			if (this->animationState == 1 && this->moveTime >= 0.8f)
 			{
-				if (this->moveTime > 0.0f) 
+				this->animationState = 4;
+			}
+			else if(this->animationState == 1 && this->moveTime < 0.8f)
+			{
+				this->animationState = 0;
+			}
+			if (this->isSlowingDown)
+			{
+				if (this->moveTime > 0.0f)
 				{
-					this->moveTime -= K::Time::deltaTime() * 4.0f;
-					if (this->direction.x > 0.0f) 
+					this->moveTime -= K::Time::deltaTime() * 8.0f;
+					if (this->direction.x > 0.0f)
 					{
 						this->direction.x = this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f);
 					}
@@ -218,21 +226,12 @@ namespace K
 						this->direction.x = -this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f);
 					}
 				}
-				else 
+				else
 				{
 					this->moveTime = 0.0f;
 					this->direction.x = 0.0f;
 					this->isSlowingDown = false;
 				}
-			}
-
-			if (this->animationState == 1 && this->moveTime >= 0.8f)
-			{
-				this->animationState = 4;
-			}
-			else if(this->animationState == 1 && this->moveTime < 0.8f)
-			{
-				this->animationState = 0;
 			}
 		}
 
