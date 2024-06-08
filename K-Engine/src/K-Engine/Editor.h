@@ -34,6 +34,7 @@ namespace K
 		K::RenderTexture* viewport;
 		K::Texture* file;
 		K::Texture* scene;
+		K::Texture* unknown;
 		K::Window* window;
 		bool buildWindow;
 		bool confirmationWindow = false;

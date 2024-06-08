@@ -27,6 +27,7 @@ namespace K
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
 		this->file = new K::Texture("textures/editor/file.png", GL_TEXTURE_2D);
 		this->scene = new K::Texture("textures/editor/scene.png", GL_TEXTURE_2D);
+		this->unknown = new K::Texture("textures/editor/unknown.png", GL_TEXTURE_2D);
 		this->currentDirectory = ASSET_DIR;
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
@@ -40,6 +41,7 @@ namespace K
 
 		delete this->material;
 		delete this->window;
+		delete this->unknown;
 		delete this->file;
 		delete this->viewport;
 	}
@@ -242,13 +244,19 @@ namespace K
 				if (p.path().extension() == ".JAWS")
 				{
 					this->scene->Bind(0);
-					if (ImGui::ImageButton(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str(), (void*)(intptr_t)this->scene->GetViewID(), ImVec2(this->scene->GetWidth(), this->scene->GetHeight()), ImVec2(0, 1), ImVec2(1, 0))) 
+					if (ImGui::ImageButton(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str(), (void*)(intptr_t)this->scene->GetViewID(), ImVec2(this->file->GetWidth(), this->file->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
 					{
 						K::Editor::GetCurrentScene()->CreateEmptyScene();
 						this->selectedGameObject = nullptr;
 						K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
 					}
 					this->scene->Unbind();
+				}
+				else if (p.is_regular_file())
+				{
+					this->unknown->Bind(0);
+					ImGui::Image((void*)(intptr_t)this->unknown->GetViewID(), ImVec2(this->unknown->GetWidth(), this->unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
+					this->unknown->Unbind();
 				}
 				ImGui::TextWrapped(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str());
 				ImGui::NextColumn();

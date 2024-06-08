@@ -112,7 +112,6 @@ namespace K
 
 		void GameLoop() 
 		{
-			K::Time::startTime = glfwGetTime();
 			for (auto temp : this->GetGameObjects())
 			{
 				temp.second->Bind();
@@ -130,13 +129,14 @@ namespace K
 				temp.second->Render();
 				temp.second->RenderUnbind();
 			}
-			K::Time::endTime = K::Time::startTime;
 		}
 
 		void Render() 
 		{
+			K::Time::startTime = glfwGetTime();
 			this->GameLoop();
 			this->RenderLoop();
+			K::Time::endTime = K::Time::startTime;
 		}
 	};
 }
