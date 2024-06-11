@@ -76,7 +76,7 @@ namespace K
 
 			glfwSwapBuffers(window->window);
 		}
-		delete editor;
 		delete manager;
+		delete editor;
 	}
 }

@@ -90,7 +90,9 @@ namespace K
 			return this->viewId;
 		}
 
-		const char* GetFilePath();
+		std::string GetFilePath();
+
+		std::string GetTextureManagerName();
 
 		unsigned char* GetFrameImage(int frameIndex);
 

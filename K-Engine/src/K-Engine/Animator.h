@@ -11,6 +11,7 @@ namespace K
 		std::string properties;
 		std::vector<K::Texture*> animations;
 		K::Texture* currentTexture;
+		K::Texture* initialTexture;
 		int selectedTexture = 0;
 	public:
 

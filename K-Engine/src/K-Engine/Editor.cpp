@@ -25,12 +25,14 @@ namespace K
 		this->material = material;
 		this->buildWindow = false;
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
-		this->file = new K::Texture("textures/editor/file.png", GL_TEXTURE_2D);
-		this->scene = new K::Texture("textures/editor/scene.png", GL_TEXTURE_2D);
-		this->unknown = new K::Texture("textures/editor/unknown.png", GL_TEXTURE_2D);
 		this->currentDirectory = ASSET_DIR;
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
+		#if _DEBUG
+		this->AddPreloadedTexture("textures/editor/scene.png", GL_TEXTURE_2D);
+		this->AddPreloadedTexture("textures/editor/unknown.png", GL_TEXTURE_2D);
+		this->AddPreloadedTexture("textures/editor/file.png", GL_TEXTURE_2D);
+		#endif
 	}
 
 	Editor::~Editor()
@@ -39,10 +41,14 @@ namespace K
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 
+		for (auto tex : this->preloadedTextures)
+		{
+			delete tex.second;
+		}
+		this->preloadedTextures.clear();
+
 		delete this->material;
 		delete this->window;
-		delete this->unknown;
-		delete this->file;
 		delete this->viewport;
 	}
 
@@ -209,8 +215,23 @@ namespace K
 		ImGui::End();
 	}
 
+	void Editor::AddPreloadedTexture(std::string location, GLenum type) 
+	{
+		this->preloadedTextures.insert({ location, new K::Texture(location.c_str(), type) });
+	}
+
+	void Editor::LoadPreloadedTextures() 
+	{
+		for (auto temp : this->preloadedTextures) 
+		{
+			temp.second->LoadIntoGPU();
+		}
+	}
+
 	void Editor::ImGuiContentBrowser() 
 	{
+		this->LoadPreloadedTextures();
+
 		ImGui::Begin("K-Engine Content Browser");
 
 		if (this->currentDirectory.string() != ASSET_DIR && this->currentDirectory.string() + "/" != ASSET_DIR)
@@ -222,7 +243,7 @@ namespace K
 		}
 
 		float contentWidth = ImGui::GetContentRegionAvail().x;
-		int numberOfColumns = contentWidth / this->file->GetWidth();
+		int numberOfColumns = contentWidth / 256.0f;
 		ImGui::Columns(numberOfColumns, "Content Columns", false);
 
 		for (auto& p : std::filesystem::directory_iterator(this->currentDirectory)) 
@@ -230,33 +251,53 @@ namespace K
 			std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 			if (p.is_directory()) 
 			{
-				this->file->Bind(0);
-				if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)this->file->GetViewID(), ImVec2(this->file->GetWidth(), this->file->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
+				K::Texture* temp = this->preloadedTextures.at("textures/editor/file.png");
+				if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(temp->GetWidth(), temp->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
 				{
 					this->currentDirectory = p.path();
 				}
-				this->file->Unbind();
 				ImGui::TextWrapped(relativeLocation.c_str());
 				ImGui::NextColumn();
 			}
 			else 
 			{
-				if (p.path().extension() == ".JAWS")
+				if (p.is_regular_file())
 				{
-					this->scene->Bind(0);
-					if (ImGui::ImageButton(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str(), (void*)(intptr_t)this->scene->GetViewID(), ImVec2(this->file->GetWidth(), this->file->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
+					numberOfColumns = contentWidth / 128.0f;
+					if (p.path().extension() == ".png" || p.path().extension() == ".gif")
 					{
-						K::Editor::GetCurrentScene()->CreateEmptyScene();
-						this->selectedGameObject = nullptr;
-						K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
+						if (this->preloadedTextures.contains(relativeLocation)) 
+						{
+							K::Texture* temp = this->preloadedTextures.at(relativeLocation);
+							ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+							if (ImGui::BeginDragDropSource())
+							{
+								std::string file = temp->GetFilePath();
+								ImGui::SetDragDropPayload("_TEXTURE", file.c_str(), file.size() + 1);
+								ImGui::Text(file.c_str());
+								ImGui::EndDragDropSource();
+							}
+						}
+						else 
+						{
+							this->AddPreloadedTexture(relativeLocation, GL_TEXTURE_2D);
+						}
 					}
-					this->scene->Unbind();
-				}
-				else if (p.is_regular_file())
-				{
-					this->unknown->Bind(0);
-					ImGui::Image((void*)(intptr_t)this->unknown->GetViewID(), ImVec2(this->unknown->GetWidth(), this->unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
-					this->unknown->Unbind();
+					else if (p.path().extension() == ".JAWS")
+					{
+						K::Texture* scene = this->preloadedTextures.at("textures/editor/scene.png");
+						if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)scene->GetID(), ImVec2(scene->GetWidth(), scene->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
+						{
+							K::Editor::GetCurrentScene()->CreateEmptyScene();
+							this->selectedGameObject = nullptr;
+							K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
+						}
+					}
+					else 
+					{
+						K::Texture* unknown = this->preloadedTextures.at("textures/editor/unknown.png");
+						ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)unknown->GetID(), ImVec2(unknown->GetWidth(), unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
+					}
 				}
 				ImGui::TextWrapped(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str());
 				ImGui::NextColumn();

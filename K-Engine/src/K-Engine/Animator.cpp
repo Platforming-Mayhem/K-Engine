@@ -9,19 +9,15 @@ namespace K
 
 	K::Animator::~Animator() 
 	{
-		//std::cout << "Begin Animator Destructor..." << std::endl;
 		if (!this->animations.empty())
 		{
 			for (int i = 0; i < this->animations.size(); i++) 
 			{
-				if(this->animations[i] != this->currentTexture)
+				if(this->currentTexture != this->animations[i])
 					delete this->animations[i];
 			}
 			this->animations.clear();
-			this->animations.shrink_to_fit();
-			this->currentTexture = nullptr;
 		}
-		//std::cout << "End Animator Destructor..." << std::endl;
 	}
 
 	void K::Animator::Init() 
@@ -31,7 +27,13 @@ namespace K
 
 	void K::Animator::Bind() 
 	{
-		
+		if (!this->animations.empty())
+		{
+			for (int i = 0; i < this->animations.size(); i++)
+			{
+				this->animations[i]->LoadIntoGPU();
+			}
+		}
 	}
 
 	void K::Animator::PlayAnimation(int index, K::Sprite* currentSprite, bool reScale) 
@@ -50,55 +52,43 @@ namespace K
 
 	void K::Animator::Update() 
 	{
-		if (!this->animations.empty())
-		{
-			for (int i = 0; i < this->animations.size(); i++)
-			{
-				if (this->animations[i] != this->currentTexture)
-					this->animations[i]->LoadIntoGPU();
-			}
-		}
+		
 	}
 
 	void K::Animator::UpdateEditor() 
 	{
 		if (ImGui::CollapsingHeader("Animator Settings")) 
 		{
-			/*if (ImGui::Button("Add Animation"))
-			{
-				file.SetTitle("Load Sprite");
-				file.SetTypeFilters({ ".PNG", ".JPG", ".GIF" });
-				file.SetPwd(ASSET_DIR);
-				file.Open();
-			}
-			file.Display();
-			if (file.HasSelected())
-			{
-				std::string location = file.GetSelected().string();
-				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-				this->AssignTexture(relativeLocation.c_str());
-				this->selectedTexture = this->animations.size() - 1;
-				file.ClearSelected();
-			}*/
 			if (ImGui::BeginListBox("Animations"))
 			{
 				for (int i = 0; i < this->animations.size(); i++)
 				{
-					if (ImGui::Selectable(this->animations[i]->GetFilePath()))
+					if (ImGui::Selectable(this->animations[i]->GetFilePath().c_str()))
 					{
 						this->selectedTexture = i;
 					}
+				}
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TEXTURE"))
+					{
+						const char* file = (const char*)payload->Data;
+						this->AssignTexture(file);
+					}
+					ImGui::EndDragDropTarget();
 				}
 				ImGui::EndListBox();
 			}
 			if (this->selectedTexture < this->animations.size()) 
 			{
-				ImGui::Text(this->animations[this->selectedTexture]->GetFilePath());
+				ImGui::Text(this->animations[this->selectedTexture]->GetFilePath().c_str());
 				ImGui::Checkbox("Is Looping", &this->animations[this->selectedTexture]->isLooping);
 			}
 			if (ImGui::Button("Delete Animation")) 
 			{
+				delete this->animations[this->selectedTexture];
 				this->animations.erase(this->animations.begin() + this->selectedTexture);
+				this->selectedTexture = this->animations.size() - 1;
 			}
 		}
 	}

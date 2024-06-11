@@ -13,6 +13,7 @@ namespace K
 	private:
 		K::Texture* texture;
 		K::Texture* normalTexture;
+		K::Texture* renderTexture;
 		float internalClock = 0;
 		float chromaKeyColour[3];
 		int frame = 0;

@@ -32,9 +32,7 @@ namespace K
 	private:
 		std::filesystem::path currentDirectory;
 		K::RenderTexture* viewport;
-		K::Texture* file;
-		K::Texture* scene;
-		K::Texture* unknown;
+		std::map<std::string, K::Texture*> preloadedTextures;
 		K::Window* window;
 		bool buildWindow;
 		bool confirmationWindow = false;
@@ -52,6 +50,10 @@ namespace K
 		Editor(K::Window* window, K::SceneManager* sceneManager, K::Material* material);
 
 		virtual ~Editor();
+
+		void AddPreloadedTexture(std::string location, GLenum type);
+
+		void LoadPreloadedTextures();
 
 		void ParentChildrenHierarchy();
 

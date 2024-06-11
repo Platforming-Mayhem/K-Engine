@@ -9,9 +9,11 @@ namespace K
 
 	Sprite::~Sprite() 
 	{
-		//std::cout << "Begin Sprite Destruction..." << std::endl;
+		//std::cout << "Begin Sprite Destruction..." << this->texture->GetFilePath() << std::endl;
 		delete this->texture;
 		delete this->normalTexture;
+		if(this->renderTexture != this->texture)
+			delete this->renderTexture;
 		//std::cout << "End Sprite Destruction..." << std::endl;
 	}
 
@@ -35,7 +37,7 @@ namespace K
 		{
 			this->properties += ",false";
 		}
-		this->properties += "," + (std::string)this->normalTexture->GetFilePath();
+		this->properties += "," + this->normalTexture->GetFilePath();
 		return this->properties.c_str();
 	}
 
@@ -130,7 +132,7 @@ namespace K
 
 	void Sprite::SetColorTexture(const char* value)
 	{
-		this->SetTexture(new K::Texture(value, GL_TEXTURE_2D_ARRAY), false);
+		this->texture = new K::Texture(value, GL_TEXTURE_2D_ARRAY);
 	}
 
 	void Sprite::SetNormalTexture(const char* value)
@@ -140,7 +142,7 @@ namespace K
 
 	void Sprite::SetColorTexture(unsigned int resource)
 	{
-		this->SetTexture(new K::Texture(resource, GL_TEXTURE_2D_ARRAY), false);
+		this->texture = new K::Texture(resource, GL_TEXTURE_2D_ARRAY);
 	}
 
 	void Sprite::SetNormalTexture(unsigned int resource)
@@ -150,15 +152,15 @@ namespace K
 
 	void Sprite::SetTexture(K::Texture* newTexture, bool reScale) 
 	{
-		if (this->texture != newTexture) 
+		if (this->renderTexture != newTexture)
 		{
 			this->frame = 0;
 			this->internalClock = 0.0f;
-			this->texture = newTexture;
+			this->renderTexture = newTexture;
 			if (reScale) 
 			{
-				this->parent->GetTransform()->scale->x = this->texture->GetWidth() / 32.0f;
-				this->parent->GetTransform()->scale->z = this->texture->GetHeight() / 32.0f;
+				this->parent->GetTransform()->scale->x = this->renderTexture->GetWidth() / 32.0f;
+				this->parent->GetTransform()->scale->z = this->renderTexture->GetHeight() / 32.0f;
 			}
 		}
 	}
@@ -170,19 +172,16 @@ namespace K
 
 	void Sprite::RenderInit() 
 	{
-		if (this->texture == nullptr)
-		{
-			this->SetColorTexture(WATERMARK);
-		}
-		if (this->normalTexture == nullptr)
-		{
-			this->SetNormalTexture(WATERMARK);
-		}
+		if (this->renderTexture == nullptr)
+			this->SetTexture(this->texture, false);
 	}
 
 	void Sprite::Init()
 	{
-		
+		if (this->texture == nullptr)
+			this->SetColorTexture(WATERMARK);
+		if (this->normalTexture == nullptr)
+			this->SetNormalTexture(WATERMARK);
 	}
 
 	void Sprite::RenderBind() 
@@ -196,7 +195,7 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "texture1"), 1);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "frame"), this->frame);
 
-		this->texture->Bind(0);
+		this->renderTexture->Bind(0);
 
 		this->normalTexture->Bind(1);
 	}
@@ -208,7 +207,7 @@ namespace K
 
 	void Sprite::RenderUnbind() 
 	{
-		this->texture->Unbind();
+		this->renderTexture->Unbind();
 		this->normalTexture->Unbind();
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "frame"), 0);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
@@ -233,11 +232,11 @@ namespace K
 
 	void Sprite::NextFrame() 
 	{
-		if (this->texture->GetNumberOfFrames() > 1)
+		if (this->renderTexture->GetNumberOfFrames() > 1)
 		{
-			if (this->texture->isLooping) 
+			if (this->renderTexture->isLooping)
 			{
-				if (this->frame < this->texture->GetNumberOfFrames() - 1)
+				if (this->frame < this->renderTexture->GetNumberOfFrames() - 1)
 				{
 					this->frame++;
 				}
@@ -249,14 +248,14 @@ namespace K
 			}
 			else 
 			{
-				if (this->frame < this->texture->GetNumberOfFrames() - 1)
+				if (this->frame < this->renderTexture->GetNumberOfFrames() - 1)
 				{
 					this->frame++;
 					this->isPlaying = true;
 				}
 				else 
 				{
-					this->frame = this->texture->GetNumberOfFrames() - 1;
+					this->frame = this->renderTexture->GetNumberOfFrames() - 1;
 					this->isPlaying = false;
 				}
 			}
@@ -265,7 +264,7 @@ namespace K
 
 	void Sprite::Update()
 	{
-		float fps = 1.0f / this->texture->GetFrameRate();
+		float fps = 1.0f / this->renderTexture->GetFrameRate();
 		if (this->internalClock >= fps)
 		{
 			this->NextFrame();
@@ -278,51 +277,37 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Sprite Settings"))
 		{
-			/*ImGui::Text("These are the sprite settings");
-			if (ImGui::Button("Load New Sprite"))
-			{
-				file.SetTitle("Load Sprite");
-				file.SetTypeFilters({ ".PNG", ".JPG", ".GIF"});
-				file.SetPwd(ASSET_DIR);
-				file.Open();
-			}
-			if (ImGui::Button("Load Normal Sprite")) 
-			{
-				fileNormal.SetTitle("Load Normal Sprite");
-				fileNormal.SetTypeFilters({ ".PNG", ".JPG", ".GIF" });
-				fileNormal.SetPwd(ASSET_DIR);
-				fileNormal.Open();
-			}
-			ImGui::Text("FPS: %i", this->texture->GetFrameRate());
+			ImGui::Text("FPS: %i", this->renderTexture->GetFrameRate());
 			ImGui::Checkbox("has Normal Texture", &this->hasNormal);
 			ImGui::Checkbox("Can Chroma Key", &this->canChromaKey);
 			if (this->canChromaKey) 
 			{
 				ImGui::ColorPicker3("Chroma Key Colour", this->chromaKeyColour);
 			}
-			file.Display();
-			fileNormal.Display();
-			if (file.HasSelected())
+			ImGui::Text("ID: %p,%i,%i", this->renderTexture->GetID(), this->renderTexture->GetWidth(), this->renderTexture->GetHeight());
+			ImGui::Text("ViewID: %p,%i,%i",this->renderTexture->GetViewID(), this->renderTexture->GetWidth(), this->renderTexture->GetHeight());
+			ImGui::ImageButton((void*)(intptr_t)(this->renderTexture->GetViewID()), ImVec2(128.0f, 128.0f), ImVec2(0,1), ImVec2(1,0));
+			if (ImGui::BeginDragDropTarget())
 			{
-				std::string location = file.GetSelected().string();
-				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-				this->SetColorTexture(relativeLocation.c_str());
-				file.ClearSelected();
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TEXTURE"))
+				{
+					const char* file = (const char*)payload->Data;
+					this->SetColorTexture(file);
+				}
+				ImGui::EndDragDropTarget();
 			}
-			if (fileNormal.HasSelected()) 
-			{
-				std::string location = fileNormal.GetSelected().string();
-				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-				this->SetNormalTexture(relativeLocation.c_str());
-				this->hasNormal = true;
-				fileNormal.ClearSelected();
-			}*/
-			ImGui::Text("ID: %p,%i,%i", this->texture->GetID(), this->texture->GetWidth(), this->texture->GetHeight());
-			ImGui::Text("ViewID: %p,%i,%i",this->texture->GetViewID(), this->texture->GetWidth(), this->texture->GetHeight());
-			ImGui::Image((void*)(intptr_t)(this->texture->GetViewID()), ImVec2(128.0f, 128.0f), ImVec2(0,1), ImVec2(1,0), ImVec4(1,1,1,1), ImVec4(0,0,0,1));
-			ImGui::Text("ID: %p,%i,%i", this->normalTexture->GetID(), this->texture->GetWidth(), this->texture->GetHeight());
+			ImGui::Text("ID: %p,%i,%i", this->normalTexture->GetID(), this->normalTexture->GetWidth(), this->normalTexture->GetHeight());
 			ImGui::Text("ViewID: %p,%i,%i", this->normalTexture->GetViewID(), this->normalTexture->GetWidth(), this->normalTexture->GetHeight());
-			ImGui::Image((void*)(intptr_t)(this->normalTexture->GetViewID()), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 1));
+			ImGui::ImageButton((void*)(intptr_t)(this->normalTexture->GetViewID()), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TEXTURE"))
+				{
+					const char* file = (const char*)payload->Data;
+					this->SetNormalTexture(file);
+				}
+				ImGui::EndDragDropTarget();
+			}
 		}
 	}
 }

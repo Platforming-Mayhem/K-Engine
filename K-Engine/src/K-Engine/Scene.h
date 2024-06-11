@@ -21,9 +21,9 @@ namespace K
 
 		~Scene() 
 		{
-			for (int i = 0; i < this->gameObjects.size(); i++) 
+			for (auto i : this->gameObjects) 
 			{
-				delete this->gameObjects[i];
+				delete i.second;
 			}
 			this->gameObjects.clear();
 		}
