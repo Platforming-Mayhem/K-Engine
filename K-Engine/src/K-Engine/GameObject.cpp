@@ -50,6 +50,7 @@ namespace K
 			}
 			this->AddComponent(comp);
 			comp->Init();
+			comp->RenderInit();
 		}
 	}
 
@@ -88,6 +89,7 @@ namespace K
 			}
 			this->AddComponent(comp);
 			comp->Init();
+			comp->RenderInit();
 		}
 		return *this;
 	}
