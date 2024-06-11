@@ -132,21 +132,29 @@ namespace K
 
 	void Sprite::SetColorTexture(const char* value)
 	{
+		if (this->texture != nullptr)
+			delete this->texture;
 		this->texture = new K::Texture(value, GL_TEXTURE_2D_ARRAY);
 	}
 
 	void Sprite::SetNormalTexture(const char* value)
 	{
+		if (this->normalTexture != nullptr)
+			delete this->normalTexture;
 		this->normalTexture = new K::Texture(value, GL_TEXTURE_2D);
 	}
 
 	void Sprite::SetColorTexture(unsigned int resource)
 	{
+		if (this->texture != nullptr)
+			delete this->texture;
 		this->texture = new K::Texture(resource, GL_TEXTURE_2D_ARRAY);
 	}
 
 	void Sprite::SetNormalTexture(unsigned int resource)
 	{
+		if (this->normalTexture != nullptr)
+			delete this->normalTexture;
 		this->normalTexture = new K::Texture(resource, GL_TEXTURE_2D);
 	}
 
@@ -293,6 +301,7 @@ namespace K
 				{
 					const char* file = (const char*)payload->Data;
 					this->SetColorTexture(file);
+					this->SetTexture(this->texture, false);
 				}
 				ImGui::EndDragDropTarget();
 			}
