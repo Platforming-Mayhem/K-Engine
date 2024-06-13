@@ -285,7 +285,7 @@ namespace K
 		if (temp.good())
 			return newFilename;
 		else
-			return "textures/editor/unknown.png";
+			return "";
 	}
 
 	std::string Texture::GetTextureManagerName() 
