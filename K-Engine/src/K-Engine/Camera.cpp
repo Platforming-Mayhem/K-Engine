@@ -64,50 +64,42 @@ namespace K
 		this->isEditorCamera = state;
 	}
 
-	K::Vector3 Camera::GetMousePosition(K::Window* window)
+	void Camera::SetProjectionMatrix() 
 	{
-		double x, y;
-		glfwGetCursorPos(window->window, &x, &y);
-		K::Vector3 clipPosition = K::Vector3(2.0f * ((x / window->width) - 0.5f), -2.0f * ((y / window->height) - 0.5f), 0.0f);
-		K::Matrix4x4 pv = K::Matrix4x4::Matrix_MultiplyMatrix(this->projectionMatrix, this->viewMatrix);
-		K::Matrix4x4 mvp = K::Matrix4x4::Matrix_MultiplyMatrix(pv, this->parent->GetTransform()->modelMatrix);
-		mvp = K::QuickInverse(mvp);
-		K::Vector3 worldPosition = K::Vector3(0.0f, 0.0f, 0.0f);
-		//K::MultiplyMatrixVector(clipPosition, worldPosition, mvp);
-		return worldPosition;
+		//Projection Matrix
+		float aspect = this->window->width / this->window->height;
+		float deltaZ = this->farPlane - this->nearPlane;
+
+		if (this->cameraType == CameraType::Perspective)
+		{
+			float radians = ((3.14159f * 2.0f) / 360.0f) * this->FOV / 2.0f;
+			float fFovRad = tanf(this->FOV * 0.5f / 180.0f * 3.14159f);
+			this->projectionMatrix = K::Matrix4x4::IdentityMatrix();
+			this->projectionMatrix.m[0][0] = 1.0f / (aspect * fFovRad);
+			this->projectionMatrix.m[1][1] = 1.0f / fFovRad;
+			this->projectionMatrix.m[2][2] = -((this->farPlane + this->nearPlane) / deltaZ);
+			this->projectionMatrix.m[3][2] = -((2.0f * this->farPlane * this->nearPlane) / deltaZ);
+			this->projectionMatrix.m[2][3] = -1.0f;
+			this->projectionMatrix.m[3][3] = 0.0f;
+		}
+		else if (this->cameraType == CameraType::Orthographic)
+		{
+			float t = this->orthoSize, b = -this->orthoSize, l = -this->orthoSize * aspect, r = this->orthoSize * aspect;
+			this->projectionMatrix = K::Matrix4x4::IdentityMatrix();
+			this->projectionMatrix.m[0][0] = 2.0f / (r - l);
+			this->projectionMatrix.m[1][1] = 2.0f / (t - b);
+			this->projectionMatrix.m[2][2] = -2.0f / deltaZ;
+			this->projectionMatrix.m[3][0] = -(r + l) / (r - l);
+			this->projectionMatrix.m[3][1] = -(t + b) / (t - b);
+			this->projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / deltaZ;
+		}
 	}
 
 	void Camera::CameraMatrix() 
 	{
 		if (this->isActive && !this->isEditorCamera)
 		{
-			//Projection Matrix
-			float aspect = this->window->width / this->window->height;
-
-			if (this->cameraType == CameraType::Perspective)
-			{
-				float radians = ((3.14159f * 2.0f) / 360.0f) * this->FOV / 2.0f;
-				float fFovRad = tanf(this->FOV * 0.5f / 180.0f * 3.14159f);
-				float deltaZ = this->farPlane - this->nearPlane;
-				this->projectionMatrix = K::Matrix4x4::IdentityMatrix();
-				this->projectionMatrix.m[0][0] = 1.0f / (aspect * fFovRad);
-				this->projectionMatrix.m[1][1] = 1.0f / fFovRad;
-				this->projectionMatrix.m[2][2] = -((this->farPlane + this->nearPlane) / deltaZ);
-				this->projectionMatrix.m[3][2] = -((2.0f * this->farPlane * this->nearPlane) / deltaZ);
-				this->projectionMatrix.m[2][3] = -1.0f;
-				this->projectionMatrix.m[3][3] = 0.0f;
-			}
-			else if (this->cameraType == CameraType::Orthographic)
-			{
-				float t = this->orthoSize, b = -this->orthoSize, l = -this->orthoSize * aspect, r = this->orthoSize * aspect;
-				this->projectionMatrix = K::Matrix4x4::IdentityMatrix();
-				this->projectionMatrix.m[0][0] = 2.0f / (r - l);
-				this->projectionMatrix.m[1][1] = 2.0f / (t - b);
-				this->projectionMatrix.m[2][2] = -2.0f / (this->farPlane - this->nearPlane);
-				this->projectionMatrix.m[3][0] = -(r + l) / (r - l);
-				this->projectionMatrix.m[3][1] = -(t + b) / (t - b);
-				this->projectionMatrix.m[3][2] = -(this->farPlane + this->nearPlane) / (this->farPlane - this->nearPlane);
-			}
+			this->SetProjectionMatrix();
 			//View Matrix
 			this->viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
 			if (this->parent->parent != nullptr)
@@ -141,6 +133,16 @@ namespace K
 		glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "fogColour"), this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2]);
 		this->CameraMatrix();
+	}
+
+	K::Matrix4x4 Camera::GetProjectionMatrix() 
+	{
+		return this->projectionMatrix;
+	}
+
+	K::Matrix4x4 Camera::GetViewMatrix() 
+	{
+		return this->viewMatrix;
 	}
 
 	const char* Camera::GetPropertyValues()

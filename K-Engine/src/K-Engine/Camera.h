@@ -28,8 +28,6 @@ namespace K
 		float rotationSpeed = 100.0f;
 	public:
 
-		K::Vector3 GetMousePosition(K::Window* window);
-
 		Camera();
 
 		~Camera();
@@ -42,6 +40,10 @@ namespace K
 
 		K::Shader* GetShader();
 
+		K::Matrix4x4 GetProjectionMatrix();
+
+		K::Matrix4x4 GetViewMatrix();
+
 		void SetActiveState(bool state);
 
 		void SetEditorState(bool state);
@@ -53,6 +55,8 @@ namespace K
 		void SetWindow(K::Window* window);
 
 		void CameraMatrix();
+
+		void SetProjectionMatrix();
 
 		void Init() override;
 
