@@ -305,6 +305,11 @@ namespace K
 				}
 				ImGui::EndDragDropTarget();
 			}
+			if (ImGui::Button("Delete Color Texture")) 
+			{
+				this->SetColorTexture(WATERMARK);
+				this->SetTexture(this->texture, false);
+			}
 			ImGui::Text("ID: %p,%i,%i", this->normalTexture->GetID(), this->normalTexture->GetWidth(), this->normalTexture->GetHeight());
 			ImGui::Text("ViewID: %p,%i,%i", this->normalTexture->GetViewID(), this->normalTexture->GetWidth(), this->normalTexture->GetHeight());
 			ImGui::ImageButton((void*)(intptr_t)(this->normalTexture->GetViewID()), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
@@ -316,6 +321,11 @@ namespace K
 					this->SetNormalTexture(file);
 				}
 				ImGui::EndDragDropTarget();
+			}
+			if (ImGui::Button("Delete Normal Texture"))
+			{
+				this->SetNormalTexture(WATERMARK);
+				this->hasNormal = false;
 			}
 		}
 	}
