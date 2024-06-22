@@ -2,6 +2,7 @@
 #include "build.h"
 #include "Transform.h"
 #include "Window.h"
+#include "SceneManager.h"
 
 namespace K 
 {
@@ -20,7 +21,11 @@ namespace K
 		static bool IsKeyPressedDown(int key);
 
 		static bool IsKeyReleased(int key);
-		//GET THIS WORKING ASAP!!!
+		
 		static K::Vector3 GetMousePosition();
+
+		static K::Vector3 ConvertToClipPosition(K::Vector3 position);
+
+		static K::GameObject* PickGameObject(K::Camera* camera);
 	};
 }

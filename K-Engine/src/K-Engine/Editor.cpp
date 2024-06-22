@@ -112,6 +112,17 @@ namespace K
 			ImGui::SetCursorPos(ImVec2((ImGui::GetWindowWidth() - width) * 0.5f, (ImGui::GetWindowHeight() - height) * 0.5f));
 			ImGui::Image((void*)(intptr_t)this->viewport->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 		}
+		if (glfwGetMouseButton(this->window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && ImGui::IsItemHovered())
+		{
+			for (auto temp : this->sceneManager->currentScene->GetGameObjects())
+			{
+				if (temp.second->GetComponentOfType(typeid(K::Camera).name()) != nullptr)
+				{
+					K::Camera* camera = (K::Camera*)temp.second->GetComponentOfType(typeid(K::Camera).name());
+					this->selectedGameObject = InputManager::PickGameObject(camera);
+				}
+			}
+		}
 		ImGui::End();
 	}
 
