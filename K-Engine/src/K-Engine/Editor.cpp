@@ -119,7 +119,7 @@ namespace K
 				if (temp.second->GetComponentOfType(typeid(K::Camera).name()) != nullptr)
 				{
 					K::Camera* camera = (K::Camera*)temp.second->GetComponentOfType(typeid(K::Camera).name());
-					this->selectedGameObject = InputManager::PickGameObject(camera);
+					K::Editor::selectedGameObject = InputManager::PickGameObject(camera);
 				}
 			}
 		}

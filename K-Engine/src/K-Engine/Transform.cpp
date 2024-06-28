@@ -130,7 +130,7 @@ namespace K
 
 	float K::Vector3::magnitude()
 	{
-		return sqrtf(powf(this->x, 2) + powf(this->y, 2) + powf(this->z, 2));
+		return sqrtf(K::Vector3::DotProduct(*this, *this));
 	}
 
 	K::Transform::Transform() 
@@ -291,7 +291,6 @@ namespace K
 
 	K::Matrix4x4 K::Quaternion::QuaternionToMatrix()
 	{
-		K::Matrix4x4 mat = K::Matrix4x4::IdentityMatrix();
 		this->Normalize();
 		float qx = this->x;
 		float qy = this->y;
@@ -299,6 +298,7 @@ namespace K
 		float qw = this->w;
 
 		//NOTE(JAWAD) Rotation Matrix
+		K::Matrix4x4 mat = K::Matrix4x4::IdentityMatrix();
 		mat.m[0][0] = 1.0f - 2.0f * qy * qy - 2.0f * qz * qz;
 		mat.m[1][0] = 2.0f * qx * qy - 2.0f * qz * qw;
 		mat.m[2][0] = 2.0f * qx * qz + 2.0f * qy * qw;
@@ -314,14 +314,38 @@ namespace K
 	K::Quaternion* K::Quaternion::Euler(K::Vector3* rotation)
 	{
 		float conversion = 180.0f / std::numbers::pi;
-		float cy = cosf(rotation->z * 0.5 / conversion);
-		float sy = sinf(rotation->z * 0.5 / conversion);
-		float cp = cosf(rotation->y * 0.5 / conversion);
-		float sp = sinf(rotation->y * 0.5 / conversion);
-		float cr = cosf(rotation->x * 0.5 / conversion);
-		float sr = sinf(rotation->x * 0.5 / conversion);
+		K::Vector3 radians = *rotation * (1.0f / conversion);
+		float cy = cosf(radians.z * 0.5f);
+		float sy = sinf(radians.z * 0.5f);
+		float cp = cosf(radians.y * 0.5f);
+		float sp = sinf(radians.y * 0.5f);
+		float cr = cosf(radians.x * 0.5f);
+		float sr = sinf(radians.x * 0.5f);
 
 		K::Quaternion q = K::Quaternion(sr * cp * cy - cr * sp * sy, cr * sp * cy + sr * cp * sy, cr * cp * sy - sr * sp * cy, cr * cp * cy + sr * sp * sy);
 		return &q;
+	}
+
+	K::Vector3* K::Quaternion::ToEuler() 
+	{
+		K::Vector3 eulerAngles;
+		float conversion = 180.0f / std::numbers::pi;
+		this->Normalize();
+		// roll (x-axis rotation)
+		float sinr_cosp = 2 * (this->w * this->x + this->y * this->z);
+		float cosr_cosp = 1 - 2 * (this->x * this->x + this->y * this->y);
+		eulerAngles.x = (std::atan2(sinr_cosp, cosr_cosp)) * conversion;
+
+		// pitch (y-axis rotation)
+		float sinp = std::sqrt(1 + 2 * (this->w * this->y - this->x * this->z));
+		float cosp = std::sqrt(1 - 2 * (this->w * this->y - this->x * this->z));
+		eulerAngles.y = (2 * std::atan2(sinp, cosp) - std::numbers::pi / 2) * conversion;
+
+		// yaw (z-axis rotation)
+		float siny_cosp = 2 * (this->w * this->z + this->x * this->y);
+		float cosy_cosp = 1 - 2 * (this->y * this->y + this->z * this->z);
+		eulerAngles.z = (std::atan2(siny_cosp, cosy_cosp)) * conversion;
+
+		return &eulerAngles;
 	}
 }

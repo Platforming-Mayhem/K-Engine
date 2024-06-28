@@ -90,29 +90,80 @@ namespace K
 
 	K::GameObject* InputManager::PickGameObject(K::Camera* camera) 
 	{
-		K::Vector3 mousePosition = K::InputManager::GetMousePosition();
-		K::Vector3 clipPosition = K::InputManager::ConvertToClipPosition(mousePosition);
-		//std::cout << clipPosition.x << "," << clipPosition.y << std::endl;
-		K::Vector3 clipPositionNearWithZ = K::Vector3(clipPosition.x, clipPosition.y, 0.0f);
-		K::Vector3 worldSpaceNearPosition;
+		//variables
+		K::Vector3 mousePosition, rawClipPosition, clipPositionStart, worldSpaceNearPosition, worldSpaceDirection;
+		K::Matrix4x4 viewMatrix, projectionMatrix, viewProjectionMatrix, invVPMatrix;
 
-		K::Vector3 clipPositionFarWithZ = K::Vector3(clipPosition.x, clipPosition.y, 0.0f);
-		K::Vector3 worldSpaceFarPosition;
+		mousePosition = K::InputManager::GetMousePosition();
+		rawClipPosition = K::InputManager::ConvertToClipPosition(mousePosition);
+		clipPositionStart = K::Vector3(rawClipPosition.x, rawClipPosition.y, -1.0f);
 
-		K::Transform nearPlane = K::Transform(new K::Vector3(0.0f, 0.0f, camera->GetNearPlane()), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
-		nearPlane.PassModelMatrix(camera->parent->GetTransform());
-		K::Matrix4x4 modelMatrix = nearPlane.modelMatrix;
-		K::Matrix4x4 viewMatrix = camera->GetViewMatrix();
-		K::Matrix4x4 projectionMatrix = camera->GetProjectionMatrix();
+		viewMatrix = camera->GetViewMatrix();
+		projectionMatrix = camera->GetProjectionMatrix();
 
-		K::Matrix4x4 VP = K::Matrix4x4::Matrix_MultiplyMatrix(viewMatrix, projectionMatrix);
-		K::Matrix4x4 MVP = K::Matrix4x4::Matrix_MultiplyMatrix(modelMatrix, VP);
-		K::Matrix4x4 invPV = K::QuickInverse(MVP);
+		viewProjectionMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(viewMatrix, projectionMatrix);
+		invVPMatrix = K::QuickInverse(viewProjectionMatrix);
 
-		K::MultiplyMatrixVector(clipPositionNearWithZ, worldSpaceNearPosition, invPV);
-		//K::MultiplyMatrixVector(clipPositionFarWithZ, worldSpaceFarPosition, invPV);
-		//worldSpacePosition is the mouse Position in worldspace
+		K::MultiplyMatrixVector(clipPositionStart, worldSpaceNearPosition, invVPMatrix);
 
-		return nullptr;
+		worldSpaceDirection = (worldSpaceNearPosition - *camera->parent->GetTransform()->position).normalise();
+
+		float distance = FLT_MAX;
+		K::GameObject* temp = nullptr;
+
+		for (auto gameObject : K::SceneManager::currentScene->GetGameObjects()) 
+		{
+			if (gameObject.second->GetComponentOfType(typeid(K::Mesh).name()) != nullptr) 
+			{
+				K::Mesh* mesh = (K::Mesh*)gameObject.second->GetComponentOfType(typeid(K::Mesh).name());
+				for (int j = 0; j < mesh->indices.size() / 3; j++) 
+				{
+					K::Vector3 vertices[3];
+					K::Vector3 normal;
+					int index = 0;
+					for (int i = 0 + (j*3); i < 3 + (j * 3); i++)
+					{
+						K::MultiplyMatrixVector(mesh->vertices[mesh->indices[i]].position, vertices[index], mesh->parent->GetTransform()->modelMatrix);
+						K::Quaternion* quat = K::Quaternion::Euler(mesh->parent->GetTransform()->rotation);
+						K::Matrix4x4 rotationMatrix = quat->QuaternionToMatrix();
+						K::MultiplyMatrixVector(mesh->vertices[mesh->indices[i]].normal, normal, rotationMatrix);
+						index++;
+					}
+					//Triangle vertices[3]
+					//Test Against Ray
+					K::Vector3 A = vertices[1] - vertices[0];
+					K::Vector3 B = vertices[2] - vertices[1];
+					K::Vector3 C = vertices[0] - vertices[2];
+
+					float D = -K::Vector3::DotProduct(normal, vertices[0]);
+					float t = -(K::Vector3::DotProduct(normal, *camera->parent->GetTransform()->position) + D) / K::Vector3::DotProduct(normal, worldSpaceDirection);
+
+					if (t > 0.0f) 
+					{
+						K::Vector3 P = (*camera->parent->GetTransform()->position + (worldSpaceDirection * t));
+						K::Vector3 C0 = P - vertices[0];
+						K::Vector3 C1 = P - vertices[1];
+						K::Vector3 C2 = P - vertices[2];
+
+						K::Vector3 N0 = K::Vector3::CrossProduct(A, C0);
+						K::Vector3 N1 = K::Vector3::CrossProduct(B, C1);
+						K::Vector3 N2 = K::Vector3::CrossProduct(C, C2);
+						float dot0 = K::Vector3::DotProduct(normal, N0);
+						float dot1 = K::Vector3::DotProduct(normal, N1);
+						float dot2 = K::Vector3::DotProduct(normal, N2);
+						if (dot0 > 0.0f && dot1 > 0.0f && dot2 > 0.0f) 
+						{
+							if (t < distance) 
+							{
+								temp = mesh->parent;
+								distance = t;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return temp;
 	}
 }

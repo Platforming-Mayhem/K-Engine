@@ -243,6 +243,8 @@ namespace K
 		K::Matrix4x4 QuaternionToMatrix();
 
 		static K::Quaternion* Euler(Vector3* rotation);
+
+		K::Vector3* ToEuler();
 	};
 
 	class K_API Transform 
