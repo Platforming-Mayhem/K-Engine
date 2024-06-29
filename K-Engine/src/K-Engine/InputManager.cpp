@@ -106,7 +106,9 @@ namespace K
 
 		K::MultiplyMatrixVector(clipPositionStart, worldSpaceNearPosition, invVPMatrix);
 
-		worldSpaceDirection = (worldSpaceNearPosition - *camera->parent->GetTransform()->position).normalise();
+		K::Vector3 camPosition = camera->GetPosition();
+
+		worldSpaceDirection = (worldSpaceNearPosition - camPosition).normalise();
 
 		float distance = FLT_MAX;
 		K::GameObject* temp = nullptr;
@@ -136,11 +138,11 @@ namespace K
 					K::Vector3 C = vertices[0] - vertices[2];
 
 					float D = -K::Vector3::DotProduct(normal, vertices[0]);
-					float t = -(K::Vector3::DotProduct(normal, *camera->parent->GetTransform()->position) + D) / K::Vector3::DotProduct(normal, worldSpaceDirection);
+					float t = -(K::Vector3::DotProduct(normal, camPosition) + D) / K::Vector3::DotProduct(normal, worldSpaceDirection);
 
 					if (t > 0.0f) 
 					{
-						K::Vector3 P = (*camera->parent->GetTransform()->position + (worldSpaceDirection * t));
+						K::Vector3 P = (camPosition + (worldSpaceDirection * t));
 						K::Vector3 C0 = P - vertices[0];
 						K::Vector3 C1 = P - vertices[1];
 						K::Vector3 C2 = P - vertices[2];

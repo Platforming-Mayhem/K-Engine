@@ -6,12 +6,13 @@ namespace K
 {
 	Camera::Camera()
 	{
-		
+		this->editorCam = new K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
 	}
 
 	Camera::~Camera() 
 	{
 		//std::cout << "Camera Destructor..." << std::endl;
+		delete this->editorCam;
 	}
 
 	float Camera::GetFOV() 
@@ -59,11 +60,6 @@ namespace K
 		this->isActive = state;
 	}
 
-	void Camera::SetEditorState(bool state) 
-	{
-		this->isEditorCamera = state;
-	}
-
 	void Camera::SetProjectionMatrix() 
 	{
 		//Projection Matrix
@@ -97,11 +93,19 @@ namespace K
 
 	void Camera::CameraMatrix() 
 	{
-		if (this->isActive && !this->isEditorCamera)
+		if (this->isActive)
 		{
 			this->SetProjectionMatrix();
 			//View Matrix
-			this->viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
+			if (this->isEditorCamActive)
+			{
+				this->editorCam->PassModelMatrix();
+				this->viewMatrix = K::QuickInverse(this->editorCam->modelMatrix);
+			}
+			else 
+			{
+				this->viewMatrix = K::QuickInverse(this->parent->GetTransform()->modelMatrix);
+			}
 			if (this->parent->parent != nullptr)
 			{
 				K::Matrix4x4 scalingMatrix = this->parent->GetTransform()->LocalScaleMatrix(this->parent->parent->GetTransform());
@@ -125,7 +129,50 @@ namespace K
 
 	void Camera::Bind()
 	{
-		
+		if (InputManager::IsKeyPressedDown(GLFW_KEY_V)) 
+		{
+			if (this->isEditorCamActive) 
+			{
+				this->isEditorCamActive = false;
+			}
+			else 
+			{
+				this->isEditorCamActive = true;
+				*this->editorCam->position = *this->parent->GetTransform()->position;
+				*this->editorCam->rotation = *this->parent->GetTransform()->rotation;
+			}
+		}
+		else if (InputManager::IsKeyReleased(GLFW_KEY_V)) 
+		{
+
+		}
+		if (this->isEditorCamActive) 
+		{
+			K::Vector3 rotatedForward, rotatedRight, rotatedUp;
+			K::Vector3 forward = K::Vector3(0.0f, 0.0f, 1.0f);
+			K::Vector3 up = K::Vector3(0.0f, 1.0f, 0.0f);
+			K::Vector3 right = K::Vector3(1.0f, 0.0f, 0.0f);
+			K::Matrix4x4 camRotation = K::Quaternion::Euler(this->editorCam->rotation)->QuaternionToMatrix();
+			K::MultiplyMatrixVector(forward, rotatedForward, camRotation);
+			K::MultiplyMatrixVector(up, rotatedUp, camRotation);
+			K::MultiplyMatrixVector(right, rotatedRight, camRotation);
+			if (InputManager::IsKeyPressed(GLFW_KEY_A))
+			{
+				*this->editorCam->position -= rotatedRight * K::Time::deltaTime() * 20.0f;
+			}
+			else if (InputManager::IsKeyPressed(GLFW_KEY_D))
+			{
+				*this->editorCam->position += rotatedRight * K::Time::deltaTime() * 20.0f;
+			}
+			if (InputManager::IsKeyPressed(GLFW_KEY_W))
+			{
+				*this->editorCam->position += rotatedUp * K::Time::deltaTime() * 20.0f;
+			}
+			else if (InputManager::IsKeyPressed(GLFW_KEY_S))
+			{
+				*this->editorCam->position -= rotatedUp * K::Time::deltaTime() * 20.0f;
+			}
+		}
 	}
 
 	void Camera::RenderBind() 
