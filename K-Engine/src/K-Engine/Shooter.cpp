@@ -31,7 +31,7 @@ namespace K
 		if (Physics::HitSector(*this->col->GetPosition(), this->radius, this->minAngle, this->maxAngle, { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &hit) && this->reloadTime <= 0.0f)
 		{
 			K::Vector3 direction = (*hit->GetPosition() - *this->col->GetPosition());
-			this->bullets.push_back(new K::Bullet(*this->col->GetPosition(), direction, 10.0f, 1.0f, this->projectileSpeed));
+			this->bullets.push_back(new K::Bullet(* this->col->GetPosition(), direction, 10.0f, 1.0f, this->projectileSpeed));
 			this->reloadTime = this->maxReloadTime;
 		}
 		if (this->reloadTime > 0.0f) 
@@ -66,6 +66,58 @@ namespace K
 		}
 	}
 
+	void Shooter::RangeVisualisation() 
+	{
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
+		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		*temp.position = *this->col->GetPosition();
+		temp.PassModelMatrix();
+		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
+
+		float theta = 360.0f / 16.0f;
+		glBegin(GL_LINE_LOOP);
+		for (int i = 0; i < 16; i++)
+		{
+			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
+		}
+		glEnd();
+
+		K::Vector3 up = K::Vector3(0.0f, 0.0f, this->radius);
+		K::Vector3 rotatedUp;
+		K::Vector3 rotateMinAngle = K::Vector3(0.0f, minAngle, 0.0f);
+		K::Matrix4x4 rotate = K::Quaternion::Euler(&rotateMinAngle)->QuaternionToMatrix();
+		K::MultiplyMatrixVector(up, rotatedUp, rotate);
+
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(rotatedUp.x, rotatedUp.y, rotatedUp.z);
+		glEnd();
+
+		K::Vector3 rotatedMax;
+		K::Vector3 rotateMaxAngle = K::Vector3(0.0f, maxAngle, 0.0f);
+		rotate = K::Quaternion::Euler(&rotateMaxAngle)->QuaternionToMatrix();
+		K::MultiplyMatrixVector(rotatedUp, rotatedMax, rotate);
+
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(rotatedMax.x, rotatedMax.y, rotatedMax.z);
+		glEnd();
+
+		rotateMaxAngle = K::Vector3(0.0f, -maxAngle, 0.0f);
+		rotate = K::Quaternion::Euler(&rotateMaxAngle)->QuaternionToMatrix();
+		K::MultiplyMatrixVector(rotatedUp, rotatedMax, rotate);
+
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(rotatedMax.x, rotatedMax.y, rotatedMax.z);
+		glEnd();
+
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
+	}
+
 	void Shooter::UpdateEditor()
 	{
 		if (ImGui::CollapsingHeader("Shooter Settings"))
@@ -76,54 +128,7 @@ namespace K
 			ImGui::DragFloat("Minimum Angle", &this->minAngle);
 			ImGui::DragFloat("Maximum Angle", &this->maxAngle);
 
-			glClear(GL_DEPTH_BUFFER_BIT);
-			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
-			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
-			K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
-			*temp.position = *this->col->GetPosition();
-			temp.PassModelMatrix();
-			glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
-
-			float theta = 360.0f / 16.0f;
-			glBegin(GL_LINE_LOOP);
-			for (int i = 0; i < 16; i++)
-			{
-				glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
-			}
-			glEnd();
-
-			K::Vector3 up = K::Vector3(0.0f, 0.0f, this->radius);
-			K::Vector3 rotatedUp;
-			K::Vector3 rotateMinAngle = K::Vector3(0.0f, minAngle, 0.0f);
-			K::Matrix4x4 rotate = K::Quaternion::Euler(&rotateMinAngle)->QuaternionToMatrix();
-			K::MultiplyMatrixVector(up, rotatedUp, rotate);
-
-			glBegin(GL_LINE_LOOP);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(rotatedUp.x, rotatedUp.y, rotatedUp.z);
-			glEnd();
-
-			K::Vector3 rotatedMax;
-			K::Vector3 rotateMaxAngle = K::Vector3(0.0f, maxAngle, 0.0f);
-			rotate = K::Quaternion::Euler(&rotateMaxAngle)->QuaternionToMatrix();
-			K::MultiplyMatrixVector(rotatedUp, rotatedMax, rotate);
-
-			glBegin(GL_LINE_LOOP);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(rotatedMax.x, rotatedMax.y, rotatedMax.z);
-			glEnd();
-
-			rotateMaxAngle = K::Vector3(0.0f, -maxAngle, 0.0f);
-			rotate = K::Quaternion::Euler(&rotateMaxAngle)->QuaternionToMatrix();
-			K::MultiplyMatrixVector(rotatedUp, rotatedMax, rotate);
-
-			glBegin(GL_LINE_LOOP);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-			glVertex3f(rotatedMax.x, rotatedMax.y, rotatedMax.z);
-			glEnd();
-
-			glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 1.0f, 1.0f);
+			this->RangeVisualisation();
 		}
 	}
 

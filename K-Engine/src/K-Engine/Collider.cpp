@@ -89,8 +89,8 @@ namespace K
 			}
 			else
 			{
-				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * K::Time::deltaTime() * K::Physics::GetFixedTimeStep());
-				this->time += 1.0f / K::Physics::GetFixedTimeStep();
+				*(this->parent->GetTransform()->position) += K::Vector3(0.0f, 0.0f, -this->time * K::Physics::GetFixedTimeStep() * K::Time::deltaTime());
+				this->time += (1 / K::Physics::GetFixedTimeStep()) * K::Time::deltaTime() * 60.0f;
 			}
 			*this->parent->GetTransform()->position += K::Physics::GetCollisionResolution(this);
 		}

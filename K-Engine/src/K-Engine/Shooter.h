@@ -4,6 +4,7 @@
 #include "Time.h"
 #include "PhysicsEngine.h"
 #include "Editor.h"
+#include "Sprite.h"
 
 namespace K 
 {
@@ -28,8 +29,9 @@ namespace K
 			this->radius = radius;
 			this->bulletSpeed = bulletSpeed;
 			this->direction = this->direction.normalise();
-			mesh = K::Mesh();
-			mesh.RenderInit();
+			this->mesh = K::Mesh();
+			this->mesh.Init();
+			this->mesh.RenderInit();
 		}
 
 		~Bullet() 
@@ -39,7 +41,7 @@ namespace K
 
 		void Render() 
 		{
-			mesh.Render();
+			this->mesh.Render();
 		}
 
 		bool Update() 
@@ -88,6 +90,8 @@ namespace K
 		Shooter();
 
 		~Shooter();
+
+		void RangeVisualisation();
 
 		void Init() override;
 
