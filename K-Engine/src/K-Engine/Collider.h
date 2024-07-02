@@ -102,6 +102,8 @@ namespace K
 
 		void Init() override;
 
+		void RenderInit() override;
+
 		void Update() override;
 
 		void UpdateEditor() override;

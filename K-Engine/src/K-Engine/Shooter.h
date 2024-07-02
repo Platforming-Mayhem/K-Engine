@@ -78,6 +78,7 @@ namespace K
 	private:
 		std::vector<K::Bullet*> bullets;
 		K::Collider* col;
+		K::Sprite* bulletSprite;
 		float radius = 1.0f;
 		float minAngle = 90.0f;
 		float maxAngle = 270.0f;

@@ -136,7 +136,9 @@ namespace K
 			K::Time::startTime = glfwGetTime();
 			this->GameLoop();
 			K::Time::endTime = K::Time::startTime;
+			K::Time::startTime = glfwGetTime();
 			this->RenderLoop();
+			K::Time::endTime = K::Time::startTime;
 		}
 	};
 }

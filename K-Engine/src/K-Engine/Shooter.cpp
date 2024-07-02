@@ -14,6 +14,7 @@ namespace K
 			delete bullet;
 		}
 		bullets.clear();
+		delete this->bulletSprite;
 	}
 
 	void Shooter::Init()
@@ -23,6 +24,7 @@ namespace K
 		{
 			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
 		}
+		this->bulletSprite = new K::Sprite();
 	}
 
 	void Shooter::Update()
@@ -127,6 +129,8 @@ namespace K
 			ImGui::DragFloat("Radius", &this->radius);
 			ImGui::DragFloat("Minimum Angle", &this->minAngle);
 			ImGui::DragFloat("Maximum Angle", &this->maxAngle);
+
+			this->bulletSprite->UpdateEditor();
 
 			this->RangeVisualisation();
 		}

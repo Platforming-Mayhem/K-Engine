@@ -101,6 +101,11 @@ namespace K
 		K::Physics::Attach(this);
 	}
 
+	void Collider::RenderInit() 
+	{
+		this->ResetVelocity();
+	}
+
 	void Collider::UpdateEditor()
 	{
 		if (ImGui::CollapsingHeader("Collider Settings")) 
