@@ -5,6 +5,10 @@ namespace K
 	float Time::endTime = 0.0f;
 	float Time::deltaTime()
 	{
-		return startTime - endTime;
+		float delta = startTime - endTime;
+		if (delta < 0.1f)
+			return delta;
+		else
+			return 0.1f;
 	}
 }
