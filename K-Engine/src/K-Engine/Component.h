@@ -30,7 +30,7 @@ namespace K
 
 		virtual void Unbind() {};
 
-		virtual const char* GetName() = 0;
+		virtual const char* GetName();
 
 		virtual const char* GetPropertyValues() = 0;
 

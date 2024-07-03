@@ -69,11 +69,6 @@ namespace K
 		}
 	}
 
-	const char* Timer::GetName() 
-	{
-		return typeid(K::Timer).name();
-	}
-
 	const char* Timer::GetPropertyValues() 
 	{
 		this->properties += std::to_string(this->countDown);

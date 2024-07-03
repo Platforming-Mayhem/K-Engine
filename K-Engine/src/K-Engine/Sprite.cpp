@@ -17,11 +17,6 @@ namespace K
 		//std::cout << "End Sprite Destruction..." << std::endl;
 	}
 
-	const char* Sprite::GetName() 
-	{
-		return typeid(K::Sprite).name();
-	}
-
 	const char* Sprite::GetPropertyValues()
 	{
 		this->properties = this->texture->GetFilePath();

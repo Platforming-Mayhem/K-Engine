@@ -273,9 +273,4 @@ namespace K
 		}
 		return this->properties.c_str();
 	}
-
-	const char* Shooter::GetName()
-	{
-		return typeid(K::Shooter).name();
-	}
 }

@@ -271,9 +271,4 @@ namespace K
 		this->properties = std::to_string(this->movementSpeed);
 		return this->properties.c_str();
 	}
-
-	const char* Enemy::GetName() 
-	{
-		return typeid(K::Enemy).name();
-	}
 }

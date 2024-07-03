@@ -650,9 +650,4 @@ namespace K
 		}
 		return this->properties.c_str();
 	}
-
-	const char* Collider::GetName()
-	{
-		return typeid(K::Collider).name();
-	}
 }

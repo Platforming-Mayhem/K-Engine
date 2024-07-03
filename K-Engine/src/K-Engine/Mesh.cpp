@@ -144,9 +144,4 @@ namespace K
 		}
 		return this->properties.c_str();
 	}
-
-	const char* Mesh::GetName()
-	{
-		return typeid(K::Mesh).name();
-	}
 }

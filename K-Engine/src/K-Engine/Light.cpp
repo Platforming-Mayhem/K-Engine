@@ -71,8 +71,4 @@ namespace K
 		this->properties += "," + std::to_string(this->lightDirection.z);
 		return this->properties.c_str();
 	}
-	const char* Light::GetName()
-	{
-		return typeid(K::Light).name();
-	}
 }

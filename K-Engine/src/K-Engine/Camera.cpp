@@ -30,11 +30,6 @@ namespace K
 		return this->farPlane;
 	}
 
-	const char* Camera::GetName() 
-	{
-		return typeid(K::Camera).name();
-	}
-
 	K::Shader* Camera::GetShader() 
 	{
 		return this->material->GetShader();

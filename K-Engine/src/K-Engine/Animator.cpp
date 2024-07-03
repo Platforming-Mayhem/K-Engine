@@ -118,11 +118,6 @@ namespace K
 		}
 	}
 
-	const char* K::Animator::GetName() 
-	{
-		return typeid(K::Animator).name();
-	}
-
 	const char* K::Animator::GetPropertyValues() 
 	{
 		this->properties = "";

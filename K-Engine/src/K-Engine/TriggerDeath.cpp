@@ -112,9 +112,4 @@ namespace K
 		this->properties += std::to_string(this->bounds[1].z);
 		return this->properties.c_str();
 	}
-
-	const char* TriggerDeath::GetName()
-	{
-		return typeid(K::TriggerDeath).name();
-	}
 }

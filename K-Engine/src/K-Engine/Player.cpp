@@ -24,11 +24,6 @@ namespace K
 		return this->properties.c_str();
 	}
 
-	const char* Player::GetName()
-	{
-		return typeid(K::Player).name();
-	}
-
 	float Player::GetMovementSpeed() 
 	{
 		return this->movementSpeed;

@@ -82,9 +82,4 @@ namespace K
 		this->properties = std::to_string(this->moveSpeed);
 		return this->properties.c_str();
 	}
-
-	const char* Move::GetName()
-	{
-		return typeid(K::Move).name();
-	}
 }

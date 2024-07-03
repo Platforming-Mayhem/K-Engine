@@ -117,7 +117,5 @@ namespace K
 		void SetPropertyValues(const char* value, int valueIndex) override;
 
 		const char* GetPropertyValues() override;
-
-		const char* GetName() override;
 	};
 }
