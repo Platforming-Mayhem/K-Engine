@@ -78,12 +78,21 @@ namespace K
 	private:
 		std::vector<K::Bullet*> bullets;
 		K::Collider* col;
+		K::Texture* bulletTexture;
+
+		int frame = 0;
+
 		float radius = 1.0f;
 		float minAngle = 90.0f;
 		float maxAngle = 270.0f;
 		float projectileSpeed = 1.0f;
 		float reloadTime = 0.0f;
 		float maxReloadTime = 1.0f;
+		float internalClock = 0;
+		float chromaKeyColour[3];
+
+		bool canChromaKey = false;
+
 		std::string properties;
 	public:
 

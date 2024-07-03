@@ -68,8 +68,6 @@ namespace K
 				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 				glBindTexture(this->type, 0);
-
-				glGenTextures(1, &this->viewId);
 			}
 			else
 			{
@@ -313,6 +311,7 @@ namespace K
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
+			glGenTextures(1, &this->viewId);
 			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
 
 			if (this->textures->Check(this->filename)->dependencies > 0)

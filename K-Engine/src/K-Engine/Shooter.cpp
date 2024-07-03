@@ -14,6 +14,7 @@ namespace K
 			delete bullet;
 		}
 		bullets.clear();
+		delete this->bulletTexture;
 	}
 
 	void Shooter::Init()
@@ -23,6 +24,8 @@ namespace K
 		{
 			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
 		}
+		if (this->bulletTexture == nullptr)
+			this->bulletTexture = new K::Texture(WATERMARK, GL_TEXTURE_2D_ARRAY);
 	}
 
 	void Shooter::Update()
@@ -49,10 +52,40 @@ namespace K
 				}
 			}
 		}
+
+		float fps = 1.0f / this->bulletTexture->GetFrameRate();
+		if (this->internalClock >= fps)
+		{
+			if (this->bulletTexture->GetNumberOfFrames() > 1) 
+			{
+				if (this->frame < this->bulletTexture->GetNumberOfFrames() - 1)
+				{
+					this->frame++;
+				}
+				else
+				{
+					this->frame = 0;
+				}
+			}
+			this->internalClock = 0.0f;
+		}
+		this->internalClock += K::Time::deltaTime();
+
 	}
 
 	void Shooter::Render() 
 	{
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), this->canChromaKey);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
+		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "chromaKey"), this->chromaKeyColour[0], this->chromaKeyColour[1], this->chromaKeyColour[2]);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), true);
+
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "texture0"), 0);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "texture1"), 1);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "frame"), this->frame);
+
+		this->bulletTexture->Bind(0);
+
 		if (!bullets.empty())
 		{
 			for (K::Bullet* bullet : bullets)
@@ -64,6 +97,13 @@ namespace K
 				bullet->Render();
 			}
 		}
+
+		this->bulletTexture->Unbind();
+
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "frame"), 0);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
+		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 	}
 
 	void Shooter::RangeVisualisation() 
@@ -128,6 +168,33 @@ namespace K
 			ImGui::DragFloat("Minimum Angle", &this->minAngle);
 			ImGui::DragFloat("Maximum Angle", &this->maxAngle);
 
+			ImGui::Text("FPS: %i", this->bulletTexture->GetFrameRate());
+			ImGui::Checkbox("Can Chroma Key", &this->canChromaKey);
+			if (this->canChromaKey)
+			{
+				ImGui::ColorPicker3("Chroma Key Colour", this->chromaKeyColour);
+			}
+			ImGui::Text("ID: %p,%i,%i", this->bulletTexture->GetID(), this->bulletTexture->GetWidth(), this->bulletTexture->GetHeight());
+			ImGui::Text("ViewID: %p,%i,%i", this->bulletTexture->GetViewID(), this->bulletTexture->GetWidth(), this->bulletTexture->GetHeight());
+			ImGui::ImageButton((void*)(intptr_t)(this->bulletTexture->GetViewID()), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TEXTURE"))
+				{
+					const char* file = (const char*)payload->Data;
+					if (this->bulletTexture != nullptr)
+						delete this->bulletTexture;
+					this->bulletTexture = new K::Texture(file, GL_TEXTURE_2D_ARRAY);
+				}
+				ImGui::EndDragDropTarget();
+			}
+			if (ImGui::Button("Delete Color Texture"))
+			{
+				if (this->bulletTexture != nullptr)
+					delete this->bulletTexture;
+				this->bulletTexture = new K::Texture(WATERMARK, GL_TEXTURE_2D_ARRAY);
+			}
+
 			this->RangeVisualisation();
 		}
 	}
@@ -154,6 +221,33 @@ namespace K
 			case 4:
 				this->maxReloadTime = std::stof(temp);
 				break;
+			case 5:
+				if (this->bulletTexture != nullptr)
+					delete this->bulletTexture;
+				this->bulletTexture = new K::Texture(temp.c_str(), GL_TEXTURE_2D_ARRAY);
+				break;
+			case 6:
+				if (temp == "true")
+				{
+					this->canChromaKey = true;
+				}
+				else if (temp == "false")
+				{
+					this->canChromaKey = false;
+				}
+				break;
+			case 7:
+				if (this->canChromaKey)
+					this->chromaKeyColour[0] = std::stof(temp);
+				break;
+			case 8:
+				if (this->canChromaKey)
+					this->chromaKeyColour[1] = std::stof(temp);
+				break;
+			case 9:
+				if (this->canChromaKey)
+					this->chromaKeyColour[2] = std::stof(temp);
+				break;
 			}
 		}
 	}
@@ -165,6 +259,18 @@ namespace K
 		this->properties += "," + std::to_string(this->minAngle);
 		this->properties += "," + std::to_string(this->maxAngle);
 		this->properties += "," + std::to_string(this->maxReloadTime);
+		this->properties += "," + this->bulletTexture->GetFilePath();
+		if (this->canChromaKey)
+		{
+			this->properties += ",true";
+			this->properties += "," + std::to_string(this->chromaKeyColour[0]);
+			this->properties += "," + std::to_string(this->chromaKeyColour[1]);
+			this->properties += "," + std::to_string(this->chromaKeyColour[2]);
+		}
+		else
+		{
+			this->properties += ",false";
+		}
 		return this->properties.c_str();
 	}
 
