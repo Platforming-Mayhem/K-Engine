@@ -233,8 +233,11 @@ namespace K
 		}
 		else
 		{
-			this->selectedComponent->SetPropertyValues(datum.c_str(), this->componentDataCount);
-			this->componentDataCount++;
+			if (this->selectedComponent != nullptr) 
+			{
+				this->selectedComponent->SetPropertyValues(datum.c_str(), this->componentDataCount);
+				this->componentDataCount++;
+			}
 		}
 	}
 
