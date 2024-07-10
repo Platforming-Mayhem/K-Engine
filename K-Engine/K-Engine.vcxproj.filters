@@ -159,6 +159,9 @@
     <ClInclude Include="src\K-Engine\Shooter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\K-Engine\Crush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\K-Engine\Window.cpp">
@@ -264,6 +267,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\K-Engine\Shooter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\K-Engine\Crush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

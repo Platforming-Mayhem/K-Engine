@@ -15,6 +15,10 @@
     <ClInclude Include="src\K-Engine\Camera.h" />
     <ClInclude Include="src\K-Engine\Collider.h" />
     <ClInclude Include="src\K-Engine\Component.h" />
+    <ClInclude Include="src\K-Engine\Crush.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\K-Engine\Enemy.h" />
     <ClInclude Include="src\K-Engine\InputManager.h" />
     <ClInclude Include="src\K-Engine\Light.h" />
@@ -66,6 +70,10 @@
     <ClCompile Include="src\K-Engine\Camera.cpp" />
     <ClCompile Include="src\K-Engine\Collider.cpp" />
     <ClCompile Include="src\K-Engine\Component.cpp" />
+    <ClCompile Include="src\K-Engine\Crush.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="src\K-Engine\Editor.cpp" />
     <ClCompile Include="src\K-Engine\Enemy.cpp" />
     <ClCompile Include="src\K-Engine\GameObject.cpp" />
