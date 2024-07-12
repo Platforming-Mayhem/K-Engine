@@ -23,6 +23,11 @@ namespace K
 		return std::clamp(std::powf(value, pow), 0.0f, 1.0f);
 	}
 
+	float Crush::EaseInOutQuad(float value) 
+	{
+		return value < 0.5f ? 2 * value * value : 1 - std::powf(-2.0f * value + 2.0f, 2.0f) / 2.0f;
+	}
+
 	void Crush::Update() 
 	{
 		#if _DEBUG
@@ -30,7 +35,14 @@ namespace K
 #else
 		if (this->crushTime >= 1.0f) 
 		{
-			this->crush = true;
+			if (this->crush) 
+			{
+				this->crush = false;
+			}
+			else 
+			{
+				this->crush = true;
+			}
 			this->crushTime = 0.0f;
 		}
 		else 
@@ -41,6 +53,11 @@ namespace K
 		{
 			K::Vector3 originOffsetted = this->origin + *this->offset;
 			*this->parent->GetTransform()->position = K::Vector3::Lerp(this->origin, originOffsetted, this->EaseInPow(this->crushTime, 3.0f));
+		}
+		else 
+		{
+			K::Vector3 originOffsetted = this->origin + *this->offset;
+			*this->parent->GetTransform()->position = K::Vector3::Lerp(originOffsetted, this->origin, this->EaseInOutQuad(this->crushTime));
 		}
 #endif
 	}

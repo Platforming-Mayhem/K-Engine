@@ -24,6 +24,8 @@ namespace K
 
 		float EaseInPow(float value, int pow);
 
+		float EaseInOutQuad(float value);
+
 		void VisualDebug();
 
 		void Init() override;

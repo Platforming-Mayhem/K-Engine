@@ -40,6 +40,10 @@
     <ClInclude Include="src\K-Engine\Timer.h" />
     <ClInclude Include="src\K-Engine\Transform.h" />
     <ClInclude Include="src\K-Engine\TriggerDeath.h" />
+    <ClInclude Include="src\K-Engine\TriggerNextScene.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\K-Engine\Window.h" />
     <ClInclude Include="src\K-Engine\Shader.h" />
     <ClInclude Include="src\K-Engine\Texture.h" />
@@ -95,6 +99,10 @@
     <ClCompile Include="src\K-Engine\Timer.cpp" />
     <ClCompile Include="src\K-Engine\Transform.cpp" />
     <ClCompile Include="src\K-Engine\TriggerDeath.cpp" />
+    <ClCompile Include="src\K-Engine\TriggerNextScene.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="src\K-Engine\Window.cpp" />
     <ClCompile Include="vendors\IMGUI\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="vendors\IMGUI\backends\imgui_impl_opengl3.cpp" />

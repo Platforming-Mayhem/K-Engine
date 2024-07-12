@@ -120,9 +120,12 @@ namespace K
 			K::SceneManager::currentScene->CreateEmptyScene();
 			if (K::SceneManager::scenes.size() > 0)
 			{
-				std::string location = K::SceneManager::scenes[K::SceneManager::index];
-				std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-				K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, K::SceneManager::scenes[index]);
+				if (K::SceneManager::index < K::SceneManager::scenes.size()) 
+				{
+					std::string location = K::SceneManager::scenes[K::SceneManager::index];
+					std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
+					K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, K::SceneManager::scenes[index]);
+				}
 			}
 			else
 			{
