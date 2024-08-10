@@ -24,7 +24,7 @@ namespace K
 		#if _DEBUG
 			this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
 		#else
-			this->window = glfwCreateWindow(this->width, this->height, windowName, monitor, NULL);
+			this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
 		#endif
 
 		std::cout << this->width << " " << this->height << std::endl;
@@ -61,7 +61,7 @@ namespace K
 		#if _DEBUG
 
 		#else
-			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+			//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		#endif
 	}
 

@@ -109,5 +109,13 @@ namespace K
 		void LoadAnimation();
 
 		void Load();
+
+		void LoadJIMAGE(std::string filename);
+
+		void LoadJANIM(std::string filename);
+
+		void CreateJIMAGE();
+
+		void CreateJANIM();
 	};
 }

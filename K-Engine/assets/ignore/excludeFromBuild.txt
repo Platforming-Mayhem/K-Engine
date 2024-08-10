@@ -2,3 +2,6 @@ ignore
 shaders
 textures\watermark
 textures\editor
+.png
+.gif
+.jpg

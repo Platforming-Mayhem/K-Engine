@@ -280,10 +280,7 @@ namespace K
 		int size = this->filename.size() - std::to_string(this->type).size();
 		std::string newFilename = this->filename.substr(0, size);
 		std::ifstream temp(ASSET_DIR + newFilename);
-		if (temp.good())
-			return newFilename;
-		else
-			return "";
+		return newFilename;
 	}
 
 	std::string Texture::GetTextureManagerName() 
@@ -308,7 +305,11 @@ namespace K
 		{
 			glTexStorage3D(this->type, 1, GL_RGBA8, this->width, this->height, this->frames);
 			glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
-			stbi_image_free(this->image);
+			#if _DEBUG
+				stbi_image_free(this->image);
+			#else
+				delete this->image;
+			#endif
 			this->image = nullptr;
 
 			glGenTextures(1, &this->viewId);
@@ -336,7 +337,11 @@ namespace K
 			{
 				glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 			}
-			stbi_image_free(this->image);
+			#if _DEBUG
+				stbi_image_free(this->image);
+			#else
+				delete this->image;
+			#endif
 			this->image = nullptr;
 			if (this->textures->Check(this->filename)->dependencies > 0)
 			{
@@ -373,33 +378,155 @@ namespace K
 		return this->fps;
 	}
 
+	void Texture::LoadJIMAGE(std::string filename)
+	{
+		int found = filename.find('.');
+		if (found != std::string::npos)
+		{
+			std::string temp1 = filename.substr(0, found) + ".JIMG";
+			std::ifstream file(temp1, std::ios::binary | std::ios::in);
+			std::string imageTemp;
+			if (file.is_open())
+			{
+				std::string info;
+				std::getline(file, info);
+
+				this->width = std::stoi(info.substr(0, info.find(".")));
+				info.erase(0, info.find(".") + 1);
+				this->height = std::stoi(info.substr(0, info.find(".")));
+				info.erase(0, info.find(".") + 1);
+				this->c = std::stoi(info);
+
+				this->image = new unsigned char[this->width * this->height * this->c];
+				file.read((char*)this->image, (this->width * this->height * this->c));
+				file.close();
+			}
+		}
+	}
+
+	void Texture::LoadJANIM(std::string filename)
+	{
+		int found = filename.find('.');
+		if (found != std::string::npos)
+		{
+			std::string temp1 = filename.substr(0, found) + ".JANIM";
+			std::ifstream file(temp1, std::ios::binary | std::ios::in);
+			std::string imageTemp;
+			if (file.is_open())
+			{
+
+				std::string info;
+				std::getline(file, info);
+
+				this->width = std::stoi(info.substr(0, info.find(".")));
+				info.erase(0, info.find(".") + 1);
+				this->height = std::stoi(info.substr(0, info.find(".")));
+				info.erase(0, info.find(".") + 1);
+				this->frames = std::stoi(info.substr(0, info.find(".")));
+				info.erase(0, info.find(".") + 1);
+				this->fps = std::stoi(info);
+
+				this->image = new unsigned char [this->width * this->height * 4 * this->frames];
+				file.read((char*)this->image, this->width * this->height * 4 * this->frames);
+				file.close();
+			}
+		}
+	}
+
 	void Texture::LoadAnimation() 
 	{
 		std::string temp = ASSET_DIR + this->GetFilePath();
-		this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
-		if(this->delay != nullptr)
-			this->fps = 1.0f / (*this->delay / 1000.0f);
+		#if _DEBUG
+			this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
+			if (this->delay != nullptr)
+				this->fps = 1.0f / (*this->delay / 1000.0f);
+			this->CreateJAIMAGE();
+		#else
+			this->LoadJANIM(temp);
+		#endif
+
 		if (this->image) 
 		{
 			this->loadedAnimation = true;
 		}
 		else 
 		{
-			std::cerr << "Failed to load animation: " << this->GetFilePath() << std::endl;
+			std::cerr << "Failed to load animation: " << temp << std::endl;
 		}
 	}
 
 	void Texture::Load() 
 	{
 		std::string temp = ASSET_DIR + this->GetFilePath();
-		this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
+		#if _DEBUG
+			this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
+			this->CreateJIMAGE();
+		#else
+			this->LoadJIMAGE(temp);
+		#endif
+		
 		if (this->image) 
 		{
 			this->loadedTexture = true;
 		}
 		else 
 		{
-			std::cerr << "Failed to load texture: " << this->GetFilePath() << std::endl;
+			std::cerr << "Failed to load texture: " << temp << std::endl;
+		}
+	}
+
+	void Texture::CreateJIMAGE() 
+	{
+		std::string location = this->GetFilePath();
+		std::filesystem::path tempPath = ASSET_DIR + location;
+		int timeSinceEpoch = std::chrono::duration_cast<std::chrono::minutes>(std::filesystem::last_write_time(tempPath).time_since_epoch()).count();
+		int found = location.find('.');
+		if (found != std::string::npos)
+		{
+			location = ASSET_DIR + location.substr(0, found) + ".JIMG";
+			tempPath = location;
+			if ((std::filesystem::exists(tempPath) && std::chrono::duration_cast<std::chrono::minutes>(std::filesystem::last_write_time(tempPath).time_since_epoch()).count() < timeSinceEpoch)|| !std::filesystem::exists(tempPath))
+			{
+				std::cout << "Updating/Creating at:" << location << std::endl;
+				std::ofstream outFile;
+				outFile.open(location, std::ios::binary | std::ios::out);
+				if (!outFile)
+				{
+					std::cerr << "Error - unable to open output file " << location.c_str() << std::endl;
+					exit(1);
+				}
+				outFile << this->width << "." << this->height << "." << this->c << "\n";
+				outFile.write(reinterpret_cast<char*>(this->image), this->width * this->height * this->c);
+				outFile.close();
+			}
+		}
+	}
+
+	void Texture::CreateJANIM()
+	{
+		std::string location = this->GetFilePath();
+		std::filesystem::path tempPath = ASSET_DIR + location;
+
+		int timeSinceEpoch = std::chrono::duration_cast<std::chrono::minutes>(std::filesystem::last_write_time(tempPath).time_since_epoch()).count();
+		int found = location.find('.');
+		if (found != std::string::npos)
+		{
+			location = ASSET_DIR + location.substr(0, found) + ".JANIM";
+			tempPath = location;
+			if ((std::filesystem::exists(tempPath) && std::chrono::duration_cast<std::chrono::minutes>(std::filesystem::last_write_time(tempPath).time_since_epoch()).count() < timeSinceEpoch) || !std::filesystem::exists(tempPath))
+			{
+				std::cout << "Updating/Creating at:" << location << std::endl;
+				std::ofstream outFile;
+				outFile.open(location, std::ios::binary | std::ios::out);
+				if (!outFile)
+				{
+					std::cerr << "Error - unable to open output file " << location.c_str() << std::endl;
+					exit(1);
+				}
+				outFile << this->width << "." << this->height << "." << this->frames << "." << this->fps << "\n";
+				outFile.write(reinterpret_cast<char*>(this->image), this->width * this->height * 4 * this->frames);
+				outFile.close();
+			}
 		}
 	}
 }
