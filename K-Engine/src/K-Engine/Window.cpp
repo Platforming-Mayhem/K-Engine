@@ -24,7 +24,7 @@ namespace K
 		#if _DEBUG
 			this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
 		#else
-			this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
+			this->window = glfwCreateWindow(this->width, this->height, windowName, monitor, NULL);
 		#endif
 
 		std::cout << this->width << " " << this->height << std::endl;

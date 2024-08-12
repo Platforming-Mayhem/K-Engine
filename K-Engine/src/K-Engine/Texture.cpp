@@ -440,7 +440,7 @@ namespace K
 			this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
 			if (this->delay != nullptr)
 				this->fps = 1.0f / (*this->delay / 1000.0f);
-			this->CreateJAIMAGE();
+			this->CreateJANIM();
 		#else
 			this->LoadJANIM(temp);
 		#endif

@@ -71,7 +71,7 @@ namespace K
 
 	const char* Timer::GetPropertyValues() 
 	{
-		this->properties += std::to_string(this->countDown);
+		this->properties = std::to_string(this->countDown);
 		return this->properties.c_str();
 	}
 }

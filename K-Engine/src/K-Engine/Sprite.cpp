@@ -19,7 +19,14 @@ namespace K
 
 	const char* Sprite::GetPropertyValues()
 	{
-		this->properties = this->texture->GetFilePath();
+		if (this->texture->GetFilePath() == "101") 
+		{
+			this->properties = "";
+		}
+		else 
+		{
+			this->properties = this->texture->GetFilePath();
+		}
 
 		if (this->canChromaKey) 
 		{
@@ -32,7 +39,14 @@ namespace K
 		{
 			this->properties += ",false";
 		}
-		this->properties += "," + this->normalTexture->GetFilePath();
+		if (this->normalTexture->GetFilePath() == "101")
+		{
+			this->properties += ",";
+		}
+		else
+		{
+			this->properties += "," + this->normalTexture->GetFilePath();
+		}
 		return this->properties.c_str();
 	}
 
