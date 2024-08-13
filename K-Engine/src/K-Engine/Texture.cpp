@@ -390,6 +390,8 @@ namespace K
 			{
 				std::string info;
 				std::getline(file, info);
+				int sizeOfInfo = info.length() + 1;
+				file.close();
 
 				this->width = std::stoi(info.substr(0, info.find(".")));
 				info.erase(0, info.find(".") + 1);
@@ -398,8 +400,13 @@ namespace K
 				this->c = std::stoi(info);
 
 				this->image = new unsigned char[this->width * this->height * this->c];
-				file.read((char*)this->image, (this->width * this->height * this->c));
-				file.close();
+				//file.read((char*)this->image, (this->width * this->height * this->c));
+				std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
+				std::fseek(fastFile, sizeOfInfo, SEEK_SET);
+				int bytesRead = std::fread(this->image, sizeof(unsigned char), this->width * this->height * this->c, fastFile);
+				/*if (bytesRead != this->width * this->height * this->c)
+					std::cout << "INCORRECT" << std::endl;*/
+				std::fclose(fastFile);
 			}
 		}
 	}
@@ -417,6 +424,8 @@ namespace K
 
 				std::string info;
 				std::getline(file, info);
+				int sizeOfInfo = info.length() + 1;
+				file.close();
 
 				this->width = std::stoi(info.substr(0, info.find(".")));
 				info.erase(0, info.find(".") + 1);
@@ -427,8 +436,13 @@ namespace K
 				this->fps = std::stoi(info);
 
 				this->image = new unsigned char [this->width * this->height * 4 * this->frames];
-				file.read((char*)this->image, this->width * this->height * 4 * this->frames);
-				file.close();
+				//file.read((char*)this->image, this->width * this->height * 4 * this->frames);
+				std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
+				std::fseek(fastFile, sizeOfInfo, SEEK_SET);
+				int bytesRead = std::fread(this->image, sizeof(unsigned char), this->width * this->height * 4 * this->frames, fastFile);
+				/*if (bytesRead != this->width * this->height * 4 * this->frames)
+					std::cout << "INCORRECT" << std::endl;*/
+				std::fclose(fastFile);
 			}
 		}
 	}
@@ -496,8 +510,11 @@ namespace K
 					exit(1);
 				}
 				outFile << this->width << "." << this->height << "." << this->c << "\n";
-				outFile.write(reinterpret_cast<char*>(this->image), this->width * this->height * this->c);
+				//outFile.write(reinterpret_cast<char*>(this->image), this->width * this->height * this->c);
 				outFile.close();
+				std::FILE* fastFile = std::fopen(location.c_str(), "ab");
+				std::fwrite(this->image, sizeof(unsigned char), this->width * this->height * this->c, fastFile);
+				std::fclose(fastFile);
 			}
 		}
 	}
@@ -524,8 +541,11 @@ namespace K
 					exit(1);
 				}
 				outFile << this->width << "." << this->height << "." << this->frames << "." << this->fps << "\n";
-				outFile.write(reinterpret_cast<char*>(this->image), this->width * this->height * 4 * this->frames);
+				//outFile.write(reinterpret_cast<char*>(this->image), this->width * this->height * 4 * this->frames);
 				outFile.close();
+				std::FILE* fastFile = std::fopen(location.c_str(), "ab");
+				std::fwrite(this->image, sizeof(unsigned char), this->width * this->height * 4 * this->frames, fastFile);
+				std::fclose(fastFile);
 			}
 		}
 	}
