@@ -149,7 +149,7 @@ namespace K
 	void SceneManager::SaveSceneManager() 
 	{
 		std::ofstream outFile;
-		outFile.open(ASSET_DIR + "SceneManager.txt", std::ofstream::trunc);
+		outFile.open(ASSET_DIR + "ignore/SceneManager.txt", std::ofstream::trunc);
 		if (outFile)
 		{
 			for (int i = 0; i < this->scenes.size(); i++) 

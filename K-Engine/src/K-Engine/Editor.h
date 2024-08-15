@@ -31,6 +31,7 @@ namespace K
 	{
 	private:
 		std::filesystem::path currentDirectory;
+		std::string sceneName;
 		K::RenderTexture* viewport;
 		std::map<std::string, K::Texture*> preloadedTextures;
 		K::Window* window;

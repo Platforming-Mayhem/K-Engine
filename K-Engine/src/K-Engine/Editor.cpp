@@ -141,6 +141,7 @@ namespace K
 					}
 					if (ImGui::MenuItem("Save..."))
 					{
+						this->sceneName = K::Editor::GetCurrentScene()->GetSceneName();
 						this->confirmationWindow = true;
 					}
 					if (ImGui::MenuItem("Build..."))
@@ -158,9 +159,12 @@ namespace K
 			}
 			if (ImGui::BeginPopup("Confirmation Window")) 
 			{
+				ImGui::InputText("Scene Name: ", &this->sceneName);
 				ImGui::Text("Are you sure you want to overwrite this scene?");
 				if (ImGui::Button("Yes")) 
 				{
+					if(K::Editor::GetCurrentScene()->GetSceneName() != this->sceneName)
+						K::Editor::GetCurrentScene()->RenameScene(this->sceneName);
 					K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene(), ASSET_DIR + K::Editor::GetCurrentScene()->GetLocation());
 					ImGui::CloseCurrentPopup();
 				}
@@ -180,6 +184,16 @@ namespace K
 						{
 							this->selectedScene = i;
 						}
+					}
+					ImGui::Dummy(ImGui::GetContentRegionAvail());
+					if (ImGui::BeginDragDropTarget())
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_SCENE"))
+						{
+							const char* file = (const char*)payload->Data;
+							this->sceneManager->AddScene(file);
+						}
+						ImGui::EndDragDropTarget();
 					}
 				}
 				ImGui::EndListBox();
@@ -302,6 +316,13 @@ namespace K
 							K::Editor::GetCurrentScene()->CreateEmptyScene();
 							this->selectedGameObject = nullptr;
 							K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
+						}
+						if (ImGui::BeginDragDropSource())
+						{
+							std::string file = relativeLocation;
+							ImGui::SetDragDropPayload("_SCENE", file.c_str(), file.size() + 1);
+							ImGui::Text(file.c_str());
+							ImGui::EndDragDropSource();
 						}
 					}
 					else 

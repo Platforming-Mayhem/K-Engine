@@ -5,13 +5,12 @@ namespace K
 {
 	Serializer::Serializer(K::Scene* scene, std::string location)
 	{
-		std::ofstream outFile;
 		std::string name = location;
-		if (location.c_str() == nullptr)
+		if (!name.contains(".JAWS"))
 		{
-			name = location.c_str();
 			name += ".JAWS";
 		}
+		std::ofstream outFile;
 		outFile.open(name.c_str());
 		if (!outFile)
 		{
@@ -255,41 +254,44 @@ namespace K
 
 			inFile.seekg(0, std::ios::beg);
 
-			characters.resize(length);
-			inFile.read(&characters[0], length);
-
-			std::string line;
-			std::vector<std::string> dataArray;
-			std::map<std::string, std::chrono::milliseconds> times;
-			int count = 0;
-			for (auto char0 : characters) 
+			if (length > 0) 
 			{
-				if (char0 == '\n') 
+				characters.resize(length);
+				inFile.read(&characters[0], length);
+
+				std::string line;
+				std::vector<std::string> dataArray;
+				std::map<std::string, std::chrono::milliseconds> times;
+				int count = 0;
+				for (auto char0 : characters)
 				{
-					count = 0;
-					line.clear();
-					dataArray.clear();
-					this->selectedGameObject = nullptr;
-					this->selectedComponent = nullptr;
-					this->componentDataCount = 0;
-				}
-				else if (char0 == ',') 
-				{
-					dataArray.push_back(line);
-					line.clear();
-					count++;
-					if (count == 21)
+					if (char0 == '\n')
 					{
-						this->CreateGameObjectFast(dataArray);
+						count = 0;
+						line.clear();
+						dataArray.clear();
+						this->selectedGameObject = nullptr;
+						this->selectedComponent = nullptr;
+						this->componentDataCount = 0;
 					}
-					else if (count > 21)
+					else if (char0 == ',')
 					{
-						this->CreateComponentFast(dataArray[count - 1]);
+						dataArray.push_back(line);
+						line.clear();
+						count++;
+						if (count == 21)
+						{
+							this->CreateGameObjectFast(dataArray);
+						}
+						else if (count > 21)
+						{
+							this->CreateComponentFast(dataArray[count - 1]);
+						}
 					}
-				}
-				else 
-				{
-					line += char0;
+					else
+					{
+						line += char0;
+					}
 				}
 			}
 

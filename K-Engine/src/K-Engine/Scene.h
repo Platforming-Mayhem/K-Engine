@@ -93,6 +93,13 @@ namespace K
 				this->gameObjects.erase(this->gameObjects.begin(), this->gameObjects.end());
 			}
 			this->sceneName = "Untitled*";
+			this->location = "scenes/" + this->sceneName;
+		}
+
+		void RenameScene(std::string newSceneName) 
+		{
+			this->sceneName = "scenes/" + newSceneName;
+			this->location = "scenes/" + newSceneName;
 		}
 
 		int GetNumberOfObjects() 
