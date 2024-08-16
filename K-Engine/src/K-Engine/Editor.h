@@ -42,6 +42,12 @@ namespace K
 		static K::SceneManager* sceneManager;
 	public:
 
+		static float windowScaleFactor;
+
+		static float offsetX;
+
+		static float offsetY;
+
 		static K::GameObject* selectedGameObject;
 
 		static std::map<std::string, IFactory*> lst;

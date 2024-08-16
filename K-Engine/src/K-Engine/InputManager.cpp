@@ -1,4 +1,5 @@
 #include "InputManager.h"
+#include "Editor.h"
 
 namespace K 
 {
@@ -74,11 +75,9 @@ namespace K
 
 	K::Vector3 InputManager::GetMousePosition()
 	{
-		float offsetX = std::roundf(ImGui::GetItemRectMin().x);
-		float offsetY = std::roundf(ImGui::GetItemRectMin().y);
-		float sizeX = ImGui::GetItemRectMax().x - ImGui::GetItemRectMin().x;
-		float sizeY = ImGui::GetItemRectMax().y - ImGui::GetItemRectMin().y;
-		K::Vector3 position = K::Vector3(std::clamp(((ImGui::GetMousePos().x - offsetX) / sizeX) * window->width, 0.0f, window->width), std::clamp(((ImGui::GetMousePos().y - offsetY) / sizeY) * window->height, 0.0f, window->height), 0.0f);
+		double x, y;
+		glfwGetCursorPos(K::window->window, &x, &y);
+		K::Vector3 position = K::Vector3(std::clamp(((float)x - K::Editor::offsetX) / K::Editor::windowScaleFactor, 0.0f, K::window->width), std::clamp(((float)y - K::Editor::offsetY) / K::Editor::windowScaleFactor, 0.0f, K::window->height), 0.0f);
 		return position;
 	}
 
@@ -86,6 +85,30 @@ namespace K
 	{
 		K::Vector3 clipPosition = K::Vector3(2.0f * ((position.x / (window->width)) - 0.5f), -2.0f * ((position.y / (window->height)) - 0.5f), 0.0f);
 		return clipPosition;
+	}
+
+	K::Vector3 InputManager::GetWorldMouseDirection(K::Camera* camera)
+	{
+		//variables
+		K::Vector3 mousePosition, rawClipPosition, clipPositionStart, worldSpaceNearPosition, worldSpaceDirection;
+		K::Matrix4x4 viewMatrix, projectionMatrix, viewProjectionMatrix, invVPMatrix;
+
+		mousePosition = K::InputManager::GetMousePosition();
+		rawClipPosition = K::InputManager::ConvertToClipPosition(mousePosition);
+		clipPositionStart = K::Vector3(rawClipPosition.x, rawClipPosition.y, -1.0f);
+
+		viewMatrix = camera->GetViewMatrix();
+		projectionMatrix = camera->GetProjectionMatrix();
+
+		viewProjectionMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(viewMatrix, projectionMatrix);
+		invVPMatrix = K::QuickInverse(viewProjectionMatrix);
+
+		K::MultiplyMatrixVector(clipPositionStart, worldSpaceNearPosition, invVPMatrix);
+
+		K::Vector3 camPosition = camera->GetPosition();
+
+		worldSpaceDirection = (worldSpaceNearPosition - camPosition).normalise();
+		return worldSpaceDirection;
 	}
 
 	K::GameObject* InputManager::PickGameObject(K::Camera* camera) 

@@ -95,6 +95,18 @@ namespace K
 		}
 	}
 
+	K::Colour Mesh::GetColourTint()
+	{
+		return K::Colour(this->colourTint[0], this->colourTint[1], this->colourTint[2]);
+	}
+
+	void Mesh::SetColourTint(float r, float g, float b) 
+	{
+		this->colourTint[0] = r;
+		this->colourTint[1] = g;
+		this->colourTint[2] = b;
+	}
+
 	void Mesh::Unbind() 
 	{
 		

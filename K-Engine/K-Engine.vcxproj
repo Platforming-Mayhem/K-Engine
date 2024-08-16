@@ -12,6 +12,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\K-Engine\Animator.h" />
+    <ClInclude Include="src\K-Engine\ButtonLoadScene.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\K-Engine\Camera.h" />
     <ClInclude Include="src\K-Engine\Collider.h" />
     <ClInclude Include="src\K-Engine\Component.h" />
@@ -71,6 +75,10 @@
   <ItemGroup>
     <ClCompile Include="src\K-Engine\Animator.cpp" />
     <ClCompile Include="src\K-Engine\Application.cpp" />
+    <ClCompile Include="src\K-Engine\ButtonLoadScene.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="src\K-Engine\Camera.cpp" />
     <ClCompile Include="src\K-Engine\Collider.cpp" />
     <ClCompile Include="src\K-Engine\Component.cpp" />

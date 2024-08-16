@@ -3,11 +3,14 @@
 
 namespace K 
 {
+	float K::Editor::windowScaleFactor = 1.0f;
+	float K::Editor::offsetX = 0.0f;
+	float K::Editor::offsetY = 0.0f;
 	K::Material* K::Editor::material;
 	K::GameObject* K::Editor::selectedGameObject;
 	K::SceneManager* K::Editor::sceneManager;
 	std::vector<K::GameObject*> K::Editor::deleteArray;
-	std::map<std::string, IFactory*> K::Editor::lst{ {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Timer).name() , new K::Factory<K::Timer>}, {typeid(K::Move).name() , new K::Factory<K::Move>}, {typeid(K::TriggerDeath).name() , new K::Factory<K::TriggerDeath>} , {typeid(K::Light).name() , new K::Factory<K::Light>}, {typeid(K::Shooter).name() , new K::Factory<K::Shooter>}, {typeid(K::Crush).name() , new K::Factory<K::Crush>}, {typeid(K::TriggerNextScene).name() , new K::Factory<K::TriggerNextScene>} };
+	std::map<std::string, IFactory*> K::Editor::lst{ {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Timer).name() , new K::Factory<K::Timer>}, {typeid(K::Move).name() , new K::Factory<K::Move>}, {typeid(K::TriggerDeath).name() , new K::Factory<K::TriggerDeath>} , {typeid(K::Light).name() , new K::Factory<K::Light>}, {typeid(K::Shooter).name() , new K::Factory<K::Shooter>}, {typeid(K::Crush).name() , new K::Factory<K::Crush>}, {typeid(K::TriggerNextScene).name() , new K::Factory<K::TriggerNextScene>}, {typeid(K::ButtonLoadScene).name() , new K::Factory<K::ButtonLoadScene>} };
 
 	Editor::Editor(K::Window* window, K::SceneManager* sceneManager, K::Material* material)
 	{
@@ -109,9 +112,12 @@ namespace K
 		{
 			int height = ImGui::GetWindowHeight() - ImGui::GetFrameHeight() - 2.0f;
 			int width = height * (16.0f / 9.0f);
+			K::Editor::windowScaleFactor = (float)height / (float)this->viewport->GetHeight();
 			ImGui::SetCursorPos(ImVec2((ImGui::GetWindowWidth() - width) * 0.5f, (ImGui::GetWindowHeight() - height) * 0.5f));
 			ImGui::Image((void*)(intptr_t)this->viewport->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 		}
+		K::Editor::offsetX = ImGui::GetItemRectMin().x;
+		K::Editor::offsetY = ImGui::GetItemRectMin().y;
 		if (glfwGetMouseButton(this->window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && ImGui::IsItemHovered())
 		{
 			for (auto temp : this->sceneManager->currentScene->GetGameObjects())

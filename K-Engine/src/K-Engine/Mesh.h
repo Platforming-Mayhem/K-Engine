@@ -32,6 +32,17 @@ namespace K
 		}
 	};
 
+	K_API struct Colour 
+	{
+		Colour(float r, float g, float b) 
+		{
+			this->rgb[0] = r;
+			this->rgb[1] = g;
+			this->rgb[2] = b;
+		}
+		float rgb[3];
+	};
+
 	const std::vector<K::Vertex> Quad = {K::Vertex(K::Vector3(1.0f, 0.0f, 1.0f), K::Vector2(1.0f, 1.0f)),//Top-Right
 										 K::Vertex(K::Vector3(1.0f, 0.0f, -1.0f), K::Vector2(1.0f, 0.0f)),//Bottom-Right
 										 K::Vertex(K::Vector3(-1.0f, 0.0f, 1.0f), K::Vector2(0.0f, 1.0f)),//Top-Left
@@ -95,6 +106,10 @@ namespace K
 		{
 			return this->vertices[0];
 		}
+
+		K::Colour GetColourTint();
+
+		void SetColourTint(float r, float g, float b);
 
 		void RenderInit() override;
 

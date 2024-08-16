@@ -24,3 +24,4 @@
 #include <K-Engine/Shooter.h>
 #include <K-Engine/Crush.h>
 #include <K-Engine/TriggerNextScene.h>
+#include <K-Engine/ButtonLoadScene.h>

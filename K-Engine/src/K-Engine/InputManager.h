@@ -26,6 +26,8 @@ namespace K
 
 		static K::Vector3 ConvertToClipPosition(K::Vector3 position);
 
+		static K::Vector3 GetWorldMouseDirection(K::Camera* camera);
+
 		static K::GameObject* PickGameObject(K::Camera* camera);
 	};
 }
