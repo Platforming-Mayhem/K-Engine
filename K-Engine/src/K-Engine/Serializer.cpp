@@ -301,7 +301,7 @@ namespace K
 			{
 				for (auto temp : parents)
 				{
-					temp.first->SetParent(K::Editor::GetCurrentScene()->GetGameObjects().at(temp.second));
+					temp.first->SetParent(newScene->GetGameObjects().at(temp.second));
 				}
 				parents.clear();
 			}
