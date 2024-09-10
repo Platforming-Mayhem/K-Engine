@@ -98,8 +98,6 @@ namespace K
 
 		int GetFrameRate();
 
-		void JoinThread();
-
 		void LoadIntoGPU();
 
 		void Bind(const GLint texture_unit);

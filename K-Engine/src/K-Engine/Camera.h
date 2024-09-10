@@ -30,8 +30,6 @@ namespace K
 
 		std::string properties;
 
-		K::Material* material = nullptr;
-
 		K::Window* window = nullptr;
 	public:
 
@@ -44,8 +42,6 @@ namespace K
 		float GetNearPlane();
 
 		float GetFarPlane();
-
-		K::Shader* GetShader();
 
 		K::Matrix4x4 GetProjectionMatrix();
 
@@ -64,8 +60,6 @@ namespace K
 		}
 
 		void SetActiveState(bool state);
-
-		void SetMaterial(K::Material* material);
 
 		void SetFOV(float newFOV);
 

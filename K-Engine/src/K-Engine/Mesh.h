@@ -56,6 +56,7 @@ namespace K
 		unsigned int VAO;
 		unsigned int VBO;
 		unsigned int EBO;
+		std::string shader;
 		std::string properties;
 	public:
 		//Model Vertices

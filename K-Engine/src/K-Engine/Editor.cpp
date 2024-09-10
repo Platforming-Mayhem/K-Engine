@@ -6,13 +6,13 @@ namespace K
 	float K::Editor::windowScaleFactor = 1.0f;
 	float K::Editor::offsetX = 0.0f;
 	float K::Editor::offsetY = 0.0f;
-	K::Material* K::Editor::material;
+
 	K::GameObject* K::Editor::selectedGameObject;
 	K::SceneManager* K::Editor::sceneManager;
 	std::vector<K::GameObject*> K::Editor::deleteArray;
 	std::map<std::string, IFactory*> K::Editor::lst{ {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Timer).name() , new K::Factory<K::Timer>}, {typeid(K::Move).name() , new K::Factory<K::Move>}, {typeid(K::TriggerDeath).name() , new K::Factory<K::TriggerDeath>} , {typeid(K::Light).name() , new K::Factory<K::Light>}, {typeid(K::Shooter).name() , new K::Factory<K::Shooter>}, {typeid(K::Crush).name() , new K::Factory<K::Crush>}, {typeid(K::TriggerNextScene).name() , new K::Factory<K::TriggerNextScene>}, {typeid(K::ButtonLoadScene).name() , new K::Factory<K::ButtonLoadScene>} };
 
-	Editor::Editor(K::Window* window, K::SceneManager* sceneManager, K::Material* material)
+	Editor::Editor(K::Window* window, K::SceneManager* sceneManager)
 	{
 		//IMGUI Setup Stuffs
 		IMGUI_CHECKVERSION();
@@ -25,7 +25,6 @@ namespace K
 		ImGui::StyleColorsDark();
 		this->sceneManager = sceneManager;
 		this->window = window;
-		this->material = material;
 		this->buildWindow = false;
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
 		this->currentDirectory = ASSET_DIR;
@@ -50,7 +49,6 @@ namespace K
 		}
 		this->preloadedTextures.clear();
 
-		delete this->material;
 		delete this->window;
 		delete this->viewport;
 	}
@@ -68,11 +66,6 @@ namespace K
 	K::GameObject* Editor::GetSelectedGameObject() 
 	{
 		return selectedGameObject;
-	}
-
-	K::Material* Editor::GetMaterial() 
-	{
-		return K::Editor::material;
 	}
 
 	void Editor::ImGuiBegin()
@@ -295,7 +288,7 @@ namespace K
 				if (p.is_regular_file())
 				{
 					numberOfColumns = contentWidth / 128.0f;
-					if (p.path().extension() == ".png" || p.path().extension() == ".gif")
+					if (p.path().extension() == ".png")
 					{
 						if (this->preloadedTextures.contains(relativeLocation)) 
 						{
@@ -312,6 +305,25 @@ namespace K
 						else 
 						{
 							this->AddPreloadedTexture(relativeLocation, GL_TEXTURE_2D);
+						}
+					}
+					else if (p.path().extension() == ".gif") 
+					{
+						if (this->preloadedTextures.contains(relativeLocation))
+						{
+							K::Texture* temp = this->preloadedTextures.at(relativeLocation);
+							ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+							if (ImGui::BeginDragDropSource())
+							{
+								std::string file = temp->GetFilePath();
+								ImGui::SetDragDropPayload("_TEXTURE", file.c_str(), file.size() + 1);
+								ImGui::Text(file.c_str());
+								ImGui::EndDragDropSource();
+							}
+						}
+						else
+						{
+							this->AddPreloadedTexture(relativeLocation, GL_TEXTURE_2D_ARRAY);
 						}
 					}
 					else if (p.path().extension() == ".JAWS")

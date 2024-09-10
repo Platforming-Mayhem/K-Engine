@@ -141,9 +141,10 @@ namespace K
 		void Render() 
 		{
 			K::Time::startTime = glfwGetTime();
+			K::Time::deltaTimeValue = K::Time::startTime - K::Time::endTime;
+			K::Time::endTime = K::Time::startTime;
 			this->GameLoop();
 			this->RenderLoop();
-			K::Time::endTime = K::Time::startTime;
 		}
 	};
 }

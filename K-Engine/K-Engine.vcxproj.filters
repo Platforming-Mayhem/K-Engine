@@ -320,9 +320,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\3D.shader">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="src\K-Engine\models1.bin">
       <Filter>Resource Files</Filter>
     </None>

@@ -33,7 +33,10 @@ namespace K
 
 	void Light::RenderBind() 
 	{
-		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "lightDirection"), this->lightDirection.x, this->lightDirection.y, this->lightDirection.z);
+		for (auto& mat : K::materialManager.materials) 
+		{
+			glUniform3f(glGetUniformLocation(mat.second.id, "lightDirection"), this->lightDirection.x, this->lightDirection.y, this->lightDirection.z);
+		}
 	}
 
 	void Light::Bind()

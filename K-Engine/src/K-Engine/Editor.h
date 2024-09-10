@@ -38,7 +38,6 @@ namespace K
 		bool buildWindow;
 		bool confirmationWindow = false;
 		int selectedScene = -1;
-		static K::Material* material;
 		static K::SceneManager* sceneManager;
 	public:
 
@@ -54,7 +53,7 @@ namespace K
 
 		static std::vector<K::GameObject*> deleteArray;
 
-		Editor(K::Window* window, K::SceneManager* sceneManager, K::Material* material);
+		Editor(K::Window* window, K::SceneManager* sceneManager);
 
 		virtual ~Editor();
 
@@ -83,8 +82,6 @@ namespace K
 		bool Render();
 
 		K::RenderTexture* GetViewport();
-
-		static K::Material* GetMaterial();
 
 		static void Delete(K::GameObject* target);
 

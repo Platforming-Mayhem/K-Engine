@@ -2,6 +2,11 @@
 
 namespace K 
 {
+	Shader::Shader() 
+	{
+
+	}
+
 	Shader::Shader(int resource)
 	{
 		HMODULE hModule;
@@ -62,7 +67,7 @@ namespace K
 
 	Shader::Shader(std::string file)
 	{
-		std::ifstream Shader(file);
+		std::ifstream Shader(ASSET_DIR + file);
 
 		if (!Shader)
 		{

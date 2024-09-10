@@ -17,11 +17,9 @@ namespace K
 	{
 		window = new K::Window(windowName);
 
-		K::Material* material = new K::Material();
-
 		K::SceneManager* manager = new K::SceneManager(BUILD_SCENES);
 
-		K::Editor* editor = new K::Editor(window, manager, material);
+		K::Editor* editor = new K::Editor(window, manager);
 
 		K::SceneManager::LoadScene(0);
 
@@ -53,8 +51,6 @@ namespace K
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			glUseProgram(material->GetShader()->shader);
-
 			K::SceneManager::currentScene->Render();
 
 			editor->GetViewport()->Unbind();
@@ -65,8 +61,6 @@ namespace K
 			}
 			#else
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			glUseProgram(material->GetShader()->shader);
 
 			K::SceneManager::currentScene->Render();
 

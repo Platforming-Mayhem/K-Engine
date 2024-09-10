@@ -191,6 +191,8 @@ namespace K
 	{
 		if (this->renderTexture == nullptr)
 			this->SetTexture(this->texture, false);
+		else
+			delete this->renderTexture;
 	}
 
 	void Sprite::Init()

@@ -300,7 +300,7 @@ namespace K
 
 	K::Vector3 Physics::GetCollisionResolution(K::Collider* col, std::vector<K::Layer> avoidLayer)
 	{
-		K::Vector3* offsetAmount = new K::Vector3();
+		K::Vector3 offsetAmount = K::Vector3();
 		int count = 0;
 		if (col->colliderType == K::Collider::ColliderType::Circle) 
 		{
@@ -317,7 +317,7 @@ namespace K
 					float angle1 = K::Vector3::DotProduct(normal, up);
 
 					K::Vector3 contactResolution = originToJ + (normal * col->GetRadius());
-					*offsetAmount += contactResolution;
+					offsetAmount += contactResolution;
 
 					if (angle < 0.8f && angle > -0.8f && angle1 > 0.0f)
 					{
@@ -345,7 +345,7 @@ namespace K
 					float angle1 = K::Vector3::DotProduct(normal, up);
 
 					K::Vector3 contactResolution = originToJ + (normal * col->GetRadius());
-					*offsetAmount += contactResolution;
+					offsetAmount += contactResolution;
 
 					if (angle < 0.8f && angle > -0.8f && angle1 > 0.0f)
 					{
@@ -367,7 +367,7 @@ namespace K
 					float angle1 = K::Vector3::DotProduct(normal, up);
 
 					K::Vector3 contactResolution = originToJ + (normal * col->GetRadius());
-					*offsetAmount += contactResolution;
+					offsetAmount += contactResolution;
 
 					if (angle < 0.8f && angle > -0.8f && angle1 > 0.0f)
 					{
@@ -388,20 +388,18 @@ namespace K
 					K::Vector3 normal = J.normal.normalise();
 					float depth = col->GetRadius() - std::fabsf(col->GetPosition()->x - J.position.x);
 					K::Vector3 contactResolution = K::Vector3(depth * normal.x, 0.0f, 0.0f);
-					*offsetAmount += contactResolution;
+					offsetAmount += contactResolution;
 					col->other = J.other;
 					count++;
 				}
 			}
 		}
-		if (offsetAmount->magnitude() <= 0.0f || count == 0) 
+		if (offsetAmount.magnitude() <= 0.0f || count == 0) 
 		{
 			col->SetIsColliding(false);
 			col->other = nullptr;
 		}
-		K::Vector3 temp = K::Vector3(*offsetAmount);
-		delete offsetAmount;
-		return temp;
+		return offsetAmount;
 	}
 
 	K::Vector3 Physics::GetClosestPoint(K::Vector3 position, std::vector<K::Layer> avoidLayer, K::Collider** hit)

@@ -24,6 +24,9 @@ namespace K
 
 	void Mesh::RenderInit() 
 	{
+		if(this->shader == "")
+			this->shader = this->parent->GetMaterial()->GetLocation();
+
 		glCreateVertexArrays(1, &this->VAO);
 		glGenBuffers(1, &this->VBO);
 		glGenBuffers(1, &this->EBO);
@@ -69,6 +72,7 @@ namespace K
 	{
 		glBindVertexArray(this->VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), this->colourTint[0], this->colourTint[1], this->colourTint[2]);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canDepth"), this->canDepth);
 	}
@@ -92,6 +96,14 @@ namespace K
 			ImGui::Text("Indices: %i", this->indices.size());
 			ImGui::Checkbox("Can Depth", &this->canDepth);
 			ImGui::ColorPicker3("Colour Tint", this->colourTint);
+		}
+		if (ImGui::CollapsingHeader("Material Settings")) 
+		{
+			ImGui::InputText("Shader Location: ", &this->shader);
+			if (ImGui::Button("Recompile Shader")) 
+			{
+				this->parent->SetMaterial(new K::Material(this->shader));
+			}
 		}
 	}
 
@@ -137,6 +149,11 @@ namespace K
 				{
 					this->canDepth = false;
 				}
+				break;
+			case 4:
+				this->shader = temp;
+				this->parent->SetMaterial(new K::Material(this->shader));
+				break;
 			}
 		}
 	}
@@ -148,12 +165,13 @@ namespace K
 		this->properties += std::to_string(this->colourTint[2]) + ",";
 		if (this->canDepth) 
 		{
-			this->properties += "true";
+			this->properties += "true,";
 		}
 		else 
 		{
-			this->properties += "false";
+			this->properties += "false,";
 		}
+		this->properties += this->shader;
 		return this->properties.c_str();
 	}
 }

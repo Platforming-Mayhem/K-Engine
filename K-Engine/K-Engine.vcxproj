@@ -136,7 +136,6 @@
     <Image Include="assets\textures\watermark\watermark.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\3D.shader" />
     <None Include="assets\scenes\Test.JAWS" />
     <None Include="src\K-Engine\models1.bin" />
   </ItemGroup>

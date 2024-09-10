@@ -30,16 +30,6 @@ namespace K
 		return this->farPlane;
 	}
 
-	K::Shader* Camera::GetShader() 
-	{
-		return this->material->GetShader();
-	}
-
-	void Camera::SetMaterial(K::Material* material) 
-	{
-		this->material = material;
-	}
-
 	void Camera::SetFOV(float newFOV) 
 	{
 		this->FOV = newFOV;
@@ -116,9 +106,16 @@ namespace K
 
 			glViewport(0, 0, this->window->width, this->window->height);
 
-			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
+			for (auto& mat : K::materialManager.materials) 
+			{
+				glUseProgram(mat.second.id);
 
-			glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
+				glUniformMatrix4fv(glGetUniformLocation(mat.second.id, "viewMatrix"), 1, GL_FALSE, &this->viewMatrix.m[0][0]);
+
+				glUniformMatrix4fv(glGetUniformLocation(mat.second.id, "projectionMatrix"), 1, GL_FALSE, &this->projectionMatrix.m[0][0]);
+
+				glUniform3f(glGetUniformLocation(mat.second.id, "fogColour"), this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2]);
+			}
 		}
 	}
 
@@ -173,7 +170,7 @@ namespace K
 	void Camera::RenderBind() 
 	{
 		glClearColor(this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2], this->backgroundColour[3]);
-		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "fogColour"), this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2]);
+
 		this->CameraMatrix();
 	}
 
@@ -283,7 +280,6 @@ namespace K
 	void Camera::RenderInit() 
 	{
 		SetWindow(K::window);
-		SetMaterial(this->parent->GetMaterial());
 	}
 
 	void Camera::Unbind()

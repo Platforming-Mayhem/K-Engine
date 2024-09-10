@@ -8,6 +8,7 @@ namespace K
 	public:
 		static float startTime;
 		static float endTime;
+		static float deltaTimeValue;
 		static float deltaTime();
 	};
 }

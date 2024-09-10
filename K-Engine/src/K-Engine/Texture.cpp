@@ -60,6 +60,7 @@ namespace K
 			if (this->type == GL_TEXTURE_2D_ARRAY)
 			{
 				this->thread = std::thread(&Texture::LoadAnimation, this);
+				this->thread.detach();
 				glGenTextures(1, &this->id);
 				glBindTexture(this->type, this->id);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -72,6 +73,7 @@ namespace K
 			else
 			{
 				this->thread = std::thread(&Texture::Load, this);
+				this->thread.detach();
 				glGenTextures(1, &this->id);
 				glBindTexture(this->type, this->id);
 				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -246,6 +248,8 @@ namespace K
 	Texture::~Texture() 
 	{
 		//std::cout << "Begin Texture Destruction..." << this->filename << "," << this->textures->Check(this->filename)->dependencies << std::endl;
+		if(this->image != nullptr)
+			delete this->image;
 		if (this->textures->Check(this->filename)->dependencies > 0)
 		{
 			int count = 0;
@@ -288,28 +292,14 @@ namespace K
 		return this->filename;
 	}
 
-	void Texture::JoinThread() 
-	{
-		if (this->thread.joinable())
-		{
-			this->thread.join();
-			//std::cout << this->filename << std::endl;
-		}
-	}
-
 	void Texture::LoadIntoGPU() 
 	{
-		this->JoinThread();
 		glBindTexture(this->type, this->id);
-		if (this->loadedAnimation && this->image != nullptr)
+		if (this->loadedAnimation)
 		{
 			glTexStorage3D(this->type, 1, GL_RGBA8, this->width, this->height, this->frames);
 			glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
-			#if _DEBUG
-				stbi_image_free(this->image);
-			#else
-				delete this->image;
-			#endif
+			stbi_image_free(this->image);
 			this->image = nullptr;
 
 			glGenTextures(1, &this->viewId);
@@ -327,7 +317,7 @@ namespace K
 			}
 			this->loadedAnimation = false;
 		}
-		if (this->loadedTexture && this->image != nullptr)
+		if (this->loadedTexture)
 		{
 			if (this->c >= 4)
 			{
@@ -337,11 +327,7 @@ namespace K
 			{
 				glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 			}
-			#if _DEBUG
-				stbi_image_free(this->image);
-			#else
-				delete this->image;
-			#endif
+			stbi_image_free(this->image);
 			this->image = nullptr;
 			if (this->textures->Check(this->filename)->dependencies > 0)
 			{
@@ -359,13 +345,14 @@ namespace K
 	void Texture::Bind(const GLint texture_unit)
 	{
 		glActiveTexture(GL_TEXTURE0 + texture_unit);
-		this->LoadIntoGPU();
 		glBindTexture(this->type, this->id);
 	}
 
 	void Texture::Unbind() 
 	{
 		glBindTexture(this->type, 0);
+
+		this->LoadIntoGPU();
 	}
 
 	unsigned char* Texture::GetFrameImage(int frame) 
@@ -399,14 +386,14 @@ namespace K
 				info.erase(0, info.find(".") + 1);
 				this->c = std::stoi(info);
 
-				this->image = new unsigned char[this->width * this->height * this->c];
-				//file.read((char*)this->image, (this->width * this->height * this->c));
-				std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
-				std::fseek(fastFile, sizeOfInfo, SEEK_SET);
-				int bytesRead = std::fread(this->image, sizeof(unsigned char), this->width * this->height * this->c, fastFile);
-				/*if (bytesRead != this->width * this->height * this->c)
-					std::cout << "INCORRECT" << std::endl;*/
-				std::fclose(fastFile);
+				this->image = (unsigned char*)std::calloc(this->width * this->height * this->c, sizeof(unsigned char));
+				if (this->image != nullptr) 
+				{
+					std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
+					std::fseek(fastFile, sizeOfInfo, SEEK_SET);
+					int bytesRead = std::fread(this->image, sizeof(unsigned char), this->width * this->height * this->c, fastFile);
+					std::fclose(fastFile);
+				}
 			}
 		}
 	}
@@ -435,14 +422,14 @@ namespace K
 				info.erase(0, info.find(".") + 1);
 				this->fps = std::stoi(info);
 
-				this->image = new unsigned char [this->width * this->height * 4 * this->frames];
-				//file.read((char*)this->image, this->width * this->height * 4 * this->frames);
-				std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
-				std::fseek(fastFile, sizeOfInfo, SEEK_SET);
-				int bytesRead = std::fread(this->image, sizeof(unsigned char), this->width * this->height * 4 * this->frames, fastFile);
-				/*if (bytesRead != this->width * this->height * 4 * this->frames)
-					std::cout << "INCORRECT" << std::endl;*/
-				std::fclose(fastFile);
+				this->image = (unsigned char*)std::calloc(this->width * this->height * 4 * this->frames, sizeof(unsigned char));
+				if (this->image != nullptr)
+				{
+					std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
+					std::fseek(fastFile, sizeOfInfo, SEEK_SET);
+					int bytesRead = std::fread(this->image, sizeof(unsigned char), this->width * this->height * 4 * this->frames, fastFile);
+					std::fclose(fastFile);
+				}
 			}
 		}
 	}

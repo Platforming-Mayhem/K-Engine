@@ -114,6 +114,8 @@ namespace K
 
 		void SetMaterial(K::Material* material) 
 		{
+			if(this->material != material && this->material != nullptr)
+				delete this->material;
 			this->material = material;
 		}
 

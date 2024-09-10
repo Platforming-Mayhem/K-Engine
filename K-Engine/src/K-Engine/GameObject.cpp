@@ -8,7 +8,7 @@ namespace K
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		this->material = K::Editor::GetMaterial();
+		this->SetMaterial(new K::Material("shaders/3D.shader"));
 		std::srand(std::chrono::system_clock::now().time_since_epoch().count());
 		this->g_Index = std::rand();
 		K::Editor::GetCurrentScene()->Attach(this);
@@ -98,7 +98,7 @@ namespace K
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		this->material = K::Editor::GetMaterial();
+		this->SetMaterial(new K::Material("shaders/3D.shader"));
 		this->g_Index = index;
 		K::Editor::GetCurrentScene()->Attach(this);
 		//std::cout << name << " GameObject Created" << std::endl;
@@ -114,7 +114,7 @@ namespace K
 		}
 		this->components.clear();
 		//std::cout << "End Component Destruction..." << std::endl;
-		this->material = nullptr;
+		delete this->material;
 		delete this->transform;
 		//std::cout << "End GameObject Destruction..." << std::endl;
 	}
@@ -314,11 +314,14 @@ namespace K
 
 	void GameObject::PassTransformationMatrix()
 	{
+		glUseProgram(this->GetMaterial()->GetShader()->shader);
+
 		if (this->parent == nullptr) 
 			this->GetTransform()->PassModelMatrix();
 		else 
 			this->GetTransform()->PassModelMatrix(this->parent->GetTransform());
-		glUniformMatrix4fv(glGetUniformLocation(this->material->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
+
+		glUniformMatrix4fv(glGetUniformLocation(this->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
 	}
 
 	void GameObject::Bind() 
