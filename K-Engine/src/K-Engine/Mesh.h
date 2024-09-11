@@ -112,6 +112,8 @@ namespace K
 
 		void SetColourTint(float r, float g, float b);
 
+		void SetShader(std::string newShader);
+
 		void RenderInit() override;
 
 		void Init() override;

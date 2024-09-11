@@ -19,8 +19,7 @@ namespace K
 
 	void Shooter::RenderInit() 
 	{
-		if (this->bulletTexture == nullptr)
-			this->bulletTexture = new K::Texture(WATERMARK);
+		
 	}
 
 	void Shooter::Init()
@@ -30,6 +29,8 @@ namespace K
 		{
 			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
 		}
+		if (this->bulletTexture == nullptr)
+			this->bulletTexture = new K::Texture(WATERMARK);
 	}
 
 	void Shooter::Update()

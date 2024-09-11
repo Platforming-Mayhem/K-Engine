@@ -22,6 +22,11 @@ namespace K
 		//std::cout << "End Mesh Destruction..." << std::endl;
 	}
 
+	void Mesh::SetShader(std::string newShader) 
+	{
+		this->shader = newShader;
+	}
+
 	void Mesh::RenderInit() 
 	{
 		if(this->shader == "")

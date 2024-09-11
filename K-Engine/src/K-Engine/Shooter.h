@@ -30,6 +30,7 @@ namespace K
 			this->bulletSpeed = bulletSpeed;
 			this->direction = this->direction.normalise();
 			this->mesh = K::Mesh();
+			this->mesh.SetShader("shaders/2D.shader");
 			this->mesh.Init();
 			this->mesh.RenderInit();
 		}
