@@ -130,6 +130,7 @@ namespace K
 
 	void GameObject::RenderInit()
 	{
+		glUseProgram(this->GetMaterial()->GetShader()->shader);
 		for (K::Component* c : this->components)
 		{
 			//std::cout << "Initializing " << c->GetName() << std::endl;

@@ -17,6 +17,12 @@ namespace K
 		delete this->bulletTexture;
 	}
 
+	void Shooter::RenderInit() 
+	{
+		if (this->bulletTexture == nullptr)
+			this->bulletTexture = new K::Texture(WATERMARK);
+	}
+
 	void Shooter::Init()
 	{
 		this->parent->layer = (int)K::Layer::LayerType::Enemy;
@@ -24,8 +30,6 @@ namespace K
 		{
 			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
 		}
-		if (this->bulletTexture == nullptr)
-			this->bulletTexture = new K::Texture(WATERMARK, GL_TEXTURE_2D_ARRAY);
 	}
 
 	void Shooter::Update()
@@ -184,7 +188,7 @@ namespace K
 					const char* file = (const char*)payload->Data;
 					if (this->bulletTexture != nullptr)
 						delete this->bulletTexture;
-					this->bulletTexture = new K::Texture(file, GL_TEXTURE_2D_ARRAY);
+					this->bulletTexture = new K::Texture(file);
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -192,7 +196,7 @@ namespace K
 			{
 				if (this->bulletTexture != nullptr)
 					delete this->bulletTexture;
-				this->bulletTexture = new K::Texture(WATERMARK, GL_TEXTURE_2D_ARRAY);
+				this->bulletTexture = new K::Texture(WATERMARK);
 			}
 
 			this->RangeVisualisation();
@@ -224,7 +228,7 @@ namespace K
 			case 5:
 				if (this->bulletTexture != nullptr)
 					delete this->bulletTexture;
-				this->bulletTexture = new K::Texture(temp.c_str(), GL_TEXTURE_2D_ARRAY);
+				this->bulletTexture = new K::Texture(temp.c_str());
 				break;
 			case 6:
 				if (temp == "true")

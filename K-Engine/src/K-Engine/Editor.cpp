@@ -31,9 +31,9 @@ namespace K
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 		#if _DEBUG
-		this->AddPreloadedTexture("textures/editor/scene.png", GL_TEXTURE_2D);
-		this->AddPreloadedTexture("textures/editor/unknown.png", GL_TEXTURE_2D);
-		this->AddPreloadedTexture("textures/editor/file.png", GL_TEXTURE_2D);
+		this->AddPreloadedTexture("textures/editor/scene.png");
+		this->AddPreloadedTexture("textures/editor/unknown.png");
+		this->AddPreloadedTexture("textures/editor/file.png");
 		#endif
 	}
 
@@ -239,9 +239,9 @@ namespace K
 		ImGui::End();
 	}
 
-	void Editor::AddPreloadedTexture(std::string location, GLenum type) 
+	void Editor::AddPreloadedTexture(std::string location) 
 	{
-		this->preloadedTextures.insert({ location, new K::Texture(location.c_str(), type) });
+		this->preloadedTextures.insert({ location, new K::Texture(location.c_str()) });
 	}
 
 	void Editor::LoadPreloadedTextures() 
@@ -304,7 +304,7 @@ namespace K
 						}
 						else 
 						{
-							this->AddPreloadedTexture(relativeLocation, GL_TEXTURE_2D);
+							this->AddPreloadedTexture(relativeLocation);
 						}
 					}
 					else if (p.path().extension() == ".gif") 
@@ -323,7 +323,7 @@ namespace K
 						}
 						else
 						{
-							this->AddPreloadedTexture(relativeLocation, GL_TEXTURE_2D_ARRAY);
+							this->AddPreloadedTexture(relativeLocation);
 						}
 					}
 					else if (p.path().extension() == ".JAWS")

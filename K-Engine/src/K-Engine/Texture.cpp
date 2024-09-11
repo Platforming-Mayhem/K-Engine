@@ -36,17 +36,15 @@ namespace K
 
 	}
 
-	Texture::Texture(const char* filename, GLenum type)
+	Texture::Texture(const char* filename)
 	{
 		this->textures = &K::textureManager;
-		this->type = type;
-		this->filename = filename + std::to_string(this->type);
+		this->filename = filename;
 		if (this->textures->Contains(this->filename))
 		{
 			K::TextureInfo tInfo = *this->textures->Check(this->filename);
 			this->id = tInfo.id;
 			this->viewId = tInfo.viewId;
-			this->type = tInfo.type;
 			this->frames = tInfo.frames;
 			this->fps = tInfo.fps;
 			this->width = tInfo.width;
@@ -57,38 +55,40 @@ namespace K
 		else
 		{
 			stbi_set_flip_vertically_on_load(true);
-			if (this->type == GL_TEXTURE_2D_ARRAY)
+			if (this->filename.contains(".gif"))
 			{
 				this->thread = std::thread(&Texture::LoadAnimation, this);
 				this->thread.detach();
 				glGenTextures(1, &this->id);
-				glBindTexture(this->type, this->id);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-				glBindTexture(this->type, 0);
+				glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+
+				this->fps = 1;
 			}
 			else
 			{
 				this->thread = std::thread(&Texture::Load, this);
 				this->thread.detach();
 				glGenTextures(1, &this->id);
-				glBindTexture(this->type, this->id);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glBindTexture(GL_TEXTURE_2D, this->id);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-				glBindTexture(this->type, 0);
+				glBindTexture(GL_TEXTURE_2D, 0);
 
+				this->fps = 0;
 				this->viewId = this->id;
 			}
 			K::TextureInfo textureInfo = K::TextureInfo();
 			textureInfo.id = this->id;
 			textureInfo.viewId = this->viewId;
-			textureInfo.type = this->type;
 			textureInfo.frames = this->frames;
 			textureInfo.fps = this->GetFrameRate();
 			textureInfo.dependencies++;
@@ -97,16 +97,14 @@ namespace K
 		}
 	}
 
-	Texture::Texture(unsigned int resource, GLenum type) {
+	Texture::Texture(unsigned int resource) {
 		this->textures = &K::textureManager;
-		this->type = type;
-		this->filename = std::to_string(resource) + std::to_string(this->type);
+		this->filename = std::to_string(resource);
 		if (this->textures->Contains(this->filename))
 		{
 			K::TextureInfo tInfo = *this->textures->Check(this->filename);
 			this->id = tInfo.id;
 			this->viewId = tInfo.viewId;
-			this->type = tInfo.type;
 			this->frames = tInfo.frames;
 			this->fps = tInfo.fps;
 			this->width = tInfo.width;
@@ -117,124 +115,56 @@ namespace K
 		else 
 		{
 			stbi_set_flip_vertically_on_load(true);
-			if (this->type == GL_TEXTURE_2D_ARRAY) 
+			if (IS_INTRESOURCE(resource))
 			{
-				if (IS_INTRESOURCE(resource))
+				HMODULE hModule;
+				GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
+				HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(resource), "PNG");
+				int size = SizeofResource(hModule, hr);
+				if (hr == NULL)
 				{
-					HMODULE hModule;
-					GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
-					HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(resource), "PNG");
-					int size = SizeofResource(hModule, hr);
-					if (hr == NULL)
-					{
-						std::cout << "Failed to find resource" << std::endl;
-						std::cout << size << std::endl;
-					}
-					else
-					{
-						HGLOBAL temp = LoadResource(hModule, hr);
-						LPVOID lp = LockResource(temp);
-						this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
-						this->frames = 1;
-						glGenTextures(1, &this->id);
-						glGenTextures(1, &this->viewId);
-						glBindTexture(this->type, this->id);
-						glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-						glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-						glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-						glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-						if (this->image)
-						{
-							if (this->c > 3)
-							{
-								glTexStorage3D(this->type, 1, GL_RGBA8, this->width, this->height, this->frames);
-								glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
-							}
-							else
-							{
-								glTexStorage3D(this->type, 1, GL_RGB8, this->width, this->height, this->frames);
-								glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGB, GL_UNSIGNED_BYTE, this->image);
-							}
-							stbi_image_free(this->image);
-							this->image = nullptr;
-
-							glBindTexture(this->type, 0);
-
-							if (this->c > 3) 
-							{
-								glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
-							}
-							else 
-							{
-								glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGB8, 0, 1, 0, 1);
-							}
-						}
-						else
-						{
-							std::cout << "Failed to load texture" << std::endl;
-						}
-						UnlockResource(temp);
-					}
+					std::cout << "Failed to find resource" << std::endl;
+					std::cout << size << std::endl;
 				}
 				else
 				{
-					std::cout << "Failed to find texture" << std::endl;
+					HGLOBAL temp = LoadResource(hModule, hr);
+					LPVOID lp = LockResource(temp);
+					this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
+					glGenTextures(1, &this->id);
+					glBindTexture(GL_TEXTURE_2D, this->id);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+					if (this->image)
+					{
+						if (this->c > 3)
+						{
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+						}
+						else
+						{
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+						}
+						stbi_image_free(this->image);
+						this->image = nullptr;
+					}
+					else
+					{
+						std::cout << "Failed to load texture" << std::endl;
+					}
+					this->viewId = this->id;
+					UnlockResource(temp);
 				}
 			}
-			else 
+			else
 			{
-				if (IS_INTRESOURCE(resource))
-				{
-					HMODULE hModule;
-					GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
-					HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(resource), "PNG");
-					int size = SizeofResource(hModule, hr);
-					if (hr == NULL)
-					{
-						std::cout << "Failed to find resource" << std::endl;
-						std::cout << size << std::endl;
-					}
-					else
-					{
-						HGLOBAL temp = LoadResource(hModule, hr);
-						LPVOID lp = LockResource(temp);
-						this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
-						glGenTextures(1, &this->id);
-						glBindTexture(this->type, this->id);
-						glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP);
-						glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP);
-						glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-						glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-						if (this->image)
-						{
-							if (this->c > 3)
-							{
-								glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
-							}
-							else
-							{
-								glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
-							}
-							stbi_image_free(this->image);
-							this->image = nullptr;
-						}
-						else
-						{
-							std::cout << "Failed to load texture" << std::endl;
-						}
-						this->viewId = this->id;
-						UnlockResource(temp);
-					}
-				}
-				else
-				{
-					std::cout << "Failed to find texture" << std::endl;
-				}
+				std::cout << "Failed to find texture" << std::endl;
 			}
 			K::TextureInfo textureInfo = K::TextureInfo();
 			textureInfo.id = this->id;
 			textureInfo.viewId = this->viewId;
-			textureInfo.type = this->type;
 			textureInfo.frames = this->frames;
 			textureInfo.width = this->width;
 			textureInfo.height = this->height;
@@ -281,10 +211,7 @@ namespace K
 
 	std::string Texture::GetFilePath() 
 	{
-		int size = this->filename.size() - std::to_string(this->type).size();
-		std::string newFilename = this->filename.substr(0, size);
-		std::ifstream temp(ASSET_DIR + newFilename);
-		return newFilename;
+		return this->filename;
 	}
 
 	std::string Texture::GetTextureManagerName() 
@@ -294,11 +221,11 @@ namespace K
 
 	void Texture::LoadIntoGPU() 
 	{
-		glBindTexture(this->type, this->id);
 		if (this->loadedAnimation)
 		{
-			glTexStorage3D(this->type, 1, GL_RGBA8, this->width, this->height, this->frames);
-			glTexSubImage3D(this->type, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+			glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
+			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
+			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
@@ -316,16 +243,18 @@ namespace K
 				}
 			}
 			this->loadedAnimation = false;
+			glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 		}
 		if (this->loadedTexture)
 		{
+			glBindTexture(GL_TEXTURE_2D, this->id);
 			if (this->c >= 4)
 			{
-				glTexImage2D(this->type, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			}
 			else
 			{
-				glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 			}
 			stbi_image_free(this->image);
 			this->image = nullptr;
@@ -338,19 +267,33 @@ namespace K
 				}
 			}
 			this->loadedTexture = false;
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
-		glBindTexture(this->type, 0);
 	}
 
 	void Texture::Bind(const GLint texture_unit)
 	{
 		glActiveTexture(GL_TEXTURE0 + texture_unit);
-		glBindTexture(this->type, this->id);
+		if (this->frames > 1) 
+		{
+			glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
+		}
+		else 
+		{
+			glBindTexture(GL_TEXTURE_2D, this->id);
+		}
 	}
 
 	void Texture::Unbind() 
 	{
-		glBindTexture(this->type, 0);
+		if (this->frames > 1)
+		{
+			glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 
 		this->LoadIntoGPU();
 	}

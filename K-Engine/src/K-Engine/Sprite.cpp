@@ -143,28 +143,28 @@ namespace K
 	{
 		if (this->texture != nullptr)
 			delete this->texture;
-		this->texture = new K::Texture(value, GL_TEXTURE_2D_ARRAY);
+		this->texture = new K::Texture(value);
 	}
 
 	void Sprite::SetNormalTexture(const char* value)
 	{
 		if (this->normalTexture != nullptr)
 			delete this->normalTexture;
-		this->normalTexture = new K::Texture(value, GL_TEXTURE_2D);
+		this->normalTexture = new K::Texture(value);
 	}
 
 	void Sprite::SetColorTexture(unsigned int resource)
 	{
 		if (this->texture != nullptr)
 			delete this->texture;
-		this->texture = new K::Texture(resource, GL_TEXTURE_2D_ARRAY);
+		this->texture = new K::Texture(resource);
 	}
 
 	void Sprite::SetNormalTexture(unsigned int resource)
 	{
 		if (this->normalTexture != nullptr)
 			delete this->normalTexture;
-		this->normalTexture = new K::Texture(resource, GL_TEXTURE_2D);
+		this->normalTexture = new K::Texture(resource);
 	}
 
 	void Sprite::SetTexture(K::Texture* newTexture, bool reScale) 
@@ -174,6 +174,16 @@ namespace K
 			this->frame = 0;
 			this->internalClock = 0.0f;
 			this->renderTexture = newTexture;
+			if (this->renderTexture->GetFrameRate() > 0)
+			{
+				this->parent->SetMaterial(new K::Material("shaders/3D.shader"));
+				glUseProgram(this->parent->GetMaterial()->GetShader()->shader);
+			}
+			else
+			{
+				this->parent->SetMaterial(new K::Material("shaders/2D.shader"));
+				glUseProgram(this->parent->GetMaterial()->GetShader()->shader);
+			}
 			if (reScale) 
 			{
 				this->parent->GetTransform()->scale->x = this->renderTexture->GetWidth() / 32.0f;

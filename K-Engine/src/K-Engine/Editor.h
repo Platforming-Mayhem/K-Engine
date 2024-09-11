@@ -57,7 +57,7 @@ namespace K
 
 		virtual ~Editor();
 
-		void AddPreloadedTexture(std::string location, GLenum type);
+		void AddPreloadedTexture(std::string location);
 
 		void LoadPreloadedTextures();
 

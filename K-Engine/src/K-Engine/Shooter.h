@@ -102,6 +102,8 @@ namespace K
 
 		void RangeVisualisation();
 
+		void RenderInit() override;
+
 		void Init() override;
 
 		void Render() override;

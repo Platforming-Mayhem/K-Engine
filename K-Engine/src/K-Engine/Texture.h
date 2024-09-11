@@ -8,7 +8,6 @@ namespace K
 	{
 		int id;
 		int viewId;
-		int type;
 		int frames;
 		int width;
 		int height;
@@ -53,15 +52,14 @@ namespace K
 		int fps;
 		int* delay;
 		int c;
-		unsigned int type;
 		std::string filename;
 
 	public:
 		bool isLooping = true;
 
-		Texture(const char* filename, GLenum type);
+		Texture(const char* filename);
 
-		Texture(unsigned int resource, GLenum type);
+		Texture(unsigned int resource);
 
 		~Texture();
 

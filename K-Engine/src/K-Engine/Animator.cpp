@@ -47,7 +47,7 @@ namespace K
 
 	void Animator::AssignTexture(const char* value)
 	{
-		this->animations.push_back(new K::Texture(value, GL_TEXTURE_2D_ARRAY));
+		this->animations.push_back(new K::Texture(value));
 	}
 
 	void K::Animator::Update() 

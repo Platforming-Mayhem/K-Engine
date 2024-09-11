@@ -35,8 +35,10 @@ namespace K
 	{
 		for (auto& mat : K::materialManager.materials) 
 		{
+			glUseProgram(mat.second.id);
 			glUniform3f(glGetUniformLocation(mat.second.id, "lightDirection"), this->lightDirection.x, this->lightDirection.y, this->lightDirection.z);
 		}
+		glUseProgram(this->parent->GetMaterial()->GetShader()->shader);
 	}
 
 	void Light::Bind()
