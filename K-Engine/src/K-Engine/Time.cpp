@@ -1,9 +1,9 @@
 #include "Time.h"
 namespace K 
 {
-	float Time::startTime = 0.0f;
-	float Time::endTime = 0.0f;
-	float Time::deltaTimeValue = 0.0f;
+	double Time::startTime = 0.0f;
+	double Time::endTime = 0.0f;
+	double Time::deltaTimeValue = 0.0f;
 
 	float Time::deltaTime() 
 	{
