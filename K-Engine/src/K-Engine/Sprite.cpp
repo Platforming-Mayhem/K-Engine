@@ -174,7 +174,7 @@ namespace K
 			this->frame = 0;
 			this->internalClock = 0.0f;
 			this->renderTexture = newTexture;
-			if (this->renderTexture->GetFrameRate() > 0)
+			if (this->renderTexture->GetFilePath().contains(".gif"))
 			{
 				this->parent->SetMaterial(new K::Material("shaders/3D.shader"));
 				glUseProgram(this->parent->GetMaterial()->GetShader()->shader);

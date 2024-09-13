@@ -42,13 +42,13 @@ namespace K
 		this->filename = filename;
 		if (this->textures->Contains(this->filename))
 		{
-			K::TextureInfo tInfo = *this->textures->Check(this->filename);
-			this->id = tInfo.id;
-			this->viewId = tInfo.viewId;
-			this->frames = tInfo.frames;
-			this->fps = tInfo.fps;
-			this->width = tInfo.width;
-			this->height = tInfo.height;
+			K::Texture* parentTex = ((K::Texture*)this->textures->Check(this->filename)->dependenciesPointers[0]);
+			this->id = parentTex->GetID();
+			this->viewId = parentTex->GetViewID();
+			this->frames = parentTex->GetNumberOfFrames();
+			this->fps = parentTex->GetFrameRate();
+			this->width = parentTex->GetWidth();
+			this->height = parentTex->GetHeight();
 			this->textures->Check(this->filename)->dependencies++;
 			this->textures->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
@@ -67,8 +67,6 @@ namespace K
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 				glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
-
-				this->fps = 1;
 			}
 			else
 			{
@@ -82,15 +80,9 @@ namespace K
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 				glBindTexture(GL_TEXTURE_2D, 0);
-
-				this->fps = 0;
 				this->viewId = this->id;
 			}
 			K::TextureInfo textureInfo = K::TextureInfo();
-			textureInfo.id = this->id;
-			textureInfo.viewId = this->viewId;
-			textureInfo.frames = this->frames;
-			textureInfo.fps = this->GetFrameRate();
 			textureInfo.dependencies++;
 			textureInfo.dependenciesPointers.push_back(this);
 			this->textures->Add(this->filename, textureInfo);
@@ -103,12 +95,13 @@ namespace K
 		if (this->textures->Contains(this->filename))
 		{
 			K::TextureInfo tInfo = *this->textures->Check(this->filename);
-			this->id = tInfo.id;
-			this->viewId = tInfo.viewId;
-			this->frames = tInfo.frames;
-			this->fps = tInfo.fps;
-			this->width = tInfo.width;
-			this->height = tInfo.height;
+			K::Texture* parentTex = ((K::Texture*)this->textures->Check(this->filename)->dependenciesPointers[0]);
+			this->id = parentTex->GetID();
+			this->viewId = parentTex->GetViewID();
+			this->frames = parentTex->GetNumberOfFrames();
+			this->fps = parentTex->GetFrameRate();
+			this->width = parentTex->GetWidth();
+			this->height = parentTex->GetHeight();
 			this->textures->Check(this->filename)->dependencies++;
 			this->textures->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
@@ -163,12 +156,6 @@ namespace K
 				std::cout << "Failed to find texture" << std::endl;
 			}
 			K::TextureInfo textureInfo = K::TextureInfo();
-			textureInfo.id = this->id;
-			textureInfo.viewId = this->viewId;
-			textureInfo.frames = this->frames;
-			textureInfo.width = this->width;
-			textureInfo.height = this->height;
-			textureInfo.fps = this->GetFrameRate();
 			textureInfo.dependencies++;
 			textureInfo.dependenciesPointers.push_back(this);
 			this->textures->Add(this->filename, textureInfo);
@@ -214,11 +201,6 @@ namespace K
 		return this->filename;
 	}
 
-	std::string Texture::GetTextureManagerName() 
-	{
-		return this->filename;
-	}
-
 	void Texture::LoadIntoGPU() 
 	{
 		if (this->loadedAnimation)
@@ -232,14 +214,18 @@ namespace K
 			glGenTextures(1, &this->viewId);
 			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
 
-			if (this->textures->Check(this->filename)->dependencies > 0)
+			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{
 				for (auto i : this->textures->Check(this->filename)->dependenciesPointers)
 				{
-					((K::Texture*)i)->fps = this->fps;
-					((K::Texture*)i)->frames = this->frames;
-					((K::Texture*)i)->width = this->width;
-					((K::Texture*)i)->height = this->height;
+					if (i != this) 
+					{
+						((K::Texture*)i)->viewId = this->viewId;
+						((K::Texture*)i)->fps = this->fps;
+						((K::Texture*)i)->frames = this->frames;
+						((K::Texture*)i)->width = this->width;
+						((K::Texture*)i)->height = this->height;
+					}
 				}
 			}
 			this->loadedAnimation = false;
@@ -258,12 +244,15 @@ namespace K
 			}
 			stbi_image_free(this->image);
 			this->image = nullptr;
-			if (this->textures->Check(this->filename)->dependencies > 0)
+			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{
 				for (auto i : this->textures->Check(this->filename)->dependenciesPointers)
 				{
-					((K::Texture*)i)->width = this->width;
-					((K::Texture*)i)->height = this->height;
+					if (i != this) 
+					{
+						((K::Texture*)i)->width = this->width;
+						((K::Texture*)i)->height = this->height;
+					}
 				}
 			}
 			this->loadedTexture = false;
@@ -274,7 +263,7 @@ namespace K
 	void Texture::Bind(const GLint texture_unit)
 	{
 		glActiveTexture(GL_TEXTURE0 + texture_unit);
-		if (this->frames > 1) 
+		if (this->filename.contains(".gif"))
 		{
 			glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
 		}
@@ -286,7 +275,7 @@ namespace K
 
 	void Texture::Unbind() 
 	{
-		if (this->frames > 1)
+		if (this->filename.contains(".gif"))
 		{
 			glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 		}
@@ -382,8 +371,7 @@ namespace K
 		std::string temp = ASSET_DIR + this->GetFilePath();
 		#if _DEBUG
 			this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
-			if (this->delay != nullptr)
-				this->fps = 1.0f / (*this->delay / 1000.0f);
+			this->fps = 1.0f / (*this->delay / 1000.0f);
 			this->CreateJANIM();
 		#else
 			this->LoadJANIM(temp);

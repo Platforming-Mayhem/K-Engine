@@ -6,12 +6,6 @@ namespace K
 {
 	struct TextureInfo 
 	{
-		int id;
-		int viewId;
-		int frames;
-		int width;
-		int height;
-		int fps;
 		int dependencies = 0;
 		std::vector<void*> dependenciesPointers;
 	};
@@ -89,8 +83,6 @@ namespace K
 		}
 
 		std::string GetFilePath();
-
-		std::string GetTextureManagerName();
 
 		unsigned char* GetFrameImage(int frameIndex);
 

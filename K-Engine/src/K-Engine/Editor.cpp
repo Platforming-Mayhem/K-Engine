@@ -312,7 +312,7 @@ namespace K
 						if (this->preloadedTextures.contains(relativeLocation))
 						{
 							K::Texture* temp = this->preloadedTextures.at(relativeLocation);
-							ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+							ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
 							if (ImGui::BeginDragDropSource())
 							{
 								std::string file = temp->GetFilePath();
