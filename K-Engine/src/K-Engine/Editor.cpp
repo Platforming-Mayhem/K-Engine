@@ -272,9 +272,9 @@ namespace K
 
 		for (auto& p : std::filesystem::directory_iterator(this->currentDirectory)) 
 		{
-			std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 			if (p.is_directory()) 
 			{
+				std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 				K::Texture* temp = this->preloadedTextures.at("textures/editor/file.png");
 				if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(temp->GetWidth(), temp->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
 				{
@@ -290,6 +290,7 @@ namespace K
 					numberOfColumns = contentWidth / 128.0f;
 					if (p.path().extension() == ".png")
 					{
+						std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 						if (this->preloadedTextures.contains(relativeLocation)) 
 						{
 							K::Texture* temp = this->preloadedTextures.at(relativeLocation);
@@ -309,6 +310,7 @@ namespace K
 					}
 					else if (p.path().extension() == ".gif") 
 					{
+						std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 						if (this->preloadedTextures.contains(relativeLocation))
 						{
 							K::Texture* temp = this->preloadedTextures.at(relativeLocation);
@@ -328,6 +330,7 @@ namespace K
 					}
 					else if (p.path().extension() == ".JAWS")
 					{
+						std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 						K::Texture* scene = this->preloadedTextures.at("textures/editor/scene.png");
 						if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)scene->GetID(), ImVec2(scene->GetWidth(), scene->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
 						{
@@ -346,11 +349,11 @@ namespace K
 					else 
 					{
 						K::Texture* unknown = this->preloadedTextures.at("textures/editor/unknown.png");
-						ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)unknown->GetID(), ImVec2(unknown->GetWidth(), unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
+						ImGui::ImageButton(p.path().string().c_str(), (void*)(intptr_t)unknown->GetID(), ImVec2(unknown->GetWidth(), unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
 					}
+					ImGui::TextWrapped(p.path().filename().string().c_str());
+					ImGui::NextColumn();
 				}
-				ImGui::TextWrapped(std::filesystem::relative(p.path(), ASSET_DIR).filename().string().c_str());
-				ImGui::NextColumn();
 			}
 		}
 

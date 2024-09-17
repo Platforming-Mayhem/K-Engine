@@ -9,6 +9,6 @@ namespace K
 		static double startTime;
 		static double endTime;
 		static double deltaTimeValue;
-		static float deltaTime();
+		static double deltaTime();
 	};
 }

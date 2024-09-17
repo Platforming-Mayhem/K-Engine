@@ -5,7 +5,7 @@ namespace K
 	double Time::endTime = 0.0f;
 	double Time::deltaTimeValue = 0.0f;
 
-	float Time::deltaTime() 
+	double Time::deltaTime() 
 	{
 		return K::Time::deltaTimeValue;
 	}
