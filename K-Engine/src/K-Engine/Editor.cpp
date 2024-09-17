@@ -34,6 +34,7 @@ namespace K
 		this->AddPreloadedTexture("textures/editor/scene.png");
 		this->AddPreloadedTexture("textures/editor/unknown.png");
 		this->AddPreloadedTexture("textures/editor/file.png");
+		this->preloadedTextures.insert({ "textures/watermark/watermark.png", new K::Texture(WATERMARK) });
 		#endif
 	}
 
@@ -248,14 +249,13 @@ namespace K
 	{
 		for (auto temp : this->preloadedTextures) 
 		{
-			temp.second->LoadIntoGPU();
+			temp.second->Bind(0);
+			temp.second->Unbind();
 		}
 	}
 
 	void Editor::ImGuiContentBrowser() 
 	{
-		this->LoadPreloadedTextures();
-
 		ImGui::Begin("K-Engine Content Browser");
 
 		if (this->currentDirectory.string() != ASSET_DIR && this->currentDirectory.string() + "/" != ASSET_DIR)
@@ -355,6 +355,8 @@ namespace K
 		}
 
 		ImGui::End();
+
+		this->LoadPreloadedTextures();
 	}
 
 	bool Editor::Render() 

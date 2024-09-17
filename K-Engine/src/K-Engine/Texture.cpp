@@ -164,7 +164,6 @@ namespace K
 
 	Texture::~Texture() 
 	{
-		//std::cout << "Begin Texture Destruction..." << this->filename << "," << this->textures->Check(this->filename)->dependencies << std::endl;
 		if(this->image != nullptr)
 			delete this->image;
 		if (this->textures->Check(this->filename)->dependencies > 0)
