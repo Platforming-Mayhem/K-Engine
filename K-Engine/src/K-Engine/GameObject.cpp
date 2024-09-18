@@ -28,6 +28,7 @@ namespace K
 		for (int i = 0; i < other.components.size(); i++)
 		{
 			K::Component* comp = K::Editor::lst.at(other.components[i]->GetName())->create();
+			this->AddComponent(comp);
 			std::string allValues = other.components[i]->GetPropertyValues();
 			std::string value;
 			int index = 0;
@@ -48,7 +49,6 @@ namespace K
 			{
 				comp->SetPropertyValues(value.c_str(), index);
 			}
-			this->AddComponent(comp);
 			comp->Init();
 			comp->RenderInit();
 		}
@@ -67,6 +67,7 @@ namespace K
 		for (int i = 0; i < other.components.size(); i++) 
 		{
 			K::Component* comp = K::Editor::lst.at(other.components[i]->GetName())->create();
+			this->AddComponent(comp);
 			std::string allValues = other.components[i]->GetPropertyValues();
 			std::string value;
 			int index = 0;
@@ -87,7 +88,6 @@ namespace K
 			{
 				comp->SetPropertyValues(value.c_str(), index);
 			}
-			this->AddComponent(comp);
 			comp->Init();
 			comp->RenderInit();
 		}
