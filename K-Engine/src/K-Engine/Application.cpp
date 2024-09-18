@@ -29,8 +29,6 @@ namespace K
 
 		while (!glfwWindowShouldClose(window->window))
 		{
-			glfwPollEvents();
-
 			#if _DEBUG
 			GLenum err;
 			while ((err = glGetError()) != GL_NO_ERROR)
@@ -69,6 +67,8 @@ namespace K
 			K::SceneManager::Update();
 
 			glfwSwapBuffers(window->window);
+
+			glfwPollEvents();
 		}
 		delete manager;
 		delete editor;

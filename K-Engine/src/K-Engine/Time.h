@@ -6,9 +6,9 @@ namespace K
 	class K_API Time
 	{
 	public:
-		static double startTime;
-		static double endTime;
-		static double deltaTimeValue;
-		static double deltaTime();
+		static float startTime;
+		static float endTime;
+		static float deltaTimeValue;
+		static float deltaTime();
 	};
 }

@@ -301,7 +301,7 @@ namespace K
 		int found = filename.find('.');
 		if (found != std::string::npos)
 		{
-			std::string temp1 = filename.substr(0, found) + ".JIMG";
+			std::string temp1 = std::filesystem::path(filename).replace_extension(".JIMG").string();
 			std::ifstream file(temp1, std::ios::binary | std::ios::in);
 			std::string imageTemp;
 			if (file.is_open())
@@ -331,36 +331,31 @@ namespace K
 
 	void Texture::LoadJANIM(std::string filename)
 	{
-		int found = filename.find('.');
-		if (found != std::string::npos)
+		std::string temp1 = std::filesystem::path(filename).replace_extension(".JANIM").string();
+		std::ifstream file(temp1, std::ios::binary | std::ios::in);
+		if (file.is_open())
 		{
-			std::string temp1 = filename.substr(0, found) + ".JANIM";
-			std::ifstream file(temp1, std::ios::binary | std::ios::in);
-			std::string imageTemp;
-			if (file.is_open())
+
+			std::string info;
+			std::getline(file, info);
+			int sizeOfInfo = info.length() + 1;
+			file.close();
+
+			this->width = std::stoi(info.substr(0, info.find(".")));
+			info.erase(0, info.find(".") + 1);
+			this->height = std::stoi(info.substr(0, info.find(".")));
+			info.erase(0, info.find(".") + 1);
+			this->frames = std::stoi(info.substr(0, info.find(".")));
+			info.erase(0, info.find(".") + 1);
+			this->fps = std::stoi(info);
+
+			this->image = (unsigned char*)std::calloc(this->width * this->height * 4 * this->frames, sizeof(unsigned char));
+			if (this->image != nullptr)
 			{
-
-				std::string info;
-				std::getline(file, info);
-				int sizeOfInfo = info.length() + 1;
-				file.close();
-
-				this->width = std::stoi(info.substr(0, info.find(".")));
-				info.erase(0, info.find(".") + 1);
-				this->height = std::stoi(info.substr(0, info.find(".")));
-				info.erase(0, info.find(".") + 1);
-				this->frames = std::stoi(info.substr(0, info.find(".")));
-				info.erase(0, info.find(".") + 1);
-				this->fps = std::stoi(info);
-
-				this->image = (unsigned char*)std::calloc(this->width * this->height * 4 * this->frames, sizeof(unsigned char));
-				if (this->image != nullptr)
-				{
-					std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
-					std::fseek(fastFile, sizeOfInfo, SEEK_SET);
-					int bytesRead = std::fread(this->image, sizeof(unsigned char), this->width * this->height * 4 * this->frames, fastFile);
-					std::fclose(fastFile);
-				}
+				std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
+				std::fseek(fastFile, sizeOfInfo, SEEK_SET);
+				int bytesRead = std::fread(this->image, sizeof(unsigned char), this->width * this->height * 4 * this->frames, fastFile);
+				std::fclose(fastFile);
 			}
 		}
 	}
