@@ -270,11 +270,14 @@ namespace K
 		int numberOfColumns = contentWidth / 256.0f;
 		ImGui::Columns(numberOfColumns, "Content Columns", false);
 
+		std::string asset_Dir = ASSET_DIR;
+
 		for (auto& p : std::filesystem::directory_iterator(this->currentDirectory)) 
 		{
+			std::string relativeLocation = p.path().string();
+			relativeLocation.erase(relativeLocation.begin(), relativeLocation.begin() + asset_Dir.size());
 			if (p.is_directory()) 
 			{
-				std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 				K::Texture* temp = this->preloadedTextures.at("textures/editor/file.png");
 				if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(temp->GetWidth(), temp->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
 				{
@@ -290,7 +293,6 @@ namespace K
 					numberOfColumns = contentWidth / 128.0f;
 					if (p.path().extension() == ".png")
 					{
-						std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 						if (this->preloadedTextures.contains(relativeLocation)) 
 						{
 							K::Texture* temp = this->preloadedTextures.at(relativeLocation);
@@ -310,7 +312,6 @@ namespace K
 					}
 					else if (p.path().extension() == ".gif") 
 					{
-						std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 						if (this->preloadedTextures.contains(relativeLocation))
 						{
 							K::Texture* temp = this->preloadedTextures.at(relativeLocation);
@@ -330,7 +331,6 @@ namespace K
 					}
 					else if (p.path().extension() == ".JAWS")
 					{
-						std::string relativeLocation = std::filesystem::relative(p.path(), ASSET_DIR).string();
 						K::Texture* scene = this->preloadedTextures.at("textures/editor/scene.png");
 						if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)scene->GetID(), ImVec2(scene->GetWidth(), scene->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
 						{
