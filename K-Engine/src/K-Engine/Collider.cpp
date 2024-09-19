@@ -30,6 +30,7 @@ namespace K
 	void Collider::CapsuleVisualDebug()
 	{
 		//Draw Circle
+		glUseProgram(this->parent->GetMaterial()->GetShader()->shader);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
@@ -247,6 +248,7 @@ namespace K
 	void Collider::CircleVisualDebug() 
 	{
 		//Draw Circle
+		glUseProgram(this->parent->GetMaterial()->GetShader()->shader);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
@@ -308,6 +310,7 @@ namespace K
 
 	void Collider::LineVisualDebug()
 	{
+		glUseProgram(this->parent->GetMaterial()->GetShader()->shader);
 		if (this->linePoints.size() > 0)
 		{
 			glClear(GL_DEPTH_BUFFER_BIT);
