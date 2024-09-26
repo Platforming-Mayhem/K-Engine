@@ -168,6 +168,9 @@
     <ClInclude Include="src\K-Engine\ButtonLoadScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\K-Engine\Quit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\K-Engine\Window.cpp">
@@ -282,6 +285,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\K-Engine\ButtonLoadScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\K-Engine\Quit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -30,6 +30,10 @@
     <ClInclude Include="src\K-Engine\Move.h" />
     <ClInclude Include="src\K-Engine\PhysicsEngine.h" />
     <ClInclude Include="src\K-Engine\Player.h" />
+    <ClInclude Include="src\K-Engine\Quit.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\K-Engine\RenderTexture.h" />
     <ClInclude Include="src\K-Engine\Scene.h" />
     <ClInclude Include="src\K-Engine\Editor.h" />
@@ -96,6 +100,10 @@
     <ClCompile Include="src\K-Engine\Move.cpp" />
     <ClCompile Include="src\K-Engine\PhysicsEngine.cpp" />
     <ClCompile Include="src\K-Engine\Player.cpp" />
+    <ClCompile Include="src\K-Engine\Quit.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="src\K-Engine\RenderTexture.cpp" />
     <ClCompile Include="src\K-Engine\SceneManager.cpp" />
     <ClCompile Include="src\K-Engine\Serializer.cpp" />

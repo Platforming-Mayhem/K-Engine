@@ -113,6 +113,7 @@ namespace K
 
 	void Shooter::RangeVisualisation() 
 	{
+		glUseProgram(this->parent->GetMaterial()->GetShader()->shader);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);

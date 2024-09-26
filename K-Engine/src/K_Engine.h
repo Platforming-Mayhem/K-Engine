@@ -25,3 +25,4 @@
 #include <K-Engine/Crush.h>
 #include <K-Engine/TriggerNextScene.h>
 #include <K-Engine/ButtonLoadScene.h>
+#include <K-Engine/Quit.h>

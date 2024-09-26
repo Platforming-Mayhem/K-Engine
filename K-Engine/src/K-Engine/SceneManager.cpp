@@ -7,6 +7,7 @@ namespace K
 	K::Scene* K::SceneManager::currentScene;
 	bool K::SceneManager::loadNextScene = false;
 	bool K::SceneManager::loadScene = false;
+	bool K::SceneManager::quit = false;
 	int K::SceneManager::index = -1;
 
 	SceneManager::SceneManager(unsigned int resource)
@@ -75,7 +76,12 @@ namespace K
 		K::SceneManager::loadNextScene = true;
 	}
 
-	void SceneManager::Update() 
+	void SceneManager::Quit() 
+	{
+		K::SceneManager::quit = true;
+	}
+
+	bool SceneManager::Update() 
 	{
 		if (!K::Editor::deleteArray.empty())
 		{
@@ -133,6 +139,14 @@ namespace K
 			}
 			K::SceneManager::loadScene = false;
 			K::SceneManager::index = -1;
+		}
+		if (K::SceneManager::quit) 
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
 		}
 	}
 

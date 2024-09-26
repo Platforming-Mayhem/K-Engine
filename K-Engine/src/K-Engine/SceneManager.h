@@ -10,6 +10,7 @@ namespace K
 		static std::vector<std::string> scenes;
 		static bool loadNextScene;
 		static bool loadScene;
+		static bool quit;
 		static int index;
 	public:
 
@@ -25,7 +26,9 @@ namespace K
 
 		void AddScene(std::string name);
 
-		static void Update();
+		static bool Update();
+
+		static void Quit();
 
 		static void LoadScene(int newIndex);
 

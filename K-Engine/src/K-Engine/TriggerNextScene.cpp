@@ -64,6 +64,22 @@ namespace K
 			switch (valueIndex)
 			{
 			case 0:
+				this->bounds[0].x = std::stof(temp);
+				break;
+			case 1:
+				this->bounds[0].y = std::stof(temp);
+				break;
+			case 2:
+				this->bounds[0].z = std::stof(temp);
+				break;
+			case 3:
+				this->bounds[1].x = std::stof(temp);
+				break;
+			case 4:
+				this->bounds[1].y = std::stof(temp);
+				break;
+			case 5:
+				this->bounds[1].z = std::stof(temp);
 				break;
 			}
 		}
@@ -71,6 +87,12 @@ namespace K
 
 	const char* TriggerNextScene::GetPropertyValues()
 	{
+		this->properties = std::to_string(this->bounds[0].x) + ",";
+		this->properties += std::to_string(this->bounds[0].y) + ",";
+		this->properties += std::to_string(this->bounds[0].z) + ",";
+		this->properties += std::to_string(this->bounds[1].x) + ",";
+		this->properties += std::to_string(this->bounds[1].y) + ",";
+		this->properties += std::to_string(this->bounds[1].z);
 		return this->properties.c_str();
 	}
 }

@@ -155,16 +155,16 @@ namespace K
 		this->direction.z = 0.0f;
 		if (InputManager::IsKeyPressed(GLFW_KEY_RIGHT))
 		{
-			this->direction.x = this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f);
+			this->direction.x = this->movementSpeed * K::Time::deltaTime() * easeOutPow(this->moveTime, 2.0f);
 			this->isSlowingDown = true;
-			this->flip = false;
-			if (this->direction.x == 0.0f) 
+			if (this->flip)
 			{
-				this->moveTime = 0.6f;
+				this->moveTime = 0.0f;
 			}
+			this->flip = false;
 			if (this->moveTime < 1.0f) 
 			{
-				this->moveTime += K::Time::deltaTime() * 2.0f;
+				this->moveTime += K::Time::deltaTime();
 			}
 			else 
 			{
@@ -177,16 +177,16 @@ namespace K
 		}
 		else if (InputManager::IsKeyPressed(GLFW_KEY_LEFT))
 		{
-			this->direction.x = -this->movementSpeed * K::Time::deltaTime() * easeInPow(this->moveTime, 2.0f);
+			this->direction.x = -this->movementSpeed * K::Time::deltaTime() * easeOutPow(this->moveTime, 2.0f);
 			this->isSlowingDown = true;
-			this->flip = true;
-			if (this->direction.x == 0.0f)
+			if (!this->flip)
 			{
-				this->moveTime = 0.6f;
+				this->moveTime = 0.0f;
 			}
+			this->flip = true;
 			if (this->moveTime < 1.0f)
 			{
-				this->moveTime += K::Time::deltaTime() * 2.0f;
+				this->moveTime += K::Time::deltaTime();
 			}
 			else
 			{
@@ -211,7 +211,7 @@ namespace K
 			{
 				if (this->moveTime > 0.0f)
 				{
-					this->moveTime -= K::Time::deltaTime() * 8.0f;
+					this->moveTime -= K::Time::deltaTime() * 2.0f;
 					if (this->direction.x > 0.0f)
 					{
 						this->direction.x = this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f);

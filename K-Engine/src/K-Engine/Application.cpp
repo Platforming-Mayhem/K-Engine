@@ -64,7 +64,10 @@ namespace K
 
 			#endif
 
-			K::SceneManager::Update();
+			if (K::SceneManager::Update()) 
+			{
+				break;
+			}
 
 			glfwSwapBuffers(window->window);
 
