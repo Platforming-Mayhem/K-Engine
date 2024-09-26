@@ -267,6 +267,10 @@ namespace K
 		}
 
 		float contentWidth = ImGui::GetContentRegionAvail().x;
+		if (contentWidth <= 256.0f) 
+		{
+			contentWidth = 256.0f;
+		}
 		int numberOfColumns = contentWidth / 256.0f;
 		ImGui::Columns(numberOfColumns, "Content Columns", false);
 
