@@ -171,8 +171,7 @@ namespace K
 	{
 		if (this->renderTexture != newTexture)
 		{
-			this->frame = 0;
-			this->internalClock = 0.0f;
+			this->ResetFrame();
 			this->renderTexture = newTexture;
 			if (this->renderTexture->GetFilePath().contains(".gif"))
 			{

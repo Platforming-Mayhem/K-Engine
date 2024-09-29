@@ -4,7 +4,7 @@
 #include "Time.h"
 #include "PhysicsEngine.h"
 #include "Editor.h"
-#include "Sprite.h"
+#include "Animator.h"
 
 namespace K 
 {
@@ -79,6 +79,8 @@ namespace K
 	private:
 		std::vector<K::Bullet*> bullets;
 		K::Collider* col;
+		K::Sprite* sprite;
+		K::Animator* anim;
 		K::Texture* bulletTexture;
 
 		int frame = 0;

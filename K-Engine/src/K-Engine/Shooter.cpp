@@ -29,6 +29,14 @@ namespace K
 		{
 			this->col = (K::Collider*)this->parent->GetComponentOfType(typeid(K::Collider).name());
 		}
+		if (this->parent->GetComponentOfType(typeid(K::Animator).name()) != nullptr)
+		{
+			this->anim = (K::Animator*)this->parent->GetComponentOfType(typeid(K::Animator).name());
+		}
+		if (this->parent->GetComponentOfType(typeid(K::Sprite).name()) != nullptr)
+		{
+			this->sprite = (K::Sprite*)this->parent->GetComponentOfType(typeid(K::Sprite).name());
+		}
 		if (this->bulletTexture == nullptr)
 			this->bulletTexture = new K::Texture(WATERMARK);
 	}
@@ -41,6 +49,8 @@ namespace K
 			K::Vector3 direction = (*hit->GetPosition() - *this->col->GetPosition());
 			this->bullets.push_back(new K::Bullet(* this->col->GetPosition(), direction, 10.0f, 1.0f, this->projectileSpeed));
 			this->reloadTime = this->maxReloadTime;
+			anim->PlayAnimation(0, this->sprite, false);
+			this->sprite->ResetFrame();
 		}
 		if (this->reloadTime > 0.0f) 
 		{

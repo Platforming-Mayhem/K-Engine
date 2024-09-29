@@ -68,6 +68,7 @@ namespace K
 						this->selectedTexture = i;
 					}
 				}
+				ImGui::Dummy(ImGui::GetWindowSize());
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_TEXTURE"))

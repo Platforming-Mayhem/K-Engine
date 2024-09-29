@@ -65,6 +65,7 @@ namespace K
 	void Crush::VisualDebug() 
 	{
 		glClear(GL_DEPTH_BUFFER_BIT);
+		glUseProgram(this->parent->GetMaterial()->GetShader()->shader);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
