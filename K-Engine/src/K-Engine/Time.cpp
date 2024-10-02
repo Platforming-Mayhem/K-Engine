@@ -7,6 +7,9 @@ namespace K
 
 	float Time::deltaTime()
 	{
-		return K::Time::deltaTimeValue;
+		if (K::Time::deltaTimeValue <= 0.02f)
+			return K::Time::deltaTimeValue;
+		else
+			return 0.02f;
 	}
 }
