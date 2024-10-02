@@ -171,8 +171,8 @@ namespace K
 	{
 		if (this->renderTexture != newTexture)
 		{
-			this->ResetFrame();
 			this->renderTexture = newTexture;
+			this->ResetFrame();
 			if (this->renderTexture->GetFilePath().contains(".gif"))
 			{
 				this->parent->SetMaterial(new K::Material("shaders/3D.shader"));

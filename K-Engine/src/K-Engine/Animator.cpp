@@ -29,9 +29,10 @@ namespace K
 	{
 		if (!this->animations.empty())
 		{
-			for (int i = 0; i < this->animations.size(); i++)
+			for (auto i : this->animations)
 			{
-				this->animations[i]->LoadIntoGPU();
+				i->Bind(0);
+				i->Unbind();
 			}
 		}
 	}

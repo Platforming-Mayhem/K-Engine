@@ -204,7 +204,6 @@ namespace K
 	{
 		if (this->loadedAnimation)
 		{
-			glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
 			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
 			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			stbi_image_free(this->image);
@@ -228,11 +227,9 @@ namespace K
 				}
 			}
 			this->loadedAnimation = false;
-			glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 		}
 		if (this->loadedTexture)
 		{
-			glBindTexture(GL_TEXTURE_2D, this->id);
 			if (this->c >= 4)
 			{
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
@@ -255,7 +252,6 @@ namespace K
 				}
 			}
 			this->loadedTexture = false;
-			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
 
@@ -270,6 +266,7 @@ namespace K
 		{
 			glBindTexture(GL_TEXTURE_2D, this->id);
 		}
+		this->LoadIntoGPU();
 	}
 
 	void Texture::Unbind() 
@@ -282,8 +279,6 @@ namespace K
 		{
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
-
-		this->LoadIntoGPU();
 	}
 
 	unsigned char* Texture::GetFrameImage(int frame) 
