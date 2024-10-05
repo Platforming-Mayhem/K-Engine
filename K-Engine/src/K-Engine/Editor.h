@@ -49,7 +49,7 @@ namespace K
 
 		static K::GameObject* selectedGameObject;
 
-		static std::map<std::string, IFactory*> lst;
+		static std::map<std::string, IFactory*>& lst();
 
 		static std::vector<K::GameObject*> deleteArray;
 
@@ -58,6 +58,8 @@ namespace K
 		virtual ~Editor();
 
 		void AddPreloadedTexture(std::string location);
+
+		void AddPreloadedTexture(unsigned int location);
 
 		void LoadPreloadedTextures();
 
@@ -89,4 +91,16 @@ namespace K
 
 		static K::Scene* GetCurrentScene();
 	};
+
+	template<typename T> struct K_API Register
+	{
+		Register()
+		{
+			K::IFactory* tempFactory = new K::Factory<T>;
+			std::string tempName = typeid(T).name();
+			K::Editor::lst().insert({tempName, tempFactory});
+		}
+	};
+
+	#define REGISTER(Type) Register<Type> s_##Type##Registered;
 }

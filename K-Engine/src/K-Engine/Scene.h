@@ -1,7 +1,6 @@
 #pragma once
 #include "build.h"
 #include "GameObject.h"
-#include "Camera.h"
 #include "Time.h"
 
 namespace K 

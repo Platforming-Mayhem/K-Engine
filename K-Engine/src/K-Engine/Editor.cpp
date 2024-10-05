@@ -10,10 +10,21 @@ namespace K
 	K::GameObject* K::Editor::selectedGameObject;
 	K::SceneManager* K::Editor::sceneManager;
 	std::vector<K::GameObject*> K::Editor::deleteArray;
-	std::map<std::string, IFactory*> K::Editor::lst{ {typeid(K::Sprite).name() , new K::Factory<K::Sprite>} , {typeid(K::Player).name() , new K::Factory<K::Player>} ,{typeid(K::Mesh).name() , new K::Factory<K::Mesh>} ,{typeid(K::Camera).name() , new K::Factory<K::Camera>} ,{typeid(K::Collider).name() , new K::Factory<K::Collider>} ,{typeid(K::Animator).name() , new K::Factory<K::Animator>}, {typeid(K::Timer).name() , new K::Factory<K::Timer>}, {typeid(K::Move).name() , new K::Factory<K::Move>}, {typeid(K::TriggerDeath).name() , new K::Factory<K::TriggerDeath>} , {typeid(K::Light).name() , new K::Factory<K::Light>}, {typeid(K::Shooter).name() , new K::Factory<K::Shooter>}, {typeid(K::Crush).name() , new K::Factory<K::Crush>}, {typeid(K::TriggerNextScene).name() , new K::Factory<K::TriggerNextScene>}, {typeid(K::ButtonLoadScene).name() , new K::Factory<K::ButtonLoadScene>},{typeid(K::Quit).name() , new K::Factory<K::Quit>} };
+	std::map<std::string, IFactory*>& K::Editor::lst() 
+	{
+		static std::map<std::string, IFactory*> temp;
+		return temp;
+	}
 
 	Editor::Editor(K::Window* window, K::SceneManager* sceneManager)
 	{
+		this->sceneManager = sceneManager;
+		this->window = window;
+		this->buildWindow = false;
+		this->currentDirectory = ASSET_DIR;
+		#if _DEBUG
+		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
+
 		//IMGUI Setup Stuffs
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -23,14 +34,9 @@ namespace K
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Viewport
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 		ImGui::StyleColorsDark();
-		this->sceneManager = sceneManager;
-		this->window = window;
-		this->buildWindow = false;
-		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
-		this->currentDirectory = ASSET_DIR;
+
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
-		#if _DEBUG
 		this->AddPreloadedTexture("textures/editor/scene.png");
 		this->AddPreloadedTexture("textures/editor/unknown.png");
 		this->AddPreloadedTexture("textures/editor/file.png");
@@ -40,6 +46,7 @@ namespace K
 
 	Editor::~Editor()
 	{
+		#if _DEBUG
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -49,9 +56,10 @@ namespace K
 			delete tex.second;
 		}
 		this->preloadedTextures.clear();
+		delete this->viewport;
+		#endif
 
 		delete this->window;
-		delete this->viewport;
 	}
 
 	K::RenderTexture* Editor::GetViewport() 
@@ -243,6 +251,11 @@ namespace K
 	void Editor::AddPreloadedTexture(std::string location) 
 	{
 		this->preloadedTextures.insert({ location, new K::Texture(location.c_str()) });
+	}
+
+	void Editor::AddPreloadedTexture(unsigned int location) 
+	{
+		this->preloadedTextures.insert({ std::to_string(location), new K::Texture(location) });
 	}
 
 	void Editor::LoadPreloadedTextures() 
@@ -555,7 +568,7 @@ namespace K
 			}
 			if (ImGui::BeginPopup("Components"))
 			{
-				for(auto const& x : this->lst)
+				for(auto const& x : this->lst())
 				{
 					if (ImGui::MenuItem(x.first.c_str()))
 					{

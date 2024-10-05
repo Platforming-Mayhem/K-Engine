@@ -42,7 +42,7 @@
     <ClInclude Include="src\K-Engine\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Mesh.h">
+    <ClInclude Include="src\K-Engine\Components\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\K-Engine\Scene.h">
@@ -54,7 +54,7 @@
     <ClInclude Include="src\K-Engine\Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Component.h">
+    <ClInclude Include="src\K-Engine\Components\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendors\GLEW\include\glew.h">
@@ -84,13 +84,13 @@
     <ClInclude Include="vendors\BOX2D\include\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Sprite.h">
+    <ClInclude Include="src\K-Engine\Components\Sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\K-Engine\InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Camera.h">
+    <ClInclude Include="src\K-Engine\Components\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendors\IMGUI\imstb_rectpack.h">
@@ -102,7 +102,7 @@
     <ClInclude Include="vendors\IMGUI\imstb_textedit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Player.h">
+    <ClInclude Include="src\K-Engine\Components\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\K-Engine\Material.h">
@@ -114,31 +114,31 @@
     <ClInclude Include="vendors\STB\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Collider.h">
+    <ClInclude Include="src\K-Engine\Components\Collider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\K-Engine\PhysicsEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Animator.h">
+    <ClInclude Include="src\K-Engine\Components\Animator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Enemy.h">
+    <ClInclude Include="src\K-Engine\Components\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\K-Engine\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Timer.h">
+    <ClInclude Include="src\K-Engine\Components\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Move.h">
+    <ClInclude Include="src\K-Engine\Components\Move.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\TriggerDeath.h">
+    <ClInclude Include="src\K-Engine\Components\TriggerDeath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Light.h">
+    <ClInclude Include="src\K-Engine\Components\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendors\IMGUI\backends\imgui_impl_opengl3.h">
@@ -156,19 +156,19 @@
     <ClInclude Include="vendors\IMGUI\imfilebrowser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Shooter.h">
+    <ClInclude Include="src\K-Engine\Components\Shooter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Crush.h">
+    <ClInclude Include="src\K-Engine\Components\Crush.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\TriggerNextScene.h">
+    <ClInclude Include="src\K-Engine\Components\TriggerNextScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\ButtonLoadScene.h">
+    <ClInclude Include="src\K-Engine\Components\ButtonLoadScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\K-Engine\Quit.h">
+    <ClInclude Include="src\K-Engine\Components\Quit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -212,22 +212,22 @@
     <ClCompile Include="src\K-Engine\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Sprite.cpp">
+    <ClCompile Include="src\K-Engine\Components\Sprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\K-Engine\InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Camera.cpp">
+    <ClCompile Include="src\K-Engine\Components\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Player.cpp">
+    <ClCompile Include="src\K-Engine\Components\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Component.cpp">
+    <ClCompile Include="src\K-Engine\Components\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Mesh.cpp">
+    <ClCompile Include="src\K-Engine\Components\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\K-Engine\Material.cpp">
@@ -236,31 +236,31 @@
     <ClCompile Include="src\K-Engine\Serializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Collider.cpp">
+    <ClCompile Include="src\K-Engine\Components\Collider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\K-Engine\PhysicsEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Animator.cpp">
+    <ClCompile Include="src\K-Engine\Components\Animator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Enemy.cpp">
+    <ClCompile Include="src\K-Engine\Components\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\K-Engine\SceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Timer.cpp">
+    <ClCompile Include="src\K-Engine\Components\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Move.cpp">
+    <ClCompile Include="src\K-Engine\Components\Move.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\TriggerDeath.cpp">
+    <ClCompile Include="src\K-Engine\Components\TriggerDeath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Light.cpp">
+    <ClCompile Include="src\K-Engine\Components\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vendors\IMGUI\backends\imgui_impl_glfw.cpp">
@@ -275,19 +275,19 @@
     <ClCompile Include="src\K-Engine\RenderTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Shooter.cpp">
+    <ClCompile Include="src\K-Engine\Components\Shooter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Crush.cpp">
+    <ClCompile Include="src\K-Engine\Components\Crush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\TriggerNextScene.cpp">
+    <ClCompile Include="src\K-Engine\Components\TriggerNextScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\ButtonLoadScene.cpp">
+    <ClCompile Include="src\K-Engine\Components\ButtonLoadScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\K-Engine\Quit.cpp">
+    <ClCompile Include="src\K-Engine\Components\Quit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

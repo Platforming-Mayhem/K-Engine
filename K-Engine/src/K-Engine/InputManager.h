@@ -1,5 +1,7 @@
 #pragma once
 #include "build.h"
+#include "Components/Camera.h"
+#include "Components/Mesh.h"
 #include "Transform.h"
 #include "Window.h"
 #include "SceneManager.h"

@@ -1,6 +1,6 @@
 #pragma once
 #include "build.h"
-#include "Collider.h"
+#include "Components/Collider.h"
 #include "Transform.h"
 
 namespace K 

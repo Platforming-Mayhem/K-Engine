@@ -27,7 +27,7 @@ namespace K
 		*this->transform->localScale = *other.transform->localScale;
 		for (int i = 0; i < other.components.size(); i++)
 		{
-			K::Component* comp = K::Editor::lst.at(other.components[i]->GetName())->create();
+			K::Component* comp = K::Editor::lst().at(other.components[i]->GetName())->create();
 			this->AddComponent(comp);
 			std::string allValues = other.components[i]->GetPropertyValues();
 			std::string value;
@@ -66,7 +66,7 @@ namespace K
 		*this->transform->localScale = *other.transform->localScale;
 		for (int i = 0; i < other.components.size(); i++) 
 		{
-			K::Component* comp = K::Editor::lst.at(other.components[i]->GetName())->create();
+			K::Component* comp = K::Editor::lst().at(other.components[i]->GetName())->create();
 			this->AddComponent(comp);
 			std::string allValues = other.components[i]->GetPropertyValues();
 			std::string value;

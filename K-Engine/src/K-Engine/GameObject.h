@@ -1,8 +1,8 @@
 #pragma once
 #include "build.h"
 #include "Material.h"
-#include "Mesh.h"
-#include "Component.h"
+#include "Transform.h"
+#include "Components/Component.h"
 #include "Window.h"
 
 namespace K 
