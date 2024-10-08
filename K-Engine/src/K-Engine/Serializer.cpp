@@ -93,6 +93,7 @@ namespace K
 				obj.parent = -1;
 			else
 				obj.parent = g->parent->GetIndex();
+
 			outFile.write((char*)&obj, sizeof(obj));
 		}
 		outFile.close();
@@ -278,7 +279,7 @@ namespace K
 	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
 	{
 		auto start = std::chrono::steady_clock::now();
-		/*std::ifstream inFile;
+		std::ifstream inFile;
 		inFile.open(ASSET_DIR + location);
 		if (inFile)
 		{
@@ -340,8 +341,8 @@ namespace K
 				}
 				parents.clear();
 			}
-		}*/
-		RunTimeDeserializer(newScene, location);
+		}
+		//RunTimeDeserializer(newScene, location);
 		std::cout << ASSET_DIR + location << std::endl;
 		newScene->SetSceneName(location);
 		newScene->SetLocation(location);
@@ -368,6 +369,21 @@ namespace K
 				inFile.read((char*)&objChar, sizeof(K::Object));
 				K::Object obj = *((K::Object*)objChar);
 				K::GameObject* newGameObject = new K::GameObject(obj.name.c_str(), new K::Transform(new K::Vector3(obj.position), new K::Vector3(obj.rotation), new K::Vector3(obj.scale)), obj.index);
+				*newGameObject->GetTransform()->localPosition = obj.local_Position;
+				*newGameObject->GetTransform()->localRotation = obj.local_Rotation;
+				*newGameObject->GetTransform()->localScale = obj.local_Scale;
+				if (obj.parent != -1)
+				{
+					this->parents.insert({ newGameObject, obj.parent });
+				}
+			}
+			if (!parents.empty())
+			{
+				for (auto temp : parents)
+				{
+					temp.first->SetParent(newScene->GetGameObjects().at(temp.second));
+				}
+				parents.clear();
 			}
 			inFile.close();
 		}
