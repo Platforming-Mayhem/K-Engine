@@ -82,6 +82,7 @@ namespace K
 
 			K::Object obj;
 			obj.name = g->GetName();
+			obj.index = g->GetIndex();
 			obj.position = *g->GetTransform()->position;
 			obj.rotation = *g->GetTransform()->rotation;
 			obj.scale = *g->GetTransform()->scale;
@@ -89,9 +90,9 @@ namespace K
 			obj.local_Rotation = *g->GetTransform()->localRotation;
 			obj.local_Scale = *g->GetTransform()->localScale;
 			if (g->parent == nullptr)
-				obj.index = -1;
+				obj.parent = -1;
 			else
-				obj.index = g->parent->GetIndex();
+				obj.parent = g->parent->GetIndex();
 			outFile.write((char*)&obj, sizeof(obj));
 		}
 		outFile.close();
@@ -277,7 +278,7 @@ namespace K
 	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
 	{
 		auto start = std::chrono::steady_clock::now();
-		std::ifstream inFile;
+		/*std::ifstream inFile;
 		inFile.open(ASSET_DIR + location);
 		if (inFile)
 		{
@@ -339,14 +340,14 @@ namespace K
 				}
 				parents.clear();
 			}
-		}
+		}*/
+		RunTimeDeserializer(newScene, location);
 		std::cout << ASSET_DIR + location << std::endl;
 		newScene->SetSceneName(location);
 		newScene->SetLocation(location);
 		newScene->Init();
 		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
 		std::cout << "Time To Deserialize Scene (" << newScene->GetSceneName() << "): " << elapsed << std::endl;
-		RunTimeDeserializer(newScene, location);
 	}
 	void Deserializer::RunTimeDeserializer(K::Scene* newScene, std::string location)
 	{
@@ -357,10 +358,17 @@ namespace K
 		if (inFile) 
 		{
 			inFile.seekg(0, std::ios::end);
-			int size = inFile.tellg();
+			int sizeOfFile = inFile.tellg();
 			inFile.seekg(0, std::ios::beg);
-			K::Object obj;
-			inFile.read((char*)&obj, 1);
+
+			int numberOfObjects = sizeOfFile / sizeof(K::Object);
+			for (int i = 0; i < numberOfObjects; i++) 
+			{
+				char objChar[sizeof(K::Object)];
+				inFile.read((char*)&objChar, sizeof(K::Object));
+				K::Object obj = *((K::Object*)objChar);
+				K::GameObject* newGameObject = new K::GameObject(obj.name.c_str(), new K::Transform(new K::Vector3(obj.position), new K::Vector3(obj.rotation), new K::Vector3(obj.scale)), obj.index);
+			}
 			inFile.close();
 		}
 	}

@@ -11,6 +11,7 @@ namespace K
 		K::Vector3 position, rotation, scale;
 		K::Vector3 local_Position, local_Rotation, local_Scale;
 		int index;
+		int parent = -1;
 	};
 
 	class K_API Serializer 
