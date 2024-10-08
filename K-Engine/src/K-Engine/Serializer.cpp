@@ -61,6 +61,40 @@ namespace K
 			i++;
 		}
 		outFile.close();
+		RunTimeSerialize(scene, location);
+	}
+
+	void Serializer::RunTimeSerialize(K::Scene* scene, std::string location)
+	{
+		std::string name = location;
+		name.replace(name.begin() + name.find(".JAWS"), name.end(), ".BJAWS");
+		std::ofstream outFile;
+		outFile.open(name.c_str(), std::ios::binary);
+		if (!outFile)
+		{
+			std::cerr << "Error - unable to open output file " << name.c_str() << std::endl;
+			exit(1);
+		}
+		for (auto it : scene->GetGameObjects()) 
+		{
+			K::GameObject* g = it.second;
+			K::Transform* transform = g->GetTransform();
+
+			K::Object obj;
+			obj.name = g->GetName();
+			obj.position = *g->GetTransform()->position;
+			obj.rotation = *g->GetTransform()->rotation;
+			obj.scale = *g->GetTransform()->scale;
+			obj.local_Position = *g->GetTransform()->localPosition;
+			obj.local_Rotation = *g->GetTransform()->localRotation;
+			obj.local_Scale = *g->GetTransform()->localScale;
+			if (g->parent == nullptr)
+				obj.index = -1;
+			else
+				obj.index = g->parent->GetIndex();
+			outFile.write((char*)&obj, sizeof(obj));
+		}
+		outFile.close();
 	}
 
 	void Deserializer::CreateGameObject(std::string gameObject) 
@@ -312,5 +346,22 @@ namespace K
 		newScene->Init();
 		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
 		std::cout << "Time To Deserialize Scene (" << newScene->GetSceneName() << "): " << elapsed << std::endl;
+		RunTimeDeserializer(newScene, location);
+	}
+	void Deserializer::RunTimeDeserializer(K::Scene* newScene, std::string location)
+	{
+		std::string file = location;
+		file.replace(file.begin() + file.find(".JAWS"), file.end(), ".BJAWS");
+		std::ifstream inFile;
+		inFile.open(ASSET_DIR + file, std::ios::binary);
+		if (inFile) 
+		{
+			inFile.seekg(0, std::ios::end);
+			int size = inFile.tellg();
+			inFile.seekg(0, std::ios::beg);
+			K::Object obj;
+			inFile.read((char*)&obj, 1);
+			inFile.close();
+		}
 	}
 }

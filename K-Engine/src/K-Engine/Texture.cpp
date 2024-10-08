@@ -417,7 +417,6 @@ namespace K
 					exit(1);
 				}
 				outFile << this->width << "." << this->height << "." << this->c << "\n";
-				//outFile.write(reinterpret_cast<char*>(this->image), this->width * this->height * this->c);
 				outFile.close();
 				std::FILE* fastFile = std::fopen(location.c_str(), "ab");
 				std::fwrite(this->image, sizeof(unsigned char), this->width * this->height * this->c, fastFile);
@@ -448,7 +447,6 @@ namespace K
 					exit(1);
 				}
 				outFile << this->width << "." << this->height << "." << this->frames << "." << this->fps << "\n";
-				//outFile.write(reinterpret_cast<char*>(this->image), this->width * this->height * 4 * this->frames);
 				outFile.close();
 				std::FILE* fastFile = std::fopen(location.c_str(), "ab");
 				std::fwrite(this->image, sizeof(unsigned char), this->width * this->height * 4 * this->frames, fastFile);
