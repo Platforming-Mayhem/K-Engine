@@ -79,24 +79,12 @@ namespace K
 		{
 			K::GameObject* g = it.second;
 			K::Transform* transform = g->GetTransform();
-
-			K::Object obj;
-			obj.name = g->GetName();
-			obj.index = g->GetIndex();
-			obj.position = *g->GetTransform()->position;
-			obj.rotation = *g->GetTransform()->rotation;
-			obj.scale = *g->GetTransform()->scale;
-			obj.local_Position = *g->GetTransform()->localPosition;
-			obj.local_Rotation = *g->GetTransform()->localRotation;
-			obj.local_Scale = *g->GetTransform()->localScale;
-			if (g->parent == nullptr)
-				obj.parent = -1;
-			else
-				obj.parent = g->parent->GetIndex();
-
-			outFile.write((char*)&obj, sizeof(obj));
 		}
 		outFile.close();
+		K::SerialiseObject obj;
+		obj.ints.push_back(1);
+		obj.ints.push_back(5);
+		std::cout << obj.ConvertToBinary() << std::endl;
 	}
 
 	void Deserializer::CreateGameObject(std::string gameObject) 
@@ -358,34 +346,8 @@ namespace K
 		inFile.open(ASSET_DIR + file, std::ios::binary);
 		if (inFile) 
 		{
-			inFile.seekg(0, std::ios::end);
-			int sizeOfFile = inFile.tellg();
-			inFile.seekg(0, std::ios::beg);
 
-			int numberOfObjects = sizeOfFile / sizeof(K::Object);
-			for (int i = 0; i < numberOfObjects; i++) 
-			{
-				char objChar[sizeof(K::Object)];
-				inFile.read((char*)&objChar, sizeof(K::Object));
-				K::Object obj = *((K::Object*)objChar);
-				K::GameObject* newGameObject = new K::GameObject(obj.name.c_str(), new K::Transform(new K::Vector3(obj.position), new K::Vector3(obj.rotation), new K::Vector3(obj.scale)), obj.index);
-				*newGameObject->GetTransform()->localPosition = obj.local_Position;
-				*newGameObject->GetTransform()->localRotation = obj.local_Rotation;
-				*newGameObject->GetTransform()->localScale = obj.local_Scale;
-				if (obj.parent != -1)
-				{
-					this->parents.insert({ newGameObject, obj.parent });
-				}
-			}
-			if (!parents.empty())
-			{
-				for (auto temp : parents)
-				{
-					temp.first->SetParent(newScene->GetGameObjects().at(temp.second));
-				}
-				parents.clear();
-			}
-			inFile.close();
 		}
+		inFile.close();
 	}
 }

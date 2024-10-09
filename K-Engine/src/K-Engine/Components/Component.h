@@ -3,6 +3,25 @@
 
 namespace K 
 {
+	struct K_API SerialiseObject 
+	{
+		std::vector<int> ints;
+		std::vector<float> floats;
+		std::vector<bool> bools;
+		std::vector<std::string> strings;
+
+		const char* ConvertToBinary() 
+		{
+			std::string data;
+			for (auto i : ints) 
+			{
+				data.append((char*)&ints[0]);
+				data.push_back('/0');
+			}
+			return data.c_str();
+		}
+	};
+
 	class K_API GameObject;
 
 	class K_API Component
