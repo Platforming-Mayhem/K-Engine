@@ -16,6 +16,7 @@
 #include <thread>
 #include <Windows.h>
 #include <ignore/resource.h>
+#include <bitset>
 
 //ImGUI
 #include "imgui.h"

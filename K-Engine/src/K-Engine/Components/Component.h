@@ -10,15 +10,34 @@ namespace K
 		std::vector<bool> bools;
 		std::vector<std::string> strings;
 
-		const char* ConvertToBinary() 
+		std::string ConvertToBinary() 
 		{
 			std::string data;
 			for (auto i : ints) 
 			{
-				data.append((char*)&ints[0]);
-				data.push_back('/0');
+				std::string temp = (char*)&i;
+				data.append(temp);
+				data.push_back('\0');
 			}
-			return data.c_str();
+			for (auto j : floats)
+			{
+				std::string temp = (char*)&j;
+				data.append(temp);
+				data.push_back('\0');
+			}
+			for (auto k : bools)
+			{
+				std::string temp = (char*)&k;
+				data.append(temp);
+				data.push_back('\0');
+			}
+			for (auto l : strings)
+			{
+				std::string temp = (char*)&l;
+				data.append(temp);
+				data.push_back('\0');
+			}
+			return data;
 		}
 	};
 

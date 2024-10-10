@@ -82,9 +82,15 @@ namespace K
 		}
 		outFile.close();
 		K::SerialiseObject obj;
-		obj.ints.push_back(1);
+		obj.ints.push_back(0);
 		obj.ints.push_back(5);
-		std::cout << obj.ConvertToBinary() << std::endl;
+		obj.floats.push_back(1.0f);
+		std::string temp = obj.ConvertToBinary();
+		std::cout << *(int*)(temp.substr(0, temp.find('\0')).c_str()) << std::endl;
+		temp.erase(0, temp.find('\0') + 1);
+		std::cout << *(int*)(temp.substr(0, temp.find('\0')).c_str()) << std::endl;
+		temp.erase(0, temp.find('\0') + 1);
+		std::cout << *(float*)(temp.substr(0, temp.find('\0')).c_str()) << std::endl;
 	}
 
 	void Deserializer::CreateGameObject(std::string gameObject) 
