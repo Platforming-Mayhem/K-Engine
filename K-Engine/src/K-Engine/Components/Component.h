@@ -16,26 +16,26 @@ namespace K
 			for (auto i : ints) 
 			{
 				std::string temp = (char*)&i;
+				temp += '\0';
 				data.append(temp);
-				data.push_back('\0');
 			}
 			for (auto j : floats)
 			{
-				std::string temp = (char*)&j;
+				std::string temp((char*) &j, sizeof(float));
+				temp += '\n';
 				data.append(temp);
-				data.push_back('\0');
 			}
 			for (auto k : bools)
 			{
 				std::string temp = (char*)&k;
+				temp += '\0';
 				data.append(temp);
-				data.push_back('\0');
 			}
 			for (auto l : strings)
 			{
 				std::string temp = (char*)&l;
+				temp += '\0';
 				data.append(temp);
-				data.push_back('\0');
 			}
 			return data;
 		}
