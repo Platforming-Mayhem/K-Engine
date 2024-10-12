@@ -66,7 +66,7 @@ namespace K
 
 	void Serializer::RunTimeSerialize(K::Scene* scene, std::string location)
 	{
-		/*std::string name = location;
+		std::string name = location;
 		name.replace(name.begin() + name.find(".JAWS"), name.end(), ".BJAWS");
 		std::ofstream outFile;
 		outFile.open(name.c_str(), std::ios::binary);
@@ -79,21 +79,26 @@ namespace K
 		{
 			K::GameObject* g = it.second;
 			K::Transform* transform = g->GetTransform();
+			K::SerialiseObject obj;
+			obj.strings.push_back(g->GetName());
+			obj.ints.push_back(g->GetIndex());
+			obj.floats.push_back(transform->position->x);
+			obj.floats.push_back(transform->position->y);
+			obj.floats.push_back(transform->position->z);
 		}
-		outFile.close();*/
-		K::SerialiseObject obj;
-		obj.ints.push_back(1);
-		obj.ints.push_back(5);
-		obj.floats.push_back(1.5f);
-		obj.floats.push_back(2.45f);
-		std::string temp = obj.ConvertToBinary();
-		std::cout << *((int*)(temp.substr(0, temp.find('\0')).c_str())) << std::endl;
+		outFile.close();
+		/*std::string temp = obj.ConvertToBinary();
+		std::cout << *((int*)temp.c_str()) << std::endl;
+		temp.erase(0, sizeof(int) + 1);
+		std::cout << *((int*)temp.c_str()) << std::endl;
+		temp.erase(0, sizeof(int) + 1);
+		std::cout << *((float*)temp.c_str()) << std::endl;
+		temp.erase(0, sizeof(float) + 1);
+		std::cout << *((float*)temp.c_str()) << std::endl;
+		temp.erase(0, sizeof(float) + 1);
+		std::cout << temp.substr(0, temp.find('\0')) << std::endl;
 		temp.erase(0, temp.find('\0') + 1);
-		std::cout << *((int*)(temp.substr(0, temp.find('\0')).c_str())) << std::endl;
-		temp.erase(0, temp.find('\0') + 1);
-		std::cout << *((float*)(temp.substr(0, temp.find('\n')).c_str())) << std::endl;
-		temp.erase(0, temp.find('\n') + 1);
-		std::cout << *((float*)(temp.substr(0, temp.find('\n')).c_str())) << std::endl;
+		std::cout << temp.substr(0, temp.find('\0')) << std::endl;*/
 	}
 
 	void Deserializer::CreateGameObject(std::string gameObject) 
