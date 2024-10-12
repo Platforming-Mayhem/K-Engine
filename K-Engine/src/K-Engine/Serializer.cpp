@@ -82,9 +82,47 @@ namespace K
 			K::SerialiseObject obj;
 			obj.strings.push_back(g->GetName());
 			obj.ints.push_back(g->GetIndex());
+
 			obj.floats.push_back(transform->position->x);
 			obj.floats.push_back(transform->position->y);
 			obj.floats.push_back(transform->position->z);
+
+			obj.floats.push_back(transform->rotation->x);
+			obj.floats.push_back(transform->rotation->y);
+			obj.floats.push_back(transform->rotation->z);
+
+			obj.floats.push_back(transform->scale->x);
+			obj.floats.push_back(transform->scale->y);
+			obj.floats.push_back(transform->scale->z);
+
+			obj.floats.push_back(transform->localPosition->x);
+			obj.floats.push_back(transform->localPosition->y);
+			obj.floats.push_back(transform->localPosition->z);
+
+			obj.floats.push_back(transform->localRotation->x);
+			obj.floats.push_back(transform->localRotation->y);
+			obj.floats.push_back(transform->localRotation->z);
+
+			obj.floats.push_back(transform->localScale->x);
+			obj.floats.push_back(transform->localScale->y);
+			obj.floats.push_back(transform->localScale->z);
+
+			if (g->parent == nullptr)
+				obj.ints.push_back(-1);
+			else
+				obj.ints.push_back(g->parent->GetIndex());
+
+			int numberOfComponents = g->GetNumberOfComponents();
+
+			for (int i = 0; i < numberOfComponents; i++)
+			{
+				K::Component* component = g->GetComponent(i);
+				obj.strings.push_back(component->GetName());
+				if (component->GetPropertyValues()[0] != '\0')
+				{
+					//outFile << "," << component->GetPropertyValues();
+				}
+			}
 		}
 		outFile.close();
 		/*std::string temp = obj.ConvertToBinary();
