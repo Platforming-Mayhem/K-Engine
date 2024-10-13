@@ -80,47 +80,47 @@ namespace K
 			K::GameObject* g = it.second;
 			K::Transform* transform = g->GetTransform();
 			K::SerialiseObject obj;
-			obj.strings.push_back(g->GetName());
-			obj.ints.push_back(g->GetIndex());
+			obj.AppendString(g->GetName());
+			obj.AppendInt(g->GetIndex());
 
-			obj.floats.push_back(transform->position->x);
-			obj.floats.push_back(transform->position->y);
-			obj.floats.push_back(transform->position->z);
+			obj.AppendFloat(transform->position->x);
+			obj.AppendFloat(transform->position->y);
+			obj.AppendFloat(transform->position->z);
 
-			obj.floats.push_back(transform->rotation->x);
-			obj.floats.push_back(transform->rotation->y);
-			obj.floats.push_back(transform->rotation->z);
+			obj.AppendFloat(transform->rotation->x);
+			obj.AppendFloat(transform->rotation->y);
+			obj.AppendFloat(transform->rotation->z);
 
-			obj.floats.push_back(transform->scale->x);
-			obj.floats.push_back(transform->scale->y);
-			obj.floats.push_back(transform->scale->z);
+			obj.AppendFloat(transform->scale->x);
+			obj.AppendFloat(transform->scale->y);
+			obj.AppendFloat(transform->scale->z);
 
-			obj.floats.push_back(transform->localPosition->x);
-			obj.floats.push_back(transform->localPosition->y);
-			obj.floats.push_back(transform->localPosition->z);
+			obj.AppendFloat(transform->localPosition->x);
+			obj.AppendFloat(transform->localPosition->y);
+			obj.AppendFloat(transform->localPosition->z);
 
-			obj.floats.push_back(transform->localRotation->x);
-			obj.floats.push_back(transform->localRotation->y);
-			obj.floats.push_back(transform->localRotation->z);
+			obj.AppendFloat(transform->localRotation->x);
+			obj.AppendFloat(transform->localRotation->y);
+			obj.AppendFloat(transform->localRotation->z);
 
-			obj.floats.push_back(transform->localScale->x);
-			obj.floats.push_back(transform->localScale->y);
-			obj.floats.push_back(transform->localScale->z);
+			obj.AppendFloat(transform->localScale->x);
+			obj.AppendFloat(transform->localScale->y);
+			obj.AppendFloat(transform->localScale->z);
 
 			if (g->parent == nullptr)
-				obj.ints.push_back(-1);
+				obj.AppendInt(-1);
 			else
-				obj.ints.push_back(g->parent->GetIndex());
+				obj.AppendInt(g->parent->GetIndex());
 
 			int numberOfComponents = g->GetNumberOfComponents();
 
 			for (int i = 0; i < numberOfComponents; i++)
 			{
 				K::Component* component = g->GetComponent(i);
-				obj.strings.push_back(component->GetName());
+				obj.AppendString(component->GetName());
 				if (component->GetPropertyValues()[0] != '\0')
 				{
-					obj.strings.push_back(component->GetPropertyValues());
+					obj.AppendString(component->GetPropertyValues());
 				}
 			}
 			std::string binary = obj.ConvertToBinary();
@@ -321,7 +321,7 @@ namespace K
 	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
 	{
 		auto start = std::chrono::steady_clock::now();
-		std::ifstream inFile;
+		/*std::ifstream inFile;
 		inFile.open(ASSET_DIR + location);
 		if (inFile)
 		{
@@ -383,8 +383,8 @@ namespace K
 				}
 				parents.clear();
 			}
-		}
-		//RunTimeDeserializer(newScene, location);
+		}*/
+		RunTimeDeserializer(newScene, location);
 		std::cout << ASSET_DIR + location << std::endl;
 		newScene->SetSceneName(location);
 		newScene->SetLocation(location);
@@ -400,7 +400,11 @@ namespace K
 		inFile.open(ASSET_DIR + file, std::ios::binary);
 		if (inFile) 
 		{
-
+			std::string datum;
+			while (std::getline(inFile, datum, '\0')) 
+			{
+				std::cout << datum << std::endl;
+			}
 		}
 		inFile.close();
 	}

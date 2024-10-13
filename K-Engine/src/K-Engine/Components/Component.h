@@ -5,39 +5,42 @@ namespace K
 {
 	struct K_API SerialiseObject 
 	{
-		std::vector<int> ints;
-		std::vector<float> floats;
-		std::vector<bool> bools;
-		std::vector<std::string> strings;
+	private:
+		std::string data;
+
+	public:
+
+		void AppendInt(int value) 
+		{
+			std::string temp((char*)&value, sizeof(int));
+			temp += '\0';
+			data.append(temp);
+		}
+
+		void AppendFloat(float value) 
+		{
+			std::string temp((char*)&value, sizeof(float));
+			temp += '\0';
+			data.append(temp);
+		}
+
+		void AppendBool(bool value) 
+		{
+			int intValue = value;
+			std::string temp((char*)&intValue, sizeof(int));
+			temp += '\0';
+			data.append(temp);
+		}
+
+		void AppendString(std::string value) 
+		{
+			std::string temp = value;
+			temp += '\0';
+			data.append(temp);
+		}
 
 		std::string ConvertToBinary() 
 		{
-			std::string data;
-			for (auto i : ints) 
-			{
-				std::string temp((char*) &i, sizeof(int));
-				temp += '\0';
-				data.append(temp);
-			}
-			for (auto j : floats)
-			{
-				std::string temp((char*) &j, sizeof(float));
-				temp += '\0';
-				data.append(temp);
-			}
-			for (auto k : bools)
-			{
-				int value = k;
-				std::string temp((char*)&value, sizeof(int));
-				temp += '\0';
-				data.append(temp);
-			}
-			for (auto l : strings)
-			{
-				std::string temp = l;
-				temp += '\0';
-				data.append(temp);
-			}
 			return data;
 		}
 	};
