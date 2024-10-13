@@ -120,9 +120,11 @@ namespace K
 				obj.strings.push_back(component->GetName());
 				if (component->GetPropertyValues()[0] != '\0')
 				{
-					//outFile << "," << component->GetPropertyValues();
+					obj.strings.push_back(component->GetPropertyValues());
 				}
 			}
+			std::string binary = obj.ConvertToBinary();
+			outFile.write(binary.c_str(), binary.size());
 		}
 		outFile.close();
 		/*std::string temp = obj.ConvertToBinary();
