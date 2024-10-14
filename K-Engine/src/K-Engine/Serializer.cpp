@@ -403,7 +403,10 @@ namespace K
 			std::string datum;
 			while (std::getline(inFile, datum, '\0')) 
 			{
-				std::cout << datum << std::endl;
+				if (datum.find('\0') == std::string::npos) 
+				{
+					std::cout << "'" << datum << "'" << std::endl;
+				}
 			}
 		}
 		inFile.close();
