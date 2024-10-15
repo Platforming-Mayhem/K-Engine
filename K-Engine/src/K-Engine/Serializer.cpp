@@ -118,27 +118,12 @@ namespace K
 			{
 				K::Component* component = g->GetComponent(i);
 				obj.AppendString(component->GetName());
-				if (component->GetPropertyValues()[0] != '\0')
-				{
-					obj.AppendString(component->GetPropertyValues());
-				}
+				obj.AppendString(component->GetPropertyValues());
 			}
 			std::string binary = obj.ConvertToBinary();
 			outFile.write(binary.c_str(), binary.size());
 		}
 		outFile.close();
-		/*std::string temp = obj.ConvertToBinary();
-		std::cout << *((int*)temp.c_str()) << std::endl;
-		temp.erase(0, sizeof(int) + 1);
-		std::cout << *((int*)temp.c_str()) << std::endl;
-		temp.erase(0, sizeof(int) + 1);
-		std::cout << *((float*)temp.c_str()) << std::endl;
-		temp.erase(0, sizeof(float) + 1);
-		std::cout << *((float*)temp.c_str()) << std::endl;
-		temp.erase(0, sizeof(float) + 1);
-		std::cout << temp.substr(0, temp.find('\0')) << std::endl;
-		temp.erase(0, temp.find('\0') + 1);
-		std::cout << temp.substr(0, temp.find('\0')) << std::endl;*/
 	}
 
 	void Deserializer::CreateGameObject(std::string gameObject) 
@@ -321,7 +306,7 @@ namespace K
 	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
 	{
 		auto start = std::chrono::steady_clock::now();
-		/*std::ifstream inFile;
+		std::ifstream inFile;
 		inFile.open(ASSET_DIR + location);
 		if (inFile)
 		{
@@ -383,8 +368,8 @@ namespace K
 				}
 				parents.clear();
 			}
-		}*/
-		RunTimeDeserializer(newScene, location);
+		}
+		//RunTimeDeserializer(newScene, location);
 		std::cout << ASSET_DIR + location << std::endl;
 		newScene->SetSceneName(location);
 		newScene->SetLocation(location);
@@ -400,13 +385,23 @@ namespace K
 		inFile.open(ASSET_DIR + file, std::ios::binary);
 		if (inFile) 
 		{
+			K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
+			K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
+			K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
+
+			K::Transform* transform = new K::Transform(position, rotation, scale);
+
+			std::string name = "";
+
+			int componentCount = 0;
+
+			K::GameObject* temp = nullptr;
+			K::Component* currentComponent = nullptr;
+
 			std::string datum;
-			while (std::getline(inFile, datum, '\0')) 
+			while (std::getline(inFile, datum, '\n')) 
 			{
-				if (datum.find('\0') == std::string::npos) 
-				{
-					std::cout << "'" << datum << "'" << std::endl;
-				}
+
 			}
 		}
 		inFile.close();

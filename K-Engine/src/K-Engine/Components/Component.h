@@ -13,14 +13,14 @@ namespace K
 		void AppendInt(int value) 
 		{
 			std::string temp((char*)&value, sizeof(int));
-			temp += '\0';
+			temp += '\n';
 			data.append(temp);
 		}
 
 		void AppendFloat(float value) 
 		{
 			std::string temp((char*)&value, sizeof(float));
-			temp += '\0';
+			temp += '\n';
 			data.append(temp);
 		}
 
@@ -28,14 +28,14 @@ namespace K
 		{
 			int intValue = value;
 			std::string temp((char*)&intValue, sizeof(int));
-			temp += '\0';
+			temp += '\n';
 			data.append(temp);
 		}
 
 		void AppendString(std::string value) 
 		{
 			std::string temp = value;
-			temp += '\0';
+			temp += '\n';
 			data.append(temp);
 		}
 
