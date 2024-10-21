@@ -69,7 +69,7 @@ namespace K
 		std::string name = location;
 		name.replace(name.begin() + name.find(".JAWS"), name.end(), ".BJAWS");
 		std::ofstream outFile;
-		outFile.open(name.c_str(), std::ios::binary);
+		outFile.open(name.c_str(), std::ios::binary | std::ofstream::trunc);
 		if (!outFile)
 		{
 			std::cerr << "Error - unable to open output file " << name.c_str() << std::endl;
@@ -77,51 +77,8 @@ namespace K
 		}
 		for (auto it : scene->GetGameObjects()) 
 		{
-			K::GameObject* g = it.second;
-			K::Transform* transform = g->GetTransform();
-			K::SerialiseObject obj;
-			obj.AppendString(g->GetName());
-			obj.AppendInt(g->GetIndex());
-
-			obj.AppendFloat(transform->position->x);
-			obj.AppendFloat(transform->position->y);
-			obj.AppendFloat(transform->position->z);
-
-			obj.AppendFloat(transform->rotation->x);
-			obj.AppendFloat(transform->rotation->y);
-			obj.AppendFloat(transform->rotation->z);
-
-			obj.AppendFloat(transform->scale->x);
-			obj.AppendFloat(transform->scale->y);
-			obj.AppendFloat(transform->scale->z);
-
-			obj.AppendFloat(transform->localPosition->x);
-			obj.AppendFloat(transform->localPosition->y);
-			obj.AppendFloat(transform->localPosition->z);
-
-			obj.AppendFloat(transform->localRotation->x);
-			obj.AppendFloat(transform->localRotation->y);
-			obj.AppendFloat(transform->localRotation->z);
-
-			obj.AppendFloat(transform->localScale->x);
-			obj.AppendFloat(transform->localScale->y);
-			obj.AppendFloat(transform->localScale->z);
-
-			if (g->parent == nullptr)
-				obj.AppendInt(-1);
-			else
-				obj.AppendInt(g->parent->GetIndex());
-
-			int numberOfComponents = g->GetNumberOfComponents();
-
-			for (int i = 0; i < numberOfComponents; i++)
-			{
-				K::Component* component = g->GetComponent(i);
-				obj.AppendString(component->GetName());
-				obj.AppendString(component->GetPropertyValues());
-			}
-			std::string binary = obj.ConvertToBinary();
-			outFile.write(binary.c_str(), binary.size());
+			K::SerialiseObject obj(it.second);
+			outFile << obj << '\n';
 		}
 		outFile.close();
 	}
@@ -380,30 +337,76 @@ namespace K
 	void Deserializer::RunTimeDeserializer(K::Scene* newScene, std::string location)
 	{
 		std::string file = location;
-		file.replace(file.begin() + file.find(".JAWS"), file.end(), ".BJAWS");
 		std::ifstream inFile;
+		file.replace(file.begin() + file.find(".JAWS"), file.end(), ".BJAWS");
 		inFile.open(ASSET_DIR + file, std::ios::binary);
-		if (inFile) 
+		if (inFile)
 		{
-			K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
-			K::Vector3* rotation = new K::Vector3(0.0f, 0.0f, 0.0f);
-			K::Vector3* scale = new K::Vector3(1.0f, 1.0f, 1.0f);
-
-			K::Transform* transform = new K::Transform(position, rotation, scale);
-
-			std::string name = "";
-
-			int componentCount = 0;
-
-			K::GameObject* temp = nullptr;
-			K::Component* currentComponent = nullptr;
-
-			std::string datum;
-			while (std::getline(inFile, datum, '\n')) 
+			K::SerialiseObject obj = K::SerialiseObject();
+			inFile >> obj;
+			for (int i = 0; i < obj.GetNumberOfInts(); i++) 
 			{
-
+				std::cout << obj.GetInt(i) << std::endl;
 			}
 		}
 		inFile.close();
+	}
+
+	SerialiseObject::SerialiseObject(K::GameObject* other)
+	{
+		this->AppendString(other->GetName());
+		this->AppendInt(other->GetIndex());
+		this->AppendVector3(*other->GetTransform()->position);
+		this->AppendVector3(*other->GetTransform()->rotation);
+		this->AppendVector3(*other->GetTransform()->scale);
+		this->AppendVector3(*other->GetTransform()->localPosition);
+		this->AppendVector3(*other->GetTransform()->localRotation);
+		this->AppendVector3(*other->GetTransform()->localScale);
+		if (other->parent == nullptr)
+			this->AppendInt(-1);
+		else
+			this->AppendInt(other->parent->GetIndex());
+		for (int i = 0; i < other->GetNumberOfComponents(); i++) 
+		{
+			this->AppendString(other->GetComponent(i)->GetPropertyValues());
+		}
+	}
+
+	SerialiseObject::SerialiseObject() 
+	{
+
+	}
+
+	std::istream& operator>>(std::istream& is, K::SerialiseObject& sO)
+	{
+		is.seekg(0, std::ios::end);
+		int size = is.tellg();
+		is.seekg(0, std::ios::beg);
+		for (int i = 0; i < size / sizeof(char); i++)
+		{
+			char* cValue = new char[sizeof(char)];
+			is.read(cValue, sizeof(char));
+			int value = (int)*cValue;
+			sO.AppendInt(value);
+		}
+		return is;
+	}
+
+	std::ostream& operator<<(std::ostream& os, K::SerialiseObject& sO)
+	{
+		os << sO.GetNumberOfInts() << "." << sO.GetNumberOfFloats() << "\n";
+		for (int i = 0; i < sO.GetNumberOfInts(); i++)
+		{
+			char c = sO.GetInt(i);
+			os.write(&c, sizeof(char));
+		}
+		os << '\n';
+		for (int j = 0; j < sO.GetNumberOfFloats(); j++) 
+		{
+			float value = sO.GetFloat(j);
+			char* c = reinterpret_cast<char*>(&value);
+			os.write(c, sizeof(float));
+		}
+		return os;
 	}
 }

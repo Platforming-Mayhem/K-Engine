@@ -38,11 +38,9 @@ namespace K
 
 		GameObject(const char* name, K::Transform* transform);
 
-		~GameObject();
-
 		GameObject(const GameObject&);
 
-		GameObject& operator=(GameObject const& other);
+		~GameObject();
 
 		void Init();
 

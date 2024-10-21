@@ -4,6 +4,71 @@
 
 namespace K 
 {
+	struct K_API SerialiseObject
+	{
+	private:
+		std::vector<int> ints;
+		std::vector<float> floats;
+		std::vector<bool> bools;
+		std::vector<std::string> strings;
+	public:
+
+		SerialiseObject();
+
+		SerialiseObject(K::GameObject* other);
+
+		void AppendInt(int value)
+		{
+			this->ints.push_back(value);
+		}
+
+		int GetInt(int index)
+		{
+			return this->ints.at(index);
+		}
+
+		int GetNumberOfInts() 
+		{
+			return this->ints.size();
+		}
+
+		void AppendFloat(float value)
+		{
+			this->floats.push_back(value);
+		}
+
+		float GetFloat(int index)
+		{
+			return this->floats.at(index);
+		}
+
+		float GetNumberOfFloats()
+		{
+			return this->floats.size();
+		}
+
+		void AppendVector3(K::Vector3 value)
+		{
+			this->floats.push_back(value.x);
+			this->floats.push_back(value.y);
+			this->floats.push_back(value.z);
+		}
+
+		void AppendBool(bool value)
+		{
+			this->bools.push_back(value);
+		}
+
+		void AppendString(std::string value)
+		{
+			this->strings.push_back(value);
+		}
+	};
+
+	std::istream& operator>>(std::istream& is, K::SerialiseObject& sO);
+
+	std::ostream& operator<<(std::ostream& os, K::SerialiseObject& sO);
+
 	class K_API Serializer 
 	{
 	public:

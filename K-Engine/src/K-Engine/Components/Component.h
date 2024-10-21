@@ -3,48 +3,6 @@
 
 namespace K 
 {
-	struct K_API SerialiseObject 
-	{
-	private:
-		std::string data;
-
-	public:
-
-		void AppendInt(int value) 
-		{
-			std::string temp((char*)&value, sizeof(int));
-			temp += '\n';
-			data.append(temp);
-		}
-
-		void AppendFloat(float value) 
-		{
-			std::string temp((char*)&value, sizeof(float));
-			temp += '\n';
-			data.append(temp);
-		}
-
-		void AppendBool(bool value) 
-		{
-			int intValue = value;
-			std::string temp((char*)&intValue, sizeof(int));
-			temp += '\n';
-			data.append(temp);
-		}
-
-		void AppendString(std::string value) 
-		{
-			std::string temp = value;
-			temp += '\n';
-			data.append(temp);
-		}
-
-		std::string ConvertToBinary() 
-		{
-			return data;
-		}
-	};
-
 	class K_API GameObject;
 
 	class K_API Component

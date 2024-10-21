@@ -4,6 +4,8 @@
 
 namespace K 
 {
+	//GENERATE INDEX VALUE WITH RANDOM INT
+
 	GameObject::GameObject(const char* name, K::Transform* transform)
 	{
 		this->name = (char*)name;
@@ -15,17 +17,33 @@ namespace K
 		//std::cout << name << " GameObject Created" << std::endl;
 	}
 
+	//SET CUSTOM INDEX VALUE
+
+	GameObject::GameObject(const char* name, K::Transform* transform, int index)
+	{
+		this->name = (char*)name;
+		this->transform = transform;
+		this->SetMaterial(new K::Material("shaders/3D.shader"));
+		this->g_Index = index;
+		K::Editor::GetCurrentScene()->Attach(this);
+		//std::cout << name << " GameObject Created" << std::endl;
+	}
+
+	//DEEP COPY
+
 	GameObject::GameObject(const GameObject &other) : name(other.name)
 	{
 		this->name = other.name;
 		this->transform = new K::Transform();
-		*this->transform->position = *other.transform->position;
+		/**this->transform->position = *other.transform->position;
 		*this->transform->rotation = *other.transform->rotation;
 		*this->transform->scale = *other.transform->scale;
 		*this->transform->localPosition = *other.transform->localPosition;
 		*this->transform->localRotation = *other.transform->localRotation;
-		*this->transform->localScale = *other.transform->localScale;
-		for (int i = 0; i < other.components.size(); i++)
+		*this->transform->localScale = *other.transform->localScale;*/
+		this->SetMaterial(new K::Material("shaders/3D.shader"));
+		this->g_Index = other.g_Index;
+		/*for (int i = 0; i < other.components.size(); i++)
 		{
 			K::Component* comp = K::Editor::lst().at(other.components[i]->GetName())->create();
 			this->AddComponent(comp);
@@ -51,57 +69,8 @@ namespace K
 			}
 			comp->Init();
 			comp->RenderInit();
-		}
-	}
-
-	GameObject& GameObject::operator=(GameObject const& other)
-	{
-		this->name = other.name;
-		this->transform = new K::Transform();
-		*this->transform->position = *other.transform->position;
-		*this->transform->rotation = *other.transform->rotation;
-		*this->transform->scale = *other.transform->scale;
-		*this->transform->localPosition = *other.transform->localPosition;
-		*this->transform->localRotation = *other.transform->localRotation;
-		*this->transform->localScale = *other.transform->localScale;
-		for (int i = 0; i < other.components.size(); i++) 
-		{
-			K::Component* comp = K::Editor::lst().at(other.components[i]->GetName())->create();
-			this->AddComponent(comp);
-			std::string allValues = other.components[i]->GetPropertyValues();
-			std::string value;
-			int index = 0;
-			for (int i = 0; i < allValues.size(); i++)
-			{
-				if (allValues[i] == ',')
-				{
-					comp->SetPropertyValues(value.c_str(), index);
-					value = "";
-					index++;
-				}
-				else 
-				{
-					value += allValues[i];
-				}
-			}
-			if (value != "") 
-			{
-				comp->SetPropertyValues(value.c_str(), index);
-			}
-			comp->Init();
-			comp->RenderInit();
-		}
-		return *this;
-	}
-
-	GameObject::GameObject(const char* name, K::Transform* transform, int index)
-	{
-		this->name = (char*)name;
-		this->transform = transform;
-		this->SetMaterial(new K::Material("shaders/3D.shader"));
-		this->g_Index = index;
+		}*/
 		K::Editor::GetCurrentScene()->Attach(this);
-		//std::cout << name << " GameObject Created" << std::endl;
 	}
 
 	GameObject::~GameObject() 
