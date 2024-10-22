@@ -75,11 +75,22 @@ namespace K
 			std::cerr << "Error - unable to open output file " << name.c_str() << std::endl;
 			exit(1);
 		}
+		std::vector<int> sizes;
 		for (auto it : scene->GetGameObjects()) 
 		{
 			K::SerialiseObject obj(it.second);
 			outFile << obj;
+			sizes.push_back(obj.GetNumberOfInts());
+			sizes.push_back(obj.GetNumberOfFloats());
+			sizes.push_back(obj.GetNumberOfBools());
+			//sizes.push_back(obj.GetNumberOfStrings());
 		}
+		outFile.seekp(0, std::ios::beg);
+		for (auto size : sizes) 
+		{
+			outFile << size << ",";
+		}
+		outFile << "\n";
 		outFile.close();
 	}
 
@@ -344,10 +355,6 @@ namespace K
 		{
 			K::SerialiseObject obj = K::SerialiseObject();
 			inFile >> obj;
-			for (int i = 0; i < obj.GetNumberOfInts(); i++) 
-			{
-				std::cout << obj.GetInt(i) << std::endl;
-			}
 		}
 		inFile.close();
 	}
@@ -366,10 +373,10 @@ namespace K
 			this->AppendInt(-1);
 		else
 			this->AppendInt(other->parent->GetIndex());
-		for (int i = 0; i < other->GetNumberOfComponents(); i++) 
+		/*for (int i = 0; i < other->GetNumberOfComponents(); i++) 
 		{
 			this->AppendString(other->GetComponent(i)->GetPropertyValues());
-		}
+		}*/
 	}
 
 	SerialiseObject::SerialiseObject() 
@@ -379,15 +386,46 @@ namespace K
 
 	std::istream& operator>>(std::istream& is, K::SerialiseObject& sO)
 	{
-		is.seekg(0, std::ios::end);
-		int size = is.tellg();
-		is.seekg(0, std::ios::beg);
-		for (int i = 0; i < size / sizeof(char); i++)
+		std::string data;
+		std::vector<int> sizes;
+		std::getline(is, data);
+		while (data.find(',') != std::string::npos) 
 		{
-			char* cValue = new char[sizeof(char)];
-			is.read(cValue, sizeof(char));
-			int value = (int)*cValue;
-			sO.AppendInt(value);
+			std::string datum = data.substr(0, data.find(','));
+			int size = std::stoi(datum);
+			sizes.push_back(size);
+			data.erase(0, data.find(',') + 1);
+		}
+		int type = 0;
+		for (int size : sizes) 
+		{
+			char* datumI = new char[sizeof(int) * size];
+			char* datumF = new char[sizeof(float) * size];
+			char* datumB = new char[sizeof(int) * size];
+			switch (type)
+			{
+			case 0:
+				is.read(datumI, sizeof(int) * size);
+				std::cout << *(int*)datumI << std::endl;
+				break;
+			case 1:
+				is.read(datumF, sizeof(float) * size);
+				break;
+			case 2:
+				is.read(datumB, sizeof(int) * size);
+				break;
+			}
+			delete[] datumI;
+			delete[] datumF;
+			delete[] datumB;
+			if (type < 2) 
+			{
+				type++;
+			}
+			else 
+			{
+				type = 0;
+			}
 		}
 		return is;
 	}
@@ -396,26 +434,24 @@ namespace K
 	{
 		for (int i = 0; i < sO.GetNumberOfInts(); i++)
 		{
-			char c = sO.GetInt(i);
-			os.write(&c, sizeof(char));
+			int datum = sO.GetInt(i);
+			os.write((char*)&datum, sizeof(int));
 		}
 		for (int j = 0; j < sO.GetNumberOfFloats(); j++) 
 		{
-			float value = sO.GetFloat(j);
-			char* c = reinterpret_cast<char*>(&value);
-			os.write(c, sizeof(float));
+			float datum = sO.GetFloat(j);
+			os.write((char*)&datum, sizeof(float));
 		}
 		for (int k = 0; k < sO.GetNumberOfBools(); k++)
 		{
-			int value = sO.GetBool(k);
-			char* c = reinterpret_cast<char*>(&value);
-			os.write(c, sizeof(char));
+			int datum = sO.GetBool(k);
+			os.write((char*)&datum, sizeof(int));
 		}
-		for (int l = 0; l < sO.GetNumberOfStrings(); l++)
+		/*for (int l = 0; l < sO.GetNumberOfStrings(); l++)
 		{
 			std::string value = sO.GetString(l);
 			os << value;
-		}
+		}*/
 		return os;
 	}
 }
