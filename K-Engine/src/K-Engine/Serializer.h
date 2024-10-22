@@ -42,7 +42,7 @@ namespace K
 			return this->floats.at(index);
 		}
 
-		float GetNumberOfFloats()
+		int GetNumberOfFloats()
 		{
 			return this->floats.size();
 		}
@@ -59,9 +59,29 @@ namespace K
 			this->bools.push_back(value);
 		}
 
+		bool GetBool(int index)
+		{
+			return this->bools.at(index);
+		}
+
+		int GetNumberOfBools()
+		{
+			return this->bools.size();
+		}
+
 		void AppendString(std::string value)
 		{
 			this->strings.push_back(value);
+		}
+
+		std::string GetString(int index)
+		{
+			return this->strings.at(index);
+		}
+
+		int GetNumberOfStrings()
+		{
+			return this->strings.size();
 		}
 	};
 

@@ -78,7 +78,7 @@ namespace K
 		for (auto it : scene->GetGameObjects()) 
 		{
 			K::SerialiseObject obj(it.second);
-			outFile << obj << '\n';
+			outFile << obj;
 		}
 		outFile.close();
 	}
@@ -394,18 +394,27 @@ namespace K
 
 	std::ostream& operator<<(std::ostream& os, K::SerialiseObject& sO)
 	{
-		os << sO.GetNumberOfInts() << "." << sO.GetNumberOfFloats() << "\n";
 		for (int i = 0; i < sO.GetNumberOfInts(); i++)
 		{
 			char c = sO.GetInt(i);
 			os.write(&c, sizeof(char));
 		}
-		os << '\n';
 		for (int j = 0; j < sO.GetNumberOfFloats(); j++) 
 		{
 			float value = sO.GetFloat(j);
 			char* c = reinterpret_cast<char*>(&value);
 			os.write(c, sizeof(float));
+		}
+		for (int k = 0; k < sO.GetNumberOfBools(); k++)
+		{
+			int value = sO.GetBool(k);
+			char* c = reinterpret_cast<char*>(&value);
+			os.write(c, sizeof(char));
+		}
+		for (int l = 0; l < sO.GetNumberOfStrings(); l++)
+		{
+			std::string value = sO.GetString(l);
+			os << value;
 		}
 		return os;
 	}
