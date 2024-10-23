@@ -76,21 +76,26 @@ namespace K
 			exit(1);
 		}
 		std::vector<int> sizes;
+		std::vector<K::SerialiseObject> objs;
 		for (auto it : scene->GetGameObjects()) 
 		{
 			K::SerialiseObject obj(it.second);
-			outFile << obj;
 			sizes.push_back(obj.GetNumberOfInts());
 			sizes.push_back(obj.GetNumberOfFloats());
 			sizes.push_back(obj.GetNumberOfBools());
+			sizes.push_back(obj.GetNumberOfStrings());
+			objs.push_back(obj);
 			//sizes.push_back(obj.GetNumberOfStrings());
 		}
-		outFile.seekp(0, std::ios::beg);
 		for (auto size : sizes) 
 		{
 			outFile << size << ",";
 		}
 		outFile << "\n";
+		for (auto obj : objs) 
+		{
+			outFile << obj;
+		}
 		outFile.close();
 	}
 
@@ -274,6 +279,21 @@ namespace K
 	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
 	{
 		auto start = std::chrono::steady_clock::now();
+		#if _DEBUG
+			EditorDeserializer(newScene, location);
+		#else
+			RunTimeDeserializer(newScene, location);
+		#endif
+		std::cout << ASSET_DIR + location << std::endl;
+		newScene->SetSceneName(location);
+		newScene->SetLocation(location);
+		newScene->Init();
+		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+		std::cout << "Time To Deserialize Scene (" << newScene->GetSceneName() << "): " << elapsed << std::endl;
+	}
+
+	void Deserializer::EditorDeserializer(K::Scene* newScene, std::string location) 
+	{
 		std::ifstream inFile;
 		inFile.open(ASSET_DIR + location);
 		if (inFile)
@@ -285,7 +305,7 @@ namespace K
 
 			inFile.seekg(0, std::ios::beg);
 
-			if (length > 0) 
+			if (length > 0)
 			{
 				characters.resize(length);
 				inFile.read(&characters[0], length);
@@ -325,7 +345,6 @@ namespace K
 					}
 				}
 			}
-
 			inFile.close();
 
 			if (!parents.empty())
@@ -337,14 +356,8 @@ namespace K
 				parents.clear();
 			}
 		}
-		//RunTimeDeserializer(newScene, location);
-		std::cout << ASSET_DIR + location << std::endl;
-		newScene->SetSceneName(location);
-		newScene->SetLocation(location);
-		newScene->Init();
-		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
-		std::cout << "Time To Deserialize Scene (" << newScene->GetSceneName() << "): " << elapsed << std::endl;
 	}
+
 	void Deserializer::RunTimeDeserializer(K::Scene* newScene, std::string location)
 	{
 		std::string file = location;
@@ -353,10 +366,27 @@ namespace K
 		inFile.open(ASSET_DIR + file, std::ios::binary);
 		if (inFile)
 		{
-			K::SerialiseObject obj = K::SerialiseObject();
-			inFile >> obj;
+			std::string data;
+			std::getline(inFile, data);
+			int numberOfGameObjects = std::count(data.begin(), data.end(), ',') / 4;
+			for (int i = 0; i < numberOfGameObjects; i++) 
+			{
+				K::SerialiseObject obj = K::SerialiseObject();
+				obj.AppendInt(i);
+				inFile >> obj;
+				obj.CreateGameObject(this);
+			}
+			inFile.close();
+
+			if (!parents.empty())
+			{
+				for (auto temp : parents)
+				{
+					temp.first->SetParent(newScene->GetGameObjects().at(temp.second));
+				}
+				parents.clear();
+			}
 		}
-		inFile.close();
 	}
 
 	SerialiseObject::SerialiseObject(K::GameObject* other)
@@ -373,10 +403,72 @@ namespace K
 			this->AppendInt(-1);
 		else
 			this->AppendInt(other->parent->GetIndex());
-		/*for (int i = 0; i < other->GetNumberOfComponents(); i++) 
+		for (int i = 0; i < other->GetNumberOfComponents(); i++) 
 		{
-			this->AppendString(other->GetComponent(i)->GetPropertyValues());
-		}*/
+			std::string val = other->GetComponent(i)->GetName();
+			val += "," + std::string(other->GetComponent(i)->GetPropertyValues()) + ",";
+			this->AppendString(val);
+		}
+	}
+
+	void SerialiseObject::CreateGameObject(Deserializer* deserializer)
+	{
+		K::GameObject* temp = new K::GameObject(this->GetString(0).c_str(), new K::Transform(), this->GetInt(0));
+
+		temp->GetTransform()->position->x = this->GetFloat(0);
+		temp->GetTransform()->position->y = this->GetFloat(1);
+		temp->GetTransform()->position->z = this->GetFloat(2);
+
+		temp->GetTransform()->rotation->x = this->GetFloat(3);
+		temp->GetTransform()->rotation->y = this->GetFloat(4);
+		temp->GetTransform()->rotation->z = this->GetFloat(5);
+
+		temp->GetTransform()->scale->x = this->GetFloat(6);
+		temp->GetTransform()->scale->y = this->GetFloat(7);
+		temp->GetTransform()->scale->z = this->GetFloat(8);
+
+		temp->GetTransform()->localPosition->x = this->GetFloat(9);
+		temp->GetTransform()->localPosition->y = this->GetFloat(10);
+		temp->GetTransform()->localPosition->z = this->GetFloat(11);
+
+		temp->GetTransform()->localRotation->x = this->GetFloat(12);
+		temp->GetTransform()->localRotation->y = this->GetFloat(13);
+		temp->GetTransform()->localRotation->z = this->GetFloat(14);
+
+		temp->GetTransform()->localScale->x = this->GetFloat(15);
+		temp->GetTransform()->localScale->y = this->GetFloat(16);
+		temp->GetTransform()->localScale->z = this->GetFloat(17);
+
+		if (this->GetInt(1) != -1)
+		{
+			deserializer->parents.insert({temp, this->GetInt(1)});
+		}
+
+		std::cout << this->GetString(0) << std::endl;
+
+		for (int i = 1; i < this->GetNumberOfStrings(); i++)
+		{
+			std::string data = this->GetString(i);
+			K::Component* selectedComponent = nullptr;
+			int componentDataCount = 0;
+			while (data.find(',') != std::string::npos)
+			{
+				std::string datum = data.substr(0, data.find(','));
+				std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst().find(datum);
+				if (pos != K::Editor::lst().end())
+				{
+					selectedComponent = pos->second->create();
+					temp->AddComponent(selectedComponent);
+					componentDataCount = 0;
+				}
+				else if(selectedComponent != nullptr)
+				{
+					selectedComponent->SetPropertyValues(datum.c_str(), componentDataCount);
+					componentDataCount++;
+				}
+				data.erase(0, data.find(',') + 1);
+			}
+		}
 	}
 
 	SerialiseObject::SerialiseObject() 
@@ -388,8 +480,19 @@ namespace K
 	{
 		std::string data;
 		std::vector<int> sizes;
+		int currentPos = is.tellg();
+		is.seekg(0, std::ios::beg);
 		std::getline(is, data);
-		while (data.find(',') != std::string::npos) 
+		is.seekg(currentPos, std::ios::beg);
+		for (int i = 0; i < sO.GetInt(0); i++) 
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				data.erase(0, data.find(',') + 1);
+			}
+		}
+		sO.RemoveInt(0);
+		for(int k = 0; k < 4; k++)
 		{
 			std::string datum = data.substr(0, data.find(','));
 			int size = std::stoi(datum);
@@ -399,26 +502,37 @@ namespace K
 		int type = 0;
 		for (int size : sizes) 
 		{
-			char* datumI = new char[sizeof(int) * size];
-			char* datumF = new char[sizeof(float) * size];
-			char* datumB = new char[sizeof(int) * size];
-			switch (type)
+			for (int i = 0; i < size; i++) 
 			{
-			case 0:
-				is.read(datumI, sizeof(int) * size);
-				std::cout << *(int*)datumI << std::endl;
-				break;
-			case 1:
-				is.read(datumF, sizeof(float) * size);
-				break;
-			case 2:
-				is.read(datumB, sizeof(int) * size);
-				break;
+				char datumI[sizeof(int)];
+				char datumF[sizeof(float)];
+				char datumB[sizeof(int)];
+				std::string datumS;
+				switch (type)
+				{
+				case 0:
+					is.read(datumI, sizeof(int));
+					//std::cout << *(int*)datumI << std::endl;
+					sO.AppendInt(*(int*)&datumI);
+					break;
+				case 1:
+					is.read(datumF, sizeof(float));
+					//std::cout << *(float*)datumF << std::endl;
+					sO.AppendFloat(*(float*)&datumF);
+					break;
+				case 2:
+					is.read(datumB, sizeof(int));
+					//std::cout << *(bool*)datumB << std::endl;
+					sO.AppendBool(*(bool*)&datumB);
+					break;
+				case 3:
+					std::getline(is, datumS);
+					//std::cout << datumS << std::endl;
+					sO.AppendString(datumS);
+					break;
+				}
 			}
-			delete[] datumI;
-			delete[] datumF;
-			delete[] datumB;
-			if (type < 2) 
+			if (type < 3) 
 			{
 				type++;
 			}
@@ -427,6 +541,7 @@ namespace K
 				type = 0;
 			}
 		}
+		//std::cout << "Finished " << sO.GetString(0) << std::endl;
 		return is;
 	}
 
@@ -435,23 +550,24 @@ namespace K
 		for (int i = 0; i < sO.GetNumberOfInts(); i++)
 		{
 			int datum = sO.GetInt(i);
-			os.write((char*)&datum, sizeof(int));
+			os.write((char*)&datum, sizeof(datum));
 		}
 		for (int j = 0; j < sO.GetNumberOfFloats(); j++) 
 		{
 			float datum = sO.GetFloat(j);
-			os.write((char*)&datum, sizeof(float));
+			os.write((char*)&datum, sizeof(datum));
 		}
 		for (int k = 0; k < sO.GetNumberOfBools(); k++)
 		{
 			int datum = sO.GetBool(k);
-			os.write((char*)&datum, sizeof(int));
+			os.write((char*)&datum, sizeof(datum));
 		}
-		/*for (int l = 0; l < sO.GetNumberOfStrings(); l++)
+		for (int l = 0; l < sO.GetNumberOfStrings(); l++)
 		{
 			std::string value = sO.GetString(l);
-			os << value;
-		}*/
+			os.write(&value[0], value.size() * sizeof(char));
+			os << "\n";
+		}
 		return os;
 	}
 }

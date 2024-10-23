@@ -4,3 +4,4 @@ textures\editor
 .png
 .gif
 .jpg
+.JAWS

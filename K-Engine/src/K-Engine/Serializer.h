@@ -4,6 +4,40 @@
 
 namespace K 
 {
+	class K_API Serializer 
+	{
+	public:
+		Serializer(K::Scene* scene, std::string location);
+
+		void RunTimeSerialize(K::Scene* scene, std::string location);
+	};
+
+	class K_API Deserializer 
+	{
+	private:
+		K::Component* selectedComponent = nullptr;
+		K::GameObject* selectedGameObject = nullptr;
+
+		int componentDataCount = 0;
+
+	public:
+		std::map<K::GameObject*, int> parents;
+
+		Deserializer(K::Scene* newScene, std::string location);
+
+		void RunTimeDeserializer(K::Scene* newScene, std::string location);
+
+		void EditorDeserializer(K::Scene* newScene, std::string location);
+
+		void CreateComponent(K::GameObject* tempGameObject, std::vector<std::string>& data);
+
+		void CreateComponentFast(std::string datum);
+
+		void CreateGameObject(std::string gameObject);
+
+		void CreateGameObjectFast(std::vector<std::string>& data);
+	};
+
 	struct K_API SerialiseObject
 	{
 	private:
@@ -17,9 +51,16 @@ namespace K
 
 		SerialiseObject(K::GameObject* other);
 
+		void CreateGameObject(Deserializer* deserializer);
+
 		void AppendInt(int value)
 		{
 			this->ints.push_back(value);
+		}
+
+		void RemoveInt(int index) 
+		{
+			this->ints.erase(this->ints.begin() + index);
 		}
 
 		int GetInt(int index)
@@ -27,7 +68,7 @@ namespace K
 			return this->ints.at(index);
 		}
 
-		int GetNumberOfInts() 
+		int GetNumberOfInts()
 		{
 			return this->ints.size();
 		}
@@ -88,35 +129,4 @@ namespace K
 	std::istream& operator>>(std::istream& is, K::SerialiseObject& sO);
 
 	std::ostream& operator<<(std::ostream& os, K::SerialiseObject& sO);
-
-	class K_API Serializer 
-	{
-	public:
-		Serializer(K::Scene* scene, std::string location);
-
-		void RunTimeSerialize(K::Scene* scene, std::string location);
-	};
-
-	class K_API Deserializer 
-	{
-	private:
-		K::Component* selectedComponent = nullptr;
-		K::GameObject* selectedGameObject = nullptr;
-
-		int componentDataCount = 0;
-		std::map<K::GameObject*, int> parents;
-
-	public:
-		Deserializer(K::Scene* newScene, std::string location);
-
-		void RunTimeDeserializer(K::Scene* newScene, std::string location);
-
-		void CreateComponent(K::GameObject* tempGameObject, std::vector<std::string>& data);
-
-		void CreateComponentFast(std::string datum);
-
-		void CreateGameObject(std::string gameObject);
-
-		void CreateGameObjectFast(std::vector<std::string>& data);
-	};
 }
