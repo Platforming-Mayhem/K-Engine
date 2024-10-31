@@ -37,6 +37,8 @@ namespace K
 		K::TextureManager* textures;
 		unsigned int id;
 		unsigned int viewId;
+		unsigned int uploadPBO;
+		unsigned int updatingPBO;
 		unsigned char* image;
 		bool loadedAnimation = false;
 		bool loadedTexture = false;
