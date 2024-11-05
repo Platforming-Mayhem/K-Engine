@@ -134,11 +134,11 @@ namespace K
 					{
 						if (this->c > 3)
 						{
-							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 						}
 						else
 						{
-							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 						}
 						stbi_image_free(this->image);
 						this->image = nullptr;
@@ -204,13 +204,13 @@ namespace K
 	{
 		if (this->loadedAnimation)
 		{
-			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
+			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, this->frames);
 			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
 			glGenTextures(1, &this->viewId);
-			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
+			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 0, 1, 0, 1);
 
 			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{
@@ -232,11 +232,11 @@ namespace K
 		{
 			if (this->c >= 4)
 			{
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			}
 			else
 			{
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 			}
 			stbi_image_free(this->image);
 			this->image = nullptr;
