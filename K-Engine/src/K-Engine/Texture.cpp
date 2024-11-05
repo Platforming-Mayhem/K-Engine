@@ -60,8 +60,6 @@ namespace K
 				this->thread = std::thread(&Texture::LoadAnimation, this);
 				this->thread.detach();
 				glGenTextures(1, &this->id);
-				glGenBuffers(1, &this->updatingPBO);
-				glGenBuffers(1, &this->uploadPBO);
 				glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -75,8 +73,6 @@ namespace K
 				this->thread = std::thread(&Texture::Load, this);
 				this->thread.detach();
 				glGenTextures(1, &this->id);
-				glGenBuffers(1, &this->updatingPBO);
-				glGenBuffers(1, &this->uploadPBO);
 				glBindTexture(GL_TEXTURE_2D, this->id);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -129,8 +125,6 @@ namespace K
 					LPVOID lp = LockResource(temp);
 					this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
 					glGenTextures(1, &this->id);
-					glGenBuffers(1, &this->updatingPBO);
-					glGenBuffers(1, &this->uploadPBO);
 					glBindTexture(GL_TEXTURE_2D, this->id);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -140,11 +134,11 @@ namespace K
 					{
 						if (this->c > 3)
 						{
-							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 						}
 						else
 						{
-							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 						}
 						stbi_image_free(this->image);
 						this->image = nullptr;
@@ -197,8 +191,6 @@ namespace K
 				glDeleteTextures(1, &this->viewId);
 			}
 			glDeleteTextures(1, &this->id);
-			glDeleteBuffers(1, &this->updatingPBO);
-			glDeleteBuffers(1, &this->uploadPBO);
 		}
 		//std::cout << "End Texture Destruction..." << std::endl;
 	}
@@ -212,34 +204,13 @@ namespace K
 	{
 		if (this->loadedAnimation)
 		{
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->updatingPBO);
-			glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->frames * 4, 0, GL_STREAM_DRAW);
-
-			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
-			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->uploadPBO);
-			glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->frames * 4, 0, GL_STREAM_DRAW);
-
-			unsigned char* location = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
-
-			if (location) 
-			{
-				std::memcpy(location, this->image, this->width * this->height * this->frames * 4 * sizeof(unsigned char));
-				glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
-			}
-			else 
-			{
-				std::cout << "Failed Mapping" << std::endl;
-			}
-
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
+			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, this->frames);
+			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
 			glGenTextures(1, &this->viewId);
-			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
+			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 0, 1, 0, 1);
 
 			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{
@@ -261,11 +232,11 @@ namespace K
 		{
 			if (this->c >= 4)
 			{
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 			}
 			else
 			{
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 			}
 			stbi_image_free(this->image);
 			this->image = nullptr;
