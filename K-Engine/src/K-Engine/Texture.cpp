@@ -57,28 +57,42 @@ namespace K
 			stbi_set_flip_vertically_on_load(true);
 			if (this->filename.contains(".gif"))
 			{
-				this->thread = std::thread(&Texture::LoadAnimation, this);
-				this->thread.detach();
 				glGenTextures(1, &this->id);
+				glGenBuffers(1, &this->uploadPBO);
+				glGenBuffers(1, &this->updatingPBO);
 				glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->uploadPBO);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->updatingPBO);
+
+				this->thread = std::thread(&Texture::LoadAnimation, this);
+				this->thread.detach();
+
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 				glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 			}
 			else
 			{
-				this->thread = std::thread(&Texture::Load, this);
-				this->thread.detach();
 				glGenTextures(1, &this->id);
+				glGenBuffers(1, &this->uploadPBO);
+				glGenBuffers(1, &this->updatingPBO);
 				glBindTexture(GL_TEXTURE_2D, this->id);
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->uploadPBO);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->updatingPBO);
+
+				this->thread = std::thread(&Texture::Load, this);
+				this->thread.detach();
+
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 				glBindTexture(GL_TEXTURE_2D, 0);
 				this->viewId = this->id;
 			}
@@ -125,6 +139,8 @@ namespace K
 					LPVOID lp = LockResource(temp);
 					this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
 					glGenTextures(1, &this->id);
+					glGenBuffers(1, &this->uploadPBO);
+					glGenBuffers(1, &this->updatingPBO);
 					glBindTexture(GL_TEXTURE_2D, this->id);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -190,6 +206,8 @@ namespace K
 			{
 				glDeleteTextures(1, &this->viewId);
 			}
+			glDeleteBuffers(1, &this->uploadPBO);
+			glDeleteBuffers(1, &this->updatingPBO);
 			glDeleteTextures(1, &this->id);
 		}
 		//std::cout << "End Texture Destruction..." << std::endl;
