@@ -55,44 +55,34 @@ namespace K
 		else
 		{
 			stbi_set_flip_vertically_on_load(true);
+			glGenBuffers(1, &this->uploadPBO);
+			glGenBuffers(1, &this->updatingPBO);
 			if (this->filename.contains(".gif"))
 			{
 				glGenTextures(1, &this->id);
-				glGenBuffers(1, &this->uploadPBO);
-				glGenBuffers(1, &this->updatingPBO);
 				glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->uploadPBO);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->updatingPBO);
-
 				this->thread = std::thread(&Texture::LoadAnimation, this);
 				this->thread.detach();
 
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 				glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 			}
 			else
 			{
 				glGenTextures(1, &this->id);
-				glGenBuffers(1, &this->uploadPBO);
-				glGenBuffers(1, &this->updatingPBO);
 				glBindTexture(GL_TEXTURE_2D, this->id);
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->uploadPBO);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->updatingPBO);
-
 				this->thread = std::thread(&Texture::Load, this);
 				this->thread.detach();
 
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 				glBindTexture(GL_TEXTURE_2D, 0);
 				this->viewId = this->id;
 			}
@@ -222,8 +212,21 @@ namespace K
 	{
 		if (this->loadedAnimation)
 		{
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->uploadPBO);
+			glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->frames * 4, 0, GL_STREAM_DRAW);
+
 			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, this->frames);
-			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+			GLubyte* ptr = (GLubyte*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+			if (ptr) 
+			{
+				std::memcpy(ptr, this->image, this->width * this->height * this->frames * 4);
+				glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
+			}
+
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
