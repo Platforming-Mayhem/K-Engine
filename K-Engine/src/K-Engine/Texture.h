@@ -38,7 +38,6 @@ namespace K
 		unsigned int id;
 		unsigned int viewId;
 		unsigned int uploadPBO;
-		unsigned int updatingPBO;
 		unsigned char* image;
 		bool loadedAnimation = false;
 		bool loadedTexture = false;
@@ -87,6 +86,28 @@ namespace K
 		std::string GetFilePath();
 
 		unsigned char* GetFrameImage(int frameIndex);
+
+		void updatePixels(GLubyte* dst, int size)
+		{
+			static int color = 0;
+
+			if (!dst)
+				return;
+
+			int* ptr = (int*)dst;
+
+			// copy 4 bytes at once
+			for (int i = 0; i < this->height; ++i)
+			{
+				for (int j = 0; j < this->width; ++j)
+				{
+					*ptr = color;
+					++ptr;
+				}
+				color += 257;
+			}
+			++color;            // scroll down
+		}
 
 		int GetFrameRate();
 
