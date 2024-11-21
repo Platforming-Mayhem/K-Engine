@@ -73,6 +73,60 @@ namespace K
 			return this->frames;
 		}
 
+		int* ReadDimensions(const char* filename) 
+		{
+			std::ifstream file;
+			file.open(filename, std::ios::binary);
+			if (!file)
+				return {};
+			file.seekg(16, std::ios::beg);
+			unsigned char data[10];
+			file.read(reinterpret_cast<char*>(&data), 10);
+			file.close();
+
+			//Convert Character sequence to integer
+			int valX = int((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
+			int valY = int((data[4] << 24) | (data[5] << 16) | (data[6] << 8) | data[7]);
+			int valC = int(data[9]);
+			int* values = new int[3] { valX, valY, valC};
+
+			return values;
+		}
+
+		int ReadWidth(const char* filename) 
+		{
+			std::ifstream file;
+			file.open(filename, std::ios::binary);
+			if (!file)
+				return -1;
+			file.seekg(16, std::ios::beg);
+			unsigned char data[4];
+			file.read(reinterpret_cast<char*>(&data), 4);
+			file.close();
+
+			//Convert Character sequence to integer
+			int val = int((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
+
+			return val;
+		}
+
+		int ReadHeight(const char* filename)
+		{
+			std::ifstream file;
+			file.open(filename, std::ios::binary);
+			if (!file)
+				return -1;
+			file.seekg(20, std::ios::beg);
+			unsigned char data[4];
+			file.read(reinterpret_cast<char*>(&data), 4);
+			file.close();
+
+			//Convert Character sequence to integer
+			int val = int((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
+
+			return val;
+		}
+
 		unsigned int GetID() 
 		{
 			return this->id;
@@ -86,28 +140,6 @@ namespace K
 		std::string GetFilePath();
 
 		unsigned char* GetFrameImage(int frameIndex);
-
-		void updatePixels(GLubyte* dst, int size)
-		{
-			static int color = 0;
-
-			if (!dst)
-				return;
-
-			int* ptr = (int*)dst;
-
-			// copy 4 bytes at once
-			for (int i = 0; i < this->height; ++i)
-			{
-				for (int j = 0; j < this->width; ++j)
-				{
-					*ptr = color;
-					++ptr;
-				}
-				color += 257;
-			}
-			++color;            // scroll down
-		}
 
 		int GetFrameRate();
 

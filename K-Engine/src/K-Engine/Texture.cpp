@@ -72,6 +72,24 @@ namespace K
 			}
 			else
 			{
+				std::string temp = ASSET_DIR + this->GetFilePath();
+				int* dimensions = this->ReadDimensions(temp.c_str());
+
+				this->width = dimensions[0];
+				this->height = dimensions[1];
+
+				switch (dimensions[2]) 
+				{
+				case 2:
+					this->c = 3;
+					break;
+				case 6:
+					this->c = 4;
+					break;
+				}
+
+				delete dimensions;
+
 				glGenTextures(1, &this->id);
 				glBindTexture(GL_TEXTURE_2D, this->id);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -249,13 +267,13 @@ namespace K
 
 			if (this->c >= 4)
 			{
-				//glTexStorage2D(GL_TEXTURE_2D, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height);
-				//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+				glTexStorage2D(GL_TEXTURE_2D, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height);
+				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 			}
 			else
 			{
-				//glTexStorage2D(GL_TEXTURE_2D, 1, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height);
-				//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGB, GL_UNSIGNED_BYTE, 0);
+				glTexStorage2D(GL_TEXTURE_2D, 1, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height);
+				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGB, GL_UNSIGNED_BYTE, 0);
 			}
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
