@@ -414,6 +414,11 @@ FodyWeavers.xsd
 *.mod
 *.smod
 
+#Libaries
+*.dll
+*.lib
+*.exp
+
 # Executables
 *.exe
 *.out
