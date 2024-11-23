@@ -49,58 +49,63 @@ namespace K
 			this->fps = parentTex->GetFrameRate();
 			this->width = parentTex->GetWidth();
 			this->height = parentTex->GetHeight();
+			this->c = parentTex->GetChannels();
 			this->textures->Check(this->filename)->dependencies++;
 			this->textures->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
 		else
 		{
 			stbi_set_flip_vertically_on_load(true);
-			glGenBuffers(1, &this->uploadPBO);
+
+			glGenTextures(1, &this->id);
+			glGenBuffers(1, &this->PBO);
+
 			if (this->filename.contains(".gif"))
 			{
-				glGenTextures(1, &this->id);
 				glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-				this->thread = std::thread(&Texture::LoadAnimation, this);
-				this->thread.detach();
-
-				glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+				/*this->thread = std::thread(&Texture::LoadAnimation, this);
+				this->thread.detach();*/
 			}
 			else
 			{
 				std::string temp = ASSET_DIR + this->GetFilePath();
-				int* dimensions = this->ReadDimensions(temp.c_str());
+				K::ImageSize imageMeta = this->ReadDimensions(temp.c_str());
 
-				this->width = dimensions[0];
-				this->height = dimensions[1];
+				this->width = imageMeta.width;
+				this->height = imageMeta.height;
+				this->c = imageMeta.c;
 
-				switch (dimensions[2]) 
-				{
-				case 2:
-					this->c = 3;
-					break;
-				case 6:
-					this->c = 4;
-					break;
-				}
-
-				delete dimensions;
-
-				glGenTextures(1, &this->id);
 				glBindTexture(GL_TEXTURE_2D, this->id);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+				if (this->c > 3)
+				{
+					glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, this->width, this->height);
+				}
+				else
+				{
+					glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, this->width, this->height);
+				}
+
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
+				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->c * sizeof(unsigned char), 0, GL_STREAM_DRAW);
+
+				this->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+				glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
+
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
 				this->thread = std::thread(&Texture::Load, this);
 				this->thread.detach();
 
-				glBindTexture(GL_TEXTURE_2D, 0);
 				this->viewId = this->id;
 			}
 			K::TextureInfo textureInfo = K::TextureInfo();
@@ -123,6 +128,7 @@ namespace K
 			this->fps = parentTex->GetFrameRate();
 			this->width = parentTex->GetWidth();
 			this->height = parentTex->GetHeight();
+			this->c = parentTex->GetChannels();
 			this->textures->Check(this->filename)->dependencies++;
 			this->textures->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
@@ -146,7 +152,6 @@ namespace K
 					LPVOID lp = LockResource(temp);
 					this->image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &this->width, &this->height, &this->c, 0);
 					glGenTextures(1, &this->id);
-					glGenBuffers(1, &this->uploadPBO);
 					glBindTexture(GL_TEXTURE_2D, this->id);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -212,8 +217,8 @@ namespace K
 			{
 				glDeleteTextures(1, &this->viewId);
 			}
-			if(this->uploadPBO)
-				glDeleteBuffers(1, &this->uploadPBO);
+			if (this->PBO)
+				glDeleteBuffers(1, &this->PBO);
 			glDeleteTextures(1, &this->id);
 		}
 		//std::cout << "End Texture Destruction..." << std::endl;
@@ -228,21 +233,16 @@ namespace K
 	{
 		if (this->loadedAnimation)
 		{
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->uploadPBO);
-			glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->frames * 4 * sizeof(unsigned char), this->image, GL_STREAM_DRAW);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, this->frames);
-			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-			glDeleteBuffers(1, &this->uploadPBO);
+			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
+			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 
 			stbi_image_free(this->image);
 			this->image = nullptr;
 
 			glGenTextures(1, &this->viewId);
-			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 0, 1, 0, 1);
+			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
 
 			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{
@@ -262,26 +262,22 @@ namespace K
 		}
 		if (this->loadedTexture)
 		{
-			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->uploadPBO);
-			glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->c * sizeof(unsigned char), this->image, GL_STREAM_DRAW);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-			if (this->c >= 4)
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
+
+			this->image = nullptr;
+
+			if (this->c > 3)
 			{
-				glTexStorage2D(GL_TEXTURE_2D, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height);
 				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 			}
 			else
 			{
-				glTexStorage2D(GL_TEXTURE_2D, 1, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height);
 				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGB, GL_UNSIGNED_BYTE, 0);
 			}
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-			glDeleteBuffers(1, &this->uploadPBO);
-
-			stbi_image_free(this->image);
-			this->image = nullptr;
 
 			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{
@@ -291,6 +287,7 @@ namespace K
 					{
 						((K::Texture*)i)->width = this->width;
 						((K::Texture*)i)->height = this->height;
+						((K::Texture*)i)->c = this->c;
 					}
 				}
 			}
@@ -355,7 +352,7 @@ namespace K
 				info.erase(0, info.find(".") + 1);
 				this->c = std::stoi(info);
 
-				this->image = (unsigned char*)std::calloc(this->width * this->height * this->c, sizeof(unsigned char));
+				//this->image = (unsigned char*)std::calloc(this->width * this->height * this->c, sizeof(unsigned char));
 				if (this->image != nullptr) 
 				{
 					std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
@@ -423,7 +420,9 @@ namespace K
 	{
 		std::string temp = ASSET_DIR + this->GetFilePath();
 		#if _DEBUG
-			this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
+			unsigned char* data = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
+			std::memcpy(this->image, data, this->width * this->height * this->c * sizeof(unsigned char));
+			stbi_image_free(data);
 			this->CreateJIMAGE();
 		#else
 			this->LoadJIMAGE(temp);
