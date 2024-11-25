@@ -62,14 +62,30 @@ namespace K
 
 			if (this->filename.contains(".gif"))
 			{
+				std::string temp = ASSET_DIR + this->GetFilePath();
+				K::ImageSize imageMeta = this->ReadDimensionsAnimation(temp.c_str());
+
+				this->width = imageMeta.width;
+				this->height = imageMeta.height;
+				this->frames = imageMeta.frames;
+
 				glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-				/*this->thread = std::thread(&Texture::LoadAnimation, this);
-				this->thread.detach();*/
+				glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
+
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
+				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->frames * 4 * sizeof(unsigned char), 0, GL_STREAM_DRAW);
+
+				this->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+				this->thread = std::thread(&Texture::LoadAnimation, this);
+				this->thread.detach();
 			}
 			else
 			{
@@ -99,7 +115,6 @@ namespace K
 				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->c * sizeof(unsigned char), 0, GL_STREAM_DRAW);
 
 				this->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
-				glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
 
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
@@ -235,11 +250,16 @@ namespace K
 		{
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
-			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
 
-			stbi_image_free(this->image);
+			glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
 			this->image = nullptr;
+
+			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+			glDeleteBuffers(1, &this->PBO);
 
 			glGenTextures(1, &this->viewId);
 			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
@@ -263,9 +283,9 @@ namespace K
 		if (this->loadedTexture)
 		{
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
 
+			glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
 			this->image = nullptr;
 
 			if (this->c > 3)
@@ -278,6 +298,8 @@ namespace K
 			}
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+			glDeleteBuffers(1, &this->PBO);
 
 			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{
@@ -384,7 +406,7 @@ namespace K
 			info.erase(0, info.find(".") + 1);
 			this->fps = std::stoi(info);
 
-			this->image = (unsigned char*)std::calloc(this->width * this->height * 4 * this->frames, sizeof(unsigned char));
+			//this->image = (unsigned char*)std::calloc(this->width * this->height * 4 * this->frames, sizeof(unsigned char));
 			if (this->image != nullptr)
 			{
 				std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
@@ -399,8 +421,11 @@ namespace K
 	{
 		std::string temp = ASSET_DIR + this->GetFilePath();
 		#if _DEBUG
-			this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
+			unsigned char* data = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
+			std::memcpy(this->image, data, this->width * this->height * 4 * sizeof(unsigned char));
+			this->frames = 1;
 			this->fps = 1.0f / (*this->delay / 1000.0f);
+			stbi_image_free(data);
 			this->CreateJANIM();
 		#else
 			this->LoadJANIM(temp);
