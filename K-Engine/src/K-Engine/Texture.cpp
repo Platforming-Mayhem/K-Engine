@@ -423,7 +423,6 @@ namespace K
 		#if _DEBUG
 			unsigned char* data = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
 			std::memcpy(this->image, data, this->width * this->height * 4 * sizeof(unsigned char));
-			this->frames = 1;
 			this->fps = 1.0f / (*this->delay / 1000.0f);
 			stbi_image_free(data);
 			this->CreateJANIM();
@@ -433,6 +432,7 @@ namespace K
 
 		if (this->image) 
 		{
+			this->frames = 1;
 			this->loadedAnimation = true;
 		}
 		else 
