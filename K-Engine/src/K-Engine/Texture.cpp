@@ -478,7 +478,6 @@ namespace K
 	{
 		std::string location = this->GetFilePath();
 		std::string temp = ASSET_DIR + this->GetFilePath();
-		this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
 		std::filesystem::path tempPath = ASSET_DIR + location;
 		int timeSinceEpoch = std::chrono::duration_cast<std::chrono::minutes>(std::filesystem::last_write_time(tempPath).time_since_epoch()).count();
 		int found = location.find('.');
@@ -498,21 +497,22 @@ namespace K
 				}
 				outFile << this->width << "." << this->height << "." << this->c << "\n";
 				outFile.close();
+
+				this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
+
 				std::FILE* fastFile = std::fopen(location.c_str(), "ab");
 				std::fwrite(this->image, sizeof(unsigned char), this->width * this->height * this->c, fastFile);
 				std::fclose(fastFile);
+
+				stbi_image_free(this->image);
+				this->image = nullptr;
 			}
 		}
-		stbi_image_free(this->image);
-		this->image = nullptr;
 	}
 
 	void Texture::CreateJANIM()
 	{
 		std::string temp = ASSET_DIR + this->GetFilePath();
-
-		this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
-		this->fps = 1.0f / (*this->delay / 1000.0f);
 
 		std::string location = this->GetFilePath();
 		std::filesystem::path tempPath = ASSET_DIR + location;
@@ -535,12 +535,17 @@ namespace K
 				}
 				outFile << this->width << "." << this->height << "." << this->frames << "." << this->fps << "\n";
 				outFile.close();
+
+				this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
+				this->fps = 1.0f / (*this->delay / 1000.0f);
+
 				std::FILE* fastFile = std::fopen(location.c_str(), "ab");
 				std::fwrite(this->image, sizeof(unsigned char), this->width * this->height * 4 * this->frames, fastFile);
 				std::fclose(fastFile);
+
+				stbi_image_free(this->image);
+				this->image = nullptr;
 			}
 		}
-		stbi_image_free(this->image);
-		this->image = nullptr;
 	}
 }
