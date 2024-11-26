@@ -90,16 +90,7 @@ namespace K
 
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-				if (this->textures->threadsInUse < std::thread::hardware_concurrency())
-				{
-					this->thread = std::thread(&Texture::LoadAnimation, this);
-					this->thread.detach();
-					this->textures->threadsInUse++;
-				}
-				else 
-				{
-					this->textures->texturesToLoad.push_back(this);
-				}
+				this->textures->texturesToLoad.push_back(this);
 			}
 			else
 			{
@@ -137,16 +128,7 @@ namespace K
 
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-				if (this->textures->threadsInUse < std::thread::hardware_concurrency())
-				{
-					this->thread = std::thread(&Texture::Load, this);
-					this->thread.detach();
-					this->textures->threadsInUse++;
-				}
-				else 
-				{
-					this->textures->texturesToLoad.push_back(this);
-				}
+				this->textures->texturesToLoad.push_back(this);
 
 				this->viewId = this->id;
 			}
@@ -278,13 +260,11 @@ namespace K
 			K::Texture* tex = (K::Texture*)this->textures->texturesToLoad.back();
 			if (tex->filename.contains(".gif")) 
 			{
-				this->thread = std::thread(&Texture::LoadAnimation, tex);
-				this->thread.detach();
+				std::thread(&Texture::LoadAnimation, tex).detach();
 			}
 			else 
 			{
-				this->thread = std::thread(&Texture::Load, tex);
-				this->thread.detach();
+				std::thread(&Texture::Load, tex).detach();
 			}
 			this->textures->texturesToLoad.pop_back();
 			this->textures->threadsInUse++;
