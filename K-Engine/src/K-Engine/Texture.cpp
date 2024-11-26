@@ -490,6 +490,7 @@ namespace K
 			}
 		}
 		stbi_image_free(this->image);
+		this->image = nullptr;
 	}
 
 	void Texture::CreateJANIM()
@@ -526,5 +527,6 @@ namespace K
 			}
 		}
 		stbi_image_free(this->image);
+		this->image = nullptr;
 	}
 }
