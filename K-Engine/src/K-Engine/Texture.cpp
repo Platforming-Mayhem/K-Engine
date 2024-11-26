@@ -90,8 +90,16 @@ namespace K
 
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-				this->thread = std::thread(&Texture::LoadAnimation, this);
-				this->thread.detach();
+				if (this->textures->threadsInUse < std::thread::hardware_concurrency())
+				{
+					this->thread = std::thread(&Texture::LoadAnimation, this);
+					this->thread.detach();
+					this->textures->threadsInUse++;
+				}
+				else 
+				{
+					this->textures->texturesToLoad.push_back(this);
+				}
 			}
 			else
 			{
@@ -129,8 +137,16 @@ namespace K
 
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-				this->thread = std::thread(&Texture::Load, this);
-				this->thread.detach();
+				if (this->textures->threadsInUse < std::thread::hardware_concurrency())
+				{
+					this->thread = std::thread(&Texture::Load, this);
+					this->thread.detach();
+					this->textures->threadsInUse++;
+				}
+				else 
+				{
+					this->textures->texturesToLoad.push_back(this);
+				}
 
 				this->viewId = this->id;
 			}
@@ -257,8 +273,25 @@ namespace K
 
 	void Texture::LoadIntoGPU() 
 	{
+		if (this->textures->threadsInUse < std::thread::hardware_concurrency() && !this->textures->texturesToLoad.empty())
+		{
+			K::Texture* tex = (K::Texture*)this->textures->texturesToLoad.back();
+			if (tex->filename.contains(".gif")) 
+			{
+				this->thread = std::thread(&Texture::LoadAnimation, tex);
+				this->thread.detach();
+			}
+			else 
+			{
+				this->thread = std::thread(&Texture::Load, tex);
+				this->thread.detach();
+			}
+			this->textures->texturesToLoad.pop_back();
+			this->textures->threadsInUse++;
+		}
 		if (this->loadedAnimation)
 		{
+			this->textures->threadsInUse--;
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
@@ -293,6 +326,7 @@ namespace K
 		}
 		if (this->loadedTexture)
 		{
+			this->textures->threadsInUse--;
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
 
@@ -449,7 +483,7 @@ namespace K
 		std::string temp = ASSET_DIR + this->GetFilePath();
 
 		this->LoadJIMAGE(temp);
-		
+
 		if (this->image) 
 		{
 			this->loadedTexture = true;

@@ -34,6 +34,10 @@ namespace K
 	class K_API TextureManager 
 	{
 	public:
+		int threadsInUse = 0;
+
+		std::vector<void*> texturesToLoad;
+
 		std::map<std::string, K::TextureInfo> textures;
 
 		TextureManager();
