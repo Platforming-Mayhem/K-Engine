@@ -423,14 +423,13 @@ namespace K
 		std::string temp = ASSET_DIR + this->GetFilePath();
 
 		unsigned char* originalData = this->image;
-		this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
-		this->fps = 1.0f / (*this->delay / 1000.0f);
 
 		#if _DEBUG
+			this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
+			this->fps = 1.0f / (*this->delay / 1000.0f);
 			this->CreateJANIM();
+			stbi_image_free(this->image);
 		#endif
-
-		stbi_image_free(this->image);
 
 		this->image = originalData;
 		this->LoadJANIM(temp);
@@ -450,13 +449,12 @@ namespace K
 		std::string temp = ASSET_DIR + this->GetFilePath();
 
 		unsigned char* originalData = this->image;
-		this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
 
 		#if _DEBUG
+			this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
 			this->CreateJANIM();
+			stbi_image_free(this->image);
 		#endif
-
-		stbi_image_free(this->image);
 
 		this->image = originalData;
 		this->LoadJIMAGE(temp);
