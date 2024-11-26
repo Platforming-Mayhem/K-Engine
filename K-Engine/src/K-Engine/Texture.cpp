@@ -83,13 +83,6 @@ namespace K
 
 				glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
 
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
-				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->frames * 4 * sizeof(unsigned char), 0, GL_STREAM_DRAW);
-
-				this->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
-
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
 				this->textures->texturesToLoad.push_back(this);
 			}
 			else
@@ -120,13 +113,6 @@ namespace K
 				{
 					glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, this->width, this->height);
 				}
-
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
-				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->c * sizeof(unsigned char), 0, GL_STREAM_DRAW);
-
-				this->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
-
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
 				this->textures->texturesToLoad.push_back(this);
 
@@ -260,10 +246,24 @@ namespace K
 			K::Texture* tex = (K::Texture*)this->textures->texturesToLoad.back();
 			if (tex->filename.contains(".gif")) 
 			{
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, tex->PBO);
+				glBufferData(GL_PIXEL_UNPACK_BUFFER, tex->width * tex->height * tex->frames * 4 * sizeof(unsigned char), 0, GL_STREAM_DRAW);
+
+				tex->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
 				std::thread(&Texture::LoadAnimation, tex).detach();
 			}
 			else 
 			{
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, tex->PBO);
+				glBufferData(GL_PIXEL_UNPACK_BUFFER, tex->width * tex->height * tex->c * sizeof(unsigned char), 0, GL_STREAM_DRAW);
+
+				tex->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
 				std::thread(&Texture::Load, tex).detach();
 			}
 			this->textures->texturesToLoad.pop_back();
