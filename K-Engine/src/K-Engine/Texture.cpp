@@ -68,6 +68,7 @@ namespace K
 				this->width = imageMeta.width;
 				this->height = imageMeta.height;
 				this->frames = imageMeta.frames;
+				this->fps = imageMeta.c;
 
 				glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -420,19 +421,22 @@ namespace K
 	void Texture::LoadAnimation() 
 	{
 		std::string temp = ASSET_DIR + this->GetFilePath();
+
+		unsigned char* originalData = this->image;
+		this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
+		this->fps = 1.0f / (*this->delay / 1000.0f);
+
 		#if _DEBUG
-			unsigned char* data = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
-			std::memcpy(this->image, data, this->width * this->height * 4 * sizeof(unsigned char));
-			this->fps = 1.0f / (*this->delay / 1000.0f);
-			stbi_image_free(data);
 			this->CreateJANIM();
-		#else
-			this->LoadJANIM(temp);
 		#endif
+
+		stbi_image_free(this->image);
+
+		this->image = originalData;
+		this->LoadJANIM(temp);
 
 		if (this->image) 
 		{
-			this->frames = 1;
 			this->loadedAnimation = true;
 		}
 		else 
@@ -444,14 +448,18 @@ namespace K
 	void Texture::Load() 
 	{
 		std::string temp = ASSET_DIR + this->GetFilePath();
+
+		unsigned char* originalData = this->image;
+		this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
+
 		#if _DEBUG
-			unsigned char* data = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
-			std::memcpy(this->image, data, this->width * this->height * this->c * sizeof(unsigned char));
-			stbi_image_free(data);
-			this->CreateJIMAGE();
-		#else
-			this->LoadJIMAGE(temp);
+			this->CreateJANIM();
 		#endif
+
+		stbi_image_free(this->image);
+
+		this->image = originalData;
+		this->LoadJIMAGE(temp);
 		
 		if (this->image) 
 		{

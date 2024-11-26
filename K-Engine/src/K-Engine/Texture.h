@@ -101,66 +101,6 @@ namespace K
 
 		ImageSize ReadDimensions(const char* filename) 
 		{
-			#if _DEBUG
-				std::ifstream file;
-				file.open(filename, std::ios::binary);
-				if (!file)
-					return ImageSize();
-				file.seekg(16, std::ios::beg);
-				unsigned char data[10];
-				file.read(reinterpret_cast<char*>(&data), 10);
-				file.close();
-
-				//Convert Character sequence to integer
-				int valX = int((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
-				int valY = int((data[4] << 24) | (data[5] << 16) | (data[6] << 8) | data[7]);
-				if (int(data[9]) == 2)
-				{
-					return ImageSize(valX, valY, 3);
-				}
-				else if (int(data[9]) == 6)
-				{
-					return ImageSize(valX, valY, 4);
-				}
-			#else
-				std::string temp = std::filesystem::path(filename).replace_extension(".JIMG").string();
-				std::ifstream file;
-				file.open(temp.c_str(), std::ios::binary);
-				if (!file)
-					return ImageSize();
-				std::string info;
-				std::getline(file, info);
-				file.close();
-
-				int w = std::stoi(info.substr(0, info.find(".")));
-				info.erase(0, info.find(".") + 1);
-				int h = std::stoi(info.substr(0, info.find(".")));
-				info.erase(0, info.find(".") + 1);
-				int c = std::stoi(info);
-
-				return ImageSize(w, h, c);
-			#endif
-		}
-
-		ImageSize ReadDimensionsAnimation(const char* filename)
-		{
-			#if _DEBUG
-			std::ifstream file;
-			file.open(filename, std::ios::binary);
-			if (!file)
-				return ImageSize();
-			file.seekg(6, std::ios::beg);
-			uint8_t width[2];
-			uint8_t height[2];
-			file.read((char*)&width, sizeof(uint8_t) * 2);
-			file.read((char*)&height, sizeof(uint8_t) * 2);
-			file.close();
-
-			//Convert Character sequence to integer
-			int valX = width[0] + (((uint16_t)width[1]) << 8);
-			int valY = height[0] + (((uint16_t)height[1]) << 8);
-			return ImageSize(valX, valY, 1);
-			#else
 			std::string temp = std::filesystem::path(filename).replace_extension(".JIMG").string();
 			std::ifstream file;
 			file.open(temp.c_str(), std::ios::binary);
@@ -177,7 +117,28 @@ namespace K
 			int c = std::stoi(info);
 
 			return ImageSize(w, h, c);
-#endif
+		}
+
+		ImageSize ReadDimensionsAnimation(const char* filename)
+		{
+			std::string temp = std::filesystem::path(filename).replace_extension(".JANIM").string();
+			std::ifstream file;
+			file.open(temp.c_str(), std::ios::binary);
+			if (!file)
+				return ImageSize();
+			std::string info;
+			std::getline(file, info);
+			file.close();
+
+			int w = std::stoi(info.substr(0, info.find(".")));
+			info.erase(0, info.find(".") + 1);
+			int h = std::stoi(info.substr(0, info.find(".")));
+			info.erase(0, info.find(".") + 1);
+			int f = std::stoi(info.substr(0, info.find(".")));
+			info.erase(0, info.find(".") + 1);
+			int fps = std::stoi(info);
+
+			return ImageSize(w, h, fps, f);
 		}
 
 		int ReadWidth(const char* filename) 
