@@ -171,11 +171,11 @@ namespace K
 					{
 						if (this->c > 3)
 						{
-							glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 						}
 						else
 						{
-							glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 						}
 						stbi_image_free(this->image);
 						this->image = nullptr;
@@ -201,8 +201,11 @@ namespace K
 
 	Texture::~Texture() 
 	{
-		if(this->image != nullptr)
-			delete this->image;
+		if (this->image != nullptr) 
+		{
+			glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
+			this->image = nullptr;
+		}
 		if (this->textures->Check(this->filename)->dependencies > 0)
 		{
 			int count = 0;
@@ -399,7 +402,6 @@ namespace K
 				info.erase(0, info.find(".") + 1);
 				this->c = std::stoi(info);
 
-				//this->image = (unsigned char*)std::calloc(this->width * this->height * this->c, sizeof(unsigned char));
 				if (this->image != nullptr) 
 				{
 					std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
@@ -431,7 +433,6 @@ namespace K
 			info.erase(0, info.find(".") + 1);
 			this->fps = std::stoi(info);
 
-			//this->image = (unsigned char*)std::calloc(this->width * this->height * 4 * this->frames, sizeof(unsigned char));
 			if (this->image != nullptr)
 			{
 				std::FILE* fastFile = std::fopen(temp1.c_str(), "rb");
