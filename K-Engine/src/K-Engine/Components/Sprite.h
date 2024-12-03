@@ -19,6 +19,7 @@ namespace K
 		bool hasNormal = false;
 		bool canChromaKey = false;
 		bool isPlaying = true;
+		bool isLooping = true;
 		std::string properties;
 
 	public:

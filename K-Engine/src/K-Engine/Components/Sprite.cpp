@@ -50,6 +50,14 @@ namespace K
 		{
 			this->properties += "," + this->normalTexture->GetFilePath();
 		}
+		if (this->isLooping) 
+		{
+			this->properties += ",true";
+		}
+		else 
+		{
+			this->properties += ",false";
+		}
 		return this->properties.c_str();
 	}
 
@@ -131,6 +139,20 @@ namespace K
 				{
 
 				}
+			}
+			break;
+			case 6:
+			{
+				if (temp == "true")
+				{
+					this->isLooping = true;
+				}
+				else if (temp == "false")
+				{
+					this->isLooping = false;
+				}
+				if (this->texture)
+					this->texture->isLooping = this->isLooping;
 			}
 			break;
 			}
@@ -350,6 +372,7 @@ namespace K
 				this->SetNormalTexture(WATERMARK);
 				this->hasNormal = false;
 			}
+			ImGui::Checkbox("Is Looping", &this->isLooping);
 		}
 	}
 }
