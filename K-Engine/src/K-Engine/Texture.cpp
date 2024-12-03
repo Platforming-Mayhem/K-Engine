@@ -78,12 +78,14 @@ namespace K
 				glBindTexture(GL_TEXTURE_2D_ARRAY, this->id);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 				glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
 
-				this->textures->texturesToLoad.push_back(this);
+				glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+
+				this->loading = true;
 			}
 			else
 			{
@@ -102,7 +104,7 @@ namespace K
 				glBindTexture(GL_TEXTURE_2D, this->id);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 				if (this->c > 3)
@@ -113,10 +115,11 @@ namespace K
 				{
 					glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, this->width, this->height);
 				}
-
-				this->textures->texturesToLoad.push_back(this);
-
 				this->viewId = this->id;
+
+				glBindTexture(GL_TEXTURE_2D, 0);
+
+				this->loading = true;
 			}
 			K::TextureInfo textureInfo = K::TextureInfo();
 			textureInfo.dependencies++;
@@ -201,26 +204,26 @@ namespace K
 
 	Texture::~Texture() 
 	{
-		if (this->image != nullptr) 
+		if (this->image != nullptr)
 		{
+			this->textures->threadsInUse--;
+
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
+
 			glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
 			this->image = nullptr;
+
+			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+			glDeleteBuffers(1, &this->PBO);
 		}
 		if (this->textures->Check(this->filename)->dependencies > 0)
 		{
-			int count = 0;
-			for (auto i : this->textures->Check(this->filename)->dependenciesPointers)
+			auto dependency = std::find(this->textures->Check(this->filename)->dependenciesPointers.begin(), this->textures->Check(this->filename)->dependenciesPointers.end(), this);
+			if (dependency != this->textures->Check(this->filename)->dependenciesPointers.end())
 			{
-				if (i == (void*)this)
-				{
-					this->textures->Check(this->filename)->dependenciesPointers.erase(this->textures->Check(this->filename)->dependenciesPointers.begin() + count);
-					this->textures->Check(this->filename)->dependencies--;
-					break;
-				}
-				else 
-				{
-					count++;
-				}
+				this->textures->Check(this->filename)->dependenciesPointers.erase(dependency);
+				this->textures->Check(this->filename)->dependencies--;
 			}
 		}
 		if (this->textures->Check(this->filename)->dependencies <= 0)
@@ -230,8 +233,6 @@ namespace K
 			{
 				glDeleteTextures(1, &this->viewId);
 			}
-			if (this->PBO)
-				glDeleteBuffers(1, &this->PBO);
 			glDeleteTextures(1, &this->id);
 		}
 		//std::cout << "End Texture Destruction..." << std::endl;
@@ -244,37 +245,37 @@ namespace K
 
 	void Texture::LoadIntoGPU() 
 	{
-		if (this->textures->threadsInUse < std::thread::hardware_concurrency() && !this->textures->texturesToLoad.empty())
+		if (this->textures->threadsInUse < std::thread::hardware_concurrency() && this->loading)
 		{
-			K::Texture* tex = (K::Texture*)this->textures->texturesToLoad.back();
-			if (tex->filename.contains(".gif")) 
+			if (this->filename.contains(".gif")) 
 			{
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, tex->PBO);
-				glBufferData(GL_PIXEL_UNPACK_BUFFER, tex->width * tex->height * tex->frames * 4 * sizeof(unsigned char), 0, GL_STREAM_DRAW);
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
+				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->frames * 4 * sizeof(unsigned char), 0, GL_STREAM_DRAW);
 
-				tex->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+				this->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
 
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-				std::thread(&Texture::LoadAnimation, tex).detach();
+				std::thread(&Texture::LoadAnimation, this).join();
 			}
 			else 
 			{
-				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, tex->PBO);
-				glBufferData(GL_PIXEL_UNPACK_BUFFER, tex->width * tex->height * tex->c * sizeof(unsigned char), 0, GL_STREAM_DRAW);
+				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
+				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->c * sizeof(unsigned char), 0, GL_STREAM_DRAW);
 
-				tex->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+				this->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
 
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-				std::thread(&Texture::Load, tex).detach();
+				std::thread(&Texture::Load, this).join();
 			}
-			this->textures->texturesToLoad.pop_back();
 			this->textures->threadsInUse++;
+			this->loading = false;
 		}
 		if (this->loadedAnimation)
 		{
 			this->textures->threadsInUse--;
+
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
@@ -287,6 +288,8 @@ namespace K
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
 			glDeleteBuffers(1, &this->PBO);
+
+			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 
 			glGenTextures(1, &this->viewId);
 			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
@@ -307,9 +310,10 @@ namespace K
 			}
 			this->loadedAnimation = false;
 		}
-		if (this->loadedTexture)
+		if (this->loadedImage)
 		{
 			this->textures->threadsInUse--;
+
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
 
@@ -329,6 +333,8 @@ namespace K
 
 			glDeleteBuffers(1, &this->PBO);
 
+			glGenerateMipmap(GL_TEXTURE_2D);
+
 			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{
 				for (auto i : this->textures->Check(this->filename)->dependenciesPointers)
@@ -341,7 +347,7 @@ namespace K
 					}
 				}
 			}
-			this->loadedTexture = false;
+			this->loadedImage = false;
 		}
 	}
 
@@ -467,7 +473,7 @@ namespace K
 
 		if (this->image) 
 		{
-			this->loadedTexture = true;
+			this->loadedImage = true;
 		}
 		else 
 		{
@@ -496,10 +502,10 @@ namespace K
 					std::cerr << "Error - unable to open output file " << location.c_str() << std::endl;
 					exit(1);
 				}
+				this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
+
 				outFile << this->width << "." << this->height << "." << this->c << "\n";
 				outFile.close();
-
-				this->image = stbi_load(temp.c_str(), &this->width, &this->height, &this->c, 0);
 
 				std::FILE* fastFile = std::fopen(location.c_str(), "ab");
 				std::fwrite(this->image, sizeof(unsigned char), this->width * this->height * this->c, fastFile);
@@ -534,11 +540,11 @@ namespace K
 					std::cerr << "Error - unable to open output file " << location.c_str() << std::endl;
 					exit(1);
 				}
-				outFile << this->width << "." << this->height << "." << this->frames << "." << this->fps << "\n";
-				outFile.close();
-
 				this->image = stbi_xload_file(temp.c_str(), &this->width, &this->height, &this->frames, &this->delay);
 				this->fps = 1.0f / (*this->delay / 1000.0f);
+
+				outFile << this->width << "." << this->height << "." << this->frames << "." << this->fps << "\n";
+				outFile.close();
 
 				std::FILE* fastFile = std::fopen(location.c_str(), "ab");
 				std::fwrite(this->image, sizeof(unsigned char), this->width * this->height * 4 * this->frames, fastFile);

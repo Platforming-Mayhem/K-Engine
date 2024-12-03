@@ -36,8 +36,6 @@ namespace K
 	public:
 		int threadsInUse = 0;
 
-		std::vector<void*> texturesToLoad;
-
 		std::map<std::string, K::TextureInfo> textures;
 
 		TextureManager();
@@ -63,8 +61,9 @@ namespace K
 		unsigned int viewId;
 		unsigned int PBO;
 		unsigned char* image;
+		bool loading = false;
 		bool loadedAnimation = false;
-		bool loadedTexture = false;
+		bool loadedImage = false;
 		int width;
 		int height;
 		int frames;
