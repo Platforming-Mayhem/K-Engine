@@ -201,26 +201,19 @@ namespace K
 		}
 		else
 		{
-			if (this->animationState == 1 && this->moveTime >= 0.8f)
-			{
-				this->animationState = 4;
-			}
-			else if(this->animationState == 1 && this->moveTime < 0.8f)
-			{
-				this->animationState = 0;
-			}
 			if (this->isSlowingDown)
 			{
 				if (this->moveTime > 0.0f)
 				{
+					this->animationState = 4;
 					this->moveTime -= K::Time::deltaTime() * 2.0f;
 					if (this->direction.x > 0.0f)
 					{
-						this->direction.x = this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f);
+						this->direction.x = this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 6.0f);
 					}
 					else if (this->direction.x < 0.0f)
 					{
-						this->direction.x = -this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 4.0f);
+						this->direction.x = -this->movementSpeed * K::Time::deltaTime() * decelerateEaseOutPow(1.0f - this->moveTime, 6.0f);
 					}
 				}
 				else
