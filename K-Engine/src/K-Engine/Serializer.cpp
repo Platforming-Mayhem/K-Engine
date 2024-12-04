@@ -282,7 +282,7 @@ namespace K
 		#if _DEBUG
 			EditorDeserializer(newScene, location);
 		#else
-			RunTimeDeserializer(newScene, location);
+			EditorDeserializer(newScene, location);
 		#endif
 		std::cout << ASSET_DIR + location << std::endl;
 		newScene->SetSceneName(location);
@@ -443,8 +443,6 @@ namespace K
 		{
 			deserializer->parents.insert({temp, this->GetInt(1)});
 		}
-
-		std::cout << this->GetString(0) << std::endl;
 
 		for (int i = 1; i < this->GetNumberOfStrings(); i++)
 		{
