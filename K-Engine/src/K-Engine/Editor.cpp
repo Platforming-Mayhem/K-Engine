@@ -7,9 +7,18 @@ namespace K
 	float K::Editor::offsetX = 0.0f;
 	float K::Editor::offsetY = 0.0f;
 
+	K::Matrix4x4* K::Editor::projectionMatrix;
+
+	K::Matrix4x4* K::Editor::viewMatrix;
+
+	K::Vector3* K::Editor::cameraPosition;
+
 	K::GameObject* K::Editor::selectedGameObject;
+
 	K::SceneManager* K::Editor::sceneManager;
+
 	std::vector<K::GameObject*> K::Editor::deleteArray;
+
 	std::map<std::string, IFactory*>& K::Editor::lst() 
 	{
 		static std::map<std::string, IFactory*> temp;
@@ -122,14 +131,7 @@ namespace K
 		K::Editor::offsetY = ImGui::GetItemRectMin().y;
 		if (glfwGetMouseButton(this->window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && ImGui::IsItemHovered())
 		{
-			for (auto temp : this->sceneManager->currentScene->GetGameObjects())
-			{
-				if (temp.second->GetComponentOfType(typeid(K::Camera).name()) != nullptr)
-				{
-					K::Camera* camera = (K::Camera*)temp.second->GetComponentOfType(typeid(K::Camera).name());
-					K::Editor::selectedGameObject = InputManager::PickGameObject(camera);
-				}
-			}
+			K::Editor::selectedGameObject = InputManager::PickGameObject();
 		}
 		ImGui::End();
 	}

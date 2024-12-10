@@ -1,9 +1,9 @@
 #pragma once
-#include "Component.h"
-#include "../Texture.h"
-#include "../Time.h"
-#include "../InputManager.h"
-#include "../GameObject.h"
+#include <K-Engine/Components/Component.h>
+#include <K-Engine/Texture.h>
+#include <K-Engine/Time.h>
+#include <K-Engine/InputManager.h>
+#include <K-Engine/GameObject.h>
 
 namespace K 
 {

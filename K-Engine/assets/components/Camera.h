@@ -1,6 +1,5 @@
 #pragma once
-#include "../GameObject.h"
-#include "Component.h"
+#include <K_Engine.h>
 
 namespace K
 {
@@ -17,6 +16,8 @@ namespace K
 		float rotationSpeed = 100.0f;
 		float backgroundColour[4];
 
+		K::Window* window = nullptr;
+
 		K::Transform* editorCam;
 
 		enum class CameraType { Perspective = 0, Orthographic = 1 };
@@ -26,8 +27,6 @@ namespace K
 		K::Matrix4x4 viewMatrix;
 
 		std::string properties;
-
-		K::Window* window = nullptr;
 	public:
 
 		Camera();
@@ -56,11 +55,26 @@ namespace K
 			}
 		}
 
+		K::Vector3* GetPositionPointer()
+		{
+			if (this->isEditorCamActive)
+			{
+				return this->editorCam->position;
+			}
+			else
+			{
+				return this->parent->GetTransform()->position;
+			}
+		}
+
+		void SetWindow(K::Window* window)
+		{
+			this->window = window;
+		}
+
 		void SetActiveState(bool state);
 
 		void SetFOV(float newFOV);
-
-		void SetWindow(K::Window* window);
 
 		void CameraMatrix();
 

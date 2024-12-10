@@ -2,8 +2,6 @@
 
 namespace K 
 {
-	K::Window* window;
-
 	Application::Application() 
 	{
 		
@@ -15,11 +13,15 @@ namespace K
 
 	void Application::Run(const char* windowName)
 	{
-		window = new K::Window(windowName);
+		K::window = new K::Window(windowName);
+
+		K::editorMat = new Material("shaders/editor.shader");
+
+		K::renderTex = new K::RenderTexture(K::window->width, K::window->height, GL_TEXTURE_2D, GL_R32I, GL_RED_INTEGER);
 
 		K::SceneManager* manager = new K::SceneManager(BUILD_SCENES);
 
-		K::Editor* editor = new K::Editor(window, manager);
+		K::Editor* editor = new K::Editor(K::window, manager);
 
 		K::SceneManager::LoadScene(0);
 
@@ -27,7 +29,7 @@ namespace K
 
 		std::cout << "Number Of Scenes in Build :" << manager->GetNumberOfScenes() << std::endl;
 
-		while (!glfwWindowShouldClose(window->window))
+		while (!glfwWindowShouldClose(K::window->window))
 		{
 			#if _DEBUG
 			GLenum err;
@@ -37,7 +39,7 @@ namespace K
 			}
 			#endif
 
-			int esc = glfwGetKey(window->window, GLFW_KEY_ESCAPE);
+			int esc = glfwGetKey(K::window->window, GLFW_KEY_ESCAPE);
 
 			if (esc == GLFW_PRESS)
 			{
@@ -69,10 +71,12 @@ namespace K
 				break;
 			}
 
-			glfwSwapBuffers(window->window);
+			glfwSwapBuffers(K::window->window);
 
 			glfwPollEvents();
 		}
+		delete K::editorMat;
+		delete K::renderTex;
 		delete manager;
 		delete editor;
 	}

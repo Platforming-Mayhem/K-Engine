@@ -1,9 +1,11 @@
 #include "InputManager.h"
-#include "Editor.h"
 
 namespace K 
 {
 	std::unordered_map<int, int> InputManager::keys;
+	K::Window* K::window;
+	K::RenderTexture* K::renderTex;
+	K::Material* K::editorMat;
 
 	void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
@@ -83,11 +85,11 @@ namespace K
 
 	K::Vector3 InputManager::ConvertToClipPosition(K::Vector3 position) 
 	{
-		K::Vector3 clipPosition = K::Vector3(2.0f * ((position.x / (window->width)) - 0.5f), -2.0f * ((position.y / (window->height)) - 0.5f), 0.0f);
+		K::Vector3 clipPosition = K::Vector3(2.0f * ((position.x / (K::window->width)) - 0.5f), -2.0f * ((position.y / (K::window->height)) - 0.5f), 0.0f);
 		return clipPosition;
 	}
 
-	K::Vector3 InputManager::GetWorldMouseDirection(K::Camera* camera)
+	K::Vector3 InputManager::GetWorldMouseDirection()
 	{
 		//variables
 		K::Vector3 mousePosition, rawClipPosition, clipPositionStart, worldSpaceNearPosition, worldSpaceDirection;
@@ -97,46 +99,45 @@ namespace K
 		rawClipPosition = K::InputManager::ConvertToClipPosition(mousePosition);
 		clipPositionStart = K::Vector3(rawClipPosition.x, rawClipPosition.y, -1.0f);
 
-		viewMatrix = camera->GetViewMatrix();
-		projectionMatrix = camera->GetProjectionMatrix();
+		viewMatrix = *K::Editor::viewMatrix;
+		projectionMatrix = *K::Editor::projectionMatrix;
 
 		viewProjectionMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(viewMatrix, projectionMatrix);
 		invVPMatrix = K::QuickInverse(viewProjectionMatrix);
 
 		K::MultiplyMatrixVector(clipPositionStart, worldSpaceNearPosition, invVPMatrix);
 
-		K::Vector3 camPosition = camera->GetPosition();
+		K::Vector3 camPosition = *K::Editor::cameraPosition;
 
 		worldSpaceDirection = (worldSpaceNearPosition - camPosition).normalise();
 		return worldSpaceDirection;
 	}
 
-	K::GameObject* InputManager::PickGameObject(K::Camera* camera) 
+	K::GameObject* InputManager::PickGameObject() 
 	{
 		//variables
-		K::Vector3 mousePosition, rawClipPosition, clipPositionStart, worldSpaceNearPosition, worldSpaceDirection;
+		/*K::Vector3 mousePosition, rawClipPosition, clipPositionStart, worldSpaceNearPosition, worldSpaceDirection;
 		K::Matrix4x4 viewMatrix, projectionMatrix, viewProjectionMatrix, invVPMatrix;
 
 		mousePosition = K::InputManager::GetMousePosition();
 		rawClipPosition = K::InputManager::ConvertToClipPosition(mousePosition);
 		clipPositionStart = K::Vector3(rawClipPosition.x, rawClipPosition.y, -1.0f);
 
-		viewMatrix = camera->GetViewMatrix();
-		projectionMatrix = camera->GetProjectionMatrix();
+		viewMatrix = *K::Editor::viewMatrix;
+		projectionMatrix = *K::Editor::projectionMatrix;
 
 		viewProjectionMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(viewMatrix, projectionMatrix);
 		invVPMatrix = K::QuickInverse(viewProjectionMatrix);
 
 		K::MultiplyMatrixVector(clipPositionStart, worldSpaceNearPosition, invVPMatrix);
 
-		K::Vector3 camPosition = camera->GetPosition();
+		K::Vector3 camPosition = *K::Editor::cameraPosition;
 
 		worldSpaceDirection = (worldSpaceNearPosition - camPosition).normalise();
 
 		float distance = FLT_MAX;
-		K::GameObject* temp = nullptr;
 
-		for (auto gameObject : K::SceneManager::currentScene->GetGameObjects()) 
+		for (auto gameObject : K::SceneManager::currentScene->GetGameObjects())
 		{
 			if (gameObject.second->GetComponentOfType(typeid(K::Mesh).name()) != nullptr) 
 			{
@@ -187,8 +188,20 @@ namespace K
 					}
 				}
 			}
-		}
+		}*/
 
+		K::GameObject* temp = nullptr;
+		K::Vector3 mousePosition = K::InputManager::GetMousePosition();
+		K::renderTex->Bind();
+		glClearColor(-1, 0, 0, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		K::SceneManager::currentScene->RenderLoopNewMaterial(K::editorMat);
+		glReadBuffer(GL_COLOR_ATTACHMENT0);
+		unsigned int pixel;
+		glReadPixels(mousePosition.x, K::window->height - mousePosition.y, 1, 1, GL_RED_INTEGER, GL_INT, &pixel);
+		glReadBuffer(GL_NONE);
+		temp = K::SceneManager::currentScene->GetGameObjects()[pixel];
+		K::renderTex->Unbind();
 		return temp;
 	}
 }

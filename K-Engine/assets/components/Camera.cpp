@@ -1,6 +1,4 @@
 #include "Camera.h"
-#include "../Editor.h"
-#include "../InputManager.h"
 
 namespace K 
 {
@@ -35,11 +33,6 @@ namespace K
 	void Camera::SetFOV(float newFOV) 
 	{
 		this->FOV = newFOV;
-	}
-
-	void Camera::SetWindow(K::Window* window)
-	{
-		this->window = window;
 	}
 	
 	void Camera::SetActiveState(bool state) 
@@ -107,6 +100,12 @@ namespace K
 			}
 
 			glViewport(0, 0, this->window->width, this->window->height);
+
+			K::Editor::cameraPosition = this->GetPositionPointer();
+
+			K::Editor::projectionMatrix = &this->projectionMatrix;
+
+			K::Editor::viewMatrix = &this->viewMatrix;
 
 			for (auto& mat : K::materialManager.materials) 
 			{
@@ -277,12 +276,12 @@ namespace K
 
 	void Camera::Init() 
 	{
-		
+		this->SetWindow(K::window);
 	}
 
 	void Camera::RenderInit() 
 	{
-		SetWindow(K::window);
+		
 	}
 
 	void Camera::Unbind()

@@ -49,6 +49,12 @@ namespace K
 
 		static K::GameObject* selectedGameObject;
 
+		static K::Matrix4x4* projectionMatrix;
+
+		static K::Matrix4x4* viewMatrix;
+
+		static K::Vector3* cameraPosition;
+
 		static std::map<std::string, IFactory*>& lst();
 
 		static std::vector<K::GameObject*> deleteArray;

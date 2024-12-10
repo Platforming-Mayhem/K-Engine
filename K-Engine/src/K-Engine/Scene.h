@@ -137,6 +137,22 @@ namespace K
 			}
 		}
 
+		void RenderLoopNewMaterial(K::Material* mat) 
+		{
+			for (auto temp : this->GetGameObjects())
+			{
+				K::Material* tempMat = temp.second->GetMaterial();
+				temp.second->SetMaterial(mat, false);
+				int index = temp.second->GetIndex();
+				temp.second->PassTransformationMatrix();
+				temp.second->RenderBind();
+				glUniform1i(glGetUniformLocation(temp.second->GetMaterial()->GetShader()->shader, "index"), index);
+				temp.second->Render();
+				temp.second->RenderUnbind();
+				temp.second->SetMaterial(tempMat, false);
+			}
+		}
+
 		void Render() 
 		{
 			K::Time::startTime = (float)glfwGetTime();

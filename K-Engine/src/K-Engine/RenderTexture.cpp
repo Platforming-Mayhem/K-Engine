@@ -1,7 +1,7 @@
 #include "RenderTexture.h"
 namespace K 
 {
-	RenderTexture::RenderTexture(int width, int height, GLenum type)
+	RenderTexture::RenderTexture(int width, int height, GLenum type, GLenum internalFormat, GLenum format)
 	{
 		this->width = width;
 		this->height = height;
@@ -17,7 +17,7 @@ namespace K
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glTexImage2D(this->type, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(this->type, 0, internalFormat, this->width, this->height, 0, format, GL_UNSIGNED_BYTE, NULL);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->colourID, 0);
 
 		glGenTextures(1, &this->depthID);

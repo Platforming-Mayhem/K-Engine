@@ -1,14 +1,14 @@
 #pragma once
-#include "build.h"
-#include "Components/Camera.h"
-#include "Components/Mesh.h"
-#include "Transform.h"
-#include "Window.h"
-#include "SceneManager.h"
+#include <K_Engine.h>
 
 namespace K 
 {
-	extern K::Window* window;
+	K_API extern K::Window* window;
+
+	K_API extern K::RenderTexture* renderTex;
+
+	K_API extern K::Material* editorMat;
+
 	class K_API InputManager 
 	{
 	private:
@@ -28,8 +28,8 @@ namespace K
 
 		static K::Vector3 ConvertToClipPosition(K::Vector3 position);
 
-		static K::Vector3 GetWorldMouseDirection(K::Camera* camera);
+		static K::Vector3 GetWorldMouseDirection();
 
-		static K::GameObject* PickGameObject(K::Camera* camera);
+		static K::GameObject* PickGameObject();
 	};
 }

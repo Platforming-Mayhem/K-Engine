@@ -1,6 +1,4 @@
 #include "Mesh.h"
-#include "../GameObject.h"
-#include "../Editor.h"
 
 namespace K 
 {

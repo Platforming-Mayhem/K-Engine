@@ -12,7 +12,7 @@ namespace K
 		int width;
 		int height;
 	public:
-		RenderTexture(int width, int height, GLenum type);
+		RenderTexture(int width, int height, GLenum type, GLenum internalFormat = GL_RGB, GLenum format = GL_RGB);
 
 		~RenderTexture();
 

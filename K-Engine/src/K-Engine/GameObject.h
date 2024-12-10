@@ -110,9 +110,9 @@ namespace K
 			*GetTransform()->scale = scale;
 		}
 
-		void SetMaterial(K::Material* material) 
+		void SetMaterial(K::Material* material, bool deleteMaterial = true) 
 		{
-			if(this->material != material && this->material != nullptr)
+			if(this->material != material && this->material != nullptr && deleteMaterial)
 				delete this->material;
 			this->material = material;
 		}
