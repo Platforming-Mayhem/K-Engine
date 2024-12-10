@@ -83,6 +83,7 @@
   <ItemGroup>
     <Text Include="assets\ignore\excludeFromBuild.txt" />
     <Text Include="assets\ignore\SceneManager.txt" />
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -131,7 +132,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;K_WINDOWS;K_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLEW_STATIC;K_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)vendors\GLFW\include;$(ProjectDir)vendors\GLEW\include;$(ProjectDir)vendors\STB;$(ProjectDir)vendors\IMGUI;$(ProjectDir)src;$(ProjectDir)assets</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <UndefinePreprocessorDefinitions>

@@ -197,5 +197,6 @@
   <ItemGroup>
     <Text Include="assets\ignore\excludeFromBuild.txt" />
     <Text Include="assets\ignore\SceneManager.txt" />
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>
