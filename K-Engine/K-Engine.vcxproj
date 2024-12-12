@@ -83,7 +83,6 @@
   <ItemGroup>
     <Text Include="assets\ignore\excludeFromBuild.txt" />
     <Text Include="assets\ignore\SceneManager.txt" />
-    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
