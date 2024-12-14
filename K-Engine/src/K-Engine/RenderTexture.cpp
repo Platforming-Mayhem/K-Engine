@@ -1,4 +1,4 @@
-#include "RenderTexture.h"
+#include "K-Engine/RenderTexture.h"
 namespace K 
 {
 	RenderTexture::RenderTexture(int width, int height, GLenum type, GLenum internalFormat, GLenum format)

@@ -1,4 +1,4 @@
-#include "Component.h"
+#include "K-Engine/Component.h"
 
 namespace K
 {
