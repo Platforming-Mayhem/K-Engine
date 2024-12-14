@@ -433,4 +433,4 @@ FodyWeavers.xsd
 *.BJAWS
 
 #Bin
-K-Engine/K-Engine/bin
+bin
