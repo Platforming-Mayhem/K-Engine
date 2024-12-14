@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 3.5)
 project(K-Engine)
 
 set(CMAKE_CXX_STANDARD 23)
+set(USE_GLU ON)
+set(ONLY_LIBS ON)
+set(glew-cmake_BUILD_SHARED OFF)
+set(glew-cmake_BUILD_STATIC ON)
 
 find_package(OpenGL REQUIRED)
 add_subdirectory(Vendors/GLFW)
