@@ -31,9 +31,6 @@ src/K-Engine/Time.cpp
 src/K-Engine/Transform.cpp
 src/K-Engine/Window.cpp
 src/K-Engine/Components/Component.cpp
-assets/components/Camera.cpp
-assets/components/Mesh.cpp
-assets/components/Sprite.cpp
 )
 
 target_sources(${PROJECT_NAME} PRIVATE assets/ignore/KEngineResources.rc)
@@ -54,6 +51,7 @@ project(Editor)
 
 add_executable(${PROJECT_NAME} 
 src/Editor/Editor.cpp
+assets/components/Camera.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} K-Engine)
