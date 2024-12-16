@@ -5,9 +5,9 @@ namespace K
 {
 	K_API extern K::Window* window;
 
-	K_API extern K::RenderTexture* renderTex;
+	extern K::RenderTexture* renderTex;
 
-	K_API extern K::Material* editorMat;
+	extern K::Material* editorMat;
 
 	class K_API InputManager 
 	{

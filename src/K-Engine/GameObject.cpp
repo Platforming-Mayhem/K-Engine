@@ -10,7 +10,7 @@ namespace K
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		this->SetMaterial(new K::Material("shaders/3D.shader"), false);
+		this->SetMaterial(new K::Material("shaders/3D.shader"));
 		std::srand(std::chrono::system_clock::now().time_since_epoch().count());
 		this->g_Index = std::rand();
 		K::Editor::GetCurrentScene()->Attach(this);
@@ -23,7 +23,7 @@ namespace K
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		this->SetMaterial(new K::Material("shaders/3D.shader"), false);
+		this->SetMaterial(new K::Material("shaders/3D.shader"));
 		this->g_Index = index;
 		K::Editor::GetCurrentScene()->Attach(this);
 		//std::cout << name << " GameObject Created" << std::endl;
@@ -41,7 +41,7 @@ namespace K
 		*this->transform->localPosition = *other.transform->localPosition;
 		*this->transform->localRotation = *other.transform->localRotation;
 		*this->transform->localScale = *other.transform->localScale;*/
-		this->SetMaterial(new K::Material("shaders/3D.shader"), false);
+		this->SetMaterial(new K::Material("shaders/3D.shader"));
 		this->g_Index = other.g_Index;
 		/*for (int i = 0; i < other.components.size(); i++)
 		{

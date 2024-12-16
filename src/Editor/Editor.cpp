@@ -3,6 +3,6 @@
 int main(int argc, char** argv)
 {
 	K::Application* app = new K::Application();
-	app->Run("BELLO");
+	app->Run("K-Engine Editor");
 	delete app;
 }

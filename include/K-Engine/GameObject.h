@@ -24,7 +24,7 @@ namespace K
 		std::string name;
 		K::Transform* transform = new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(0.0f, 0.0f, 0.0f), new K::Vector3(1.0f, 1.0f, 1.0f));
 		std::vector<K::Component*> components;
-		K::Material* material;
+		K::Material* material = nullptr;
 		int g_Index;
 	public:
 

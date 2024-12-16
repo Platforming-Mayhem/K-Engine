@@ -15,8 +15,6 @@ add_subdirectory(Vendors/IMGUI)
 include_directories(Vendors/STB)
 
 add_library(${PROJECT_NAME} SHARED 
-Vendors/IMGUI/backends/imgui_impl_glfw.cpp
-Vendors/IMGUI/backends/imgui_impl_opengl3.cpp
 src/K-Engine/Application.cpp
 src/K-Engine/Editor.cpp
 src/K-Engine/GameObject.cpp
