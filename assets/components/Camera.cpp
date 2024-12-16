@@ -117,6 +117,7 @@ namespace K
 
 				glUniform3f(glGetUniformLocation(mat.second.id, "fogColour"), this->backgroundColour[0], this->backgroundColour[1], this->backgroundColour[2]);
 			}
+
 			glUseProgram(this->parent->GetMaterial()->GetShader()->shader);
 		}
 	}
@@ -152,19 +153,19 @@ namespace K
 			K::MultiplyMatrixVector(right, rotatedRight, camRotation);
 			if (InputManager::IsKeyPressed(GLFW_KEY_A))
 			{
-				*this->editorCam->position -= rotatedRight * K::Time::deltaTime() * 20.0f;
+				*this->editorCam->position -= rotatedRight * (K::Time::deltaTime() * 20.0f);
 			}
 			else if (InputManager::IsKeyPressed(GLFW_KEY_D))
 			{
-				*this->editorCam->position += rotatedRight * K::Time::deltaTime() * 20.0f;
+				*this->editorCam->position += rotatedRight * (K::Time::deltaTime() * 20.0f);
 			}
 			if (InputManager::IsKeyPressed(GLFW_KEY_W))
 			{
-				*this->editorCam->position += rotatedUp * K::Time::deltaTime() * 20.0f;
+				*this->editorCam->position += rotatedUp * (K::Time::deltaTime() * 20.0f);
 			}
 			else if (InputManager::IsKeyPressed(GLFW_KEY_S))
 			{
-				*this->editorCam->position -= rotatedUp * K::Time::deltaTime() * 20.0f;
+				*this->editorCam->position -= rotatedUp * (K::Time::deltaTime() * 20.0f);
 			}
 		}
 	}

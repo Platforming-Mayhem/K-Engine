@@ -279,11 +279,7 @@ namespace K
 	Deserializer::Deserializer(K::Scene* newScene, std::string location) 
 	{
 		auto start = std::chrono::steady_clock::now();
-		#if _DEBUG
-			EditorDeserializer(newScene, location);
-		#else
-			EditorDeserializer(newScene, location);
-		#endif
+		EditorDeserializer(newScene, location);
 		std::cout << ASSET_DIR + location << std::endl;
 		newScene->SetSceneName(location);
 		newScene->SetLocation(location);

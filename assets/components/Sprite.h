@@ -1,5 +1,5 @@
 #pragma once
-#include <K-Engine/Components/Component.h>
+#include <K-Engine/Component.h>
 #include <K-Engine/Texture.h>
 #include <K-Engine/Time.h>
 #include <K-Engine/InputManager.h>

@@ -3,7 +3,7 @@
 
 namespace K 
 {
-	K_API struct Vertex 
+	struct Vertex 
 	{
 		K::Vector3 position = K::Vector3(0.0f, 0.0f, 0.0f);
 		K::Vector2 uv = K::Vector2(0.0f, 0.0f);
@@ -30,7 +30,7 @@ namespace K
 		}
 	};
 
-	K_API struct Colour 
+	struct Colour 
 	{
 		Colour(float r, float g, float b) 
 		{
@@ -46,7 +46,7 @@ namespace K
 										 K::Vertex(K::Vector3(-1.0f, 0.0f, 1.0f), K::Vector2(0.0f, 1.0f)),//Top-Left
 										 K::Vertex(K::Vector3(-1.0f, 0.0f, -1.0f), K::Vector2(0.0f, 0.0f))};//Bottom-Left
 
-	class K_API Mesh : public K::Component
+	class Mesh : public K::Component
 	{
 	private:
 		bool canDepth = true;

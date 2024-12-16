@@ -5,7 +5,9 @@ namespace K
 {
 	Window::Window(const char* windowName)
 	{
-		if (!glfwInit())
+		if (glfwInit())
+			std::cout << "Initialised GLFW" << std::endl;
+		else
 			std::cout << "Failed to initialise GLFW" << std::endl;
 
 		/* Create a windowed mode window and its OpenGL context */
@@ -42,10 +44,10 @@ namespace K
 
 		glfwSwapInterval(1);
 
-		if (glewInit() != GLEW_OK)
-		{
+		if (glewInit() == GLEW_OK)
+			std::cout << "GLEW OK MATE" << std::endl;
+		else
 			std::cout << "Error GLEW" << std::endl;
-		}
 
 		std::cout << glGetString(GL_VERSION) << std::endl;
 
@@ -61,11 +63,7 @@ namespace K
 		glDepthRange(0.0f, 1.0f);
 
 		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
-		#if _DEBUG
-
-		#else
-			//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-		#endif
+		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	}
 
 	Window::~Window()

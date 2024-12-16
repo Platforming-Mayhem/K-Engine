@@ -29,8 +29,4 @@
 #else
 	#define K_API __declspec(dllimport)
 #endif
-#if _DEBUG
-#define ASSET_DIR (std::filesystem::current_path().parent_path() / "K-Engine" / "assets").string() + "/"
-#else
 #define ASSET_DIR (std::filesystem::current_path() / "assets").string() + "/"
-#endif

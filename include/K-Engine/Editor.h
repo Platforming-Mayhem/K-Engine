@@ -14,7 +14,7 @@ namespace K
 		virtual const char* getName() = 0;
 	};
 
-	template< typename Type > struct K_API Factory : public IFactory
+	template< typename Type > struct Factory : public IFactory
 	{
 		virtual Type* create() 
 		{
@@ -98,13 +98,13 @@ namespace K
 		static K::Scene* GetCurrentScene();
 	};
 
-	template<typename T> struct K_API Register
+	template<typename T> struct Register
 	{
 		Register()
 		{
 			K::IFactory* tempFactory = new K::Factory<T>;
 			std::string tempName = typeid(T).name();
-			K::Editor::lst().insert({tempName, tempFactory});
+			K::Editor::lst().insert({ tempName, tempFactory });
 		}
 	};
 

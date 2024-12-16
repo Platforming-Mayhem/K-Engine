@@ -15,7 +15,7 @@ namespace K
 
 		if (hr == NULL)
 		{
-			std::cout << "Error: Shader File Could Not Be Found!";
+			std::cout << "Error: Shader Resource Could Not Be Found!";
 		}
 		else
 		{
@@ -67,11 +67,13 @@ namespace K
 
 	Shader::Shader(std::string file)
 	{
+		std::cout << ASSET_DIR + file << std::endl;
+
 		std::ifstream Shader(ASSET_DIR + file);
 
 		if (!Shader)
 		{
-			std::cout << "Error: Shader File Could Not Be Found!";
+			std::cout << "Error: Shader File Could Not Be Found! : " << ASSET_DIR + file;
 		}
 		else
 		{

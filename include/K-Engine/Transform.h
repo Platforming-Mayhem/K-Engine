@@ -3,7 +3,7 @@
 
 namespace K 
 {
-	struct Matrix4x4
+	struct K_API Matrix4x4
 	{
 		float m[4][4] = { 0 };
 
@@ -280,9 +280,9 @@ namespace K
 		void PassModelMatrix(K::Transform* parent = nullptr);
 	};
 
-	void MultiplyMatrixVector(Vector3& i, Vector3& o, Matrix4x4& m);
+	K_API void MultiplyMatrixVector(Vector3& i, Vector3& o, Matrix4x4& m);
 
-	K::Matrix4x4 LookAt(K::Vector3 position, K::Vector3 target, K::Vector3 up);
+	K_API K::Matrix4x4 LookAt(K::Vector3 position, K::Vector3 target, K::Vector3 up);
 
-	K::Matrix4x4 QuickInverse(K::Matrix4x4& m);
+	K_API K::Matrix4x4 QuickInverse(K::Matrix4x4& m);
 }

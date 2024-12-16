@@ -1,10 +1,9 @@
 #pragma once
-#include "build.h"
 #include "Shader.h"
 
 namespace K 
 {
-	struct MaterialInfo
+	struct K_API MaterialInfo
 	{
 		int id;
 		int dependencies = 0;
@@ -29,7 +28,7 @@ namespace K
 		~MaterialManager();
 	};
 
-	extern K::MaterialManager materialManager;
+	extern K_API K::MaterialManager materialManager;
 
 	class K_API Material
 	{

@@ -43,6 +43,17 @@ namespace K
 		K::SceneManager::currentScene = new K::Scene("Untitled*");
 	}
 
+	SceneManager::SceneManager(std::string path)
+	{
+		std::ifstream inFile(ASSET_DIR + path);
+		std::string line;
+		while (std::getline(inFile, line))
+		{
+			this->AddScene(line.c_str());
+		}
+		K::SceneManager::currentScene = new K::Scene("Untitled*");
+	}
+
 	SceneManager::~SceneManager() 
 	{
 		delete this->currentScene;
@@ -128,9 +139,7 @@ namespace K
 			{
 				if (K::SceneManager::index < K::SceneManager::scenes.size()) 
 				{
-					std::string location = K::SceneManager::scenes[K::SceneManager::index];
-					std::string relativeLocation = std::filesystem::relative(location, ASSET_DIR).string();
-					K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, K::SceneManager::scenes[index]);
+					K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, K::SceneManager::scenes[K::SceneManager::index]);
 				}
 			}
 			else

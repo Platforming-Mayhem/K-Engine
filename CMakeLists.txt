@@ -12,8 +12,7 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(Vendors/GLFW)
 add_subdirectory(Vendors/GLEW)
 add_subdirectory(Vendors/IMGUI)
-
-add_compile_definitions(K_BUILD_DLL)
+include_directories(Vendors/STB)
 
 add_library(${PROJECT_NAME} SHARED 
 Vendors/IMGUI/backends/imgui_impl_glfw.cpp
@@ -32,7 +31,14 @@ src/K-Engine/Time.cpp
 src/K-Engine/Transform.cpp
 src/K-Engine/Window.cpp
 src/K-Engine/Components/Component.cpp
+assets/components/Camera.cpp
+assets/components/Mesh.cpp
+assets/components/Sprite.cpp
 )
+
+target_sources(${PROJECT_NAME} PRIVATE assets/ignore/KEngineResources.rc)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE K_BUILD_DLL)
 
 target_link_libraries(${PROJECT_NAME} OpenGL::GLU)
 target_link_libraries(${PROJECT_NAME} glfw)
@@ -43,3 +49,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/assets)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendors/STB)
+
+project(Editor)
+
+add_executable(${PROJECT_NAME} 
+src/Editor/Editor.cpp
+)
+
+target_link_libraries(${PROJECT_NAME} K-Engine)

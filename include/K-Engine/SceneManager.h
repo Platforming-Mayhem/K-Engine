@@ -18,6 +18,8 @@ namespace K
 
 		SceneManager(unsigned int resource);
 
+		SceneManager(std::string path);
+
 		~SceneManager();
 
 		int GetNumberOfScenes();
