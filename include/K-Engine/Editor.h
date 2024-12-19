@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "Material.h"
 #include "Window.h"
+#include "RenderTexture.h"
 #include "Texture.h"
 
 namespace K 

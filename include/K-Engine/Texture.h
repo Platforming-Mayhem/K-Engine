@@ -1,16 +1,15 @@
 #pragma once
 #include "build.h"
-#include "RenderTexture.h"
 
 namespace K 
 {
-	struct TextureInfo 
+	struct K_API TextureInfo
 	{
 		int dependencies = 0;
 		std::vector<void*> dependenciesPointers;
 	};
 
-	struct ImageSize 
+	struct K_API ImageSize
 	{
 		int width, height, c, frames;
 
@@ -51,7 +50,7 @@ namespace K
 		~TextureManager();
 	};
 
-	extern K::TextureManager textureManager;
+	K_API extern K::TextureManager textureManager;
 
 	class K_API Texture
 	{
@@ -60,7 +59,7 @@ namespace K
 		unsigned int id;
 		unsigned int viewId;
 		unsigned int PBO;
-		unsigned char* image;
+		unsigned char* image = nullptr;
 		bool loading = false;
 		bool loadedAnimation = false;
 		bool loadedImage = false;
