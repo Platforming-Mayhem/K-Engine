@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 
 project(K-Engine)
 
@@ -53,3 +53,5 @@ assets/components/Camera.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} K-Engine)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)/$(Configuration)")
