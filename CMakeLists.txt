@@ -49,6 +49,7 @@ project(Editor)
 
 add_executable(${PROJECT_NAME} 
 src/Editor/Editor.cpp
+assets/components/Camera.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} K-Engine)
