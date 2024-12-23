@@ -36,7 +36,7 @@ target_sources(${PROJECT_NAME} PRIVATE assets/ignore/KEngineResources.rc)
 target_compile_definitions(${PROJECT_NAME} PRIVATE K_BUILD_DLL)
 
 target_link_libraries(${PROJECT_NAME} OpenGL::GLU)
-target_link_libraries(${PROJECT_NAME} libglew_static)
+target_link_libraries(${PROJECT_NAME} libglew_shared)
 target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} IMGUI)
 
