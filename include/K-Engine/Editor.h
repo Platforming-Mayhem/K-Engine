@@ -88,6 +88,8 @@ namespace K
 
 		void ImGuiEnd();
 
+		static ImGuiContext* GetImGuiContext();
+
 		bool Render();
 
 		K::RenderTexture* GetViewport();

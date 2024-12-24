@@ -71,6 +71,11 @@ namespace K
 		delete this->window;
 	}
 
+	ImGuiContext* Editor::GetImGuiContext() 
+	{
+		return ImGui::GetCurrentContext();
+	}
+
 	K::RenderTexture* Editor::GetViewport() 
 	{
 		return this->viewport;

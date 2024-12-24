@@ -15,5 +15,7 @@ backends/imgui_impl_glfw.cpp
 backends/imgui_impl_opengl3.cpp
 )
 
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+
 target_include_directories(${PROJECT_NAME} PRIVATE examples/libs/glfw/include)
 target_include_directories(${PROJECT_NAME} PUBLIC backends misc/cpp ${PROJECT_SOURCE_DIR})

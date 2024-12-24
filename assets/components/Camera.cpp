@@ -7,6 +7,7 @@ namespace K
 	Camera::Camera()
 	{
 		this->editorCam = new K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
+		ImGui::SetCurrentContext(K::Editor::GetImGuiContext());
 	}
 
 	Camera::~Camera() 
