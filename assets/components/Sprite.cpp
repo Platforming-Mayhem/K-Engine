@@ -223,10 +223,9 @@ namespace K
 
 	void Sprite::RenderInit() 
 	{
-		if (this->renderTexture == nullptr)
-			this->SetTexture(this->texture, false);
-		else
+		if (this->renderTexture != nullptr)
 			delete this->renderTexture;
+		this->SetTexture(this->texture, false);
 	}
 
 	void Sprite::Init()

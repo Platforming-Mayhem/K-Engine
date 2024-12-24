@@ -1,7 +1,7 @@
 #include "Collider.h"
-#include "../InputManager.h"
-#include "../PhysicsEngine.h"
-#include "../Editor.h"
+#include "K-Engine/InputManager.h"
+#include "PhysicsEngine.h"
+#include "K-Engine/Editor.h"
 
 namespace K 
 {

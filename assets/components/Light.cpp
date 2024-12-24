@@ -1,6 +1,6 @@
 #include "Light.h"
-#include "../GameObject.h"
-#include "../Editor.h"
+#include "K-Engine/GameObject.h"
+#include "K-Engine/Editor.h"
 
 namespace K 
 {

@@ -1,10 +1,10 @@
 #pragma once
-#include "../Transform.h"
-#include "Component.h"
+#include "K-Engine/Transform.h"
+#include "K-Engine/Component.h"
 
 namespace K 
 {
-	class K_API Light : public K::Component 
+	class Light : public K::Component 
 	{
 	private:
 		K::Vector3 lightDirection = K::Vector3(0.0f, 0.0f, 1.0f);

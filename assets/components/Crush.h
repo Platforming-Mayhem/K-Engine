@@ -1,10 +1,10 @@
 #pragma once
-#include "Component.h"
-#include "../PhysicsEngine.h"
+#include "K-Engine/Component.h"
+#include "PhysicsEngine.h"
 
 namespace K 
 {
-	class K_API Crush : public K::Component
+	class Crush : public K::Component
 	{
 	private:
 		K::Vector3 origin;

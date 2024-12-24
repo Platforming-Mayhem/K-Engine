@@ -1,5 +1,5 @@
 #include "ButtonLoadScene.h"
-#include "../Editor.h"
+#include "K-Engine/Editor.h"
 
 namespace K 
 {
@@ -30,7 +30,7 @@ namespace K
 	{
 		if (glfwGetMouseButton(K::window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
 		{
-			K::Vector3 direction = K::InputManager::GetWorldMouseDirection(this->mainCamera);
+			K::Vector3 direction = K::InputManager::GetWorldMouseDirection();
 			K::Vector3 camPosition = this->mainCamera->GetPosition();
 			for (int j = 0; j < this->mesh->indices.size() / 3; j++)
 			{

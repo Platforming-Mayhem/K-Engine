@@ -1,10 +1,10 @@
 #pragma once
-#include "Component.h"
+#include "K-Engine/Component.h"
 #include "Sprite.h"
 
 namespace K 
 {
-	class K_API Animator : public K::Component 
+	class Animator : public K::Component 
 	{
 	private:
 		std::string properties;

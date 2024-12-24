@@ -1,7 +1,7 @@
 #pragma once
-#include "../Time.h"
-#include "Component.h"
-#include "../GameObject.h"
+#include "K-Engine/Time.h"
+#include "K-Engine/Component.h"
+#include "K-Engine/GameObject.h"
 
 namespace K
 {
@@ -20,7 +20,7 @@ namespace K
 		}
 	};
 
-	class K_API Collider : public K::Component
+	class Collider : public K::Component
 	{
 	private:
 		bool isColliding = false;

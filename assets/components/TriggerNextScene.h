@@ -1,11 +1,11 @@
 #pragma once
-#include "Component.h"
-#include "../PhysicsEngine.h"
-#include "../SceneManager.h"
+#include "K-Engine/Component.h"
+#include "PhysicsEngine.h"
+#include "K-Engine/SceneManager.h"
 
 namespace K 
 {
-	class K_API TriggerNextScene : public K::Component
+	class TriggerNextScene : public K::Component
 	{
 	private:
 		K::Vector3 bounds[2];

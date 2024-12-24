@@ -1,11 +1,11 @@
 #pragma once
-#include "build.h"
-#include "Components/Collider.h"
-#include "Transform.h"
+#include "K-Engine/build.h"
+#include "Collider.h"
+#include "K-Engine/Transform.h"
 
 namespace K 
 {
-	struct K_API ContactPoint
+	struct ContactPoint
 	{
 		K::Vector3 position = K::Vector3();
 		K::Vector3 normal = K::Vector3();
@@ -24,7 +24,7 @@ namespace K
 		}
 	};
 
-	class K_API Physics
+	class Physics
 	{
 	private:
 		static std::vector<K::Collider*> colliders;

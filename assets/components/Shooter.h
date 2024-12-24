@@ -1,13 +1,14 @@
 #pragma once
-#include "Component.h"
-#include "../Time.h"
-#include "../PhysicsEngine.h"
-#include "../Editor.h"
+#include "K-Engine/Component.h"
+#include "K-Engine/Time.h"
+#include "PhysicsEngine.h"
+#include "K-Engine/Editor.h"
+#include "Mesh.h"
 #include "Animator.h"
 
 namespace K 
 {
-	class K_API Bullet 
+	class Bullet 
 	{
 	private:
 		K::Mesh mesh;
@@ -73,14 +74,14 @@ namespace K
 		}
 	};
 
-	class K_API Shooter : public K::Component 
+	class Shooter : public K::Component 
 	{
 	private:
 		std::vector<K::Bullet*> bullets;
 		K::Collider* col;
 		K::Sprite* sprite;
 		K::Animator* anim;
-		K::Texture* bulletTexture;
+		K::Texture* bulletTexture = nullptr;
 
 		int frame = 0;
 

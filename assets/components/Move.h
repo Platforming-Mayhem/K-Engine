@@ -1,11 +1,11 @@
 #pragma once
-#include "../Time.h"
-#include "Component.h"
-#include "../Transform.h"
+#include "K-Engine/Time.h"
+#include "K-Engine/Component.h"
+#include "K-Engine/Transform.h"
 
 namespace K 
 {
-	class K_API Move : public K::Component 
+	class Move : public K::Component 
 	{
 	private:
 		float moveSpeed = 1.0f;

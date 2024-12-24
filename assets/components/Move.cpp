@@ -1,7 +1,7 @@
 #include "Move.h"
-#include "../GameObject.h"
-#include "../PhysicsEngine.h"
-#include "../Editor.h"
+#include "K-Engine/GameObject.h"
+#include "PhysicsEngine.h"
+#include "K-Engine/Editor.h"
 
 namespace K 
 {

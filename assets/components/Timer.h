@@ -1,11 +1,11 @@
 #pragma once
-#include "Component.h"
-#include "../Time.h"
-#include "../SceneManager.h"
+#include "K-Engine/Component.h"
+#include "K-Engine/Time.h"
+#include "K-Engine/SceneManager.h"
 
 namespace K 
 {
-	class K_API Timer : public K::Component 
+	class Timer : public K::Component 
 	{
 	private:
 		std::string properties;

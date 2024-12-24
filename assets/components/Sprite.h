@@ -7,12 +7,12 @@
 
 namespace K 
 {
-	class K_API Sprite : public K::Component
+	class Sprite : public K::Component
 	{
 	private:
-		K::Texture* texture;
-		K::Texture* normalTexture;
-		K::Texture* renderTexture;
+		K::Texture* texture = nullptr;
+		K::Texture* normalTexture = nullptr;
+		K::Texture* renderTexture = nullptr;
 		float internalClock = 0;
 		float chromaKeyColour[3];
 		int frame = 0;

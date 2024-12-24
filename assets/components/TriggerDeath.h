@@ -1,10 +1,10 @@
 #pragma once
-#include "Component.h"
-#include "../PhysicsEngine.h"
+#include "K-Engine/Component.h"
+#include "PhysicsEngine.h"
 
 namespace K
 {
-	class K_API TriggerDeath : public K::Component
+	class TriggerDeath : public K::Component
 	{
 	private:
 		K::Vector3 bounds[2];

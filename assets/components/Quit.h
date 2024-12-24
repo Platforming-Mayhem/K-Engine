@@ -1,12 +1,13 @@
 #pragma once
-#include "Component.h"
+#include "K-Engine/Component.h"
 #include "Camera.h"
-#include "../InputManager.h"
-#include "../SceneManager.h"
+#include "Mesh.h"
+#include "K-Engine/InputManager.h"
+#include "K-Engine/SceneManager.h"
 
 namespace K 
 {
-	class K_API Quit : public K::Component
+	class Quit : public K::Component
 	{
 	private:
 		K::Camera* mainCamera;

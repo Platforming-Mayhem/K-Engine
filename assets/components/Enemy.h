@@ -1,12 +1,12 @@
 #pragma once
-#include "../Time.h"
-#include "Component.h"
+#include "K-Engine/Time.h"
+#include "K-Engine/Component.h"
 #include "Animator.h"
-#include "../PhysicsEngine.h"
+#include "PhysicsEngine.h"
 
 namespace K
 {
-	class K_API Enemy : public K::Component
+	class Enemy : public K::Component
 	{
 	private:
 		float time = 0.0f;

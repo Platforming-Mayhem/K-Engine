@@ -1,5 +1,5 @@
 #include "Enemy.h"
-#include "../Editor.h"
+#include "K-Engine/Editor.h"
 
 namespace K 
 {
