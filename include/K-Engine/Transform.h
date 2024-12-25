@@ -215,8 +215,7 @@ namespace K
 
 		static float DotProduct(K::Vector3& a, K::Vector3& b)
 		{
-			float dot = (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
-			return dot;
+			return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 		}
 
 		static float AngleBetweenVectors(K::Vector3& a, K::Vector3& b) 

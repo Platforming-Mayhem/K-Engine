@@ -49,6 +49,18 @@ namespace K
 		}
 	}
 
+	bool InputManager::IsMouseKeyPressed(int key)
+	{
+		if (glfwGetMouseButton(K::window->window, key) == GLFW_PRESS)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	bool InputManager::IsKeyPressedDown(int key) 
 	{
 		if (InputManager::GetKey(key) == GLFW_PRESS)

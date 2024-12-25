@@ -1,5 +1,6 @@
 #include "ButtonLoadScene.h"
 #include "K-Engine/Editor.h"
+#include "K-Engine/InputManager.h"
 
 namespace K 
 {
@@ -28,10 +29,10 @@ namespace K
 
 	void ButtonLoadScene::Update() 
 	{
-		if (glfwGetMouseButton(K::window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+		if (InputManager::IsMouseKeyPressed(GLFW_MOUSE_BUTTON_1))
 		{
 			K::Vector3 direction = K::InputManager::GetWorldMouseDirection();
-			K::Vector3 camPosition = this->mainCamera->GetPosition();
+			K::Vector3 camPosition = *K::Editor::cameraPosition;
 			for (int j = 0; j < this->mesh->indices.size() / 3; j++)
 			{
 				K::Vector3 vertices[3];
@@ -39,8 +40,8 @@ namespace K
 				int index = 0;
 				for (int i = 0 + (j * 3); i < 3 + (j * 3); i++)
 				{
-					K::MultiplyMatrixVector(this->mesh->vertices[this->mesh->indices[i]].position, vertices[index], mesh->parent->GetTransform()->modelMatrix);
-					K::Quaternion* quat = K::Quaternion::Euler(this->mesh->parent->GetTransform()->rotation);
+					K::MultiplyMatrixVector(this->mesh->vertices[this->mesh->indices[i]].position, vertices[index], this->parent->GetTransform()->modelMatrix);
+					K::Quaternion* quat = K::Quaternion::Euler(this->parent->GetTransform()->rotation);
 					K::Matrix4x4 rotationMatrix = quat->QuaternionToMatrix();
 					K::MultiplyMatrixVector(this->mesh->vertices[this->mesh->indices[i]].normal, normal, rotationMatrix);
 					index++;

@@ -23,6 +23,8 @@ namespace K
 		static bool IsKeyPressedDown(int key);
 
 		static bool IsKeyReleased(int key);
+
+		static bool IsMouseKeyPressed(int key);
 		
 		static K::Vector3 GetMousePosition();
 
