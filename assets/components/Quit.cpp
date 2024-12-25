@@ -28,7 +28,7 @@ namespace K
 
 	void Quit::Update() 
 	{
-		if (glfwGetMouseButton(K::window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+		if (InputManager::IsMouseKeyPressed(GLFW_MOUSE_BUTTON_1))
 		{
 			K::Vector3 direction = K::InputManager::GetWorldMouseDirection();
 			K::Vector3 camPosition = this->mainCamera->GetPosition();
@@ -40,8 +40,8 @@ namespace K
 				for (int i = 0 + (j * 3); i < 3 + (j * 3); i++)
 				{
 					K::MultiplyMatrixVector(this->mesh->vertices[this->mesh->indices[i]].position, vertices[index], mesh->parent->GetTransform()->modelMatrix);
-					K::Quaternion* quat = K::Quaternion::Euler(this->mesh->parent->GetTransform()->rotation);
-					K::Matrix4x4 rotationMatrix = quat->QuaternionToMatrix();
+					K::Quaternion quat = *K::Quaternion::Euler(this->mesh->parent->GetTransform()->rotation);
+					K::Matrix4x4 rotationMatrix = quat.QuaternionToMatrix();
 					K::MultiplyMatrixVector(this->mesh->vertices[this->mesh->indices[i]].normal, normal, rotationMatrix);
 					index++;
 				}

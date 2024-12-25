@@ -78,7 +78,7 @@ namespace K
 
 		Texture(unsigned int resource);
 
-		virtual ~Texture();
+		~Texture();
 
 		int GetChannels() 
 		{
