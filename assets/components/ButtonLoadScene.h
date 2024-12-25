@@ -1,7 +1,6 @@
 #pragma once
 #include "K-Engine/Component.h"
 #include "K-Engine/SceneManager.h"
-#include "Camera.h"
 #include "Mesh.h"
 
 namespace K 
@@ -9,7 +8,6 @@ namespace K
 	class ButtonLoadScene : public K::Component
 	{
 	private:
-		K::Camera* mainCamera;
 		K::Mesh* mesh;
 		float selectedTint[3];
 		bool selected = false;

@@ -18,7 +18,7 @@ namespace K
 
 		K::Window* window = nullptr;
 
-		K::Transform* editorCam;
+		K::Transform* editorCam = nullptr;
 
 		enum class CameraType { Perspective = 0, Orthographic = 1 };
 		CameraType cameraType = CameraType::Perspective;

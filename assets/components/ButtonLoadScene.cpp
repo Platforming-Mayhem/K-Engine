@@ -16,14 +16,6 @@ namespace K
 
 	void ButtonLoadScene::Init() 
 	{
-		for (auto i : K::Editor::GetCurrentScene()->GetGameObjects()) 
-		{
-			if (i.second->GetComponentOfType(typeid(K::Camera).name()) != nullptr) 
-			{
-				this->mainCamera = (K::Camera*)i.second->GetComponentOfType(typeid(K::Camera).name());
-				break;
-			}
-		}
 		this->mesh = (K::Mesh*)this->parent->GetComponentOfType(typeid(K::Mesh).name());
 	}
 
