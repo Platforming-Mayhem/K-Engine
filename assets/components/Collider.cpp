@@ -39,8 +39,8 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
-		K::Vector3 topPosition = *this->GetPosition() + K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
-		K::Vector3 bottomPosition = *this->GetPosition() - K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
+		K::Vector3 topPosition = this->GetPosition() + K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
+		K::Vector3 bottomPosition = this->GetPosition() - K::Vector3(0.0f, 0.0f, this->GetHeight() * 0.5f);
 		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
 		*temp.position = topPosition;
 		temp.PassModelMatrix();
@@ -61,7 +61,7 @@ namespace K
 			glVertex3f(this->radius * cosf((i * theta) / 57.2958f), 0.0f, this->radius * sinf((i * theta) / 57.2958f));
 		}
 		glEnd();
-		*temp.position = *this->GetPosition();
+		*temp.position = this->GetPosition();
 		temp.PassModelMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 
@@ -258,7 +258,7 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
 		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
-		*temp.position = *this->GetPosition();
+		*temp.position = this->GetPosition();
 		temp.PassModelMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 		float theta = 360.0f / 16.0f;
@@ -276,9 +276,9 @@ namespace K
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "canChromaKey"), false);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasNormal"), false);
 			glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
-			for (K::ContactPoint pointOnLine : K::Physics::GetClosestPoints(*this->GetPosition()))
+			for (K::ContactPoint pointOnLine : K::Physics::GetClosestPoints(this->GetPosition()))
 			{
-				if ((pointOnLine.position - *this->GetPosition()).magnitude() < this->GetRadius())
+				if ((pointOnLine.position - this->GetPosition()).magnitude() < this->GetRadius())
 				{
 					glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 1.0f, 0.0f, 0.0f);
 				}
@@ -423,7 +423,7 @@ namespace K
 		return &this->offset;
 	}
 
-	K::Vector3* Collider::GetPosition() 
+	K::Vector3 Collider::GetPosition() 
 	{
 		K::Vector3 pos = K::Vector3(this->parent->GetTransform()->position->x, 0.0f, this->parent->GetTransform()->position->z);
 		if (this->parent->GetTransform()->scale->x > 0.0f) 
@@ -434,7 +434,7 @@ namespace K
 		{
 			pos += K::Vector3(-this->offset.x, 0.0f, this->offset.z);
 		}
-		return &pos;
+		return pos;
 	}
 
 	int Collider::GetNumberOfPoints() 

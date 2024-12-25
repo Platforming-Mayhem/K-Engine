@@ -148,7 +148,7 @@ namespace K
 			K::Vector3 forward = K::Vector3(0.0f, 0.0f, 1.0f);
 			K::Vector3 up = K::Vector3(0.0f, 1.0f, 0.0f);
 			K::Vector3 right = K::Vector3(1.0f, 0.0f, 0.0f);
-			K::Quaternion camQuat = *K::Quaternion::Euler(this->editorCam->rotation);
+			K::Quaternion camQuat = K::Quaternion::Euler(this->editorCam->rotation);
 			K::Matrix4x4 camRotation = camQuat.QuaternionToMatrix();
 			K::MultiplyMatrixVector(forward, rotatedForward, camRotation);
 			K::MultiplyMatrixVector(up, rotatedUp, camRotation);

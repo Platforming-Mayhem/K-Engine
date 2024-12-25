@@ -83,9 +83,9 @@ namespace K
 			K::Vector3 up = K::Vector3(0.0f, 0.0f, 1.0f);
 			K::Vector3 rotatedUp;
 			K::Vector3 rotateMinAngle = K::Vector3(0.0f, minAngle, 0.0f);
-			K::Matrix4x4 rotate = K::Quaternion::Euler(&rotateMinAngle)->QuaternionToMatrix();
+			K::Matrix4x4 rotate = K::Quaternion::Euler(&rotateMinAngle).QuaternionToMatrix();
 			K::MultiplyMatrixVector(up, rotatedUp, rotate);
-			K::Vector3 displacement = (*temp->GetPosition() - origin).normalise();
+			K::Vector3 displacement = (temp->GetPosition() - origin).normalise();
 			float angle = K::Vector3::AngleBetweenVectors(rotatedUp, displacement);
 			if (angle < maxAngle) 
 			{
@@ -178,9 +178,9 @@ namespace K
 				}
 				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle)
 				{
-					K::Vector3 J = Physics::colliders[i]->PointOnLine(C, D, *Physics::colliders[i]->GetPosition());
+					K::Vector3 J = Physics::colliders[i]->PointOnLine(C, D, Physics::colliders[i]->GetPosition());
 					K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
-					K::Vector3 offset = J2 - *Physics::colliders[i]->GetPosition();
+					K::Vector3 offset = J2 - Physics::colliders[i]->GetPosition();
 					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
 					{
 						if (hit != nullptr)
@@ -191,18 +191,18 @@ namespace K
 				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Capsule)
 				{
 					//THIS ONLY WORKS FOR VERTICAL CAPSULE COLLIDERS
-					K::Vector3 J = Physics::colliders[i]->PointOnLine(C, D, *Physics::colliders[i]->GetPosition() + K::Vector3(0.0f, 0.0f, Physics::colliders[i]->GetHeight() / 2.0f));
+					K::Vector3 J = Physics::colliders[i]->PointOnLine(C, D, Physics::colliders[i]->GetPosition() + K::Vector3(0.0f, 0.0f, Physics::colliders[i]->GetHeight() / 2.0f));
 					K::Vector3 J2 = K::Vector3(J.x, 0.0f, J.y);
-					K::Vector3 offset = J2 - *Physics::colliders[i]->GetPosition();
+					K::Vector3 offset = J2 - Physics::colliders[i]->GetPosition();
 					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
 					{
 						if (hit != nullptr)
 							*hit = Physics::colliders[i];
 						return true;
 					}
-					J = Physics::colliders[i]->PointOnLine(C, D, *Physics::colliders[i]->GetPosition() - K::Vector3(0.0f, 0.0f, Physics::colliders[i]->GetHeight() / 2.0f));
+					J = Physics::colliders[i]->PointOnLine(C, D, Physics::colliders[i]->GetPosition() - K::Vector3(0.0f, 0.0f, Physics::colliders[i]->GetHeight() / 2.0f));
 					J2 = K::Vector3(J.x, 0.0f, J.y);
-					offset = J2 - *Physics::colliders[i]->GetPosition();
+					offset = J2 - Physics::colliders[i]->GetPosition();
 					if (offset.magnitude() < Physics::colliders[i]->GetRadius())
 					{
 						if (hit != nullptr)
@@ -256,7 +256,7 @@ namespace K
 				}
 				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Circle)
 				{
-					K::Vector3 otherPosition = *Physics::colliders[i]->GetPosition();
+					K::Vector3 otherPosition = Physics::colliders[i]->GetPosition();
 					K::Vector3 J = K::Vector3(position.x - otherPosition.x, 0.0f, position.z - otherPosition.z).normalise();
 					K::Vector3 Jtemp = otherPosition + (J * Physics::colliders[i]->GetRadius());
 					K::Vector3 J2 = K::Vector3(Jtemp.x, 0.0f, Jtemp.z);
@@ -265,7 +265,7 @@ namespace K
 				}
 				else if (Physics::colliders[i]->colliderType == K::Collider::ColliderType::Capsule) 
 				{
-					K::Vector3 otherPosition = *Physics::colliders[i]->GetPosition();
+					K::Vector3 otherPosition = Physics::colliders[i]->GetPosition();
 					K::Vector3 tC = otherPosition + K::Vector3(0.0f, Physics::colliders[i]->GetHeight() * 0.5f, 0.0f);
 					K::Vector3 bC = otherPosition - K::Vector3(0.0f, Physics::colliders[i]->GetHeight() * 0.5f, 0.0f);
 					if (tC.z - position.z > 0.0f) 
@@ -304,7 +304,7 @@ namespace K
 		int count = 0;
 		if (col->colliderType == K::Collider::ColliderType::Circle) 
 		{
-			K::Vector3 position = *col->GetPosition();
+			K::Vector3 position = col->GetPosition();
 			for (K::ContactPoint J : K::Physics::GetClosestPoints(position, avoidLayer))
 			{
 				K::Vector3 originToJ = J.normal.normalise() * -(J.position - position).magnitude();
@@ -330,8 +330,8 @@ namespace K
 		}
 		else if (col->colliderType == K::Collider::ColliderType::Capsule) 
 		{
-			K::Vector3 topPosition = *col->GetPosition() + K::Vector3(0.0f,0.0f, col->GetHeight() * 0.5f);
-			K::Vector3 bottomPosition = *col->GetPosition() - K::Vector3(0.0f, 0.0f, col->GetHeight() * 0.5f);
+			K::Vector3 topPosition = col->GetPosition() + K::Vector3(0.0f,0.0f, col->GetHeight() * 0.5f);
+			K::Vector3 bottomPosition = col->GetPosition() - K::Vector3(0.0f, 0.0f, col->GetHeight() * 0.5f);
 
 			for (K::ContactPoint J : K::Physics::GetClosestPoints(topPosition, avoidLayer))
 			{
@@ -377,16 +377,16 @@ namespace K
 					}
 				}
 			}
-			for (K::ContactPoint J : K::Physics::GetClosestPoints(*col->GetPosition(), avoidLayer))
+			for (K::ContactPoint J : K::Physics::GetClosestPoints(col->GetPosition(), avoidLayer))
 			{
-				float xMin = col->GetPosition()->x - col->GetRadius();
-				float xMax = col->GetPosition()->x + col->GetRadius();
-				float yMin = col->GetPosition()->z - (col->GetHeight() * 0.5f);
-				float yMax = col->GetPosition()->z + (col->GetHeight() * 0.5f);
+				float xMin = col->GetPosition().x - col->GetRadius();
+				float xMax = col->GetPosition().x + col->GetRadius();
+				float yMin = col->GetPosition().z - (col->GetHeight() * 0.5f);
+				float yMax = col->GetPosition().z + (col->GetHeight() * 0.5f);
 				if (J.position.x > xMin && J.position.x < xMax && J.position.z > yMin && J.position.z < yMax) 
 				{
 					K::Vector3 normal = J.normal.normalise();
-					float depth = col->GetRadius() - std::fabsf(col->GetPosition()->x - J.position.x);
+					float depth = col->GetRadius() - std::fabsf(col->GetPosition().x - J.position.x);
 					K::Vector3 contactResolution = K::Vector3(depth * normal.x, 0.0f, 0.0f);
 					offsetAmount += contactResolution;
 					col->other = J.other;

@@ -33,11 +33,12 @@ namespace K
 				for (int i = 0 + (j * 3); i < 3 + (j * 3); i++)
 				{
 					K::MultiplyMatrixVector(this->mesh->vertices[this->mesh->indices[i]].position, vertices[index], this->parent->GetTransform()->modelMatrix);
-					K::Quaternion quat = *K::Quaternion::Euler(this->parent->GetTransform()->rotation);
+					K::Quaternion quat = K::Quaternion::Euler(this->parent->GetTransform()->rotation);
 					K::Matrix4x4 rotationMatrix = quat.QuaternionToMatrix();
 					K::MultiplyMatrixVector(this->mesh->vertices[this->mesh->indices[i]].normal, normal, rotationMatrix);
 					index++;
 				}
+
 				//Triangle vertices[3]
 				//Test Against Ray
 				K::Vector3 A = vertices[1] - vertices[0];

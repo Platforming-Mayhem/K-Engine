@@ -85,7 +85,7 @@ namespace K
 
 		K::Vector3* GetOffset();
 
-		K::Vector3* GetPosition();
+		K::Vector3 GetPosition();
 
 		int GetNumberOfPoints();
 

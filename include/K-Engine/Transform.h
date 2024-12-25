@@ -215,7 +215,8 @@ namespace K
 
 		static float DotProduct(K::Vector3& a, K::Vector3& b)
 		{
-			return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+			float value = (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+			return value;
 		}
 
 		static float AngleBetweenVectors(K::Vector3& a, K::Vector3& b) 
@@ -241,7 +242,7 @@ namespace K
 
 		K::Matrix4x4 QuaternionToMatrix();
 
-		static K::Quaternion* Euler(Vector3* rotation);
+		static K::Quaternion Euler(Vector3* rotation);
 
 		K::Vector3* ToEuler();
 	};

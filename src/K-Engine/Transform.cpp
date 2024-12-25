@@ -216,7 +216,7 @@ namespace K
 			globalModelMatrix.m[1][1] *= this->scale->y;
 			globalModelMatrix.m[2][2] *= this->scale->z;
 			//Rotation Matrix
-			K::Quaternion rotation = *K::Quaternion::Euler(this->rotation);
+			K::Quaternion rotation = K::Quaternion::Euler(this->rotation);
 			K::Matrix4x4 rotationMatrix = rotation.QuaternionToMatrix();
 			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, rotationMatrix);
 			//Translation Matrix
@@ -250,7 +250,7 @@ namespace K
 			globalModelMatrix.m[1][1] *= this->scale->y;
 			globalModelMatrix.m[2][2] *= this->scale->z;
 			//Rotation Matrix
-			K::Quaternion rotation = *K::Quaternion::Euler(this->rotation);
+			K::Quaternion rotation = K::Quaternion::Euler(this->rotation);
 			K::Matrix4x4 rotationMatrix = rotation.QuaternionToMatrix();
 			globalModelMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(globalModelMatrix, rotationMatrix);
 			//Translation Matrix
@@ -311,7 +311,7 @@ namespace K
 		return mat;
 	}
 
-	K::Quaternion* K::Quaternion::Euler(K::Vector3* rotation)
+	K::Quaternion K::Quaternion::Euler(K::Vector3* rotation)
 	{
 		float conversion = 180.0f / std::numbers::pi;
 		K::Vector3 radians = *rotation * (1.0f / conversion);
@@ -323,7 +323,7 @@ namespace K
 		float sr = sinf(radians.x * 0.5f);
 
 		K::Quaternion q = K::Quaternion(sr * cp * cy - cr * sp * sy, cr * sp * cy + sr * cp * sy, cr * cp * sy - sr * sp * cy, cr * cp * cy + sr * sp * sy);
-		return &q;
+		return q;
 	}
 
 	K::Vector3* K::Quaternion::ToEuler() 

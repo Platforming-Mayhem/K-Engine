@@ -70,7 +70,7 @@ namespace K
 
 		K::Vector3 GetLocation() 
 		{
-			return this->origin + (this->direction * this->timeElapsed * this->bulletSpeed);
+			return this->origin + (this->direction * (this->timeElapsed * this->bulletSpeed));
 		}
 	};
 

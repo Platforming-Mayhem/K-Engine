@@ -47,10 +47,10 @@ namespace K
 	void Shooter::Update()
 	{
 		K::Collider* hit = nullptr;
-		if (Physics::HitSector(*this->col->GetPosition(), this->radius, this->minAngle, this->maxAngle, { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &hit) && this->reloadTime <= 0.0f)
+		if (Physics::HitSector(this->col->GetPosition(), this->radius, this->minAngle, this->maxAngle, { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &hit) && this->reloadTime <= 0.0f)
 		{
-			K::Vector3 direction = (*hit->GetPosition() - *this->col->GetPosition());
-			this->bullets.push_back(new K::Bullet(* this->col->GetPosition(), direction, 10.0f, 1.0f, this->projectileSpeed));
+			K::Vector3 direction = (hit->GetPosition() - this->col->GetPosition());
+			this->bullets.push_back(new K::Bullet(this->col->GetPosition(), direction, 10.0f, 1.0f, this->projectileSpeed));
 			this->reloadTime = this->maxReloadTime;
 			anim->PlayAnimation(0, this->sprite, false);
 			this->sprite->ResetFrame();
@@ -108,8 +108,7 @@ namespace K
 		{
 			for (K::Bullet* bullet : bullets)
 			{
-				K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
-				*temp.position = bullet->GetLocation();
+				K::Transform temp = K::Transform(new K::Vector3(bullet->GetLocation()), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
 				temp.PassModelMatrix();
 				glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 				bullet->Render();
@@ -132,7 +131,7 @@ namespace K
 		glUniform1i(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "hasTexture"), false);
 		glUniform3f(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "colorTint"), 0.0f, 1.0f, 0.0f);
 		K::Transform temp = K::Transform(new K::Vector3(), new K::Vector3(), new K::Vector3(1.0f, 1.0f, 1.0f));
-		*temp.position = *this->col->GetPosition();
+		*temp.position = this->col->GetPosition();
 		temp.PassModelMatrix();
 		glUniformMatrix4fv(glGetUniformLocation(this->parent->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &temp.modelMatrix.m[0][0]);
 
@@ -147,7 +146,7 @@ namespace K
 		K::Vector3 up = K::Vector3(0.0f, 0.0f, this->radius);
 		K::Vector3 rotatedUp;
 		K::Vector3 rotateMinAngle = K::Vector3(0.0f, minAngle, 0.0f);
-		K::Matrix4x4 rotate = K::Quaternion::Euler(&rotateMinAngle)->QuaternionToMatrix();
+		K::Matrix4x4 rotate = K::Quaternion::Euler(&rotateMinAngle).QuaternionToMatrix();
 		K::MultiplyMatrixVector(up, rotatedUp, rotate);
 
 		glBegin(GL_LINE_LOOP);
@@ -157,7 +156,7 @@ namespace K
 
 		K::Vector3 rotatedMax;
 		K::Vector3 rotateMaxAngle = K::Vector3(0.0f, maxAngle, 0.0f);
-		rotate = K::Quaternion::Euler(&rotateMaxAngle)->QuaternionToMatrix();
+		rotate = K::Quaternion::Euler(&rotateMaxAngle).QuaternionToMatrix();
 		K::MultiplyMatrixVector(rotatedUp, rotatedMax, rotate);
 
 		glBegin(GL_LINE_LOOP);
@@ -166,7 +165,7 @@ namespace K
 		glEnd();
 
 		rotateMaxAngle = K::Vector3(0.0f, -maxAngle, 0.0f);
-		rotate = K::Quaternion::Euler(&rotateMaxAngle)->QuaternionToMatrix();
+		rotate = K::Quaternion::Euler(&rotateMaxAngle).QuaternionToMatrix();
 		K::MultiplyMatrixVector(rotatedUp, rotatedMax, rotate);
 
 		glBegin(GL_LINE_LOOP);
