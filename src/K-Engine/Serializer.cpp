@@ -47,10 +47,7 @@ namespace K
 			{
 				K::Component* component = g->GetComponent(i);
 				outFile << "," << component->GetName();
-				if (component->GetPropertyValues()[0] != '\0')
-				{
-					outFile << "," << component->GetPropertyValues();
-				}
+				outFile << "," << component->GetPropertyValues();
 			}
 			if (i < scene->GetNumberOfObjects())
 			{

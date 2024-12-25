@@ -46,8 +46,16 @@ namespace K
 
 	void TriggerDeath::Update()
 	{
-		K::MultiplyMatrixVector(this->bounds[0], this->boundsModelMatrix[0], this->parent->GetTransform()->modelMatrix);
-		K::MultiplyMatrixVector(this->bounds[1], this->boundsModelMatrix[1], this->parent->GetTransform()->modelMatrix);
+		if (this->invert)
+		{
+			K::MultiplyMatrixVector(this->bounds[0], this->boundsModelMatrix[1], this->parent->GetTransform()->modelMatrix);
+			K::MultiplyMatrixVector(this->bounds[1], this->boundsModelMatrix[0], this->parent->GetTransform()->modelMatrix);
+		}
+		else 
+		{
+			K::MultiplyMatrixVector(this->bounds[0], this->boundsModelMatrix[0], this->parent->GetTransform()->modelMatrix);
+			K::MultiplyMatrixVector(this->bounds[1], this->boundsModelMatrix[1], this->parent->GetTransform()->modelMatrix);
+		}
 		K::Collider* temp = nullptr;
 		if (K::Physics::Hitbox(this->boundsModelMatrix[0], this->boundsModelMatrix[1], { K::Layer::LayerType::Enemy, K::Layer::LayerType::Ground }, &temp))
 		{
@@ -60,6 +68,7 @@ namespace K
 	{
 		if (ImGui::CollapsingHeader("Trigger Death Settings"))
 		{
+			ImGui::Checkbox("Invert", &this->invert);
 			ImGui::DragFloat3("Bottom Left", &this->bounds[0].x);
 			ImGui::DragFloat3("Top Right", &this->bounds[1].x);
 			this->VisualizeTriggerZone();
@@ -101,6 +110,16 @@ namespace K
 			case 5:
 				this->bounds[1].z = std::stof(temp);
 				break;
+			case 6:
+				if (temp == "true")
+				{
+					this->invert = true;
+				}
+				else if (temp == "false")
+				{
+					this->invert = false;
+				}
+				break;
 			}
 		}
 	}
@@ -112,7 +131,17 @@ namespace K
 		this->properties += std::to_string(this->bounds[0].z) + ",";
 		this->properties += std::to_string(this->bounds[1].x) + ",";
 		this->properties += std::to_string(this->bounds[1].y) + ",";
-		this->properties += std::to_string(this->bounds[1].z);
+		this->properties += std::to_string(this->bounds[1].z) + ",";
+		std::string temp;
+		if (this->invert)
+		{
+			temp = "true";
+		}
+		else
+		{
+			temp = "false";
+		}
+		this->properties += temp;
 		return this->properties.c_str();
 	}
 }

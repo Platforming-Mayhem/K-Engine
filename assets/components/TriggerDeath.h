@@ -7,6 +7,7 @@ namespace K
 	class TriggerDeath : public K::Component
 	{
 	private:
+		bool invert = false;
 		K::Vector3 bounds[2];
 		K::Vector3 boundsModelMatrix[2];
 
