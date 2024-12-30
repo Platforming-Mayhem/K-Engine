@@ -1,8 +1,9 @@
 #include <K_Engine.h>
 
-int main(int argc, char** argv)
+void main(int argc, char** argv)
 {
 	K::Application* app = new K::Application();
-	app->Run("K-Engine Editor");
+	std::string name = argv[0];
+	app->Run(name.substr(name.find_last_of('\\') + 1).c_str());
 	delete app;
 }
