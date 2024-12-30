@@ -51,7 +51,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendors/
 
 project(Editor)
 
-add_executable(${PROJECT_NAME} 
+set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+
+add_executable(${PROJECT_NAME}
 src/Editor/Editor.cpp
 ${ComponentSrcs}
 )
