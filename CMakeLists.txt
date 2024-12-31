@@ -15,6 +15,7 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(Vendors/GLFW)
 add_subdirectory(Vendors/IMGUI)
 add_subdirectory(Vendors/GLEW)
+add_subdirectory(Vendors/NativeFileDialog-Extended)
 
 include_directories(Vendors/STB)
 
@@ -42,6 +43,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE K_BUILD_DLL)
 target_link_libraries(${PROJECT_NAME} OpenGL::GLU)
 target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} IMGUI)
+target_link_libraries(${PROJECT_NAME} nfd)
 target_link_libraries(${PROJECT_NAME} libglew_shared)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)

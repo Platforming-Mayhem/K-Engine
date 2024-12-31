@@ -156,6 +156,10 @@ namespace K
 						K::Editor::GetCurrentScene()->CreateEmptyScene();
 						this->selectedGameObject = nullptr;
 					}
+					if (ImGui::MenuItem("Open Project")) 
+					{
+
+					}
 					if (ImGui::MenuItem("Save..."))
 					{
 						this->sceneName = K::Editor::GetCurrentScene()->GetSceneName();
