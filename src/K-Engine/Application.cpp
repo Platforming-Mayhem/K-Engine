@@ -61,6 +61,7 @@ namespace K
 				break;
 			}
 			#else
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			K::SceneManager::currentScene->Render();

@@ -1,6 +1,8 @@
 #include "K-Engine/Editor.h"
 #include <K_Engine.h>
 
+std::string ASSET_DIR = (std::filesystem::current_path() / "assets").string() + "/";
+
 namespace K 
 {
 	float K::Editor::windowScaleFactor = 1.0f;

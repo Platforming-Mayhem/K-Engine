@@ -29,4 +29,5 @@
 #else
 	#define K_API __declspec(dllimport)
 #endif
-#define ASSET_DIR (std::filesystem::current_path() / "assets").string() + "/"
+
+K_API extern std::string ASSET_DIR;
