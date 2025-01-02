@@ -158,7 +158,7 @@ namespace K
 					}
 					if (ImGui::MenuItem("Open Project")) 
 					{
-
+						this->projectLoadWindow = true;
 					}
 					if (ImGui::MenuItem("Save..."))
 					{
@@ -172,6 +172,20 @@ namespace K
 					ImGui::EndMenu();
 				}
 				ImGui::EndMainMenuBar();
+			}
+			if (this->projectLoadWindow) 
+			{
+				NFD_Init();
+				char* location;
+				if (NFD_PickFolderU8(&location, NULL) == NFD_OKAY) 
+				{
+					ASSET_DIR = location;
+					ASSET_DIR += '/';
+					this->currentDirectory = ASSET_DIR;
+					NFD_FreePathU8(location);
+				}
+				NFD_Quit();
+				this->projectLoadWindow = false;
 			}
 			if (this->confirmationWindow) 
 			{

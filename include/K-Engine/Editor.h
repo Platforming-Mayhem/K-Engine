@@ -36,8 +36,9 @@ namespace K
 		K::RenderTexture* viewport;
 		std::map<std::string, K::Texture*> preloadedTextures;
 		K::Window* window;
-		bool buildWindow;
+		bool buildWindow = false;
 		bool confirmationWindow = false;
+		bool projectLoadWindow = false;
 		int selectedScene = -1;
 		static K::SceneManager* sceneManager;
 	public:
