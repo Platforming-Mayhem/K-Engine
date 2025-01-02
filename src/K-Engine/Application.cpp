@@ -16,7 +16,7 @@ namespace K
 	{
 		K::window = new K::Window(windowName);
 
-		K::editorMat = new Material(EDITORSHADER);
+		K::editorMat = new Material(EDITOR_SHADER);
 
 		K::renderTex = new K::RenderTexture(K::window->width, K::window->height, GL_TEXTURE_2D, GL_R32I, GL_RED_INTEGER);
 

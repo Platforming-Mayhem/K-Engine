@@ -231,9 +231,9 @@ namespace K
 	void Sprite::Init()
 	{
 		if (this->texture == nullptr)
-			this->SetColorTexture(WATERMARK);
+			this->SetColorTexture(WATERMARK_TEX);
 		if (this->normalTexture == nullptr)
-			this->SetNormalTexture(WATERMARK);
+			this->SetNormalTexture(WATERMARK_TEX);
 	}
 
 	void Sprite::RenderBind() 
@@ -351,7 +351,7 @@ namespace K
 			}
 			if (ImGui::Button("Delete Color Texture")) 
 			{
-				this->SetColorTexture(WATERMARK);
+				this->SetColorTexture(WATERMARK_TEX);
 				this->SetTexture(this->texture, false);
 			}
 			ImGui::Text("ID: %p,%i,%i", this->normalTexture->GetID(), this->normalTexture->GetWidth(), this->normalTexture->GetHeight());
@@ -368,7 +368,7 @@ namespace K
 			}
 			if (ImGui::Button("Delete Normal Texture"))
 			{
-				this->SetNormalTexture(WATERMARK);
+				this->SetNormalTexture(WATERMARK_TEX);
 				this->hasNormal = false;
 			}
 			ImGui::Checkbox("Is Looping", &this->isLooping);
