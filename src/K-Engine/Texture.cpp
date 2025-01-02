@@ -256,7 +256,7 @@ namespace K
 
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-				std::thread(&Texture::LoadAnimation, this).join();
+				this->thread = std::thread(&Texture::LoadAnimation, this);
 			}
 			else 
 			{
@@ -267,10 +267,14 @@ namespace K
 
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-				std::thread(&Texture::Load, this).join();
+				this->thread = std::thread(&Texture::Load, this);
 			}
 			this->textures->threadsInUse++;
 			this->loading = false;
+		}
+		if (this->thread.joinable()) 
+		{
+			this->thread.join();
 		}
 		if (this->loadedAnimation)
 		{

@@ -56,6 +56,7 @@ namespace K
 	{
 	private:
 		K::TextureManager* textures;
+		std::thread thread;
 		unsigned int id;
 		unsigned int viewId;
 		unsigned int PBO;
