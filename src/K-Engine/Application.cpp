@@ -16,11 +16,11 @@ namespace K
 	{
 		K::window = new K::Window(windowName);
 
-		K::editorMat = new Material("shaders/editor.shader");
+		K::editorMat = new Material(EDITORSHADER);
 
 		K::renderTex = new K::RenderTexture(K::window->width, K::window->height, GL_TEXTURE_2D, GL_R32I, GL_RED_INTEGER);
 
-		K::SceneManager* manager = new K::SceneManager(BUILD_SCENES);
+		K::SceneManager* manager = new K::SceneManager("");
 
 		K::Editor* editor = new K::Editor(K::window, manager);
 

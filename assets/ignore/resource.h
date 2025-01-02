@@ -3,7 +3,10 @@
 // Used by KEngineResources.rc
 //
 #define WATERMARK                       101
-#define BUILD_SCENES                    103
+#define EDITORSHADER                    102
+#define FILE                        103
+#define SCENE                        104
+#define UNKNOWN                        105
 
 // Next default values for new objects
 // 

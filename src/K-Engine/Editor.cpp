@@ -1,7 +1,7 @@
 #include "K-Engine/Editor.h"
 #include <K_Engine.h>
 
-std::string ASSET_DIR = (std::filesystem::current_path() / "assets").string() + "/";
+std::string ASSET_DIR = std::filesystem::current_path().string() + "/";
 
 namespace K 
 {
@@ -48,10 +48,9 @@ namespace K
 
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
-		this->AddPreloadedTexture("textures/editor/scene.png");
-		this->AddPreloadedTexture("textures/editor/unknown.png");
-		this->AddPreloadedTexture("textures/editor/file.png");
-		this->preloadedTextures.insert({ "textures/watermark/watermark.png", new K::Texture(WATERMARK) });
+		this->AddPreloadedTexture(SCENE);
+		this->AddPreloadedTexture(UNKNOWN);
+		this->AddPreloadedTexture(FILE);
 		#endif
 	}
 
@@ -322,7 +321,7 @@ namespace K
 			relativeLocation.erase(relativeLocation.begin(), relativeLocation.begin() + asset_Dir.size());
 			if (p.is_directory()) 
 			{
-				K::Texture* temp = this->preloadedTextures.at("textures/editor/file.png");
+				K::Texture* temp = this->preloadedTextures.at(std::to_string(FILE));
 				if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(temp->GetWidth(), temp->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
 				{
 					this->currentDirectory = p.path();
@@ -375,7 +374,7 @@ namespace K
 					}
 					else if (p.path().extension() == ".JAWS")
 					{
-						K::Texture* scene = this->preloadedTextures.at("textures/editor/scene.png");
+						K::Texture* scene = this->preloadedTextures.at(std::to_string(SCENE));
 						if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)scene->GetID(), ImVec2(scene->GetWidth(), scene->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
 						{
 							K::Editor::GetCurrentScene()->CreateEmptyScene();
@@ -392,7 +391,7 @@ namespace K
 					}
 					else 
 					{
-						K::Texture* unknown = this->preloadedTextures.at("textures/editor/unknown.png");
+						K::Texture* unknown = this->preloadedTextures.at(std::to_string(UNKNOWN));
 						ImGui::ImageButton(p.path().string().c_str(), (void*)(intptr_t)unknown->GetID(), ImVec2(unknown->GetWidth(), unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
 					}
 					ImGui::TextWrapped(p.path().filename().string().c_str());

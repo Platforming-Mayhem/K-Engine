@@ -40,6 +40,7 @@ namespace K
 		K::Shader* GetShader();
 		std::string GetLocation();
 		Material(std::string location);
+		Material(int resource);
 		~Material();
 	};
 }

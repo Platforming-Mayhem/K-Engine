@@ -69,15 +69,6 @@ add_custom_command(
         COMMAND_EXPAND_LISTS
 )
 
-add_custom_command(
-    TARGET ${PROJECT_NAME} 
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-        ${PROJECT_SOURCE_DIR}/assets
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
-        COMMAND_EXPAND_LISTS
-)
-
 target_link_libraries(${PROJECT_NAME} K-Engine)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)/$(Configuration)")

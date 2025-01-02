@@ -57,6 +57,29 @@ namespace K
 		}
 	}
 
+	Material::Material(int resource)
+	{
+		this->materials = &K::materialManager;
+		this->filename = resource;
+		if (this->materials->Contains(this->filename))
+		{
+			K::MaterialInfo tInfo = *this->materials->Check(this->filename);
+			this->shader = K::Shader();
+			this->shader.shader = tInfo.id;
+			this->materials->Check(this->filename)->dependencies++;
+			this->materials->Check(this->filename)->dependenciesPointers.push_back(this);
+		}
+		else
+		{
+			this->shader = K::Shader(resource);
+			K::MaterialInfo info = K::MaterialInfo();
+			info.id = this->shader.shader;
+			info.dependencies++;
+			info.dependenciesPointers.push_back(this);
+			this->materials->Add(this->filename, info);
+		}
+	}
+
 	std::string Material::GetLocation() 
 	{
 		return this->filename;

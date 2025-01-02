@@ -45,11 +45,14 @@ namespace K
 
 	SceneManager::SceneManager(std::string path)
 	{
-		std::ifstream inFile(ASSET_DIR + path);
-		std::string line;
-		while (std::getline(inFile, line))
+		if (!path.empty()) 
 		{
-			this->AddScene(line.c_str());
+			std::ifstream inFile(ASSET_DIR + path);
+			std::string line;
+			while (std::getline(inFile, line))
+			{
+				this->AddScene(line.c_str());
+			}
 		}
 		K::SceneManager::currentScene = new K::Scene("Untitled*");
 	}
