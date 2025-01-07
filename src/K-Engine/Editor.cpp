@@ -534,6 +534,7 @@ namespace K
 	{
 		std::string temp = "Hierarchy: ";
 		temp += K::Editor::GetCurrentScene()->GetSceneName();
+		temp += "###Hierarchy";
 		ImGui::Begin(temp.c_str());
 
 		this->ParentChildrenHierarchy();
