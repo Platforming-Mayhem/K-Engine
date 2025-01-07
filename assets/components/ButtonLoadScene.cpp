@@ -71,9 +71,9 @@ namespace K
 		}
 		if (this->selected)
 		{
-			float r = std::lerp(this->mesh->GetColourTint().rgb[0], this->selectedTint[0], K::Time::deltaTime());
-			float g = std::lerp(this->mesh->GetColourTint().rgb[1], this->selectedTint[1], K::Time::deltaTime());
-			float b = std::lerp(this->mesh->GetColourTint().rgb[2], this->selectedTint[2], K::Time::deltaTime());
+			float r = std::lerp(this->mesh->GetColourTint().rgb[0], this->selectedTint[0], K::Time::deltaTime() * 20.0f);
+			float g = std::lerp(this->mesh->GetColourTint().rgb[1], this->selectedTint[1], K::Time::deltaTime() * 20.0f);
+			float b = std::lerp(this->mesh->GetColourTint().rgb[2], this->selectedTint[2], K::Time::deltaTime() * 20.0f);
 			this->mesh->SetColourTint(r, g, b);
 		}
 	}
