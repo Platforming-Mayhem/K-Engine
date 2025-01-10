@@ -46,6 +46,11 @@ namespace K
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 		ImGui::StyleColorsDark();
 
+		if (std::ifstream(io.IniFilename).good())
+			this->doesIniExist = true;
+		else
+			this->doesIniExist = false;
+
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
 		this->AddPreloadedTexture(SCENE_TEX);
@@ -101,7 +106,23 @@ namespace K
 
 		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable) 
 		{
-			ImGui::DockSpaceOverViewport();
+			ImGuiID dockspace = ImGui::DockSpaceOverViewport();
+			if (!this->doesIniExist) 
+			{
+				ImGuiID top, bottom, right, left;
+				ImGui::DockBuilderRemoveNode(dockspace);
+				ImGui::DockBuilderAddNode(dockspace);
+				ImGui::DockBuilderSplitNode(dockspace, ImGuiDir_Right, 0.8f, &right, &left);
+				ImGui::DockBuilderSplitNode(right, ImGuiDir_Up, 0.6f, &top, &bottom);
+				ImGui::DockBuilderDockWindow("Viewport", top);
+				ImGui::DockBuilderDockWindow("K-Engine Content Browser", bottom);
+				ImGui::DockBuilderSplitNode(left, ImGuiDir_Up, 0.5f, &top, &bottom);
+				ImGui::DockBuilderDockWindow("K-Engine Properties", top);
+				ImGui::DockBuilderDockWindow("###Hierarchy", bottom);
+				ImGui::DockBuilderFinish(dockspace);
+				std::cout << "Create Default Layout" << std::endl;
+				this->doesIniExist = true;
+			}
 		}
 	}
 
@@ -133,6 +154,7 @@ namespace K
 			ImGui::SetCursorPos(ImVec2((ImGui::GetWindowWidth() - width) * 0.5f, (ImGui::GetWindowHeight() - height) * 0.5f));
 			ImGui::Image((void*)(intptr_t)this->viewport->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 		}
+
 		K::Editor::offsetX = ImGui::GetItemRectMin().x;
 		K::Editor::offsetY = ImGui::GetItemRectMin().y;
 		if (glfwGetMouseButton(this->window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && ImGui::IsItemHovered())

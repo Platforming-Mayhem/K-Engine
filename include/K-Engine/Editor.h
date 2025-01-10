@@ -39,6 +39,7 @@ namespace K
 		bool buildWindow = false;
 		bool confirmationWindow = false;
 		bool projectLoadWindow = false;
+		bool doesIniExist = false;
 		int selectedScene = -1;
 		static K::SceneManager* sceneManager;
 	public:
