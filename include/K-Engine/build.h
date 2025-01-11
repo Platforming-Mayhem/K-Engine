@@ -32,4 +32,10 @@
 	#define K_API __declspec(dllimport)
 #endif
 
+#ifdef KC_BUILD_DLL
+#define KC_API __declspec(dllexport)
+#else
+#define KC_API __declspec(dllimport)
+#endif
+
 K_API extern std::string ASSET_DIR;

@@ -5,7 +5,7 @@
 
 namespace K 
 {
-	class Timer : public K::Component 
+	KC_API class Timer : public K::Component
 	{
 	private:
 		std::string properties;

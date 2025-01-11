@@ -5,7 +5,7 @@
 
 namespace K 
 {
-	class Move : public K::Component 
+	KC_API class Move : public K::Component
 	{
 	private:
 		float moveSpeed = 1.0f;

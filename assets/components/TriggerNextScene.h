@@ -5,7 +5,7 @@
 
 namespace K 
 {
-	class TriggerNextScene : public K::Component
+	KC_API class TriggerNextScene : public K::Component
 	{
 	private:
 		K::Vector3 bounds[2];

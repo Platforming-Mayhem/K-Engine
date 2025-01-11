@@ -7,7 +7,7 @@
 
 namespace K 
 {
-	class Quit : public K::Component
+	KC_API class Quit : public K::Component
 	{
 	private:
 		K::Camera* mainCamera;
