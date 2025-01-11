@@ -4,7 +4,7 @@
 
 namespace K
 {
-	class TriggerDeath : public K::Component
+	KC_API class TriggerDeath : public K::Component
 	{
 	private:
 		bool invert = false;

@@ -3,7 +3,7 @@
 
 namespace K
 {
-	class Camera : public K::Component
+	KC_API class Camera : public K::Component
 	{
 		bool isEditorCamActive = false;
 		bool isActive = false;

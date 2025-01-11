@@ -7,7 +7,7 @@
 
 namespace K 
 {
-	class Sprite : public K::Component
+	KC_API class Sprite : public K::Component
 	{
 	private:
 		K::Texture* texture = nullptr;

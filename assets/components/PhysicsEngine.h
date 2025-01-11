@@ -5,7 +5,7 @@
 
 namespace K 
 {
-	struct ContactPoint
+	KC_API struct ContactPoint
 	{
 		K::Vector3 position = K::Vector3();
 		K::Vector3 normal = K::Vector3();
@@ -24,7 +24,7 @@ namespace K
 		}
 	};
 
-	class Physics
+	KC_API class Physics
 	{
 	private:
 		static std::vector<K::Collider*> colliders;

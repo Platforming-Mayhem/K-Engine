@@ -5,7 +5,7 @@
 
 namespace K 
 {
-	class ButtonLoadScene : public K::Component
+	KC_API class ButtonLoadScene : public K::Component
 	{
 	private:
 		K::Mesh* mesh;

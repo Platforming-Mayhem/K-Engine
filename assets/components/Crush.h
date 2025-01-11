@@ -4,7 +4,7 @@
 
 namespace K 
 {
-	class Crush : public K::Component
+	KC_API class Crush : public K::Component
 	{
 	private:
 		K::Vector3 origin;

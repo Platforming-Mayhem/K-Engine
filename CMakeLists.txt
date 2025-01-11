@@ -51,13 +51,20 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/assets)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendors/STB)
 
+project(Components)
+
+add_library(${PROJECT_NAME} SHARED ${ComponentSrcs})
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL)
+
+target_link_libraries(${PROJECT_NAME} K-Engine)
+
 project(Editor)
 
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 
 add_executable(${PROJECT_NAME}
 src/Editor/Editor.cpp
-${ComponentSrcs}
 )
 
 add_custom_command(

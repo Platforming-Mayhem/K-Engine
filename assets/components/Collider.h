@@ -5,7 +5,7 @@
 
 namespace K
 {
-	struct Line 
+	KC_API struct Line
 	{
 		K::Vector3 point[2];
 		Line(K::Vector3 v1, K::Vector3 v2) 
@@ -20,7 +20,7 @@ namespace K
 		}
 	};
 
-	class Collider : public K::Component
+	KC_API class Collider : public K::Component
 	{
 	private:
 		bool isColliding = false;

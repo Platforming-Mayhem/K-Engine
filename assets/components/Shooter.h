@@ -8,7 +8,7 @@
 
 namespace K 
 {
-	class Bullet 
+	KC_API class Bullet
 	{
 	private:
 		K::Mesh mesh;
@@ -74,7 +74,7 @@ namespace K
 		}
 	};
 
-	class Shooter : public K::Component 
+	KC_API class Shooter : public K::Component
 	{
 	private:
 		std::vector<K::Bullet*> bullets;

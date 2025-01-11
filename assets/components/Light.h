@@ -4,7 +4,7 @@
 
 namespace K 
 {
-	class Light : public K::Component 
+	KC_API class Light : public K::Component
 	{
 	private:
 		K::Vector3 lightDirection = K::Vector3(0.0f, 0.0f, 1.0f);

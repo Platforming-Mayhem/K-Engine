@@ -6,7 +6,7 @@
 
 namespace K 
 {
-	class Player : public K::Component
+	KC_API class Player : public K::Component
 	{
 	private:
 		bool hasGravity = false;

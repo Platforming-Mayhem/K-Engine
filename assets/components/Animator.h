@@ -4,7 +4,7 @@
 
 namespace K 
 {
-	class Animator : public K::Component 
+	KC_API class Animator : public K::Component 
 	{
 	private:
 		std::string properties;
