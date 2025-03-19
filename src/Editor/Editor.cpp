@@ -9,8 +9,10 @@ void main(int argc, char** argv)
 {
 	K::Application* app = new K::Application();
 
+	std::system("\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild Components.vcxproj");
+
 	#ifdef _WIN32
-	HINSTANCE hInst = LoadLibrary(TEXT("Components.dll"));
+	HINSTANCE hInst = LoadLibrary(TEXT("Components"));
 
 	if (hInst != NULL)
 	{
