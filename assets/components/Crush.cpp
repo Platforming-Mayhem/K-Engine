@@ -1,6 +1,4 @@
 #include "Crush.h"
-#include "K-Engine/Time.h"
-#include "K-Engine/Editor.h"
 
 namespace K 
 {

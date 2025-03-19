@@ -1,8 +1,6 @@
 #pragma once
-#include "K-Engine/Component.h"
-#include "K-Engine/Time.h"
+#include <K_Engine.h>
 #include "PhysicsEngine.h"
-#include "K-Engine/Editor.h"
 #include "Mesh.h"
 #include "Animator.h"
 

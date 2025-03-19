@@ -1,6 +1,5 @@
 #pragma once
-#include "K-Engine/Transform.h"
-#include "K-Engine/Component.h"
+#include <K_Engine.h>
 
 namespace K 
 {

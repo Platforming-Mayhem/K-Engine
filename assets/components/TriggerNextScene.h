@@ -1,7 +1,6 @@
 #pragma once
-#include "K-Engine/Component.h"
+#include <K_Engine.h>
 #include "PhysicsEngine.h"
-#include "K-Engine/SceneManager.h"
 
 namespace K 
 {

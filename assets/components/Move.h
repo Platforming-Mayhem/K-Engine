@@ -1,7 +1,5 @@
 #pragma once
-#include "K-Engine/Time.h"
-#include "K-Engine/Component.h"
-#include "K-Engine/Transform.h"
+#include <K_Engine.h>
 
 namespace K 
 {

@@ -1,7 +1,6 @@
 #pragma once
-#include "K-Engine/build.h"
+#include <K_Engine.h>
 #include "Collider.h"
-#include "K-Engine/Transform.h"
 
 namespace K 
 {

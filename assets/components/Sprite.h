@@ -1,9 +1,5 @@
 #pragma once
-#include <K-Engine/Component.h>
-#include <K-Engine/Texture.h>
-#include <K-Engine/Time.h>
-#include <K-Engine/InputManager.h>
-#include <K-Engine/GameObject.h>
+#include <K_Engine.h>
 
 namespace K 
 {

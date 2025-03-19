@@ -1,6 +1,4 @@
 #include "ButtonLoadScene.h"
-#include "K-Engine/Editor.h"
-#include "K-Engine/InputManager.h"
 
 namespace K 
 {

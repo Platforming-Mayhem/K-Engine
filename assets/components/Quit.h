@@ -1,9 +1,7 @@
 #pragma once
-#include "K-Engine/Component.h"
+#include <K_Engine.h>
 #include "Camera.h"
 #include "Mesh.h"
-#include "K-Engine/InputManager.h"
-#include "K-Engine/SceneManager.h"
 
 namespace K 
 {

@@ -1,5 +1,4 @@
 #include "Sprite.h"
-#include <K-Engine/Editor.h>
 
 namespace K 
 {
