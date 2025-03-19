@@ -17,8 +17,6 @@ add_subdirectory(Vendors/IMGUI)
 add_subdirectory(Vendors/GLEW)
 add_subdirectory(Vendors/NativeFileDialog-Extended)
 
-include_directories(Vendors/STB)
-
 add_library(${PROJECT_NAME} SHARED 
 src/K-Engine/Application.cpp
 src/K-Engine/Editor.cpp
