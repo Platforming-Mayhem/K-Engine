@@ -4,7 +4,7 @@ project(IMGUI)
 
 find_package(OpenGL REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} STATIC
 imgui.cpp
 imgui_demo.cpp
 imgui_draw.cpp
