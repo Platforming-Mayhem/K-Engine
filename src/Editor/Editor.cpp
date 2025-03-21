@@ -55,6 +55,10 @@ void main(int argc, char** argv)
 
 	std::system(cmakelist.c_str());
 
+	std::string msvcCommand = std::format("if 1==1 \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
+
+	std::system(msvcCommand.c_str());
+
 	#ifdef _WIN32
 	HINSTANCE hInst = LoadLibrary(TEXT("Components"));
 
