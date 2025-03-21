@@ -8,6 +8,7 @@ namespace K
 	float K::Editor::windowScaleFactor = 1.0f;
 	float K::Editor::offsetX = 0.0f;
 	float K::Editor::offsetY = 0.0f;
+	std::filesystem::path K::Editor::currentDirectory = ASSET_DIR;
 
 	K::Matrix4x4* K::Editor::projectionMatrix;
 
@@ -451,6 +452,11 @@ namespace K
 		{
 			K::Editor::selectedGameObject = nullptr;
 		}
+	}
+
+	void Editor::SetDirectory(std::filesystem::path path) 
+	{
+		K::Editor::currentDirectory = path;
 	}
 
 	void Editor::ShowChildren(K::GameObject* current) 

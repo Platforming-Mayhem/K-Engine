@@ -31,7 +31,6 @@ namespace K
 	class K_API Editor
 	{
 	private:
-		std::filesystem::path currentDirectory;
 		std::string sceneName;
 		K::RenderTexture* viewport;
 		std::map<std::string, K::Texture*> preloadedTextures;
@@ -42,6 +41,7 @@ namespace K
 		bool doesIniExist = false;
 		int selectedScene = -1;
 		static K::SceneManager* sceneManager;
+		static std::filesystem::path currentDirectory;
 	public:
 
 		static float windowScaleFactor;
@@ -95,6 +95,8 @@ namespace K
 		bool Render();
 
 		K::RenderTexture* GetViewport();
+
+		static void SetDirectory(std::filesystem::path path);
 
 		static void Delete(K::GameObject* target);
 

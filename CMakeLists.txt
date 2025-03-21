@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
 
-file(GLOB ComponentSrcs
-     "assets/components/*.cpp"
-)
-
 project(K-Engine)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -49,14 +45,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/assets)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendors/STB)
-
-project(Components)
-
-add_library(${PROJECT_NAME} SHARED ${ComponentSrcs})
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL)
-
-target_link_libraries(${PROJECT_NAME} K-Engine)
 
 project(Editor)
 
