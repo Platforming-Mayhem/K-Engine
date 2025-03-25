@@ -4,7 +4,6 @@ project(K-Engine)
 
 set(CMAKE_CXX_STANDARD 23)
 set(USE_GLU ON)
-set(ONLY_LIBS ON)
 
 find_package(OpenGL REQUIRED)
 

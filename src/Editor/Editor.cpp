@@ -7,8 +7,6 @@
 
 void main(int argc, char** argv)
 {
-	K::Application* app = new K::Application();
-
 	NFD_Init();
 	char* location;
 	if (NFD_PickFolderU8(&location, NULL) == NFD_OKAY)
@@ -25,8 +23,6 @@ void main(int argc, char** argv)
 	FILE* file = fopen(cmakelist.c_str(), "w");
 
 	fputs("set(CMAKE_CXX_STANDARD 23) \n"
-		"set(USE_GLU ON) \n"
-		"set(ONLY_LIBS ON) \n"
 		"project(Components) \n", file);
 
 	std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", std::filesystem::current_path().parent_path().string());
@@ -37,7 +33,7 @@ void main(int argc, char** argv)
 
 	fputs(cmakeCommand.c_str(), file);
 
-	cmakeCommand = std::format("add_subdirectory(\"{0}\" K-Engine) \n", std::filesystem::current_path().parent_path().parent_path().string());
+	cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}\\bin\") \n", std::filesystem::current_path().parent_path().parent_path().string());
 
 	fputs(cmakeCommand.c_str(), file);
 
@@ -55,7 +51,7 @@ void main(int argc, char** argv)
 
 	std::system(cmakelist.c_str());
 
-	std::string msvcCommand = std::format("if 1==1 \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
+	std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
 
 	std::system(msvcCommand.c_str());
 
@@ -79,6 +75,7 @@ void main(int argc, char** argv)
 	}
 	#endif
 
+	K::Application* app = new K::Application();
 	std::string name = argv[0];
 	app->Run(name.substr(name.find_last_of('\\') + 1).c_str());
 
