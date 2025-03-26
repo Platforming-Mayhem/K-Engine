@@ -9,6 +9,7 @@ namespace K
 	bool K::SceneManager::loadScene = false;
 	bool K::SceneManager::quit = false;
 	int K::SceneManager::index = -1;
+	std::string K::SceneManager::relativeFilePath;
 
 	SceneManager::SceneManager(unsigned int resource)
 	{
@@ -45,13 +46,21 @@ namespace K
 
 	SceneManager::SceneManager(std::string path)
 	{
+		relativeFilePath = path;
 		if (!path.empty()) 
 		{
-			std::ifstream inFile(ASSET_DIR + path);
-			std::string line;
-			while (std::getline(inFile, line))
+			std::ifstream inFile(ASSET_DIR + relativeFilePath);
+			if (inFile.good()) 
 			{
-				this->AddScene(line.c_str());
+				std::string line;
+				while (std::getline(inFile, line))
+				{
+					this->AddScene(line.c_str());
+				}
+			}
+			else 
+			{
+				std::ofstream inFile(ASSET_DIR + relativeFilePath);
 			}
 		}
 		K::SceneManager::currentScene = new K::Scene("Untitled*");
@@ -175,7 +184,7 @@ namespace K
 	void SceneManager::SaveSceneManager() 
 	{
 		std::ofstream outFile;
-		outFile.open(ASSET_DIR + "ignore/SceneManager.txt", std::ofstream::trunc);
+		outFile.open(ASSET_DIR + relativeFilePath, std::ofstream::trunc);
 		if (outFile)
 		{
 			for (int i = 0; i < this->scenes.size(); i++) 

@@ -12,6 +12,7 @@ namespace K
 		static bool loadScene;
 		static bool quit;
 		static int index;
+		static std::string relativeFilePath;
 	public:
 
 		static K::Scene* currentScene;
