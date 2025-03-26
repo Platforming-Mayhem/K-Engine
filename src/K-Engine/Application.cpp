@@ -20,7 +20,7 @@ namespace K
 
 		K::renderTex = new K::RenderTexture(K::window->width, K::window->height, GL_TEXTURE_2D, GL_R32I, GL_RED_INTEGER);
 
-		K::SceneManager* manager = new K::SceneManager("buildScenes.txt");
+		K::SceneManager* manager = new K::SceneManager("");
 
 		K::Editor* editor = new K::Editor(K::window, manager);
 

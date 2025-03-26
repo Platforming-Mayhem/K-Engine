@@ -31,6 +31,8 @@ namespace K
 
 		static bool Update();
 
+		void LoadBuildMenu(std::string path);
+
 		static void Quit();
 
 		static void LoadScene(int newIndex);

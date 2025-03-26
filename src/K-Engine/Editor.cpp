@@ -1,7 +1,7 @@
 #include "K-Engine/Editor.h"
 #include <K_Engine.h>
 
-std::string ASSET_DIR = std::filesystem::current_path().string() + "/";
+std::string ASSET_DIR;
 
 namespace K 
 {
@@ -199,14 +199,75 @@ namespace K
 			{
 				NFD_Init();
 				char* location;
+				std::string projectName;
 				if (NFD_PickFolderU8(&location, NULL) == NFD_OKAY) 
 				{
 					ASSET_DIR = location;
-					ASSET_DIR += '/';
-					this->currentDirectory = ASSET_DIR;
+					ASSET_DIR += "/assets/";
+					if (!std::filesystem::is_directory(ASSET_DIR))
+					{
+						std::filesystem::create_directory(ASSET_DIR);
+					}
+					K::Editor::SetDirectory(ASSET_DIR);
+					projectName = location;
 					NFD_FreePathU8(location);
 				}
 				NFD_Quit();
+
+				projectName = std::filesystem::absolute(projectName).filename().string();
+
+				glfwSetWindowTitle(K::window->window, projectName.c_str());
+
+				std::string cmakelist = ASSET_DIR + "CMakeLists.txt";
+
+				FILE* file = fopen(cmakelist.c_str(), "w");
+
+				fputs("set(CMAKE_CXX_STANDARD 23) \n"
+					"project(Components) \n", file);
+
+				std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", std::filesystem::current_path().parent_path().string());
+
+				fputs(cmakeCommand.c_str(), file);
+
+				cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", std::filesystem::current_path().parent_path().string());
+
+				fputs(cmakeCommand.c_str(), file);
+
+				cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}\\bin\") \n", std::filesystem::current_path().parent_path().parent_path().string());
+
+				fputs(cmakeCommand.c_str(), file);
+
+				fputs("file(GLOB ComponentSrcs \"components/*.cpp\") \n"
+					"add_library(${PROJECT_NAME} SHARED ${ComponentSrcs}) \n"
+					"target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL) \n"
+					"target_link_libraries(${PROJECT_NAME} K-Engine) \n"
+					"set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY \"$(ProjectDir) / $(Configuration)\")", file);
+
+				fclose(file);
+
+				std::cout << "Do you want to build? (Y/N)";
+
+				std::string val;
+
+				std::cin >> val;
+
+				if (val == "Y")
+				{
+					const std::string quote = "\"";
+
+					cmakelist = "cmake -S " + quote + ASSET_DIR + quote + " -B " + quote + ASSET_DIR + "bin" + quote;
+
+					std::system(cmakelist.c_str());
+
+					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
+
+					std::system(msvcCommand.c_str());
+				}
+
+				K::Editor::sceneManager->LoadBuildMenu("buildScenes.txt");
+
+				K::SceneManager::LoadScene(0);
+
 				this->projectLoadWindow = false;
 			}
 			if (this->confirmationWindow) 
@@ -436,7 +497,8 @@ namespace K
 
 		ImGuiHierarchy();
 
-		ImGuiContentBrowser();
+		if(!ASSET_DIR.empty())
+			ImGuiContentBrowser();
 
 		ImGuiViewport();
 

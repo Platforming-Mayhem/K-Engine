@@ -46,11 +46,18 @@ namespace K
 
 	SceneManager::SceneManager(std::string path)
 	{
-		relativeFilePath = path;
-		if (!path.empty()) 
+		K::SceneManager::LoadBuildMenu(path);
+
+		K::SceneManager::currentScene = new K::Scene("Untitled*");
+	}
+
+	void SceneManager::LoadBuildMenu(std::string path)
+	{
+		if (!path.empty() && !ASSET_DIR.empty())
 		{
+			relativeFilePath = path;
 			std::ifstream inFile(ASSET_DIR + relativeFilePath);
-			if (inFile.good()) 
+			if (inFile.good())
 			{
 				std::string line;
 				while (std::getline(inFile, line))
@@ -58,12 +65,11 @@ namespace K
 					this->AddScene(line.c_str());
 				}
 			}
-			else 
+			else
 			{
 				std::ofstream inFile(ASSET_DIR + relativeFilePath);
 			}
 		}
-		K::SceneManager::currentScene = new K::Scene("Untitled*");
 	}
 
 	SceneManager::~SceneManager() 
