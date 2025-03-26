@@ -1,12 +1,12 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by KEngineResources.rc
+// Used by Editor.rc
 //
-#define WATERMARK_TEX                       101
-#define EDITOR_SHADER                    102
+#define WATERMARK_TEX                   101
+#define EDITOR_SHADER                   102
 #define FILE_TEX                        103
-#define SCENE_TEX                        104
-#define UNKNOWN_TEX                        105
+#define SCENE_TEX                       104
+#define UNKNOWN_TEX                     105
 
 // Next default values for new objects
 // 
