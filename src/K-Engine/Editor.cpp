@@ -210,14 +210,14 @@ namespace K
 			{
 				if (ImGui::BeginMenu("File"))
 				{
+					if (ImGui::MenuItem("Create/Open Project"))
+					{
+						this->projectLoadWindow = true;
+					}
 					if (ImGui::MenuItem("New Scene"))
 					{
 						K::Editor::GetCurrentScene()->CreateEmptyScene();
 						this->selectedGameObject = nullptr;
-					}
-					if (ImGui::MenuItem("Create/Open Project")) 
-					{
-						this->projectLoadWindow = true;
 					}
 					if (ImGui::MenuItem("Save..."))
 					{
@@ -264,18 +264,27 @@ namespace K
 
 				FILE* file = fopen(cmakelist.c_str(), "w");
 
-				fputs("set(CMAKE_CXX_STANDARD 23) \n"
+				fputs("cmake_minimum_required(VERSION 3.8) \n"
+					"set(CMAKE_CXX_STANDARD 23) \n"
 					"project(Components) \n", file);
+				
+				std::string path = std::filesystem::current_path().parent_path().string();
 
-				std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", std::filesystem::current_path().parent_path().string());
+				std::replace(path.begin(), path.end(), '\\', '/');
+				
+				std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", path);
 
 				fputs(cmakeCommand.c_str(), file);
 
-				cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", std::filesystem::current_path().parent_path().string());
+				cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", path);
 
 				fputs(cmakeCommand.c_str(), file);
 
-				cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}\\bin\") \n", std::filesystem::current_path().parent_path().parent_path().string());
+				path = std::filesystem::current_path().parent_path().parent_path().string();
+
+				std::replace(path.begin(), path.end(), '\\', '/');
+
+				cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}/bin\") \n", path);
 
 				fputs(cmakeCommand.c_str(), file);
 
@@ -413,7 +422,7 @@ namespace K
 
 				if (ImGui::Button("Yes"))
 				{
-					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
+					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles(x86)%\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
 
 					std::system(msvcCommand.c_str());
 

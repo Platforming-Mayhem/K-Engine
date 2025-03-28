@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by Editor.rc
 //
+#define IDI_ICON1                       100
 #define WATERMARK_TEX                   101
 #define EDITOR_SHADER                   102
 #define FILE_TEX                        103

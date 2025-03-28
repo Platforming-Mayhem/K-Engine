@@ -1,6 +1,6 @@
 cd /d %~dp0
 cmake -B bin
-call "%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat" && cd bin && msbuild Editor.sln
+call "%ProgramFiles(x86)%\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\Tools\\VsDevCmd.bat" && cd bin && msbuild Editor.sln
 pause
 echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut.vbs
 echo sLinkFile = "%HOMEDRIVE%%HOMEPATH%\Desktop\Editor.lnk" >> CreateShortcut.vbs

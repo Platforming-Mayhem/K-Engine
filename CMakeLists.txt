@@ -63,6 +63,9 @@ add_custom_command(
 )
 
 target_sources(${PROJECT_NAME} PRIVATE assets/ignore/Editor.rc)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE _DEBUG)
+
 target_link_libraries(${PROJECT_NAME} K-Engine)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)/$(Configuration)")
