@@ -15,7 +15,6 @@
 #include <unordered_map>
 #include <format>
 #include <thread>
-#include <Windows.h>
 #include <ignore/resource.h>
 #include <bitset>
 
@@ -25,6 +24,12 @@
 #include "misc/cpp/imgui_stdlib.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
+
+#ifdef _WIN32
+#include <Windows.h>
+#elif __unix__
+#include <dlfcn.h>
+#endif
 
 #ifdef K_BUILD_DLL
 	#define K_API __declspec(dllexport)

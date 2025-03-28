@@ -35,9 +35,12 @@ namespace K
 		K::RenderTexture* viewport;
 		std::map<std::string, K::Texture*> preloadedTextures;
 		K::Window* window;
+		HINSTANCE componentsLibrary = NULL;
 		bool buildWindow = false;
 		bool confirmationWindow = false;
 		bool projectLoadWindow = false;
+		bool cmakeBuildWindow = false;
+		bool msvcBuildWindow = false;
 		bool doesIniExist = false;
 		int selectedScene = -1;
 		static K::SceneManager* sceneManager;
@@ -71,6 +74,10 @@ namespace K
 		void AddPreloadedTexture(unsigned int location);
 
 		void LoadPreloadedTextures();
+
+		void LoadComponents();
+
+		void UnloadComponents();
 
 		void ParentChildrenHierarchy();
 

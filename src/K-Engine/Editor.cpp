@@ -63,6 +63,7 @@ namespace K
 	Editor::~Editor()
 	{
 		#if _DEBUG
+		this->UnloadComponents();
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -76,6 +77,42 @@ namespace K
 		#endif
 
 		delete this->window;
+	}
+
+	void Editor::UnloadComponents() 
+	{
+		if (this->componentsLibrary != NULL) 
+		{
+			#ifdef _WIN32
+			FreeLibrary(this->componentsLibrary);
+			#elif __unix__
+			dlclose(handle);
+			#endif
+		}
+	}
+
+	void Editor::LoadComponents() 
+	{
+		this->UnloadComponents();
+		#ifdef _WIN32
+		this->componentsLibrary = LoadLibrary(TEXT("Components"));
+
+		if (this->componentsLibrary != NULL)
+		{
+			std::cout << "Found Library" << std::endl;
+		}
+		else
+		{
+			std::cout << "No Library Found" << std::endl;
+		}
+
+		#elif __unix__
+		void* handle = dlopen("Components.so", RTLD_NOW)
+		if (handle)
+		{
+			std::cout << "Found Library" << std::endl;
+		}
+		#endif
 	}
 
 	ImGuiContext* Editor::GetImGuiContext() 
@@ -178,7 +215,7 @@ namespace K
 						K::Editor::GetCurrentScene()->CreateEmptyScene();
 						this->selectedGameObject = nullptr;
 					}
-					if (ImGui::MenuItem("Open Project")) 
+					if (ImGui::MenuItem("Create/Open Project")) 
 					{
 						this->projectLoadWindow = true;
 					}
@@ -197,22 +234,27 @@ namespace K
 			}
 			if (this->projectLoadWindow) 
 			{
-				NFD_Init();
 				char* location;
 				std::string projectName;
-				if (NFD_PickFolderU8(&location, NULL) == NFD_OKAY) 
+
+				if (NFD_Init()) 
 				{
-					ASSET_DIR = location;
-					ASSET_DIR += "/assets/";
-					if (!std::filesystem::is_directory(ASSET_DIR))
+					if (NFD_PickFolderU8(&location, NULL) == NFD_OKAY)
 					{
-						std::filesystem::create_directory(ASSET_DIR);
+						ASSET_DIR = location;
+						ASSET_DIR += "/assets/";
+						if (!std::filesystem::is_directory(ASSET_DIR))
+						{
+							std::filesystem::create_directory(ASSET_DIR);
+						}
+						K::Editor::SetDirectory(ASSET_DIR);
+						projectName = location;
+						NFD_FreePathU8(location);
 					}
-					K::Editor::SetDirectory(ASSET_DIR);
-					projectName = location;
-					NFD_FreePathU8(location);
+					NFD_Quit();
 				}
-				NFD_Quit();
+
+				this->cmakeBuildWindow = true;
 
 				projectName = std::filesystem::absolute(projectName).filename().string();
 
@@ -245,28 +287,7 @@ namespace K
 
 				fclose(file);
 
-				std::cout << "Do you want to build? (Y/N)";
-
-				std::string val;
-
-				std::cin >> val;
-
-				if (val == "Y")
-				{
-					const std::string quote = "\"";
-
-					cmakelist = "cmake -S " + quote + ASSET_DIR + quote + " -B " + quote + ASSET_DIR + "bin" + quote;
-
-					std::system(cmakelist.c_str());
-
-					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
-
-					std::system(msvcCommand.c_str());
-				}
-
 				K::Editor::sceneManager->LoadBuildMenu("buildScenes.txt");
-
-				K::SceneManager::LoadScene(0);
 
 				this->projectLoadWindow = false;
 			}
@@ -275,22 +296,15 @@ namespace K
 				ImGui::OpenPopup("Confirmation Window");
 				this->confirmationWindow = false;
 			}
-			if (ImGui::BeginPopup("Confirmation Window")) 
+			if (this->cmakeBuildWindow) 
 			{
-				ImGui::InputText("Scene Name: ", &this->sceneName);
-				ImGui::Text("Are you sure you want to overwrite this scene?");
-				if (ImGui::Button("Yes")) 
-				{
-					if(K::Editor::GetCurrentScene()->GetSceneName() != this->sceneName)
-						K::Editor::GetCurrentScene()->RenameScene(this->sceneName);
-					K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene(), ASSET_DIR + K::Editor::GetCurrentScene()->GetLocation());
-					ImGui::CloseCurrentPopup();
-				}
-				else if (ImGui::Button("No")) 
-				{
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::EndPopup();
+				ImGui::OpenPopup("Cmake");
+				this->cmakeBuildWindow = false;
+			}
+			if (this->msvcBuildWindow)
+			{
+				ImGui::OpenPopup("MSBuild");
+				this->msvcBuildWindow = false;
 			}
 			if (this->buildWindow)
 			{
@@ -347,6 +361,78 @@ namespace K
 				{
 					this->buildWindow = false;
 				}
+			}
+
+			if (ImGui::BeginPopupModal("Confirmation Window"))
+			{
+				ImGui::InputText("Scene Name: ", &this->sceneName);
+				ImGui::Text("Are you sure you want to overwrite this scene?");
+				if (ImGui::Button("Yes"))
+				{
+					if (K::Editor::GetCurrentScene()->GetSceneName() != this->sceneName)
+						K::Editor::GetCurrentScene()->RenameScene(this->sceneName);
+					K::Serializer serialize = K::Serializer(K::Editor::GetCurrentScene(), ASSET_DIR + K::Editor::GetCurrentScene()->GetLocation());
+					ImGui::CloseCurrentPopup();
+				}
+				else if (ImGui::Button("No"))
+				{
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+
+			if (ImGui::BeginPopupModal("Cmake"))
+			{
+				ImGui::Text("Are you sure you want to build with Cmake?");
+
+				if (ImGui::Button("Yes"))
+				{
+					const std::string quote = "\"";
+
+					std::string cmakelist = "cmake -S " + quote + ASSET_DIR + quote + " -B " + quote + ASSET_DIR + "bin" + quote;
+
+					std::system(cmakelist.c_str());
+
+					this->msvcBuildWindow = true;
+
+					ImGui::CloseCurrentPopup();
+				}
+				else if (ImGui::Button("No"))
+				{
+					this->msvcBuildWindow = true;
+
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
+			}
+
+			if (ImGui::BeginPopupModal("MSBuild"))
+			{
+				ImGui::Text("Are you sure you want to build with MSBuild?");
+
+				if (ImGui::Button("Yes"))
+				{
+					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
+
+					std::system(msvcCommand.c_str());
+
+					this->LoadComponents();
+
+					K::SceneManager::LoadScene(0);
+
+					ImGui::CloseCurrentPopup();
+				}
+				else if (ImGui::Button("No"))
+				{
+					this->LoadComponents();
+
+					K::SceneManager::LoadScene(0);
+
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
 			}
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / (ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
