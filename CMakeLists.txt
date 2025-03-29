@@ -11,6 +11,7 @@ add_subdirectory(Vendors/GLFW)
 add_subdirectory(Vendors/IMGUI)
 add_subdirectory(Vendors/GLEW)
 add_subdirectory(Vendors/NativeFileDialog-Extended)
+add_subdirectory(Vendors/OpenAL)
 
 add_library(${PROJECT_NAME} SHARED 
 src/K-Engine/Application.cpp
@@ -38,6 +39,7 @@ target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} IMGUI)
 target_link_libraries(${PROJECT_NAME} nfd)
 target_link_libraries(${PROJECT_NAME} libglew_shared)
+target_link_libraries(${PROJECT_NAME} OpenAL)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src)
 
