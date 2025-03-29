@@ -1,9 +1,6 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <nfd.h>
 #include <filesystem>
 #include <fstream>
 #include <strstream>
@@ -18,12 +15,24 @@
 #include <ignore/resource.h>
 #include <bitset>
 
+//GLFW & GLEW
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+//NFD
+#include <nfd.h>
+
+//OpenAL
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alext.h>
+
 //ImGUI
-#include "imgui.h"
-#include "imgui_internal.h"
-#include "misc/cpp/imgui_stdlib.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <misc/cpp/imgui_stdlib.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
 #ifdef _WIN32
 #include <Windows.h>

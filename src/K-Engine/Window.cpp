@@ -51,6 +51,16 @@ namespace K
 
 		std::cout << glGetString(GL_VERSION) << std::endl;
 
+		this->audioDevice = alcOpenDevice(NULL);
+
+		if (this->audioDevice) 
+		{
+			this->audioContext = alcCreateContext(this->audioDevice, NULL);
+			alcMakeContextCurrent(this->audioContext);
+		}
+
+		alGetError();
+
 		glPolygonMode(GL_FRONT, GL_FILL);
 
 		glEnable(GL_BLEND);
@@ -68,6 +78,12 @@ namespace K
 
 	Window::~Window()
 	{
+		this->audioContext = alcGetCurrentContext();
+		this->audioDevice = alcGetContextsDevice(this->audioContext);
+		alcMakeContextCurrent(NULL);
+		alcDestroyContext(this->audioContext);
+		alcCloseDevice(this->audioDevice);
+
 		glfwDestroyWindow(this->window);
 		glfwTerminate();
 	}
