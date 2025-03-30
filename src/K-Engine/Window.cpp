@@ -36,8 +36,8 @@ namespace K
 
 		if (!this->window)
 		{
-			glfwTerminate();
 			std::cout << "Failed to create window" << std::endl;
+			glfwTerminate();
 		}
 
 		glfwMakeContextCurrent(this->window);
@@ -51,15 +51,14 @@ namespace K
 
 		std::cout << glGetString(GL_VERSION) << std::endl;
 
-		this->audioDevice = alcOpenDevice(NULL);
+		ma_result result = ma_engine_init(NULL, &this->miniAudioEngine);
 
-		if (this->audioDevice) 
+		if (result != MA_SUCCESS) 
 		{
-			this->audioContext = alcCreateContext(this->audioDevice, NULL);
-			alcMakeContextCurrent(this->audioContext);
+			std::cout << "Failed to initialize audio engine" << std::endl;
 		}
 
-		alGetError();
+		ma_engine_play_sound(&this->miniAudioEngine, "../../assets/audios/StartUp.wav", NULL);
 
 		glPolygonMode(GL_FRONT, GL_FILL);
 
@@ -78,12 +77,7 @@ namespace K
 
 	Window::~Window()
 	{
-		this->audioContext = alcGetCurrentContext();
-		this->audioDevice = alcGetContextsDevice(this->audioContext);
-		alcMakeContextCurrent(NULL);
-		alcDestroyContext(this->audioContext);
-		alcCloseDevice(this->audioDevice);
-
+		ma_engine_uninit(&this->miniAudioEngine);
 		glfwDestroyWindow(this->window);
 		glfwTerminate();
 	}

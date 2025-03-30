@@ -19,13 +19,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+//MiniAudio
+#include <MiniAudio/miniaudio.h>
+
 //NFD
 #include <nfd.h>
-
-//OpenAL
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alext.h>
 
 //ImGUI
 #include <imgui.h>

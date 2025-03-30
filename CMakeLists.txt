@@ -5,20 +5,13 @@ project(K-Engine)
 set(CMAKE_CXX_STANDARD 23)
 set(USE_GLU ON)
 
-set(ALSOFT_EXAMPLES OFF)
-set(ALSOFT_UTILS OFF)
-set(ALSOFT_INSTALL_UTILS OFF)
-set(ALSOFT_INSTALL_CONFIG OFF)
-set(ALSOFT_INSTALL_EXAMPLES OFF)
-set(ALSOFT_NO_CONFIG_UTIL ON)
-
 find_package(OpenGL REQUIRED)
 
 add_subdirectory(Vendors/GLFW)
 add_subdirectory(Vendors/IMGUI)
 add_subdirectory(Vendors/GLEW)
+add_subdirectory(Vendors/MiniAudio)
 add_subdirectory(Vendors/NativeFileDialog-Extended)
-add_subdirectory(Vendors/OpenAL)
 
 add_library(${PROJECT_NAME} SHARED 
 src/K-Engine/Application.cpp
@@ -34,7 +27,6 @@ src/K-Engine/Texture.cpp
 src/K-Engine/Time.cpp
 src/K-Engine/Transform.cpp
 src/K-Engine/Window.cpp
-src/K-Engine/Audio.cpp
 src/K-Engine/Components/Component.cpp
 )
 
@@ -47,13 +39,13 @@ target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} IMGUI)
 target_link_libraries(${PROJECT_NAME} nfd)
 target_link_libraries(${PROJECT_NAME} libglew_shared)
-target_link_libraries(${PROJECT_NAME} OpenAL)
+target_link_libraries(${PROJECT_NAME} miniaudio)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/assets)
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendors/STB)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendors)
 
 project(Editor)
 
