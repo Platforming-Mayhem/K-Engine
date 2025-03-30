@@ -5,6 +5,13 @@ project(K-Engine)
 set(CMAKE_CXX_STANDARD 23)
 set(USE_GLU ON)
 
+set(ALSOFT_EXAMPLES OFF)
+set(ALSOFT_UTILS OFF)
+set(ALSOFT_INSTALL_UTILS OFF)
+set(ALSOFT_INSTALL_CONFIG OFF)
+set(ALSOFT_INSTALL_EXAMPLES OFF)
+set(ALSOFT_NO_CONFIG_UTIL ON)
+
 find_package(OpenGL REQUIRED)
 
 add_subdirectory(Vendors/GLFW)
@@ -27,6 +34,7 @@ src/K-Engine/Texture.cpp
 src/K-Engine/Time.cpp
 src/K-Engine/Transform.cpp
 src/K-Engine/Window.cpp
+src/K-Engine/Audio.cpp
 src/K-Engine/Components/Component.cpp
 )
 
