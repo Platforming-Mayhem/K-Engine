@@ -65,10 +65,6 @@ namespace K
 					this->AddScene(line.c_str());
 				}
 			}
-			else
-			{
-				std::ofstream inFile(ASSET_DIR + relativeFilePath);
-			}
 		}
 	}
 

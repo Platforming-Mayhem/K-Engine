@@ -58,7 +58,9 @@ namespace K
 			std::cout << "Failed to initialize audio engine" << std::endl;
 		}
 
+		#if _DEBUG
 		ma_engine_play_sound(&this->miniAudioEngine, "../../assets/audios/StartUp.wav", NULL);
+		#endif
 
 		glPolygonMode(GL_FRONT, GL_FILL);
 

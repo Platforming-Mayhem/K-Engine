@@ -8,7 +8,7 @@ namespace K
 	float K::Editor::windowScaleFactor = 1.0f;
 	float K::Editor::offsetX = 0.0f;
 	float K::Editor::offsetY = 0.0f;
-	std::filesystem::path K::Editor::currentDirectory = ASSET_DIR;
+	std::filesystem::path K::Editor::currentDirectory;
 
 	K::Matrix4x4* K::Editor::projectionMatrix;
 
@@ -33,7 +33,19 @@ namespace K
 		this->sceneManager = sceneManager;
 		this->window = window;
 		this->buildWindow = false;
+
+		ASSET_DIR = std::filesystem::current_path().string();
+		ASSET_DIR += "/assets/";
+		if (!std::filesystem::is_directory(ASSET_DIR))
+		{
+			ASSET_DIR = std::filesystem::current_path().string();
+		}
+		K::Editor::SetDirectory(ASSET_DIR);
+
 		this->currentDirectory = ASSET_DIR;
+		this->LoadComponents();
+		K::Editor::sceneManager->LoadBuildMenu("buildScenes.txt");
+
 		#if _DEBUG
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
 
@@ -62,8 +74,9 @@ namespace K
 
 	Editor::~Editor()
 	{
-		#if _DEBUG
 		this->UnloadComponents();
+
+		#if _DEBUG
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -256,6 +269,7 @@ namespace K
 
 				this->cmakeBuildWindow = true;
 
+				this->projectPath = projectName;
 				projectName = std::filesystem::absolute(projectName).filename().string();
 
 				glfwSetWindowTitle(K::window->window, projectName.c_str());
@@ -366,6 +380,15 @@ namespace K
 
 				ImGui::PopStyleColor();
 
+				if (ImGui::Button("Build Executable")) 
+				{
+					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{0}\" -p:BuildProjectReferences=false;Configuration=Release;OutDir=\"{3}\" && msbuild \"{1}\" -p:BuildProjectReferences=false;Configuration=Release;OutDir=\"{3}\"&& msbuild \"{2}\" -p:BuildProjectReferences=false;Configuration=Release;OutDir=\"{3}\"", std::filesystem::current_path().parent_path().string() + "/K-Engine.vcxproj", ASSET_DIR + "bin/Components.vcxproj", std::filesystem::current_path().parent_path().string() + "/Editor.vcxproj", this->projectPath);
+
+					std::cout << msvcCommand << std::endl;
+
+					std::system(msvcCommand.c_str());
+				}
+
 				if (ImGui::Button("Exit Build Menu"))
 				{
 					this->buildWindow = false;
@@ -424,7 +447,7 @@ namespace K
 				{
 					this->UnloadComponents();
 
-					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && cd .. && echo %cd% && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
+					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
 
 					std::system(msvcCommand.c_str());
 

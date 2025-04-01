@@ -38,7 +38,7 @@ target_link_libraries(${PROJECT_NAME} OpenGL::GLU)
 target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} IMGUI)
 target_link_libraries(${PROJECT_NAME} nfd)
-target_link_libraries(${PROJECT_NAME} libglew_shared)
+target_link_libraries(${PROJECT_NAME} libglew_static)
 target_link_libraries(${PROJECT_NAME} miniaudio)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src)
@@ -55,18 +55,7 @@ add_executable(${PROJECT_NAME}
 src/Editor/Editor.cpp
 )
 
-add_custom_command(
-    TARGET ${PROJECT_NAME} 
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> 
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        COMMAND_EXPAND_LISTS
-)
-
 target_sources(${PROJECT_NAME} PRIVATE assets/ignore/Editor.rc)
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE _DEBUG)
 
 target_link_libraries(${PROJECT_NAME} K-Engine)
 
