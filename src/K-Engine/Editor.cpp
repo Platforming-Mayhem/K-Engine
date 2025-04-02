@@ -267,8 +267,6 @@ namespace K
 					NFD_Quit();
 				}
 
-				this->cmakeBuildWindow = true;
-
 				this->projectPath = projectName;
 				projectName = std::filesystem::absolute(projectName).filename().string();
 
@@ -276,41 +274,52 @@ namespace K
 
 				std::string cmakelist = ASSET_DIR + "CMakeLists.txt";
 
-				FILE* file = fopen(cmakelist.c_str(), "w");
+				if (!std::filesystem::exists(cmakelist)) 
+				{
+					FILE* file = fopen(cmakelist.c_str(), "w");
 
-				fputs("cmake_minimum_required(VERSION 3.8) \n"
-					"set(CMAKE_CXX_STANDARD 23) \n"
-					"project(Components) \n", file);
-				
-				std::string path = std::filesystem::current_path().parent_path().string();
+					fputs("cmake_minimum_required(VERSION 3.8) \n"
+						"set(CMAKE_CXX_STANDARD 23) \n"
+						"project(Components) \n", file);
 
-				std::replace(path.begin(), path.end(), '\\', '/');
-				
-				std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", path);
+					std::string path = std::filesystem::current_path().parent_path().string();
 
-				fputs(cmakeCommand.c_str(), file);
+					std::replace(path.begin(), path.end(), '\\', '/');
 
-				cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", path);
+					std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", path);
 
-				fputs(cmakeCommand.c_str(), file);
+					fputs(cmakeCommand.c_str(), file);
 
-				path = std::filesystem::current_path().parent_path().parent_path().string();
+					cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", path);
 
-				std::replace(path.begin(), path.end(), '\\', '/');
+					fputs(cmakeCommand.c_str(), file);
 
-				cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}/bin\") \n", path);
+					path = std::filesystem::current_path().parent_path().parent_path().string();
 
-				fputs(cmakeCommand.c_str(), file);
+					std::replace(path.begin(), path.end(), '\\', '/');
 
-				fputs("file(GLOB ComponentSrcs \"components/*.cpp\") \n"
-					"add_library(${PROJECT_NAME} SHARED ${ComponentSrcs}) \n"
-					"target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL) \n"
-					"target_link_libraries(${PROJECT_NAME} K-Engine) \n"
-					"set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY \"$(ProjectDir) / $(Configuration)\")", file);
+					cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}/bin\") \n", path);
 
-				fclose(file);
+					fputs(cmakeCommand.c_str(), file);
+
+					fputs("file(GLOB ComponentSrcs \"components/*.cpp\") \n"
+						"add_library(${PROJECT_NAME} SHARED ${ComponentSrcs}) \n"
+						"target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL) \n"
+						"target_link_libraries(${PROJECT_NAME} K-Engine) \n"
+						"set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY \"$(ProjectDir) / $(Configuration)\")", file);
+
+					fclose(file);
+
+					const std::string quote = "\"";
+
+					std::string cmakelist = "cmake -S " + quote + ASSET_DIR + quote + " -B " + quote + ASSET_DIR + "bin" + quote;
+
+					std::system(cmakelist.c_str());
+				}
 
 				K::Editor::sceneManager->LoadBuildMenu("buildScenes.txt");
+
+				this->msvcBuildWindow = true;
 
 				this->projectLoadWindow = false;
 			}
@@ -318,11 +327,6 @@ namespace K
 			{
 				ImGui::OpenPopup("Confirmation Window");
 				this->confirmationWindow = false;
-			}
-			if (this->cmakeBuildWindow) 
-			{
-				ImGui::OpenPopup("Cmake");
-				this->cmakeBuildWindow = false;
 			}
 			if (this->msvcBuildWindow)
 			{
@@ -410,32 +414,6 @@ namespace K
 				{
 					ImGui::CloseCurrentPopup();
 				}
-				ImGui::EndPopup();
-			}
-
-			if (ImGui::BeginPopupModal("Cmake"))
-			{
-				ImGui::Text("Are you sure you want to build with Cmake?");
-
-				if (ImGui::Button("Yes"))
-				{
-					const std::string quote = "\"";
-
-					std::string cmakelist = "cmake -S " + quote + ASSET_DIR + quote + " -B " + quote + ASSET_DIR + "bin" + quote;
-
-					std::system(cmakelist.c_str());
-
-					this->msvcBuildWindow = true;
-
-					ImGui::CloseCurrentPopup();
-				}
-				else if (ImGui::Button("No"))
-				{
-					this->msvcBuildWindow = true;
-
-					ImGui::CloseCurrentPopup();
-				}
-
 				ImGui::EndPopup();
 			}
 

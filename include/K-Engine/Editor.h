@@ -40,7 +40,6 @@ namespace K
 		bool buildWindow = false;
 		bool confirmationWindow = false;
 		bool projectLoadWindow = false;
-		bool cmakeBuildWindow = false;
 		bool msvcBuildWindow = false;
 		bool doesIniExist = false;
 		int selectedScene = -1;
