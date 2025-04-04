@@ -1,5 +1,6 @@
 cd /d %~dp0
 cmake -B bin
+pause
 call "%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat" && cd bin && msbuild Editor.sln
 pause
 echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut.vbs
