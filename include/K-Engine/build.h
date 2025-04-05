@@ -20,7 +20,7 @@
 #include <GLFW/glfw3.h>
 
 //MiniAudio
-#include <MiniAudio/miniaudio.h>
+#include <miniaudio.h>
 
 //NFD
 #include <nfd.h>

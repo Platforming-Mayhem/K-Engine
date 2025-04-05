@@ -10,6 +10,7 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(Vendors/GLFW)
 add_subdirectory(Vendors/IMGUI)
 add_subdirectory(Vendors/GLEW)
+add_subdirectory(Vendors/STB)
 add_subdirectory(Vendors/MiniAudio)
 add_subdirectory(Vendors/NativeFileDialog-Extended)
 
@@ -37,6 +38,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE K_BUILD_DLL)
 target_link_libraries(${PROJECT_NAME} OpenGL::GLU)
 target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} IMGUI)
+target_link_libraries(${PROJECT_NAME} stb)
 target_link_libraries(${PROJECT_NAME} nfd)
 target_link_libraries(${PROJECT_NAME} libglew_static)
 target_link_libraries(${PROJECT_NAME} miniaudio)
@@ -45,7 +47,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/assets)
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/vendors)
 
 project(Editor)
 

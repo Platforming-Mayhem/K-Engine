@@ -1,6 +1,6 @@
 #include "K-Engine/Texture.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "STB/stb_image.h"
+#include "stb_image.h"
 
 namespace K 
 {
