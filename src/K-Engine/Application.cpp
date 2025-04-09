@@ -68,7 +68,7 @@ namespace K
 
 			#endif
 
-			if (K::SceneManager::Update()) 
+			if (K::SceneManager::Update() || glfwWindowShouldClose(K::window->window))
 			{
 				break;
 			}
