@@ -134,7 +134,6 @@ namespace K
 			for (auto letter : errorLog) {
 				std::cout << letter;
 			}
-			glfwTerminate();
 			glDeleteShader(id);
 		}
 		return id;
