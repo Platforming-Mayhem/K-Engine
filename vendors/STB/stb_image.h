@@ -420,6 +420,9 @@ typedef struct
 STBIDEF stbi_uc *stbi_load_from_memory   (stbi_uc           const *buffer, int len   , int *x, int *y, int *channels_in_file, int desired_channels);
 STBIDEF stbi_uc *stbi_load_from_callbacks(stbi_io_callbacks const *clbk  , void *user, int *x, int *y, int *channels_in_file, int desired_channels);
 
+STBIDEF unsigned char* stbi_xload_mem(unsigned char* buffer, int len, int* x, int* y, int* frames, int** delays);
+STBIDEF unsigned char* stbi_xload_file(char const* filename, int* x, int* y, int* frames, int** delays);
+
 #ifndef STBI_NO_STDIO
 STBIDEF stbi_uc *stbi_load            (char const *filename, int *x, int *y, int *channels_in_file, int desired_channels);
 STBIDEF stbi_uc *stbi_load_from_file  (FILE *f, int *x, int *y, int *channels_in_file, int desired_channels);
@@ -1342,6 +1345,57 @@ static FILE *stbi__fopen(char const *filename, char const *mode)
    return f;
 }
 
+STBIDEF unsigned char* stbi_xload(stbi__context* s, int* x, int* y, int* frames, int** delays);
+
+STBIDEF unsigned char* stbi_xload_mem(unsigned char* buffer, int len, int* x, int* y, int* frames, int** delays)
+{
+    stbi__context s;
+    stbi__start_mem(&s, buffer, len);
+    return stbi_xload(&s, x, y, frames, delays);
+}
+
+STBIDEF unsigned char* stbi_xload_file(char const* filename, int* x, int* y, int* frames, int** delays)
+{
+    FILE* f;
+    stbi__context s;
+    unsigned char* result = 0;
+
+    if (!(f = stbi__fopen(filename, "rb")))
+        return stbi__errpuc("can't fopen", "Unable to open file");
+
+    stbi__start_file(&s, f);
+    result = stbi_xload(&s, x, y, frames, delays);
+    fclose(f);
+
+    if (stbi__vertically_flip_on_load) {
+        stbi__vertical_flip_slices(result, *x, *y, *frames, 4);
+    }
+
+    return result;
+}
+
+STBIDEF unsigned char* stbi_xload(stbi__context* s, int* x, int* y, int* frames, int** delays)
+{
+    int comp;
+    unsigned char* result = 0;
+
+    if (stbi__gif_test(s))
+    {
+        return (unsigned char*)stbi__load_gif_main(s, delays, x, y, frames, &comp, 4);
+    }
+
+    stbi__result_info ri;
+    result = (unsigned char*)stbi__load_main(s, x, y, &comp, 4, &ri, 8);
+    *frames = !!result;
+
+    if (ri.bits_per_channel != 8) {
+        STBI_ASSERT(ri.bits_per_channel == 16);
+        result = stbi__convert_16_to_8((stbi__uint16*)result, *x, *y, 4);
+        ri.bits_per_channel = 8;
+    }
+
+    return result;
+}
 
 STBIDEF stbi_uc *stbi_load(char const *filename, int *x, int *y, int *comp, int req_comp)
 {
@@ -7668,61 +7722,7 @@ STBIDEF int stbi_is_16_bit_from_callbacks(stbi_io_callbacks const *c, void *user
    return stbi__is_16_main(&s);
 }
 
-#endif 
-
-    STBIDEF unsigned char* stbi_xload(stbi__context* s, int* x, int* y, int* frames, int** delays);
-    STBIDEF unsigned char* stbi_xload_mem(unsigned char* buffer, int len, int* x, int* y, int* frames, int** delays);
-    STBIDEF unsigned char* stbi_xload_file(char const* filename, int* x, int* y, int* frames, int** delays);
-
-    STBIDEF unsigned char* stbi_xload_mem(unsigned char* buffer, int len, int* x, int* y, int* frames, int** delays)
-    {
-        stbi__context s;
-        stbi__start_mem(&s, buffer, len);
-        return stbi_xload(&s, x, y, frames, delays);
-    }
-
-    STBIDEF unsigned char* stbi_xload_file(char const* filename, int* x, int* y, int* frames, int** delays)
-    {
-        FILE* f;
-        stbi__context s;
-        unsigned char* result = 0;
-
-        if (!(f = stbi__fopen(filename, "rb")))
-            return stbi__errpuc("can't fopen", "Unable to open file");
-
-        stbi__start_file(&s, f);
-        result = stbi_xload(&s, x, y, frames, delays);
-        fclose(f);
-
-        if (stbi__vertically_flip_on_load) {
-            stbi__vertical_flip_slices(result, *x, *y, *frames, 4);
-        }
-
-        return result;
-    }
-
-    STBIDEF unsigned char* stbi_xload(stbi__context* s, int* x, int* y, int* frames, int** delays)
-    {
-        int comp;
-        unsigned char* result = 0;
-
-        if (stbi__gif_test(s)) 
-        {
-            return (unsigned char*)stbi__load_gif_main(s, delays, x, y, frames, &comp, 4);
-        }
-
-        stbi__result_info ri;
-        result = (unsigned char*)stbi__load_main(s, x, y, &comp, 4, &ri, 8);
-        *frames = !!result;
-
-        if (ri.bits_per_channel != 8) {
-            STBI_ASSERT(ri.bits_per_channel == 16);
-            result = stbi__convert_16_to_8((stbi__uint16*)result, *x, *y, 4);
-            ri.bits_per_channel = 8;
-        }
-
-        return result;
-    }
+#endif
 
 // STB_IMAGE_IMPLEMENTATION
 

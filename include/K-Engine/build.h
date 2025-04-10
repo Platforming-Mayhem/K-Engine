@@ -32,6 +32,9 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
+//STB
+#include <stb_image.h>
+
 #ifdef _WIN32
 #include <Windows.h>
 #elif __unix__

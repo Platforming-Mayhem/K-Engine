@@ -77,9 +77,9 @@ namespace K
 		glDepthMask(GL_TRUE);
 		glDepthRange(0.0f, 1.0f);
 
-		/*HMODULE hModule;
+		HMODULE hModule;
 		GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
-		HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(IDI_ICON1), "Icon");
+		HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(IDI_ICON1), "ICON");
 		int size = SizeofResource(hModule, hr);
 
 		HGLOBAL temp = LoadResource(hModule, hr);
@@ -90,7 +90,9 @@ namespace K
 		GLFWimage glfwImage;
 		glfwImage.pixels = image;
 
-		glfwSetWindowIcon(this->window, 1, &glfwImage);*/
+		glfwSetWindowIcon(this->window, 1, &glfwImage);
+
+		stbi_image_free(image);
 
 		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
 		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
