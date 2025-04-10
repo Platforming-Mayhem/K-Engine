@@ -39,6 +39,10 @@ namespace K
 			std::cout << "Failed to create window" << std::endl;
 			glfwTerminate();
 		}
+		else 
+		{
+			std::cout << "Window created successfully" << std::endl;
+		}
 
 		glfwMakeContextCurrent(this->window);
 
@@ -87,14 +91,15 @@ namespace K
 		glfwImage.pixels = image;
 
 		glfwSetWindowIcon(this->window, 1, &glfwImage);*/
+
 		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
 		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	}
 
 	Window::~Window()
 	{
-		ma_engine_uninit(&this->miniAudioEngine);
 		glfwDestroyWindow(this->window);
 		glfwTerminate();
+		ma_engine_uninit(&this->miniAudioEngine);
 	}
 }
