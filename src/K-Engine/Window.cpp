@@ -79,20 +79,19 @@ namespace K
 
 		HMODULE hModule;
 		GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
-		HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(IDI_ICON1), "ICON");
+		HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(WATERMARK_TEX), "PNG");
 		int size = SizeofResource(hModule, hr);
 
 		HGLOBAL temp = LoadResource(hModule, hr);
 		LPVOID lp = LockResource(temp);
 
-		unsigned char* image = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, NULL, NULL, NULL, 0);
-
 		GLFWimage glfwImage;
-		glfwImage.pixels = image;
+		glfwImage.pixels = stbi_load_from_memory(static_cast<const stbi_uc*>(lp), size, &glfwImage.width, &glfwImage.height, 0, 4);
 
 		glfwSetWindowIcon(this->window, 1, &glfwImage);
 
-		stbi_image_free(image);
+		stbi_image_free(glfwImage.pixels);
+		UnlockResource(temp);
 
 		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
 		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
