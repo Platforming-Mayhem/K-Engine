@@ -25,6 +25,7 @@ src/K-Engine/SceneManager.cpp
 src/K-Engine/Serializer.cpp
 src/K-Engine/Shader.cpp
 src/K-Engine/Texture.cpp
+src/K-Engine/Audio.cpp
 src/K-Engine/Time.cpp
 src/K-Engine/Transform.cpp
 src/K-Engine/Window.cpp

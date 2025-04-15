@@ -3,8 +3,6 @@
 
 namespace K 
 {
-	K_API extern K::Window* window;
-
 	extern K::RenderTexture* renderTex;
 
 	extern K::Material* editorMat;

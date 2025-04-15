@@ -14,7 +14,7 @@ namespace K
 
 	void Application::Run(const char* windowName)
 	{
-		K::window = new K::Window(windowName);
+		new K::Window(windowName);
 
 		K::editorMat = new Material(EDITOR_SHADER);
 

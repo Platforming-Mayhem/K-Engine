@@ -1,7 +1,7 @@
 #include "K-Engine/Editor.h"
 #include <K_Engine.h>
 
-std::string ASSET_DIR;
+std::string ASSET_DIR = std::filesystem::current_path().parent_path().parent_path().string() + "/assets/";
 
 namespace K 
 {

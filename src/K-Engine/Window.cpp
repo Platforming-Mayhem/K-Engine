@@ -3,8 +3,18 @@
 
 namespace K 
 {
+	K::Window* K::window;
+
 	Window::Window(const char* windowName)
 	{
+		K::window = this;
+		ma_result result = ma_engine_init(NULL, &this->miniAudioEngine);
+
+		if (result != MA_SUCCESS)
+		{
+			std::cout << "Failed to initialize audio engine" << std::endl;
+		}
+
 		if (glfwInit())
 			std::cout << "Initialised GLFW" << std::endl;
 		else
@@ -55,17 +65,6 @@ namespace K
 
 		std::cout << glGetString(GL_VERSION) << std::endl;
 
-		ma_result result = ma_engine_init(NULL, &this->miniAudioEngine);
-
-		if (result != MA_SUCCESS) 
-		{
-			std::cout << "Failed to initialize audio engine" << std::endl;
-		}
-
-		#if _DEBUG
-		ma_engine_play_sound(&this->miniAudioEngine, "../../assets/audios/StartUp.wav", NULL);
-		#endif
-
 		glPolygonMode(GL_FRONT, GL_FILL);
 
 		glEnable(GL_BLEND);
@@ -95,10 +94,16 @@ namespace K
 
 		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
 		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+		#if _DEBUG
+		this->startUpSFX = new K::Audio("../../assets/audios/StartUp.wav");
+		this->startUpSFX->Play();
+		#endif
 	}
 
 	Window::~Window()
 	{
+		delete this->startUpSFX;
 		glfwDestroyWindow(this->window);
 		glfwTerminate();
 		ma_engine_uninit(&this->miniAudioEngine);

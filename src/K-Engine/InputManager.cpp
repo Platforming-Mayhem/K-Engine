@@ -3,7 +3,6 @@
 namespace K 
 {
 	std::unordered_map<int, int> InputManager::keys;
-	K::Window* K::window;
 	K::RenderTexture* K::renderTex;
 	K::Material* K::editorMat;
 
