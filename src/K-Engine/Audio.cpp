@@ -3,30 +3,21 @@
 
 namespace K 
 {
-	Audio::Audio(const char* path) 
+	Audio::Audio(const char* path, bool isLooping)
 	{
 		std::cout << "Loading sound: " << path << std::endl;
+		this->isLooping = isLooping;
 		ma_result result = ma_sound_init_from_file(&K::window->miniAudioEngine, path, 0, NULL, NULL, &this->loadedAudio);
 		if (result != MA_SUCCESS)
 		{
 			std::cout << "Cannot load sound: " << path << std::endl;
 		}
-	}
-
-	void Audio::PlayLooping() 
-	{
-		ma_sound_set_looping(&this->loadedAudio, true);
-		this->Play();
-	}
-
-	void Audio::StopLooping() 
-	{
-		ma_sound_set_looping(&this->loadedAudio, false);
-		this->Stop();
+		ma_sound_set_looping(&this->loadedAudio, this->isLooping);
 	}
 
 	void Audio::Play()
 	{
+		ma_sound_seek_to_pcm_frame(&this->loadedAudio, 0);
 		ma_sound_start(&this->loadedAudio);
 	}
 

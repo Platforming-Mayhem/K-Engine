@@ -7,13 +7,10 @@ namespace K
 	{
 	private:
 		ma_sound loadedAudio;
+		bool isLooping = false;
 	public:
 
-		Audio(const char* path);
-
-		void PlayLooping();
-
-		void StopLooping();
+		Audio(const char* path, bool isLooping = false);
 
 		void Play();
 
