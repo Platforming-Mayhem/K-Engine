@@ -302,7 +302,7 @@ namespace K
 
 					fputs(cmakeCommand.c_str(), file);
 
-					fputs("file(GLOB ComponentSrcs \"components/*.cpp\") \n"
+					fputs("file(GLOB ComponentSrcs CONFIGURE_DEPENDS \"components/*.cpp\") \n"
 						"add_library(${PROJECT_NAME} SHARED ${ComponentSrcs}) \n"
 						"target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL) \n"
 						"target_link_libraries(${PROJECT_NAME} K-Engine) \n"
