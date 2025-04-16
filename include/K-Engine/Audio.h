@@ -11,6 +11,10 @@ namespace K
 
 		Audio(const char* path);
 
+		void PlayLooping();
+
+		void StopLooping();
+
 		void Play();
 
 		void Stop();

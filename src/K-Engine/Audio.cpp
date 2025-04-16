@@ -13,6 +13,18 @@ namespace K
 		}
 	}
 
+	void Audio::PlayLooping() 
+	{
+		ma_sound_set_looping(&this->loadedAudio, true);
+		this->Play();
+	}
+
+	void Audio::StopLooping() 
+	{
+		ma_sound_set_looping(&this->loadedAudio, false);
+		this->Stop();
+	}
+
 	void Audio::Play()
 	{
 		ma_sound_start(&this->loadedAudio);
