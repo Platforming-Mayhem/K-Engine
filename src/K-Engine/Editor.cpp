@@ -432,7 +432,7 @@ namespace K
 
 					this->UnloadComponents();
 
-					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
+					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{0}\"", ASSET_DIR + "bin/Components.sln");
 
 					std::system(msvcCommand.c_str());
 
