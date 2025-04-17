@@ -96,11 +96,14 @@ namespace K
 	{
 		if (this->componentsLibrary != NULL) 
 		{
+			std::cout << "Unloading components..." << std::endl;
+			K::Editor::lst().clear();
 			#ifdef _WIN32
 			FreeLibrary(this->componentsLibrary);
 			#elif __unix__
 			dlclose(handle);
 			#endif
+			std::cout << "Unloaded components" << std::endl;
 		}
 	}
 
@@ -423,6 +426,10 @@ namespace K
 
 				if (ImGui::Button("Yes"))
 				{
+					K::SceneManager::currentScene->CreateEmptyScene();
+
+					this->selectedGameObject = nullptr;
+
 					this->UnloadComponents();
 
 					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{0}\"", ASSET_DIR + "bin/Components.vcxproj");
@@ -437,6 +444,10 @@ namespace K
 				}
 				else if (ImGui::Button("No"))
 				{
+					K::SceneManager::currentScene->CreateEmptyScene();
+
+					this->selectedGameObject = nullptr;
+
 					this->LoadComponents();
 
 					K::SceneManager::LoadScene(0);
