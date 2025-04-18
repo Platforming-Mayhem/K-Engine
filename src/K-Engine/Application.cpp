@@ -30,7 +30,7 @@ namespace K
 
 		std::cout << "Number Of Scenes in Build :" << manager->GetNumberOfScenes() << std::endl;
 
-		while (!glfwWindowShouldClose(K::window->window))
+		while (true)
 		{
 			#if _DEBUG
 			GLenum err;
@@ -39,13 +39,6 @@ namespace K
 				std::cout << gluErrorString(err) << std::endl;
 			}
 			#endif
-
-			int esc = glfwGetKey(K::window->window, GLFW_KEY_ESCAPE);
-
-			if (esc == GLFW_PRESS)
-			{
-				break;
-			}
 
 			#if _DEBUG
 			editor->GetViewport()->Bind();
@@ -68,14 +61,21 @@ namespace K
 
 			#endif
 
-			if (K::SceneManager::Update() || glfwWindowShouldClose(K::window->window))
+			int esc = glfwGetKey(K::window->window, GLFW_KEY_ESCAPE);
+
+			if (esc == GLFW_PRESS || glfwWindowShouldClose(K::window->window))
 			{
-				break;
+				K::SceneManager::Quit();
 			}
 
 			glfwSwapBuffers(K::window->window);
 
 			glfwPollEvents();
+
+			if (K::SceneManager::Update())
+			{
+				break;
+			}
 		}
 		delete K::editorMat;
 		delete K::renderTex;
