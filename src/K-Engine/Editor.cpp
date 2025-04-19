@@ -34,16 +34,15 @@ namespace K
 		this->window = window;
 		this->buildWindow = false;
 
-		ASSET_DIR = std::filesystem::current_path().string();
-		ASSET_DIR += "/assets/";
-		if (!std::filesystem::is_directory(ASSET_DIR))
+		std::string currentDir = std::filesystem::current_path().string();
+		currentDir += "/assets/";
+		if (std::filesystem::is_directory(currentDir))
 		{
-			ASSET_DIR = std::filesystem::current_path().string();
+			ASSET_DIR = currentDir;
 		}
+
 		K::Editor::SetDirectory(ASSET_DIR);
 
-		this->currentDirectory = ASSET_DIR;
-		this->LoadComponents();
 		K::Editor::sceneManager->LoadBuildMenu("buildScenes.txt");
 
 		#if _DEBUG
@@ -69,6 +68,8 @@ namespace K
 		this->AddPreloadedTexture(SCENE_TEX);
 		this->AddPreloadedTexture(UNKNOWN_TEX);
 		this->AddPreloadedTexture(FILE_TEX);
+		#else
+		this->LoadComponents();
 		#endif
 	}
 
