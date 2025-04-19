@@ -70,8 +70,8 @@ namespace K
 
 	SceneManager::~SceneManager() 
 	{
-		delete this->currentScene;
 		this->scenes.clear();
+		delete this->currentScene;
 	}
 
 	int SceneManager::GetNumberOfScenes() 

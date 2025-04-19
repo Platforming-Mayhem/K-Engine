@@ -103,7 +103,9 @@ namespace K
 
 	Window::~Window()
 	{
+		#if _DEBUG
 		delete this->startUpSFX;
+		#endif
 		glfwDestroyWindow(this->window);
 		glfwTerminate();
 		ma_engine_uninit(&this->miniAudioEngine);
