@@ -23,9 +23,6 @@ namespace K
 		/* Create a windowed mode window and its OpenGL context */
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 		#if _DEBUG
 			glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);

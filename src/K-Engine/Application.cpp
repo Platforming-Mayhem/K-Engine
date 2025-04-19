@@ -62,9 +62,7 @@ namespace K
 
 			#endif
 
-			int esc = glfwGetKey(K::window->window, GLFW_KEY_ESCAPE);
-
-			if (esc == GLFW_PRESS || glfwWindowShouldClose(K::window->window))
+			if (K::InputManager::IsKeyPressedDown(GLFW_KEY_ESCAPE) || glfwWindowShouldClose(K::window->window))
 			{
 				K::SceneManager::Quit();
 			}
