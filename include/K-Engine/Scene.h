@@ -116,25 +116,19 @@ namespace K
 			return this->sceneName.c_str();
 		}
 
-		void GameLoop() 
+		void GameLoop(auto temp) 
 		{
-			for (auto temp : this->GetGameObjects())
-			{
-				temp.second->Bind();
-				temp.second->Update();
-				temp.second->Unbind();
-			}
+			temp.second->Bind();
+			temp.second->Update();
+			temp.second->Unbind();
 		}
 
-		void RenderLoop() 
+		void RenderLoop(auto temp)
 		{
-			for (auto temp : this->GetGameObjects())
-			{
-				temp.second->PassTransformationMatrix();
-				temp.second->RenderBind();
-				temp.second->Render();
-				temp.second->RenderUnbind();
-			}
+			temp.second->PassTransformationMatrix();
+			temp.second->RenderBind();
+			temp.second->Render();
+			temp.second->RenderUnbind();
 		}
 
 		void RenderLoopNewMaterial(K::Material* mat) 
@@ -156,8 +150,11 @@ namespace K
 		void Render() 
 		{
 			K::Time::startTime = (float)glfwGetTime();
-			this->GameLoop();
-			this->RenderLoop();
+			for (auto temp : this->GetGameObjects())
+			{
+				this->GameLoop(temp);
+				this->RenderLoop(temp);
+			}
 			K::Time::deltaTimeValue = K::Time::startTime - K::Time::endTime;
 			K::Time::endTime = K::Time::startTime;
 		}
