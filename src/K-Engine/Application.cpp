@@ -54,9 +54,17 @@ namespace K
 				K::SceneManager::Quit();
 			#else
 
+			editor->GetViewport()->Bind();
+
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			K::SceneManager::currentScene->Render();
+
+			editor->GetViewport()->Unbind();
+
+			glfwSetWindowMonitor(K::window->window, glfwGetPrimaryMonitor(), 0, 0, K::window->width, K::window->height, K::window->refreshRate);
+
+			glBlitNamedFramebuffer(editor->GetViewport()->GetFramebufferID(), 0, 0, 0, editor->GetViewport()->GetWidth(), editor->GetViewport()->GetHeight(), 0, 0, editor->GetViewport()->GetWidth(), editor->GetViewport()->GetHeight(), GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
 			#endif
 
@@ -65,14 +73,14 @@ namespace K
 				K::SceneManager::Quit();
 			}
 
-			glfwSwapBuffers(K::window->window);
-
-			glfwPollEvents();
-
 			if (K::SceneManager::Update())
 			{
 				break;
 			}
+
+			glfwSwapBuffers(K::window->window);
+
+			glfwPollEvents();
 		}
 		#if _DEBUG
 		delete K::editorMat;

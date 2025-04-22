@@ -20,6 +20,11 @@ namespace K
 
 		void Unbind();
 
+		unsigned int GetFramebufferID() 
+		{
+			return this->frameBufferID;
+		}
+
 		unsigned int GetID() 
 		{
 			return this->colourID;

@@ -23,21 +23,22 @@ namespace K
 		/* Create a windowed mode window and its OpenGL context */
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
 		#if _DEBUG
-			glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
-			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 		#endif
 
 		this->width = mode->width;
 		this->height = mode->height;
 		this->refreshRate = mode->refreshRate;
-		glViewport(0, 0, this->width, this->height);
-		#if _DEBUG
-			this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
-		#else
-			this->window = glfwCreateWindow(this->width, this->height, windowName, monitor, NULL);
+		this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
+
+		#if !_DEBUG
+		glfwSetWindowMonitor(K::window->window, monitor, 0, 0, this->width, this->height, this->refreshRate);
 		#endif
+
+		glViewport(0, 0, this->width, this->height);
 
 		std::cout << this->width << " " << this->height << std::endl;
 

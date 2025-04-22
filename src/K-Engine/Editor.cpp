@@ -45,9 +45,9 @@ namespace K
 
 		K::Editor::sceneManager->LoadBuildMenu("buildScenes.txt");
 
-		#if _DEBUG
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
 
+		#if _DEBUG
 		//IMGUI Setup Stuffs
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -87,9 +87,9 @@ namespace K
 			delete tex.second;
 		}
 		this->preloadedTextures.clear();
-		delete this->viewport;
 		#endif
 
+		delete this->viewport;
 		delete this->window;
 	}
 
