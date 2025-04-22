@@ -49,6 +49,9 @@ namespace K
 			K::SceneManager::currentScene->Render();
 
 			editor->GetViewport()->Unbind();
+
+			if(editor->Render())
+				K::SceneManager::Quit();
 			#else
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -57,7 +60,7 @@ namespace K
 
 			#endif
 
-			if (K::InputManager::IsKeyPressedDown(GLFW_KEY_ESCAPE) || glfwWindowShouldClose(K::window->window) || editor->Render())
+			if (K::InputManager::IsKeyPressedDown(GLFW_KEY_ESCAPE) || glfwWindowShouldClose(K::window->window))
 			{
 				K::SceneManager::Quit();
 			}
