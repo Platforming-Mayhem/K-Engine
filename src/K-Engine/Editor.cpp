@@ -390,7 +390,7 @@ namespace K
 
 				if (ImGui::Button("Build Executable")) 
 				{
-					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{0}\" -p:Configuration=Release && msbuild \"{0}\" -p:BuildProjectReferences=false;Configuration=Release;OutDir=\"{3}\" && msbuild \"{1}\" -p:BuildProjectReferences=false;Configuration=Release;OutDir=\"{3}\"&& msbuild \"{2}\" -p:BuildProjectReferences=false;Configuration=Release;OutDir=\"{3}\"", std::filesystem::current_path().parent_path().string() + "/K-Engine.vcxproj", ASSET_DIR + "bin/Components.vcxproj", std::filesystem::current_path().parent_path().string() + "/Editor.vcxproj", this->projectPath);
+					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{0}\" -p:OutDir=\"{1}\";Configuration=Release", ASSET_DIR + "bin/Components.sln", this->projectPath);
 
 					std::cout << msvcCommand << std::endl;
 
