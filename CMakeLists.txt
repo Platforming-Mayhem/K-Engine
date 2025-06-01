@@ -21,6 +21,7 @@ src/K-Engine/GameObject.cpp
 src/K-Engine/InputManager.cpp
 src/K-Engine/Material.cpp
 src/K-Engine/RenderTexture.cpp
+src/K-Engine/Scene.cpp
 src/K-Engine/SceneManager.cpp
 src/K-Engine/Serializer.cpp
 src/K-Engine/Shader.cpp
