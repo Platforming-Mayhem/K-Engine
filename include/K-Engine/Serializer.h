@@ -21,7 +21,7 @@ namespace K
 		int componentDataCount = 0;
 
 	public:
-		std::map<K::GameObject*, int> parents;
+		std::unordered_map<K::GameObject*, int> parents;
 
 		Deserializer(K::Scene* newScene, std::string location);
 

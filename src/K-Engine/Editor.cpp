@@ -22,9 +22,9 @@ namespace K
 
 	std::vector<K::GameObject*> K::Editor::deleteArray;
 
-	std::map<std::string, IFactory*>& K::Editor::lst() 
+	std::unordered_map<std::string, IFactory*>& K::Editor::lst() 
 	{
-		static std::map<std::string, IFactory*> temp;
+		static std::unordered_map<std::string, IFactory*> temp;
 		return temp;
 	}
 

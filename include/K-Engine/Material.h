@@ -5,7 +5,6 @@ namespace K
 {
 	struct K_API MaterialInfo
 	{
-		int id;
 		int dependencies = 0;
 		std::vector<void*> dependenciesPointers;
 	};
@@ -13,7 +12,7 @@ namespace K
 	class K_API MaterialManager
 	{
 	public:
-		std::map<std::string, K::MaterialInfo> materials;
+		std::unordered_map<std::string, K::MaterialInfo> materials;
 
 		MaterialManager();
 
@@ -35,10 +34,14 @@ namespace K
 	private:
 		K::MaterialManager* materials;
 		std::string filename;
+		std::unordered_map<std::string, int> uniforms;
 		K::Shader shader;
 	public:
 		K::Shader* GetShader();
 		std::string GetLocation();
+		void AddUniform(std::string name, int uniform);
+		int GetUniform(std::string name);
+		void RemoveUniform(std::string name);
 		Material(std::string location);
 		Material(int resource);
 		~Material();

@@ -40,17 +40,39 @@ namespace K
 		this->filename = location;
 		if (this->materials->Contains(this->filename))
 		{
-			K::MaterialInfo tInfo = *this->materials->Check(this->filename);
-			this->shader = K::Shader();
-			this->shader.shader = tInfo.id;
+			K::Material* mat = ((K::Material*)this->materials->Check(this->filename)->dependenciesPointers[0]);
+			this->shader = mat->shader;
+			this->uniforms = mat->uniforms;
 			this->materials->Check(this->filename)->dependencies++;
 			this->materials->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
 		else 
 		{
 			this->shader = K::Shader(this->filename);
+
+			GLint i;
+			GLint count;
+
+			GLint size; // size of the variable
+			GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+			const GLsizei bufSize = 128; // maximum name length
+			GLchar name[bufSize]; // variable name in GLSL
+			GLsizei length; // name length
+
+			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORMS, &count);
+			printf("Active Uniforms: %d\n", count);
+
+			for (i = 0; i < count; i++)
+			{
+				glGetActiveUniform(this->shader.shader, (GLuint)i, bufSize, &length, &size, &type, name);
+
+				this->AddUniform(name, i);
+
+				printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+			}
+
 			K::MaterialInfo info = K::MaterialInfo();
-			info.id = this->shader.shader;
 			info.dependencies++;
 			info.dependenciesPointers.push_back(this);
 			this->materials->Add(this->filename, info);
@@ -63,17 +85,39 @@ namespace K
 		this->filename = resource;
 		if (this->materials->Contains(this->filename))
 		{
-			K::MaterialInfo tInfo = *this->materials->Check(this->filename);
-			this->shader = K::Shader();
-			this->shader.shader = tInfo.id;
+			K::Material* mat = ((K::Material*)this->materials->Check(this->filename)->dependenciesPointers[0]);
+			this->shader = mat->shader;
+			this->uniforms = mat->uniforms;
 			this->materials->Check(this->filename)->dependencies++;
 			this->materials->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
 		else
 		{
 			this->shader = K::Shader(resource);
+
+			GLint i;
+			GLint count;
+
+			GLint size; // size of the variable
+			GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+			const GLsizei bufSize = 128; // maximum name length
+			GLchar name[bufSize]; // variable name in GLSL
+			GLsizei length; // name length
+
+			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORMS, &count);
+			printf("Active Uniforms: %d\n", count);
+
+			for (i = 0; i < count; i++)
+			{
+				glGetActiveUniform(this->shader.shader, (GLuint)i, bufSize, &length, &size, &type, name);
+
+				this->AddUniform(name, i);
+
+				printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+			}
+
 			K::MaterialInfo info = K::MaterialInfo();
-			info.id = this->shader.shader;
 			info.dependencies++;
 			info.dependenciesPointers.push_back(this);
 			this->materials->Add(this->filename, info);
@@ -83,6 +127,28 @@ namespace K
 	std::string Material::GetLocation() 
 	{
 		return this->filename;
+	}
+
+	void Material::AddUniform(std::string name, int uniform)
+	{
+		this->uniforms.insert(std::make_pair(name, uniform));
+	}
+
+	int Material::GetUniform(std::string name)
+	{
+		if (this->uniforms.contains(name)) 
+		{
+			return this->uniforms.at(name);
+		}
+		else 
+		{
+			return -1;
+		}
+	}
+
+	void Material::RemoveUniform(std::string name) 
+	{
+		this->uniforms.erase(name);
 	}
 
 	Material::~Material() 
@@ -108,6 +174,7 @@ namespace K
 		{
 			this->materials->Remove(this->filename);
 		}
+		this->uniforms.clear();
 	}
 
 	K::Shader* Material::GetShader() 

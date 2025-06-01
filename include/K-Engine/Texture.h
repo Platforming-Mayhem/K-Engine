@@ -35,7 +35,7 @@ namespace K
 	public:
 		int threadsInUse = 0;
 
-		std::map<std::string, K::TextureInfo> textures;
+		std::unordered_map<std::string, K::TextureInfo> textures;
 
 		TextureManager();
 

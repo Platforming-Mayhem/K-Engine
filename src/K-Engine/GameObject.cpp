@@ -291,7 +291,7 @@ namespace K
 		else 
 			this->GetTransform()->PassModelMatrix(this->parent->GetTransform());
 
-		glUniformMatrix4fv(glGetUniformLocation(this->GetMaterial()->GetShader()->shader, "modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
+		glUniformMatrix4fv(this->GetMaterial()->GetUniform("modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
 	}
 
 	void GameObject::Bind() 

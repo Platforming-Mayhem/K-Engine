@@ -34,7 +34,7 @@ namespace K
 		std::string sceneName;
 		std::string projectPath;
 		K::RenderTexture* viewport;
-		std::map<std::string, K::Texture*> preloadedTextures;
+		std::unordered_map<std::string, K::Texture*> preloadedTextures;
 		K::Window* window;
 		HINSTANCE componentsLibrary = NULL;
 		bool buildWindow = false;
@@ -61,7 +61,7 @@ namespace K
 
 		static K::Vector3* cameraPosition;
 
-		static std::map<std::string, IFactory*>& lst();
+		static std::unordered_map<std::string, IFactory*>& lst();
 
 		static std::vector<K::GameObject*> deleteArray;
 

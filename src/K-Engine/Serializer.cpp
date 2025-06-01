@@ -188,7 +188,7 @@ namespace K
 			{
 				if (K::Editor::lst().count(val) > 0)
 				{
-					std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst().find(val);
+					std::unordered_map<std::string, K::IFactory*>::iterator pos = K::Editor::lst().find(val);
 					if (pos != K::Editor::lst().end())
 					{
 						currentComponent = pos->second->create();
@@ -235,7 +235,7 @@ namespace K
 		//For Loop within a For loop is what is slowing it down
 		for (int i = 21; i < data.size(); i++)
 		{
-			std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst().find(data[i]);
+			std::unordered_map<std::string, K::IFactory*>::iterator pos = K::Editor::lst().find(data[i]);
 			if (pos != K::Editor::lst().end())
 			{
 				//pos->second->create is slow
@@ -256,7 +256,7 @@ namespace K
 
 	void Deserializer::CreateComponentFast(std::string datum) 
 	{
-		std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst().find(datum);
+		std::unordered_map<std::string, K::IFactory*>::iterator pos = K::Editor::lst().find(datum);
 		if (pos != K::Editor::lst().end())
 		{
 			this->selectedComponent = pos->second->create();
@@ -305,7 +305,7 @@ namespace K
 
 				std::string line;
 				std::vector<std::string> dataArray;
-				std::map<std::string, std::chrono::milliseconds> times;
+				std::unordered_map<std::string, std::chrono::milliseconds> times;
 				int count = 0;
 				for (auto char0 : characters)
 				{
@@ -445,7 +445,7 @@ namespace K
 			while (data.find(',') != std::string::npos)
 			{
 				std::string datum = data.substr(0, data.find(','));
-				std::map<std::string, K::IFactory*>::iterator pos = K::Editor::lst().find(datum);
+				std::unordered_map<std::string, K::IFactory*>::iterator pos = K::Editor::lst().find(datum);
 				if (pos != K::Editor::lst().end())
 				{
 					selectedComponent = pos->second->create();
