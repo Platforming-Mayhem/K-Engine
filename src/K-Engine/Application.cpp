@@ -34,14 +34,13 @@ namespace K
 		while (true)
 		{
 			#if _DEBUG
+
 			GLenum err;
 			while ((err = glGetError()) != GL_NO_ERROR)
 			{
 				std::cout << gluErrorString(err) << std::endl;
 			}
-			#endif
 
-			#if _DEBUG
 			editor->GetViewport()->Bind();
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

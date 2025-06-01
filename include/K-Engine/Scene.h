@@ -38,9 +38,9 @@ namespace K
 
 		const char* GetSceneName();
 
-		void GameLoop(auto temp);
+		void GameLoop(K::GameObject* temp);
 
-		void RenderLoop(auto temp);
+		void RenderLoop(K::GameObject* temp);
 
 		void RenderLoopNewMaterial(K::Material* mat);
 
