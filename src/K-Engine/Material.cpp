@@ -56,8 +56,10 @@ namespace K
 			GLint size; // size of the variable
 			GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
-			const GLsizei bufSize = 128; // maximum name length
-			GLchar name[bufSize]; // variable name in GLSL
+			GLsizei bufSize = 16; // maximum name length
+			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
+
+			std::vector<GLchar> name(bufSize); // variable name in GLSL
 			GLsizei length; // name length
 
 			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORMS, &count);
@@ -65,11 +67,13 @@ namespace K
 
 			for (i = 0; i < count; i++)
 			{
-				glGetActiveUniform(this->shader.shader, (GLuint)i, bufSize, &length, &size, &type, name);
+				glGetActiveUniform(this->shader.shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
 
-				this->AddUniform(name, i);
+				int id = glGetUniformLocation(this->shader.shader, &name[0]);
 
-				printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+				this->AddUniform(&name[0], id);
+
+				printf("Uniform #%d Type: %u Name: %s ID: %d\n", i, type, &name[0], id);
 			}
 
 			K::MaterialInfo info = K::MaterialInfo();
@@ -101,8 +105,10 @@ namespace K
 			GLint size; // size of the variable
 			GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
-			const GLsizei bufSize = 128; // maximum name length
-			GLchar name[bufSize]; // variable name in GLSL
+			GLsizei bufSize = 16; // maximum name length
+			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
+
+			std::vector<GLchar> name(bufSize); // variable name in GLSL
 			GLsizei length; // name length
 
 			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORMS, &count);
@@ -110,11 +116,13 @@ namespace K
 
 			for (i = 0; i < count; i++)
 			{
-				glGetActiveUniform(this->shader.shader, (GLuint)i, bufSize, &length, &size, &type, name);
+				glGetActiveUniform(this->shader.shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
+				
+				int id = glGetUniformLocation(this->shader.shader, &name[0]);
 
-				this->AddUniform(name, i);
+				this->AddUniform(&name[0], id);
 
-				printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+				printf("Uniform #%d Type: %u Name: %s ID: %d\n", i, type, &name[0], id);
 			}
 
 			K::MaterialInfo info = K::MaterialInfo();
