@@ -79,7 +79,7 @@ namespace K
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-				glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, this->frames);
+				glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, this->width, this->height, this->frames);
 
 				glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 
@@ -107,11 +107,11 @@ namespace K
 
 				if (this->c > 3)
 				{
-					glTexStorage2D(GL_TEXTURE_2D, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height);
+					glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, this->width, this->height);
 				}
 				else
 				{
-					glTexStorage2D(GL_TEXTURE_2D, 1, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height);
+					glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, this->width, this->height);
 				}
 				this->viewId = this->id;
 
@@ -172,11 +172,11 @@ namespace K
 					{
 						if (this->c > 3)
 						{
-							glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, this->image);
 						}
 						else
 						{
-							glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
+							glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->image);
 						}
 						stbi_image_free(this->image);
 						this->image = nullptr;
@@ -248,7 +248,7 @@ namespace K
 			if (this->filename.contains(".gif")) 
 			{
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
-				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->frames * 4 * sizeof(unsigned char), 0, GL_STREAM_DRAW);
+				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->frames * 4, 0, GL_STREAM_DRAW);
 
 				this->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
 
@@ -260,7 +260,7 @@ namespace K
 			else 
 			{
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
-				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->c * sizeof(unsigned char), 0, GL_STREAM_DRAW);
+				glBufferData(GL_PIXEL_UNPACK_BUFFER, this->width * this->height * this->c, 0, GL_STREAM_DRAW);
 
 				this->image = (unsigned char*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
 
@@ -281,7 +281,6 @@ namespace K
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
 
 			glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
-			this->image = nullptr;
 
 			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, this->width, this->height, this->frames, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
@@ -292,7 +291,7 @@ namespace K
 			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 
 			glGenTextures(1, &this->viewId);
-			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 0, 1, 0, 1);
+			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
 
 			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{
@@ -318,7 +317,6 @@ namespace K
 			glBindBuffer(GL_PIXEL_UNPACK_BUFFER, this->PBO);
 
 			glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
-			this->image = nullptr;
 
 			if (this->c > 3)
 			{
