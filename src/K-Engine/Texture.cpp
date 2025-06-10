@@ -255,6 +255,7 @@ namespace K
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
 				this->thread = std::thread(&Texture::LoadAnimation, this);
+
 				this->thread.detach();
 			}
 			else 
@@ -267,6 +268,7 @@ namespace K
 				glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
 				this->thread = std::thread(&Texture::Load, this);
+
 				this->thread.detach();
 			}
 			this->textures->threadsInUse++;
@@ -289,6 +291,8 @@ namespace K
 			glDeleteBuffers(1, &this->PBO);
 
 			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+
+			this->image = nullptr;
 
 			glGenTextures(1, &this->viewId);
 			glTextureView(this->viewId, GL_TEXTURE_2D, this->id, GL_RGBA8, 0, 1, 0, 1);
@@ -332,6 +336,8 @@ namespace K
 			glDeleteBuffers(1, &this->PBO);
 
 			glGenerateMipmap(GL_TEXTURE_2D);
+
+			this->image = nullptr;
 
 			if (this->textures->Check(this->filename)->dependencies - 1 > 0)
 			{

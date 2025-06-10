@@ -10,7 +10,6 @@ namespace K
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		this->SetMaterial(new K::Material("shaders/3D.shader"));
 		std::srand(std::chrono::system_clock::now().time_since_epoch().count());
 		this->g_Index = std::rand();
 		K::Editor::GetCurrentScene()->Attach(this);
@@ -23,7 +22,6 @@ namespace K
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		this->SetMaterial(new K::Material("shaders/3D.shader"));
 		this->g_Index = index;
 		K::Editor::GetCurrentScene()->Attach(this);
 		//std::cout << name << " GameObject Created" << std::endl;
@@ -41,7 +39,6 @@ namespace K
 		*this->transform->localPosition = *other.transform->localPosition;
 		*this->transform->localRotation = *other.transform->localRotation;
 		*this->transform->localScale = *other.transform->localScale;*/
-		this->SetMaterial(new K::Material("shaders/3D.shader"));
 		this->g_Index = other.g_Index;
 		/*for (int i = 0; i < other.components.size(); i++)
 		{
@@ -99,7 +96,6 @@ namespace K
 
 	void GameObject::RenderInit()
 	{
-		glUseProgram(this->GetMaterial()->GetShader()->shader);
 		for (K::Component* c : this->components)
 		{
 			//std::cout << "Initializing " << c->GetName() << std::endl;
@@ -284,14 +280,17 @@ namespace K
 
 	void GameObject::PassTransformationMatrix()
 	{
-		glUseProgram(this->GetMaterial()->GetShader()->shader);
-
-		if (this->parent == nullptr) 
+		if (this->parent == nullptr)
 			this->GetTransform()->PassModelMatrix();
-		else 
+		else
 			this->GetTransform()->PassModelMatrix(this->parent->GetTransform());
 
-		glUniformMatrix4fv(this->GetMaterial()->GetUniform("modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
+		if (this->GetMaterial() != nullptr) 
+		{
+			glUseProgram(this->GetMaterial()->GetShader()->shader);
+
+			glUniformMatrix4fv(this->GetMaterial()->GetUniform("modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
+		}
 	}
 
 	void GameObject::Bind() 

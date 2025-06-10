@@ -461,6 +461,13 @@ namespace K
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / (ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
 
+			ImGui::Text("Active Materials: %i", K::materialManager.materials.size());
+
+			for (auto temp : K::materialManager.materials) 
+			{
+				ImGui::Text("Material: %s", temp.first.c_str());
+			}
+
 			ImGui::Text("Number of GameObjects: %i", K::Editor::GetCurrentScene()->GetNumberOfObjects());
 
 			ImGuiExtra();
