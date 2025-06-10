@@ -48,7 +48,8 @@ namespace K
 		}
 		else 
 		{
-			this->shader = K::Shader(this->filename);
+			this->shader = new K::Shader(this->filename);
+			this->uniforms = new std::unordered_map<std::string, int>();
 
 			GLint i;
 			GLint count;
@@ -57,19 +58,19 @@ namespace K
 			GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
 			GLsizei bufSize = 16; // maximum name length
-			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
+			glGetProgramiv(this->shader->shader, GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
 
 			std::vector<GLchar> name(bufSize); // variable name in GLSL
 			GLsizei length; // name length
 
-			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORMS, &count);
+			glGetProgramiv(this->shader->shader, GL_ACTIVE_UNIFORMS, &count);
 			printf("Active Uniforms: %d\n", count);
 
 			for (i = 0; i < count; i++)
 			{
-				glGetActiveUniform(this->shader.shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
+				glGetActiveUniform(this->shader->shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
 
-				int id = glGetUniformLocation(this->shader.shader, &name[0]);
+				int id = glGetUniformLocation(this->shader->shader, &name[0]);
 
 				this->AddUniform(&name[0], id);
 
@@ -97,7 +98,8 @@ namespace K
 		}
 		else
 		{
-			this->shader = K::Shader(resource);
+			this->shader = new K::Shader(resource);
+			this->uniforms = new std::unordered_map<std::string, int>();
 
 			GLint i;
 			GLint count;
@@ -106,19 +108,19 @@ namespace K
 			GLenum type; // type of the variable (float, vec3 or mat4, etc)
 
 			GLsizei bufSize = 16; // maximum name length
-			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
+			glGetProgramiv(this->shader->shader, GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
 
 			std::vector<GLchar> name(bufSize); // variable name in GLSL
 			GLsizei length; // name length
 
-			glGetProgramiv(this->shader.shader, GL_ACTIVE_UNIFORMS, &count);
+			glGetProgramiv(this->shader->shader, GL_ACTIVE_UNIFORMS, &count);
 			printf("Active Uniforms: %d\n", count);
 
 			for (i = 0; i < count; i++)
 			{
-				glGetActiveUniform(this->shader.shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
+				glGetActiveUniform(this->shader->shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
 				
-				int id = glGetUniformLocation(this->shader.shader, &name[0]);
+				int id = glGetUniformLocation(this->shader->shader, &name[0]);
 
 				this->AddUniform(&name[0], id);
 
@@ -139,14 +141,14 @@ namespace K
 
 	void Material::AddUniform(std::string name, int uniform)
 	{
-		this->uniforms.insert(std::make_pair(name, uniform));
+		this->uniforms->insert(std::make_pair(name, uniform));
 	}
 
 	int Material::GetUniform(std::string name)
 	{
-		if (this->uniforms.contains(name)) 
+		if (this->uniforms->contains(name)) 
 		{
-			return this->uniforms.at(name);
+			return this->uniforms->at(name);
 		}
 		else 
 		{
@@ -156,7 +158,7 @@ namespace K
 
 	void Material::RemoveUniform(std::string name) 
 	{
-		this->uniforms.erase(name);
+		this->uniforms->erase(name);
 	}
 
 	Material::~Material() 
@@ -180,13 +182,15 @@ namespace K
 		}
 		if (this->materials->Check(this->filename)->dependencies <= 0)
 		{
+			this->uniforms->clear();
+			delete this->shader;
+			delete this->uniforms;
 			this->materials->Remove(this->filename);
 		}
-		this->uniforms.clear();
 	}
 
 	K::Shader* Material::GetShader() 
 	{
-		return &this->shader;
+		return this->shader;
 	}
 }

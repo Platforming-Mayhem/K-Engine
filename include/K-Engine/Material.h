@@ -34,8 +34,8 @@ namespace K
 	private:
 		K::MaterialManager* materials;
 		std::string filename;
-		std::unordered_map<std::string, int> uniforms;
-		K::Shader shader;
+		std::unordered_map<std::string, int>* uniforms;
+		K::Shader* shader;
 	public:
 		K::Shader* GetShader();
 		std::string GetLocation();
