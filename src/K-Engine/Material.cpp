@@ -70,7 +70,7 @@ namespace K
 			{
 				glGetActiveUniform(this->shader->shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
 
-				int id = glGetUniformLocation(this->shader->shader, &name[0]);
+				GLint id = glGetUniformLocation(this->shader->shader, &name[0]);
 
 				this->AddUniform(&name[0], id);
 
@@ -120,7 +120,7 @@ namespace K
 			{
 				glGetActiveUniform(this->shader->shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
 				
-				int id = glGetUniformLocation(this->shader->shader, &name[0]);
+				GLint id = glGetUniformLocation(this->shader->shader, &name[0]);
 
 				this->AddUniform(&name[0], id);
 
@@ -139,24 +139,28 @@ namespace K
 		return this->filename;
 	}
 
-	void Material::AddUniform(std::string name, int uniform)
+	void Material::AddUniform(std::string name, GLint uniform)
 	{
-		this->uniforms->insert(std::make_pair(name, uniform));
+		(*this->uniforms)[name] = uniform;
 	}
 
-	int Material::GetUniform(std::string name)
+	GLint Material::GetUniform(const std::string& name) const
 	{
-		if (this->uniforms->contains(name)) 
-		{
-			return this->uniforms->at(name);
-		}
+		auto uniform = this->uniforms->find(name);
+		if (uniform != this->uniforms->end())
+			return uniform->second;
 		else 
 		{
 			return -1;
 		}
 	}
 
-	void Material::RemoveUniform(std::string name) 
+	int Material::GetNumberOfUniforms() 
+	{
+		return this->uniforms->size();
+	}
+
+	void Material::RemoveUniform(std::string name)
 	{
 		this->uniforms->erase(name);
 	}

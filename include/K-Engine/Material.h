@@ -34,13 +34,14 @@ namespace K
 	private:
 		K::MaterialManager* materials;
 		std::string filename;
-		std::unordered_map<std::string, int>* uniforms;
+		std::unordered_map<std::string, GLint>* uniforms;
 		K::Shader* shader;
 	public:
 		K::Shader* GetShader();
 		std::string GetLocation();
-		void AddUniform(std::string name, int uniform);
-		int GetUniform(std::string name);
+		void AddUniform(std::string name, GLint uniform);
+		GLint GetUniform(const std::string& name) const;
+		int GetNumberOfUniforms();
 		void RemoveUniform(std::string name);
 		Material(std::string location);
 		Material(int resource);
