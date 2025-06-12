@@ -15,19 +15,11 @@ namespace K
 
 		Shader(std::string file);
 
-		void AddUniform(std::string name, int uniform);
-
 		GLint GetUniform(const char* name) const;
-
-		int GetNumberOfUniforms();
-
-		void RemoveUniform(std::string name);
 
 		~Shader();
 
 	private:
-
-		std::unordered_map<std::string, int> uniformLocations;
 
 		unsigned int CompileShader(unsigned int type, const std::string& source);
 
