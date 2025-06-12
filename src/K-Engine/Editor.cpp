@@ -468,6 +468,13 @@ namespace K
 				ImGui::Text("Material: %s Uniforms: %i Dependencies: %i", temp.first.c_str(), ((K::Material*)temp.second.dependenciesPointers[0])->GetShader()->GetNumberOfUniforms(), temp.second.dependencies);
 			}
 
+			ImGui::Text("Active Textures: %i", K::textureManager.textures.size());
+
+			for (auto temp : K::textureManager.textures)
+			{
+				ImGui::Text("Texture: %s Dependencies: %i", temp.first.c_str(), temp.second.dependencies);
+			}
+
 			ImGui::Text("Number of GameObjects: %i", K::Editor::GetCurrentScene()->GetNumberOfObjects());
 
 			ImGuiExtra();
