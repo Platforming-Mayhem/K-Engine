@@ -115,6 +115,36 @@ namespace K
 		}
 	}
 
+	void Shader::AddUniform(std::string name, GLint uniform)
+	{
+		this->uniformLocations[name] = uniform;
+	}
+
+	GLint Shader::GetUniform(std::string name) const
+	{
+		auto it = this->uniformLocations.find(name);
+		if (it != this->uniformLocations.end())
+			return it->second;
+		else
+			return -1;
+	}
+
+	int Shader::GetNumberOfUniforms()
+	{
+		return this->uniformLocations.size();
+	}
+
+	void Shader::RemoveUniform(std::string name)
+	{
+		this->uniformLocations.erase(name);
+	}
+
+	Shader::~Shader() 
+	{
+		this->uniformLocations.clear();
+		glDeleteProgram(this->shader);
+	}
+
 	unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	{
 		unsigned int id = glCreateShader(type);
@@ -155,6 +185,33 @@ namespace K
 			glGetProgramInfoLog(program, 512, NULL, infoLog);
 			std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 		}
+
+		GLint i;
+		GLint count;
+
+		GLint size; // size of the variable
+		GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+		GLsizei bufSize = 16; // maximum name length
+		glGetProgramiv(program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
+
+		std::vector<GLchar> name(bufSize); // variable name in GLSL
+		GLsizei length; // name length
+
+		glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &count);
+		printf("Active Uniforms: %d\n", count);
+
+		for (i = 0; i < count; i++)
+		{
+			glGetActiveUniform(program, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
+
+			GLint id = glGetUniformLocation(program, &name[0]);
+
+			this->AddUniform(&name[0], id);
+
+			printf("Uniform #%d Type: %u Name: %s ID: %d\n", i, type, &name[0], id);
+		}
+
 		glValidateProgram(program);
 		glDeleteShader(vs);
 		glDeleteShader(fs);

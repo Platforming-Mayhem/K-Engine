@@ -42,40 +42,12 @@ namespace K
 		{
 			K::Material* mat = ((K::Material*)this->materials->Check(this->filename)->dependenciesPointers[0]);
 			this->shader = mat->shader;
-			this->uniforms = mat->uniforms;
 			this->materials->Check(this->filename)->dependencies++;
 			this->materials->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
 		else 
 		{
 			this->shader = new K::Shader(this->filename);
-			this->uniforms = new std::unordered_map<std::string, int>();
-
-			GLint i;
-			GLint count;
-
-			GLint size; // size of the variable
-			GLenum type; // type of the variable (float, vec3 or mat4, etc)
-
-			GLsizei bufSize = 16; // maximum name length
-			glGetProgramiv(this->shader->shader, GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
-
-			std::vector<GLchar> name(bufSize); // variable name in GLSL
-			GLsizei length; // name length
-
-			glGetProgramiv(this->shader->shader, GL_ACTIVE_UNIFORMS, &count);
-			printf("Active Uniforms: %d\n", count);
-
-			for (i = 0; i < count; i++)
-			{
-				glGetActiveUniform(this->shader->shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
-
-				GLint id = glGetUniformLocation(this->shader->shader, &name[0]);
-
-				this->AddUniform(&name[0], id);
-
-				printf("Uniform #%d Type: %u Name: %s ID: %d\n", i, type, &name[0], id);
-			}
 
 			K::MaterialInfo info = K::MaterialInfo();
 			info.dependencies++;
@@ -92,40 +64,12 @@ namespace K
 		{
 			K::Material* mat = ((K::Material*)this->materials->Check(this->filename)->dependenciesPointers[0]);
 			this->shader = mat->shader;
-			this->uniforms = mat->uniforms;
 			this->materials->Check(this->filename)->dependencies++;
 			this->materials->Check(this->filename)->dependenciesPointers.push_back(this);
 		}
 		else
 		{
 			this->shader = new K::Shader(resource);
-			this->uniforms = new std::unordered_map<std::string, int>();
-
-			GLint i;
-			GLint count;
-
-			GLint size; // size of the variable
-			GLenum type; // type of the variable (float, vec3 or mat4, etc)
-
-			GLsizei bufSize = 16; // maximum name length
-			glGetProgramiv(this->shader->shader, GL_ACTIVE_UNIFORM_MAX_LENGTH, &bufSize);
-
-			std::vector<GLchar> name(bufSize); // variable name in GLSL
-			GLsizei length; // name length
-
-			glGetProgramiv(this->shader->shader, GL_ACTIVE_UNIFORMS, &count);
-			printf("Active Uniforms: %d\n", count);
-
-			for (i = 0; i < count; i++)
-			{
-				glGetActiveUniform(this->shader->shader, (GLuint)i, bufSize, &length, &size, &type, &name[0]);
-				
-				GLint id = glGetUniformLocation(this->shader->shader, &name[0]);
-
-				this->AddUniform(&name[0], id);
-
-				printf("Uniform #%d Type: %u Name: %s ID: %d\n", i, type, &name[0], id);
-			}
 
 			K::MaterialInfo info = K::MaterialInfo();
 			info.dependencies++;
@@ -137,32 +81,6 @@ namespace K
 	std::string Material::GetLocation() 
 	{
 		return this->filename;
-	}
-
-	void Material::AddUniform(std::string name, GLint uniform)
-	{
-		(*this->uniforms)[name] = uniform;
-	}
-
-	GLint Material::GetUniform(const std::string& name) const
-	{
-		auto uniform = this->uniforms->find(name);
-		if (uniform != this->uniforms->end())
-			return uniform->second;
-		else 
-		{
-			return -1;
-		}
-	}
-
-	int Material::GetNumberOfUniforms() 
-	{
-		return this->uniforms->size();
-	}
-
-	void Material::RemoveUniform(std::string name)
-	{
-		this->uniforms->erase(name);
 	}
 
 	Material::~Material() 
@@ -186,9 +104,7 @@ namespace K
 		}
 		if (this->materials->Check(this->filename)->dependencies <= 0)
 		{
-			this->uniforms->clear();
 			delete this->shader;
-			delete this->uniforms;
 			this->materials->Remove(this->filename);
 		}
 	}

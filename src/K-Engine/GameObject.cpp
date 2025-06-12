@@ -289,7 +289,7 @@ namespace K
 		{
 			glUseProgram(this->GetMaterial()->GetShader()->shader);
 
-			glUniformMatrix4fv(this->GetMaterial()->GetUniform("modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
+			glUniformMatrix4fv(this->GetMaterial()->GetShader()->GetUniform("modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
 		}
 	}
 

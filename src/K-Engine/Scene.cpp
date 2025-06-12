@@ -131,7 +131,7 @@ namespace K
 			temp.second->PassTransformationMatrix();
 			temp.second->RenderBind();
 			if(tempMat != nullptr)
-				glUniform1i(temp.second->GetMaterial()->GetUniform("index"), index);
+				glUniform1i(temp.second->GetMaterial()->GetShader()->GetUniform("index"), index);
 			temp.second->Render();
 			temp.second->RenderUnbind();
 			temp.second->SetMaterial(tempMat, false);

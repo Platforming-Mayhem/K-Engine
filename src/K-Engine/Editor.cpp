@@ -465,7 +465,7 @@ namespace K
 
 			for (auto temp : K::materialManager.materials) 
 			{
-				ImGui::Text("Material: %s Uniforms: %i Dependencies: %i", temp.first.c_str(), ((K::Material*)temp.second.dependenciesPointers[0])->GetNumberOfUniforms(), temp.second.dependencies);
+				ImGui::Text("Material: %s Uniforms: %i Dependencies: %i", temp.first.c_str(), ((K::Material*)temp.second.dependenciesPointers[0])->GetShader()->GetNumberOfUniforms(), temp.second.dependencies);
 			}
 
 			ImGui::Text("Number of GameObjects: %i", K::Editor::GetCurrentScene()->GetNumberOfObjects());
