@@ -120,7 +120,7 @@ namespace K
 		this->uniformLocations[name] = uniform;
 	}
 
-	GLint Shader::GetUniform(std::string name) const
+	GLint Shader::GetUniform(const char* name) const
 	{
 		auto it = this->uniformLocations.find(name);
 		if (it != this->uniformLocations.end())

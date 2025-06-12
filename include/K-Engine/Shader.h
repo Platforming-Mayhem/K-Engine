@@ -17,7 +17,7 @@ namespace K
 
 		void AddUniform(std::string name, int uniform);
 
-		GLint GetUniform(std::string name) const;
+		GLint GetUniform(const char* name) const;
 
 		int GetNumberOfUniforms();
 
