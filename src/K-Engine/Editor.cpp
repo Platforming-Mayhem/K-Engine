@@ -259,7 +259,7 @@ namespace K
 					if (NFD_PickFolderU8(&location, NULL) == NFD_OKAY)
 					{
 						ASSET_DIR = location;
-						ASSET_DIR += "/assets/";
+						ASSET_DIR += "\\assets\\";
 						if (!std::filesystem::is_directory(ASSET_DIR))
 						{
 							std::filesystem::create_directory(ASSET_DIR);
@@ -390,7 +390,7 @@ namespace K
 
 				if (ImGui::Button("Build Executable")) 
 				{
-					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{0}\" -p:OutDir=\"{1}\";Configuration=Release", ASSET_DIR + "bin/Components.sln", this->projectPath);
+					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{2}\" -p:Configuration=Release && msbuild \"{0}\" -p:OutDir=\"{1}\";Configuration=Release", ASSET_DIR + "bin\\Components.sln", this->projectPath, std::filesystem::current_path().parent_path().string() + "\\Editor.sln");
 
 					std::cout << msvcCommand << std::endl;
 
