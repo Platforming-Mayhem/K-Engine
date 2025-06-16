@@ -87,8 +87,16 @@ namespace K
 
 	void Scene::RenameScene(std::string newSceneName)
 	{
-		this->sceneName = "scenes/" + newSceneName;
-		this->location = "scenes/" + newSceneName;
+		if (!newSceneName.contains(".JAWS"))
+		{
+			this->sceneName = "scenes/" + newSceneName + ".JAWS";
+			this->location = "scenes/" + newSceneName + ".JAWS";
+		}
+		else 
+		{
+			this->sceneName = "scenes/" + newSceneName;
+			this->location = "scenes/" + newSceneName;
+		}
 	}
 
 	int Scene::GetNumberOfObjects() 

@@ -6,10 +6,6 @@ namespace K
 	Serializer::Serializer(K::Scene* scene, std::string location)
 	{
 		std::string name = location;
-		if (!name.contains(".JAWS"))
-		{
-			name += ".JAWS";
-		}
 		std::ofstream outFile;
 		outFile.open(name.c_str());
 		if (!outFile)
