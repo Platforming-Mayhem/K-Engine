@@ -779,8 +779,7 @@ namespace K
 			}
 			if (ImGui::Button("Duplicate")) 
 			{
-				K::GameObject* temp = new K::GameObject("Name", new K::Transform(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 1.0f, 1.0f)));
-				*temp = *this->selectedGameObject;
+				K::GameObject* temp = new K::GameObject(*this->selectedGameObject);
 				std::string name = temp->GetName();
 				bool changedName = false;
 				for (int i = name.length(); i > 0; i--) 

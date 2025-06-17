@@ -33,14 +33,14 @@ namespace K
 	{
 		this->name = other.name;
 		this->transform = new K::Transform();
-		/**this->transform->position = *other.transform->position;
+		*this->transform->position = *other.transform->position;
 		*this->transform->rotation = *other.transform->rotation;
 		*this->transform->scale = *other.transform->scale;
 		*this->transform->localPosition = *other.transform->localPosition;
 		*this->transform->localRotation = *other.transform->localRotation;
-		*this->transform->localScale = *other.transform->localScale;*/
-		this->g_Index = other.g_Index;
-		/*for (int i = 0; i < other.components.size(); i++)
+		*this->transform->localScale = *other.transform->localScale;
+		this->g_Index = other.g_Index + 1;
+		for (int i = 0; i < other.components.size(); i++)
 		{
 			K::Component* comp = K::Editor::lst().at(other.components[i]->GetName())->create();
 			this->AddComponent(comp);
@@ -66,7 +66,7 @@ namespace K
 			}
 			comp->Init();
 			comp->RenderInit();
-		}*/
+		}
 		K::Editor::GetCurrentScene()->Attach(this);
 	}
 
