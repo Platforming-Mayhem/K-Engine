@@ -39,7 +39,7 @@ namespace K
 		*this->transform->localPosition = *other.transform->localPosition;
 		*this->transform->localRotation = *other.transform->localRotation;
 		*this->transform->localScale = *other.transform->localScale;
-		this->g_Index = other.g_Index + 1;
+		this->g_Index = std::rand();
 		for (int i = 0; i < other.components.size(); i++)
 		{
 			K::Component* comp = K::Editor::lst().at(other.components[i]->GetName())->create();
