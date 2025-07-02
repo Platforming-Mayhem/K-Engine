@@ -358,8 +358,8 @@ namespace K
 						}
 						ImGui::EndDragDropTarget();
 					}
+					ImGui::EndListBox();
 				}
-				ImGui::EndListBox();
 
 				if (this->selectedScene >= 0)
 				{
@@ -478,8 +478,9 @@ namespace K
 			ImGui::Text("Number of GameObjects: %i", K::Editor::GetCurrentScene()->GetNumberOfObjects());
 
 			ImGuiExtra();
+
+			ImGui::End();
 		}
-		ImGui::End();
 	}
 
 	void Editor::AddPreloadedTexture(std::string location) 
@@ -749,11 +750,14 @@ namespace K
 		std::string temp = "Hierarchy: ";
 		temp += K::Editor::GetCurrentScene()->GetSceneName();
 		temp += "###Hierarchy";
-		ImGui::Begin(temp.c_str());
+		if (ImGui::Begin(temp.c_str())) 
+		{
+			ImGui::Checkbox("is Paused", &this->GetCurrentScene()->isPaused);
 
-		this->ParentChildrenHierarchy();
+			this->ParentChildrenHierarchy();
 
-		ImGui::End();
+			ImGui::End();
+		}
 	}
 
 	void Editor::ImGuiExtra() 
