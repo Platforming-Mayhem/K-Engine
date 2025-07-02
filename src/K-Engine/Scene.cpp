@@ -151,7 +151,10 @@ namespace K
 		K::Time::startTime = (float)glfwGetTime();
 		for (auto temp : this->GetGameObjects())
 		{
-			this->GameLoop(temp.second);
+			if (!this->isPaused) 
+			{
+				this->GameLoop(temp.second);
+			}
 			this->RenderLoop(temp.second);
 		}
 		K::Time::deltaTimeValue = K::Time::startTime - K::Time::endTime;
