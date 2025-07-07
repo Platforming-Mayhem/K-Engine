@@ -17,6 +17,16 @@ namespace K
 		this->gameObjects.clear();
 	}
 
+	void Scene::SetSceneIndex(int index) 
+	{
+		this->sceneIndex = index;
+	}
+
+	int Scene::GetBuildIndex() 
+	{
+		return this->sceneIndex;
+	}
+
 	void Scene::SetLocation(std::string location)
 	{
 		this->location = location;

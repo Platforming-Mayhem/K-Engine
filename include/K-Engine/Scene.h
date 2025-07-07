@@ -9,6 +9,7 @@ namespace K
 	private:
 		std::string location;
 		std::string sceneName;
+		int sceneIndex = -1;
 		std::map<int, K::GameObject*> gameObjects;
 	public:
 
@@ -17,6 +18,10 @@ namespace K
 		Scene(std::string newSceneName);
 
 		~Scene();
+
+		void SetSceneIndex(int index);
+
+		int GetBuildIndex();
 
 		void SetLocation(std::string location);
 

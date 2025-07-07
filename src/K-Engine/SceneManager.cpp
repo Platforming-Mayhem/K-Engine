@@ -153,6 +153,7 @@ namespace K
 			{
 				if (K::SceneManager::index < K::SceneManager::scenes.size()) 
 				{
+					K::SceneManager::currentScene->SetSceneIndex(K::SceneManager::index);
 					K::Deserializer deserializer = K::Deserializer(K::SceneManager::currentScene, K::SceneManager::scenes[K::SceneManager::index]);
 				}
 			}
