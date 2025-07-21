@@ -92,12 +92,10 @@ namespace K
 		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 		#if _DEBUG
-		glfwSwapInterval(0);
 		this->startUpSFX = new K::Audio("../../assets/audios/StartUp.wav");
 		this->startUpSFX->Play();
-		#else
-		glfwSwapInterval(1);
 		#endif
+		glfwSwapInterval(0);
 	}
 
 	Window::~Window()

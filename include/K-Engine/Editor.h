@@ -33,18 +33,30 @@ namespace K
 	private:
 		std::string sceneName;
 		std::string projectPath;
+
 		K::RenderTexture* viewport;
+
 		std::unordered_map<std::string, K::Texture*> preloadedTextures;
+
 		K::Window* window;
+
 		HINSTANCE componentsLibrary = NULL;
+
 		bool buildWindow = false;
 		bool confirmationWindow = false;
 		bool projectLoadWindow = false;
 		bool msvcBuildWindow = false;
 		bool doesIniExist = false;
+		bool updateFiles = true;
+
+		std::vector<std::filesystem::directory_entry> files;
+
 		int selectedScene = -1;
+
 		static K::SceneManager* sceneManager;
+
 		static std::filesystem::path currentDirectory;
+
 	public:
 
 		static float windowScaleFactor;

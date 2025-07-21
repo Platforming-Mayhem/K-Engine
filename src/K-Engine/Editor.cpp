@@ -271,6 +271,8 @@ namespace K
 					NFD_Quit();
 				}
 
+				this->updateFiles = true;
+
 				this->projectPath = projectName;
 				projectName = std::filesystem::absolute(projectName).filename().string();
 
@@ -278,7 +280,7 @@ namespace K
 
 				std::string cmakelist = ASSET_DIR + "CMakeLists.txt";
 
-				if (!std::filesystem::exists(cmakelist)) 
+				if (!std::filesystem::exists(cmakelist) || !std::filesystem::exists(ASSET_DIR + "bin"))
 				{
 					FILE* file = fopen(cmakelist.c_str(), "w");
 
@@ -314,9 +316,9 @@ namespace K
 
 					fclose(file);
 
-					const std::string quote = "\"";
+					cmakelist = std::format("if 1==1 cmake -B \"{0}\" -S \"{1}\"", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
 
-					std::string cmakelist = "cmake -S " + quote + ASSET_DIR + quote + " -B " + quote + ASSET_DIR + "bin" + quote;
+					std::cout << cmakelist << std::endl;
 
 					std::system(cmakelist.c_str());
 				}
@@ -433,7 +435,7 @@ namespace K
 
 					this->UnloadComponents();
 
-					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{0}\"", ASSET_DIR + "bin/Components.sln");
+					std::string msvcCommand = std::format("if 1==1 cmake --build \"{0}\" --target Components --config Debug", ASSET_DIR + "bin");
 
 					std::system(msvcCommand.c_str());
 
@@ -504,114 +506,130 @@ namespace K
 
 	void Editor::ImGuiContentBrowser() 
 	{
-		ImGui::Begin("K-Engine Content Browser");
-
-		if (this->currentDirectory.string() != ASSET_DIR && this->currentDirectory.string() + "/" != ASSET_DIR)
+		if (ImGui::Begin("K-Engine Content Browser")) 
 		{
-			if (ImGui::Button("...")) 
+			if (ImGui::Button("Reload")) 
 			{
-				this->currentDirectory = this->currentDirectory.parent_path();
+				this->updateFiles = true;
 			}
-		}
 
-		float contentWidth = ImGui::GetContentRegionAvail().x;
-		if (contentWidth <= 256.0f) 
-		{
-			contentWidth = 256.0f;
-		}
-		int numberOfColumns = contentWidth / 256.0f;
-		ImGui::Columns(numberOfColumns, "Content Columns", false);
-
-		std::string asset_Dir = ASSET_DIR;
-
-		for (auto& p : std::filesystem::directory_iterator(this->currentDirectory)) 
-		{
-			std::string relativeLocation = p.path().string();
-			relativeLocation.erase(relativeLocation.begin(), relativeLocation.begin() + asset_Dir.size());
-			if (p.is_directory()) 
+			if (this->currentDirectory.string() != ASSET_DIR && this->currentDirectory.string() + "/" != ASSET_DIR)
 			{
-				K::Texture* temp = this->preloadedTextures.at(std::to_string(FILE_TEX));
-				if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(temp->GetWidth(), temp->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
+				if (ImGui::Button("..."))
 				{
-					this->currentDirectory = p.path();
+					this->currentDirectory = this->currentDirectory.parent_path();
+					this->updateFiles = true;
 				}
-				ImGui::TextWrapped(relativeLocation.c_str());
-				ImGui::NextColumn();
 			}
-			else 
+
+			float contentWidth = ImGui::GetContentRegionAvail().x;
+			if (contentWidth <= 256.0f)
 			{
-				if (p.is_regular_file())
+				contentWidth = 256.0f;
+			}
+			int numberOfColumns = contentWidth / 256.0f;
+			ImGui::Columns(numberOfColumns, "Content Columns", false);
+
+			std::string asset_Dir = ASSET_DIR;
+
+			if (this->updateFiles) 
+			{
+				this->files.clear();
+				for (auto& p : std::filesystem::directory_iterator(this->currentDirectory))
 				{
-					numberOfColumns = contentWidth / 128.0f;
-					if (p.path().extension() == ".png")
+					this->files.push_back(p);
+				}
+				this->updateFiles = false;
+			}
+
+			for (auto file : this->files) 
+			{
+				std::string relativeLocation = file.path().string();
+				relativeLocation.erase(relativeLocation.begin(), relativeLocation.begin() + asset_Dir.size());
+				if (file.is_directory())
+				{
+					K::Texture* temp = this->preloadedTextures.at(std::to_string(FILE_TEX));
+					if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(temp->GetWidth(), temp->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
 					{
-						if (this->preloadedTextures.contains(relativeLocation)) 
+						this->currentDirectory = file.path();
+						this->updateFiles = true;
+					}
+				}
+				else
+				{
+					if (file.is_regular_file())
+					{
+						numberOfColumns = contentWidth / 128.0f;
+						if (file.path().extension() == ".png")
 						{
-							K::Texture* temp = this->preloadedTextures.at(relativeLocation);
-							ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
-							if (ImGui::BeginDragDropSource())
+							if (this->preloadedTextures.contains(relativeLocation))
 							{
-								std::string file = temp->GetFilePath();
-								ImGui::SetDragDropPayload("_TEXTURE", file.c_str(), file.size() + 1);
-								ImGui::Text(file.c_str());
-								ImGui::EndDragDropSource();
+								K::Texture* temp = this->preloadedTextures.at(relativeLocation);
+								ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+								if (ImGui::BeginDragDropSource())
+								{
+									std::string file = temp->GetFilePath();
+									ImGui::SetDragDropPayload("_TEXTURE", file.c_str(), file.size() + 1);
+									ImGui::Text(file.c_str());
+									ImGui::EndDragDropSource();
+								}
+							}
+							else
+							{
+								this->AddPreloadedTexture(relativeLocation);
 							}
 						}
-						else 
+						else if (file.path().extension() == ".gif")
 						{
-							this->AddPreloadedTexture(relativeLocation);
+							if (this->preloadedTextures.contains(relativeLocation))
+							{
+								K::Texture* temp = this->preloadedTextures.at(relativeLocation);
+								ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+								if (ImGui::BeginDragDropSource())
+								{
+									std::string file = temp->GetFilePath();
+									ImGui::SetDragDropPayload("_TEXTURE", file.c_str(), file.size() + 1);
+									ImGui::Text(file.c_str());
+									ImGui::EndDragDropSource();
+								}
+							}
+							else
+							{
+								this->AddPreloadedTexture(relativeLocation);
+							}
 						}
-					}
-					else if (p.path().extension() == ".gif") 
-					{
-						if (this->preloadedTextures.contains(relativeLocation))
+						else if (file.path().extension() == ".JAWS")
 						{
-							K::Texture* temp = this->preloadedTextures.at(relativeLocation);
-							ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(128.0f, 128.0f), ImVec2(0, 1), ImVec2(1, 0));
+							K::Texture* scene = this->preloadedTextures.at(std::to_string(SCENE_TEX));
+							if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)scene->GetID(), ImVec2(scene->GetWidth(), scene->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
+							{
+								K::Editor::GetCurrentScene()->CreateEmptyScene();
+								this->selectedGameObject = nullptr;
+								K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
+							}
 							if (ImGui::BeginDragDropSource())
 							{
-								std::string file = temp->GetFilePath();
-								ImGui::SetDragDropPayload("_TEXTURE", file.c_str(), file.size() + 1);
+								std::string file = relativeLocation;
+								ImGui::SetDragDropPayload("_SCENE", file.c_str(), file.size() + 1);
 								ImGui::Text(file.c_str());
 								ImGui::EndDragDropSource();
 							}
 						}
 						else
 						{
-							this->AddPreloadedTexture(relativeLocation);
+							K::Texture* unknown = this->preloadedTextures.at(std::to_string(UNKNOWN_TEX));
+							ImGui::ImageButton(file.path().string().c_str(), (void*)(intptr_t)unknown->GetID(), ImVec2(unknown->GetWidth(), unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
 						}
 					}
-					else if (p.path().extension() == ".JAWS")
-					{
-						K::Texture* scene = this->preloadedTextures.at(std::to_string(SCENE_TEX));
-						if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)scene->GetID(), ImVec2(scene->GetWidth(), scene->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
-						{
-							K::Editor::GetCurrentScene()->CreateEmptyScene();
-							this->selectedGameObject = nullptr;
-							K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
-						}
-						if (ImGui::BeginDragDropSource())
-						{
-							std::string file = relativeLocation;
-							ImGui::SetDragDropPayload("_SCENE", file.c_str(), file.size() + 1);
-							ImGui::Text(file.c_str());
-							ImGui::EndDragDropSource();
-						}
-					}
-					else 
-					{
-						K::Texture* unknown = this->preloadedTextures.at(std::to_string(UNKNOWN_TEX));
-						ImGui::ImageButton(p.path().string().c_str(), (void*)(intptr_t)unknown->GetID(), ImVec2(unknown->GetWidth(), unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
-					}
-					ImGui::TextWrapped(p.path().filename().string().c_str());
-					ImGui::NextColumn();
 				}
+				ImGui::TextWrapped(relativeLocation.c_str());
+				ImGui::NextColumn();
 			}
+
+			this->LoadPreloadedTextures();
+
+			ImGui::End();
 		}
-
-		ImGui::End();
-
-		this->LoadPreloadedTextures();
 	}
 
 	bool Editor::Render() 
