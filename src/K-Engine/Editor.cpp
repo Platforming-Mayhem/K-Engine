@@ -316,7 +316,7 @@ namespace K
 
 					fclose(file);
 
-					cmakelist = std::format("if 1==1 cmake -B \"{0}\" -S \"{1}\"", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
+					cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\"", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
 
 					std::cout << cmakelist << std::endl;
 
@@ -392,9 +392,13 @@ namespace K
 
 				if (ImGui::Button("Build Executable")) 
 				{
-					std::string msvcCommand = std::format("if 1==1 \"%ProgramFiles%\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat\" && msbuild \"{2}\" -p:Configuration=Release && msbuild \"{0}\" -p:OutDir=\"{1}\";Configuration=Release", ASSET_DIR + "bin\\Components.sln", this->projectPath, std::filesystem::current_path().parent_path().string() + "\\Editor.sln");
+					std::string msvcCommand = std::format("cmake --build \"{0}\" --config Release", ASSET_DIR + "bin");
 
 					std::cout << msvcCommand << std::endl;
+
+					std::system(msvcCommand.c_str());
+
+					msvcCommand = std::format("cmake -E copy_directory \"{0}\" \"{1}\"", std::filesystem::current_path().parent_path().string() + "/Release", this->projectPath);
 
 					std::system(msvcCommand.c_str());
 				}
@@ -435,7 +439,7 @@ namespace K
 
 					this->UnloadComponents();
 
-					std::string msvcCommand = std::format("if 1==1 cmake --build \"{0}\" --target Components --config Debug", ASSET_DIR + "bin");
+					std::string msvcCommand = std::format("cmake --build \"{0}\" --target Components --config Debug", ASSET_DIR + "bin");
 
 					std::system(msvcCommand.c_str());
 
