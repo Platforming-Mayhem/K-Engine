@@ -73,11 +73,13 @@ namespace K
 		unsigned char* icon = stbi_load((ASSET_DIR + "textures/watermark/watermark.png").c_str(), &width, &height, &c, 0);
 
 		GLFWimage glfwImage;
+		glfwImage.width = width;
+		glfwImage.height = height;
 		glfwImage.pixels = icon;
 
-		stbi_image_free(icon);
-
 		glfwSetWindowIcon(this->window->window, 1, &glfwImage);
+
+		stbi_image_free(icon);
 
 		#else
 		this->LoadComponents();
