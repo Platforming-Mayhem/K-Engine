@@ -83,8 +83,6 @@ namespace K
 
 		void AddPreloadedTexture(std::string location);
 
-		void AddPreloadedTexture(unsigned int location);
-
 		void LoadPreloadedTextures();
 
 		void LoadComponents();

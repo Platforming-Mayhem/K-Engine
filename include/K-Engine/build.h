@@ -12,7 +12,6 @@
 #include <unordered_map>
 #include <format>
 #include <thread>
-#include <ignore/resource.h>
 #include <bitset>
 
 //GLFW & GLEW

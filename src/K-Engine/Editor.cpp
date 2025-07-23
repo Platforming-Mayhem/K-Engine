@@ -68,6 +68,17 @@ namespace K
 		this->AddPreloadedTexture("textures/editor/scene.png");
 		this->AddPreloadedTexture("textures/editor/unknown.png");
 		this->AddPreloadedTexture("textures/editor/file.png");
+
+		int width, height, c;
+		unsigned char* icon = stbi_load((ASSET_DIR + "textures/watermark/watermark.png").c_str(), &width, &height, &c, 0);
+
+		GLFWimage glfwImage;
+		glfwImage.pixels = icon;
+
+		stbi_image_free(icon);
+
+		glfwSetWindowIcon(this->window->window, 1, &glfwImage);
+
 		#else
 		this->LoadComponents();
 		#endif
@@ -492,11 +503,6 @@ namespace K
 	void Editor::AddPreloadedTexture(std::string location) 
 	{
 		this->preloadedTextures.insert({ location, new K::Texture(location.c_str()) });
-	}
-
-	void Editor::AddPreloadedTexture(unsigned int location) 
-	{
-		this->preloadedTextures.insert({ std::to_string(location), new K::Texture(location) });
 	}
 
 	void Editor::LoadPreloadedTextures() 

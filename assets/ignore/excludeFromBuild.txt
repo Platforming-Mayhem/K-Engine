@@ -1,7 +1,0 @@
-ignore
-textures\watermark
-textures\editor
-.png
-.gif
-.jpg
-.BJAWS

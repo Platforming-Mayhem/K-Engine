@@ -77,8 +77,6 @@ namespace K
 
 		Texture(const char* filename);
 
-		Texture(unsigned int resource);
-
 		~Texture();
 
 		int GetChannels() 

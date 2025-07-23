@@ -33,8 +33,6 @@ src/K-Engine/Window.cpp
 src/K-Engine/Components/Component.cpp
 )
 
-target_sources(${PROJECT_NAME} PRIVATE assets/ignore/KEngineResources.rc)
-
 target_compile_definitions(${PROJECT_NAME} PRIVATE K_BUILD_DLL)
 
 target_link_libraries(${PROJECT_NAME} OpenGL::GLU)
@@ -66,8 +64,6 @@ add_custom_command(
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND_EXPAND_LISTS
 )
-
-target_sources(${PROJECT_NAME} PRIVATE assets/ignore/Editor.rc)
 
 target_link_libraries(${PROJECT_NAME} K-Engine)
 
