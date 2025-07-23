@@ -17,8 +17,6 @@ namespace K
 
 		static K::Scene* currentScene;
 
-		SceneManager(unsigned int resource);
-
 		SceneManager(std::string path);
 
 		~SceneManager();
