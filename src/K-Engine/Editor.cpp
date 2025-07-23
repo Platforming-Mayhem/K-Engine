@@ -65,9 +65,9 @@ namespace K
 
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 460");
-		this->AddPreloadedTexture(SCENE_TEX);
-		this->AddPreloadedTexture(UNKNOWN_TEX);
-		this->AddPreloadedTexture(FILE_TEX);
+		this->AddPreloadedTexture("textures/editor/scene.png");
+		this->AddPreloadedTexture("textures/editor/unknown.png");
+		this->AddPreloadedTexture("textures/editor/file.png");
 		#else
 		this->LoadComponents();
 		#endif
@@ -552,7 +552,7 @@ namespace K
 				relativeLocation.erase(relativeLocation.begin(), relativeLocation.begin() + asset_Dir.size());
 				if (file.is_directory())
 				{
-					K::Texture* temp = this->preloadedTextures.at(std::to_string(FILE_TEX));
+					K::Texture* temp = this->preloadedTextures.at("textures/editor/file.png");
 					if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(temp->GetWidth(), temp->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
 					{
 						this->currentDirectory = file.path();
@@ -604,7 +604,7 @@ namespace K
 						}
 						else if (file.path().extension() == ".JAWS")
 						{
-							K::Texture* scene = this->preloadedTextures.at(std::to_string(SCENE_TEX));
+							K::Texture* scene = this->preloadedTextures.at("textures/editor/scene.png");
 							if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)scene->GetID(), ImVec2(scene->GetWidth(), scene->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
 							{
 								K::Editor::GetCurrentScene()->CreateEmptyScene();
@@ -621,7 +621,7 @@ namespace K
 						}
 						else
 						{
-							K::Texture* unknown = this->preloadedTextures.at(std::to_string(UNKNOWN_TEX));
+							K::Texture* unknown = this->preloadedTextures.at("textures/editor/unknown.png");
 							ImGui::ImageButton(file.path().string().c_str(), (void*)(intptr_t)unknown->GetID(), ImVec2(unknown->GetWidth(), unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
 						}
 					}

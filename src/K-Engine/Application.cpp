@@ -17,7 +17,7 @@ namespace K
 		new K::Window(windowName);
 
 		#if _DEBUG
-		K::editorMat = new Material(EDITOR_SHADER);
+		K::editorMat = new Material("shaders/editor.shader");
 		K::renderTex = new K::RenderTexture(K::window->width, K::window->height, GL_TEXTURE_2D, GL_R32I, GL_RED_INTEGER);
 		#endif
 
