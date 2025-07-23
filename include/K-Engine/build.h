@@ -35,21 +35,37 @@
 #include <stb_image.h>
 
 #ifdef _WIN32
+
 #include <Windows.h>
-#elif __unix__
-#include <dlfcn.h>
-#endif
 
 #ifdef K_BUILD_DLL
-	#define K_API __declspec(dllexport)
+#define K_API __declspec(dllexport)
 #else
-	#define K_API __declspec(dllimport)
+#define K_API __declspec(dllimport)
 #endif
 
 #ifdef KC_BUILD_DLL
 #define KC_API __declspec(dllexport)
 #else
 #define KC_API __declspec(dllimport)
+#endif
+
+#elif __unix__
+
+#include <dlfcn.h>
+
+#ifdef K_BUILD_DLL
+#define K_API
+#else
+#define K_API
+#endif
+
+#ifdef KC_BUILD_DLL
+#define KC_API
+#else
+#define KC_API
+#endif
+
 #endif
 
 K_API extern std::string ASSET_DIR;
