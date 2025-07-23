@@ -7,12 +7,12 @@ set(USE_GLU ON)
 
 find_package(OpenGL REQUIRED)
 
-add_subdirectory(Vendors/GLFW)
-add_subdirectory(Vendors/IMGUI)
-add_subdirectory(Vendors/GLEW)
-add_subdirectory(Vendors/STB)
-add_subdirectory(Vendors/MiniAudio)
-add_subdirectory(Vendors/NativeFileDialog-Extended)
+add_subdirectory(vendors/GLFW)
+add_subdirectory(vendors/IMGUI)
+add_subdirectory(vendors/GLEW)
+add_subdirectory(vendors/STB)
+add_subdirectory(vendors/MiniAudio)
+add_subdirectory(vendors/NativeFileDialog-Extended)
 
 add_library(${PROJECT_NAME} SHARED 
 src/K-Engine/Application.cpp
