@@ -7,64 +7,6 @@ namespace K
 
 	}
 
-	Shader::Shader(int resource)
-	{
-		HMODULE hModule;
-		GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR) & "main", &hModule);
-		HRSRC hr = FindResource(hModule, MAKEINTRESOURCE(resource), "SHADER");
-
-		if (hr == NULL)
-		{
-			std::cout << "Error: Shader Resource Could Not Be Found!";
-		}
-		else
-		{
-			HGLOBAL temp = LoadResource(hModule, hr);
-			LPVOID lp = LockResource(temp);
-
-			char* data = static_cast<char*>(lp);
-
-			std::istringstream Shader(data);
-
-			std::string currentLine;
-			std::string defaultShaderV;
-			std::string defaultShaderF;
-
-			bool writeVertex = false;
-			bool writeFragment = false;
-
-			while (std::getline(Shader, currentLine, '\n'))
-			{
-				if (currentLine.find("//Vertex") != std::string::npos)
-				{
-					writeVertex = true;
-					writeFragment = false;
-				}
-				else if (currentLine.find("//Fragment") != std::string::npos)
-				{
-					writeVertex = false;
-					writeFragment = true;
-				}
-				if (writeVertex)
-					defaultShaderV += "\n" + currentLine;
-				if (writeFragment)
-					defaultShaderF += "\n" + currentLine;
-			}
-
-			if (!writeVertex && !writeFragment)
-			{
-				std::cout << "Error: Type for shader not defined, Use //Vertex or //Fragment. \n";
-			}
-			else
-			{
-				this->shaderCode[0] = defaultShaderV;
-				this->shaderCode[1] = defaultShaderF;
-				this->shader = this->CreateShader(this->shaderCode[0], this->shaderCode[1]);
-			}
-			UnlockResource(temp);
-		}
-	}
-
 	Shader::Shader(std::string file)
 	{
 		std::cout << ASSET_DIR + file << std::endl;

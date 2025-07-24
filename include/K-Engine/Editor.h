@@ -39,8 +39,16 @@ namespace K
 		std::unordered_map<std::string, K::Texture*> preloadedTextures;
 
 		K::Window* window;
+		
+		#if _WIN32
 
 		HINSTANCE componentsLibrary = NULL;
+		
+		#elif __unix__
+		
+		void* componentsLibrary = nullptr;
+		
+		#endif
 
 		bool buildWindow = false;
 		bool confirmationWindow = false;

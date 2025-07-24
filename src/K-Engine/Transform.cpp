@@ -1,7 +1,7 @@
 #include "K-Engine/Transform.h"
 namespace K 
 {
-	void K::MultiplyMatrixVector(K::Vector3& i, K::Vector3& o, K::Matrix4x4& m)
+	void MultiplyMatrixVector(K::Vector3& i, K::Vector3& o, K::Matrix4x4& m)
 	{
 		o.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + m.m[3][0];
 		o.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + m.m[3][1];

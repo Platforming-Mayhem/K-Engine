@@ -3,7 +3,7 @@
 
 namespace K 
 {
-	K::Window* K::window;
+	K::Window* window;
 
 	Window::Window(const char* windowName)
 	{

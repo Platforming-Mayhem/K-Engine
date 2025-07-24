@@ -2,7 +2,7 @@
 
 namespace K 
 {
-	K::MaterialManager K::materialManager = K::MaterialManager();
+	K::MaterialManager materialManager = K::MaterialManager();
 
 	MaterialManager::MaterialManager() 
 	{
@@ -48,28 +48,6 @@ namespace K
 		else 
 		{
 			this->shader = new K::Shader(this->filename);
-
-			K::MaterialInfo info = K::MaterialInfo();
-			info.dependencies++;
-			info.dependenciesPointers.push_back(this);
-			this->materials->Add(this->filename, info);
-		}
-	}
-
-	Material::Material(int resource)
-	{
-		this->materials = &K::materialManager;
-		this->filename = resource;
-		if (this->materials->Contains(this->filename))
-		{
-			K::Material* mat = ((K::Material*)this->materials->Check(this->filename)->dependenciesPointers[0]);
-			this->shader = mat->shader;
-			this->materials->Check(this->filename)->dependencies++;
-			this->materials->Check(this->filename)->dependenciesPointers.push_back(this);
-		}
-		else
-		{
-			this->shader = new K::Shader(resource);
 
 			K::MaterialInfo info = K::MaterialInfo();
 			info.dependencies++;

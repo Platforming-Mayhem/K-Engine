@@ -2,7 +2,7 @@
 
 namespace K 
 {
-	K::TextureManager K::textureManager = K::TextureManager();
+	K::TextureManager textureManager = K::TextureManager();
 
 	TextureManager::TextureManager() 
 	{

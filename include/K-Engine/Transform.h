@@ -137,7 +137,7 @@ namespace K
 			return temp;
 		}
 
-		K::Vector3& operator * (const float& other)
+		const K::Vector3& operator * (const float& other)
 		{
 			K::Vector3 temp = *this;
 			temp.x *= other;

@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.8)
 
 project(K-Engine)
 
+IF(UNIX)
+add_compile_options("-fPIC")
+ENDIF()
 set(CMAKE_CXX_STANDARD 23)
 set(USE_GLU ON)
 
@@ -50,12 +53,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/assets)
 
 project(Editor)
 
+IF (MSVC)
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+ENDIF()
 
 add_executable(${PROJECT_NAME}
 src/Editor/Editor.cpp
 )
 
+IF (MSVC)
 add_custom_command(
     TARGET ${PROJECT_NAME} 
     POST_BUILD
@@ -64,7 +70,10 @@ add_custom_command(
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND_EXPAND_LISTS
 )
+ENDIF()
 
 target_link_libraries(${PROJECT_NAME} K-Engine)
 
+IF (MSVC)
 set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)/$(Configuration)")
+ENDIF()

@@ -115,7 +115,7 @@ namespace K
 			#ifdef _WIN32
 			FreeLibrary(this->componentsLibrary);
 			#elif __unix__
-			dlclose(handle);
+			dlclose(this->componentsLibrary);
 			#endif
 			std::cout << "Unloaded components" << std::endl;
 		}
@@ -137,8 +137,8 @@ namespace K
 		}
 
 		#elif __unix__
-		void* handle = dlopen("Components.so", RTLD_NOW)
-		if (handle)
+		this->componentsLibrary = dlopen("Components.so", RTLD_NOW);
+		if (this->componentsLibrary)
 		{
 			std::cout << "Found Library" << std::endl;
 		}

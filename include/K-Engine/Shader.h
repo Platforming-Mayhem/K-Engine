@@ -11,8 +11,6 @@ namespace K
 
 		Shader();
 
-		Shader(int resource);
-
 		Shader(std::string file);
 
 		GLint GetUniform(const char* name) const;
