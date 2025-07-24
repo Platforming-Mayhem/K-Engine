@@ -4,6 +4,7 @@ project(K-Engine)
 
 IF(UNIX)
 add_compile_options("-fPIC")
+ADD_DEFINITIONS(-D_DEBUG)
 ENDIF()
 set(CMAKE_CXX_STANDARD 23)
 set(USE_GLU ON)

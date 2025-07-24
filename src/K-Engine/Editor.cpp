@@ -64,7 +64,7 @@ namespace K
 			this->doesIniExist = false;
 
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
-		ImGui_ImplOpenGL3_Init("#version 460");
+		ImGui_ImplOpenGL3_Init("#version 330 compatibility");
 		this->AddPreloadedTexture("textures/editor/scene.png");
 		this->AddPreloadedTexture("textures/editor/unknown.png");
 		this->AddPreloadedTexture("textures/editor/file.png");
