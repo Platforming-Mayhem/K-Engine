@@ -272,7 +272,7 @@ namespace K
 					if (NFD_PickFolderU8(&location, NULL) == NFD_OKAY)
 					{
 						ASSET_DIR = location;
-						ASSET_DIR += "\\assets\\";
+						ASSET_DIR += "/assets/";
 						if (!std::filesystem::is_directory(ASSET_DIR))
 						{
 							std::filesystem::create_directory(ASSET_DIR);
@@ -325,7 +325,9 @@ namespace K
 						"add_library(${PROJECT_NAME} SHARED ${ComponentSrcs}) \n"
 						"target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL) \n"
 						"target_link_libraries(${PROJECT_NAME} K-Engine) \n"
-						"set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY \"$(ProjectDir) / $(Configuration)\")", file);
+						"IF (MSVC) \n"
+						"set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY \"$(ProjectDir) / $(Configuration)\") \n"
+						"ENDIF()", file);
 
 					fclose(file);
 
