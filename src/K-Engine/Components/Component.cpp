@@ -9,7 +9,10 @@ namespace K
 
 	const char* Component::GetName() 
 	{
-		return typeid(*this).name();
+		int status;
+		std::string tempName = typeid(*this).name();
+		std::string demangledName = std::string("class ") + abi::__cxa_demangle(tempName.c_str(), NULL, NULL, &status);
+		return demangledName.c_str();
 	}
 
 	Component::~Component() 
