@@ -52,6 +52,7 @@
 
 #elif __unix__
 
+#include <cxxabi.h>
 #include <dlfcn.h>
 
 #ifdef K_BUILD_DLL

@@ -136,7 +136,17 @@ namespace K
 		{
 			K::IFactory* tempFactory = new K::Factory<T>;
 			std::string tempName = typeid(T).name();
+
+			#if __unix__
+			int status;
+			std::string demangledName = std::string("class ") + abi::__cxa_demangle(tempName.c_str(), NULL, NULL, &status);
+
+			std::cout << demangledName << std::endl;
+
+			K::Editor::lst().insert({ demangledName, tempFactory });
+			#else
 			K::Editor::lst().insert({ tempName, tempFactory });
+			#endif
 		}
 	};
 
