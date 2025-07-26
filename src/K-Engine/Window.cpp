@@ -54,10 +54,14 @@ namespace K
 
 		glfwMakeContextCurrent(this->window);
 
-		if (glewInit() == GLEW_OK)
-			std::cout << "GLEW OK MATE" << std::endl;
-		else
-			std::cout << "Error GLEW" << std::endl;
+		// if (glewInit() == GLEW_OK)
+		// 	std::cout << "GLEW OK MATE" << std::endl;
+		// else
+		// 	std::cout << "Error GLEW" << std::endl;
+
+		GLenum err = glewInit();
+		std::cout << glewGetErrorString(err) << std::endl;
+
 
 		std::cout << glGetString(GL_VERSION) << std::endl;
 
