@@ -308,15 +308,15 @@ namespace K
 						"ADD_DEFINITIONS(-D_DEBUG) \n"
 						"ENDIF() \n", file);
 
-					std::string path = std::filesystem::current_path().parent_path().string() + "/Debug";
+					std::string path = std::filesystem::current_path().parent_path().string();
 
 					std::replace(path.begin(), path.end(), '\\', '/');
 
-					std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", path);
+					std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \"{0}\") \n", path);
 
 					fputs(cmakeCommand.c_str(), file);
 
-					cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", path);
+					cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"{0}\") \n", path);
 
 					fputs(cmakeCommand.c_str(), file);
 
@@ -339,6 +339,8 @@ namespace K
 					fclose(file);
 
 					cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -D GLFW_BUILD_WAYLAND=0", ASSET_DIR + "bin/Debug", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
+
+					cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\"", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
 
 					std::cout << cmakelist << std::endl;
 
@@ -414,7 +416,7 @@ namespace K
 
 				if (ImGui::Button("Build Executable")) 
 				{
-					std::string msvcCommand = std::format("cmake --build \"{0}\" --config Release", ASSET_DIR + "bin/Release");
+					std::string msvcCommand = std::format("cmake --build \"{0}\" --config Release", ASSET_DIR + "bin");
 
 					std::cout << msvcCommand << std::endl;
 
@@ -461,7 +463,7 @@ namespace K
 
 					this->UnloadComponents();
 
-					std::string msvcCommand = std::format("cmake --build \"{0}\" --target Components", ASSET_DIR + "bin/Debug");
+					std::string msvcCommand = std::format("cmake --build \"{0}\" --target Components", ASSET_DIR + "bin");
 
 					std::system(msvcCommand.c_str());
 
