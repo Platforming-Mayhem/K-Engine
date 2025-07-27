@@ -551,8 +551,6 @@ namespace K
 			int numberOfColumns = contentWidth / 256.0f;
 			ImGui::Columns(numberOfColumns, "Content Columns", false);
 
-			std::string asset_Dir = ASSET_DIR;
-
 			if (this->updateFiles) 
 			{
 				this->files.clear();
@@ -565,8 +563,7 @@ namespace K
 
 			for (auto file : this->files) 
 			{
-				std::string relativeLocation = file.path().string();
-				relativeLocation.erase(relativeLocation.begin(), relativeLocation.begin() + asset_Dir.size());
+				std::string relativeLocation = std::filesystem::relative(file, ASSET_DIR).string();
 				if (file.is_directory())
 				{
 					K::Texture* temp = this->preloadedTextures.at("textures/editor/file.png");
