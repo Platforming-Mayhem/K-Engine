@@ -7,16 +7,15 @@ namespace K
 		this->parent = newParent;
 	}
 
-	const char* Component::GetName() 
+	std::string Component::GetName() 
 	{
 		#if __unix__
 		int status;
-		std::string tempName = typeid(*this).name();
-		std::string demangledName = std::string("class ") + abi::__cxa_demangle(tempName.c_str(), NULL, NULL, &status);
-		return demangledName.c_str();
+		std::string demangledName = std::string("class ") + std::string(abi::__cxa_demangle(typeid(*this).name(), NULL, NULL, &status));
+		return demangledName;
 		
 		#else
-		return typeid(*this).name();
+		return std::string(typeid(*this).name());
 		#endif
 	}
 
