@@ -320,7 +320,15 @@ namespace K
 							"ADD_DEFINITIONS(-D_DEBUG) \n"
 							"ENDIF() \n", file);
 
+						#if __unix__
+
 						std::string path = std::filesystem::current_path().parent_path().string() + "/Debug";
+
+						#elif _WIN32
+
+						std::string path = std::filesystem::current_path().parent_path().string();
+
+						#endif
 
 						std::replace(path.begin(), path.end(), '\\', '/');
 
@@ -576,7 +584,7 @@ namespace K
 
 			for (auto file : this->files) 
 			{
-				std::string relativeLocation = std::filesystem::relative(file, ASSET_DIR).string();
+				std::string relativeLocation = std::filesystem::relative(file, ASSET_DIR).generic_string();
 				if (file.is_directory())
 				{
 					K::Texture* temp = this->preloadedTextures.at("textures/editor/file.png");
@@ -739,7 +747,7 @@ namespace K
 
 	void Editor::ParentChildrenHierarchy() 
 	{
-		bool sceneOpen = ImGui::TreeNodeEx(K::Editor::GetCurrentScene()->GetSceneName(), ImGuiTreeNodeFlags_DefaultOpen);
+		bool sceneOpen = ImGui::TreeNodeEx(K::Editor::GetCurrentScene()->GetSceneName().c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_CHILD"))

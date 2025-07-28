@@ -27,7 +27,7 @@ namespace K
 
 		void SetSceneName(std::string name);
 
-		const char* GetLocation();
+		std::string GetLocation();
 
 		void Attach(K::GameObject* gameObject);
 
@@ -43,7 +43,7 @@ namespace K
 
 		std::map <int, K::GameObject*> GetGameObjects();
 
-		const char* GetSceneName();
+		std::string GetSceneName();
 
 		void GameLoop(K::GameObject* temp);
 

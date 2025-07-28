@@ -37,9 +37,9 @@ namespace K
 		this->sceneName = name;
 	}
 
-	const char* Scene::GetLocation() 
+	std::string Scene::GetLocation() 
 	{
-		return this->location.c_str();
+		return this->location;
 	}
 
 	void Scene::Attach(K::GameObject* gameObject)
@@ -119,9 +119,9 @@ namespace K
 		return this->gameObjects;
 	}
 
-	const char* Scene::GetSceneName() 
+	std::string Scene::GetSceneName() 
 	{
-		return this->sceneName.c_str();
+		return this->sceneName;
 	}
 
 	void Scene::GameLoop(K::GameObject* temp)
