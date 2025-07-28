@@ -226,14 +226,16 @@ namespace K
 			ImGui::SetCursorPos(ImVec2((ImGui::GetWindowWidth() - width) * 0.5f, (ImGui::GetWindowHeight() - height) * 0.5f));
 			ImGui::Image((void*)(intptr_t)this->viewport->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 		}
+		
+		K::Editor::offsetX = ImGui::GetItemRectMin().x -(K::window->width - ImGui::GetMainViewport()->Size.x);
+		K::Editor::offsetY = ImGui::GetItemRectMin().y -(K::window->height - ImGui::GetMainViewport()->Size.y);
 
-		K::Editor::offsetX = ImGui::GetItemRectMin().x;
-		K::Editor::offsetY = ImGui::GetItemRectMin().y;
 		if (glfwGetMouseButton(this->window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && ImGui::IsItemHovered())
 		{
 			K::Editor::selectedGameObject = InputManager::PickGameObject();
 		}
 		ImGui::End();
+
 	}
 
 	void Editor::ImGuiInspector() 
