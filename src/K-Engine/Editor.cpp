@@ -144,7 +144,7 @@ namespace K
 		}
 		else
 		{
-			std::cout << "No Library Found" << std::endl;
+			std::cout << "No Library Found : " << dlerror() << std::endl;
 		}
 		#endif
 	}
