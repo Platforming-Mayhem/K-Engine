@@ -132,10 +132,11 @@ namespace K
 		{
 			for (int i = 0; i < this->GetNumberOfComponents(); i++) 
 			{
-				if (this->GetComponent(i)->GetName() == component) 
+				if (strcmp(this->GetComponent(i)->GetName(), component) == 0) 
 				{
 					return this->GetComponent(i);
 				}
+				std::cout << "Checked: " << this->GetComponent(i)->GetName() << ":Looking For: " << component << std::endl;
 			}
 			return nullptr;
 		}
