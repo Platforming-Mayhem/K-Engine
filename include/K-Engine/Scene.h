@@ -13,7 +13,7 @@ namespace K
 		std::map<int, K::GameObject*> gameObjects;
 	public:
 
-		bool isPaused = false;
+		bool isPaused = true;
 
 		Scene(std::string newSceneName);
 

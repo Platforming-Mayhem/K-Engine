@@ -220,6 +220,9 @@ namespace K
 		ImGui::SetNextWindowClass(&window_class);
 		if (ImGui::Begin("Viewport"))
 		{
+			if (ImGui::Button(this->GetCurrentScene()->isPaused ? "Play" : "Pause")) {
+				this->GetCurrentScene()->isPaused = !this->GetCurrentScene()->isPaused;
+			}
 			int height = ImGui::GetWindowHeight() - ImGui::GetFrameHeight() - 2.0f;
 			int width = height * (16.0f / 9.0f);
 			K::Editor::windowScaleFactor = (float)height / (float)this->viewport->GetHeight();
