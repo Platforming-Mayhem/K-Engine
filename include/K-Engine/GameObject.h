@@ -136,7 +136,6 @@ namespace K
 				{
 					return this->GetComponent(i);
 				}
-				std::cout << "Checked: " << this->GetComponent(i)->GetName() << ":Looking For: " << component << std::endl;
 			}
 			return nullptr;
 		}
