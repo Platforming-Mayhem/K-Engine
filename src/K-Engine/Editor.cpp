@@ -273,9 +273,12 @@ namespace K
 				char* location;
 				std::string projectName;
 
+				bool loadProject = false;
+
 				if (NFD_Init()) 
 				{
-					if (NFD_PickFolderU8(&location, NULL) == NFD_OKAY)
+					nfdresult_t result = NFD_PickFolderU8(&location, NULL);
+					if (result == NFD_OKAY)
 					{
 						ASSET_DIR = location;
 						ASSET_DIR += "/assets/";
@@ -286,70 +289,78 @@ namespace K
 						K::Editor::SetDirectory(ASSET_DIR);
 						projectName = location;
 						NFD_FreePathU8(location);
+						loadProject = true;
+					}
+					else if (result == NFD_CANCEL)
+					{
+						loadProject = false;
 					}
 					NFD_Quit();
 				}
 
-				this->updateFiles = true;
-
-				this->projectPath = projectName;
-				projectName = std::filesystem::absolute(projectName).filename().string();
-
-				glfwSetWindowTitle(K::window->window, projectName.c_str());
-
-				std::string cmakelist = ASSET_DIR + "CMakeLists.txt";
-
-				if (!std::filesystem::exists(cmakelist) || !std::filesystem::exists(ASSET_DIR + "bin"))
+				if(loadProject)
 				{
-					FILE* file = fopen(cmakelist.c_str(), "w");
+					this->updateFiles = true;
 
-					fputs("cmake_minimum_required(VERSION 3.8) \n"
-						"set(CMAKE_CXX_STANDARD 23) \n"
-						"project(Components) \n"
-						"IF(UNIX) \n"
-						"ADD_DEFINITIONS(-D_DEBUG) \n"
-						"ENDIF() \n", file);
+					this->projectPath = projectName;
+					projectName = std::filesystem::absolute(projectName).filename().string();
 
-					std::string path = std::filesystem::current_path().parent_path().string() + "/Debug";
+					glfwSetWindowTitle(K::window->window, projectName.c_str());
 
-					std::replace(path.begin(), path.end(), '\\', '/');
+					std::string cmakelist = ASSET_DIR + "CMakeLists.txt";
 
-					std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", path);
+					if (!std::filesystem::exists(cmakelist) || !std::filesystem::exists(ASSET_DIR + "bin"))
+					{
+						FILE* file = fopen(cmakelist.c_str(), "w");
 
-					fputs(cmakeCommand.c_str(), file);
+						fputs("cmake_minimum_required(VERSION 3.8) \n"
+							"set(CMAKE_CXX_STANDARD 23) \n"
+							"project(Components) \n"
+							"IF(UNIX) \n"
+							"ADD_DEFINITIONS(-D_DEBUG) \n"
+							"ENDIF() \n", file);
 
-					cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", path);
+						std::string path = std::filesystem::current_path().parent_path().string() + "/Debug";
 
-					fputs(cmakeCommand.c_str(), file);
+						std::replace(path.begin(), path.end(), '\\', '/');
 
-					path = std::filesystem::current_path().parent_path().parent_path().string();
+						std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", path);
 
-					std::replace(path.begin(), path.end(), '\\', '/');
+						fputs(cmakeCommand.c_str(), file);
 
-					cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}/bin\") \n", path);
+						cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", path);
 
-					fputs(cmakeCommand.c_str(), file);
+						fputs(cmakeCommand.c_str(), file);
 
-					fputs("file(GLOB ComponentSrcs CONFIGURE_DEPENDS \"components/*.cpp\") \n"
-						"add_library(${PROJECT_NAME} SHARED ${ComponentSrcs}) \n"
-						"target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL) \n"
-						"target_link_libraries(${PROJECT_NAME} K-Engine) \n"
-						"IF (MSVC) \n"
-						"set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY \"$(ProjectDir) / $(Configuration)\") \n"
-						"ENDIF()", file);
+						path = std::filesystem::current_path().parent_path().parent_path().string();
 
-					fclose(file);
+						std::replace(path.begin(), path.end(), '\\', '/');
 
-					cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -D GLFW_BUILD_WAYLAND=0", ASSET_DIR + "bin/Debug", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
+						cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}/bin\") \n", path);
 
-					std::cout << cmakelist << std::endl;
+						fputs(cmakeCommand.c_str(), file);
 
-					std::system(cmakelist.c_str());
+						fputs("file(GLOB ComponentSrcs CONFIGURE_DEPENDS \"components/*.cpp\") \n"
+							"add_library(${PROJECT_NAME} SHARED ${ComponentSrcs}) \n"
+							"target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL) \n"
+							"target_link_libraries(${PROJECT_NAME} K-Engine) \n"
+							"IF (MSVC) \n"
+							"set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY \"$(ProjectDir) / $(Configuration)\") \n"
+							"ENDIF()", file);
+
+						fclose(file);
+
+						cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -D GLFW_BUILD_WAYLAND=0", ASSET_DIR + "bin/Debug", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
+
+						std::cout << cmakelist << std::endl;
+
+						std::system(cmakelist.c_str());
+					}
+
+					K::Editor::sceneManager->LoadBuildMenu("buildScenes.txt");
+
+					this->msvcBuildWindow = true;
 				}
-
-				K::Editor::sceneManager->LoadBuildMenu("buildScenes.txt");
-
-				this->msvcBuildWindow = true;
 
 				this->projectLoadWindow = false;
 			}
