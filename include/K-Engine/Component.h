@@ -30,7 +30,7 @@ namespace K
 
 		virtual void Unbind() {};
 
-		std::string GetName();
+		const char* GetName();
 
 		virtual const char* GetPropertyValues() = 0;
 
@@ -38,4 +38,23 @@ namespace K
 
 		void SetParent(K::GameObject* newParent);
 	};
+
+	const char* GetTypeName(Component &comp);
+
+	template<typename T> const char* GetTypeName()
+	{
+		#if __unix__
+		int status;
+		std::string demangledName = std::string("class ") + std::string(abi::__cxa_demangle(typeid(T).name(), NULL, NULL, &status));
+		// Dynamically allocate memory for the returned string
+    	char* ptr = new char[demangledName.size() + 1]; // +1 for terminating NUL
+
+    	// Copy source string in dynamically allocated string buffer
+    	strcpy(ptr, demangledName.c_str());
+		return ptr;
+		
+		#else
+		return typeid(T).name();
+		#endif
+	}
 }
