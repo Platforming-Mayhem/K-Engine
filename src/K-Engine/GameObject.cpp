@@ -5,13 +5,14 @@
 namespace K 
 {
 	//GENERATE INDEX VALUE WITH RANDOM INT
-
+	int indexCount = 0;
 	GameObject::GameObject(const char* name, K::Transform* transform)
 	{
 		this->name = (char*)name;
 		this->transform = transform;
 		std::srand(std::chrono::system_clock::now().time_since_epoch().count());
-		this->g_Index = std::rand();
+		this->g_Index = indexCount;
+		indexCount++;
 		K::Editor::GetCurrentScene()->Attach(this);
 		//std::cout << name << " GameObject Created" << std::endl;
 	}
@@ -22,7 +23,8 @@ namespace K
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		this->g_Index = index;
+		this->g_Index =index  + indexCount;
+		indexCount++;
 		K::Editor::GetCurrentScene()->Attach(this);
 		//std::cout << name << " GameObject Created" << std::endl;
 	}
@@ -39,7 +41,8 @@ namespace K
 		*this->transform->localPosition = *other.transform->localPosition;
 		*this->transform->localRotation = *other.transform->localRotation;
 		*this->transform->localScale = *other.transform->localScale;
-		this->g_Index = std::rand();
+		this->g_Index = indexCount;
+		indexCount++;
 		for (int i = 0; i < other.components.size(); i++)
 		{
 			K::Component* comp = K::Editor::lst().at(other.components[i]->GetName())->create();
