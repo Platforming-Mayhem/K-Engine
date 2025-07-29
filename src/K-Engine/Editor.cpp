@@ -82,6 +82,7 @@ namespace K
 		stbi_image_free(icon);
 
 		#else
+		this->GetCurrentScene()->isPaused = false;
 		this->LoadComponents();
 		#endif
 	}
@@ -438,7 +439,7 @@ namespace K
 
 				if (ImGui::Button("Build Executable")) 
 				{
-					std::string msvcCommand = std::format("cmake --build \"{0}\" --config Release", ASSET_DIR + "bin/Release");
+					std::string msvcCommand = std::format("cmake --build \"{0}\" --config Release", ASSET_DIR + "bin/Debug");
 
 					std::cout << msvcCommand << std::endl;
 
