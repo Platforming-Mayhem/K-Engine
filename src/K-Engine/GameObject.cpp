@@ -11,13 +11,14 @@ namespace K
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		if(K::Editor::GetCurrentScene()->GetNumberOfObjects())
+		if(K::Editor::GetCurrentScene()->GetNumberOfObjects() == 0)
 		{
 			indexCount = 0;
 		}
-		while(K::Editor::GetCurrentScene()->GetGameObjects().find(indexCount) != K::Editor::GetCurrentScene()->GetGameObjects().end())
+		for(auto gameObject : K::Editor::GetCurrentScene()->GetGameObjects())
 		{
-			indexCount++;
+			if(gameObject.first == indexCount)
+				indexCount++;
 		}
 		this->g_Index = indexCount;
 		K::Editor::GetCurrentScene()->Attach(this);
@@ -30,7 +31,7 @@ namespace K
 	{
 		this->name = (char*)name;
 		this->transform = transform;
-		if(K::Editor::GetCurrentScene()->GetNumberOfObjects())
+		if(K::Editor::GetCurrentScene()->GetNumberOfObjects() == 0)
 		{
 			indexCount = 0;
 		}
@@ -51,13 +52,14 @@ namespace K
 		*this->transform->localPosition = *other.transform->localPosition;
 		*this->transform->localRotation = *other.transform->localRotation;
 		*this->transform->localScale = *other.transform->localScale;
-		if(K::Editor::GetCurrentScene()->GetNumberOfObjects())
+		if(K::Editor::GetCurrentScene()->GetNumberOfObjects() == 0)
 		{
 			indexCount = 0;
 		}
-		while(K::Editor::GetCurrentScene()->GetGameObjects().find(indexCount) != K::Editor::GetCurrentScene()->GetGameObjects().end())
+		for(auto gameObject : K::Editor::GetCurrentScene()->GetGameObjects())
 		{
-			indexCount++;
+			if(gameObject.first == indexCount)
+				indexCount++;
 		}
 		this->g_Index = indexCount;
 		for (int i = 0; i < other.components.size(); i++)
