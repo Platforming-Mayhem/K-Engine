@@ -1,5 +1,5 @@
  #!/bin/bash
-cmake -B bin/Debug -D GLFW_BUILD_WAYLAND=0
+cmake -B bin/Debug
 read -p "Press any key to resume ..."
 cmake --build bin/Debug --target Editor
 read -p "Press any key to resume ..."

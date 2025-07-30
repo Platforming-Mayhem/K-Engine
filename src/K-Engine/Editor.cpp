@@ -362,7 +362,7 @@ namespace K
 
 						fclose(file);
 
-						cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -D GLFW_BUILD_WAYLAND=0", ASSET_DIR + "bin/Debug", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
+						cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\"", ASSET_DIR + "bin/Debug", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
 
 						std::cout << cmakelist << std::endl;
 
