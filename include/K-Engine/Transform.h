@@ -244,7 +244,7 @@ namespace K
 
 		static K::Quaternion Euler(Vector3* rotation);
 
-		K::Vector3* ToEuler();
+		K::Vector3 ToEuler();
 	};
 
 	class K_API Transform 

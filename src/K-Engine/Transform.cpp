@@ -326,7 +326,7 @@ namespace K
 		return q;
 	}
 
-	K::Vector3* K::Quaternion::ToEuler() 
+	K::Vector3 K::Quaternion::ToEuler() 
 	{
 		K::Vector3 eulerAngles;
 		float conversion = 180.0f / std::numbers::pi;
@@ -346,6 +346,6 @@ namespace K
 		float cosy_cosp = 1 - 2 * (this->y * this->y + this->z * this->z);
 		eulerAngles.z = (std::atan2(siny_cosp, cosy_cosp)) * conversion;
 
-		return &eulerAngles;
+		return eulerAngles;
 	}
 }

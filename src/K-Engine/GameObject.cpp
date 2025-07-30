@@ -198,10 +198,7 @@ namespace K
 				}
 			}
 		}
-		else 
-		{
-			return false;
-		}
+		return false;
 	}
 
 	bool GameObject::SetParent(K::GameObject* newParent) 

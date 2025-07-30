@@ -1,5 +1,5 @@
 cd /d %~dp0
-cmake -B bin
+cmake -B bin -DCMAKE_WARN_DEPRECATED=OFF
 pause
 cmake --build bin --target Editor --config Debug
 pause

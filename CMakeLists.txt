@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.11...4.0.3-dirty)
 
 project(K-Engine)
 
