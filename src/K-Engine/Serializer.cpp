@@ -118,62 +118,63 @@ namespace K
 				break;
 			case 1:
 				temp = new K::GameObject(name.c_str(), transform, std::stoi(val));
+			case 1: // index
 				break;
-			case 2:
+			case 2: // x Pos
 				position->x = std::stof(val);
 				break;
-			case 3:
+			case 3: // y Pos
 				position->y = std::stof(val);
 				break;
-			case 4:
+			case 4: // z Pos
 				position->z = std::stof(val);
 				break;
-			case 5:
+			case 5: // x Rot
 				rotation->x = std::stof(val);
 				break;
-			case 6:
+			case 6: // y Rot
 				rotation->y = std::stof(val);
 				break;
-			case 7:
+			case 7: // z Rot
 				rotation->z = std::stof(val);
 				break;
-			case 8:
+			case 8: // x Scale
 				scale->x = std::stof(val);
 				break;
-			case 9:
+			case 9: // y Scale
 				scale->y = std::stof(val);
 				break;
-			case 10:
+			case 10: // z Scale
 				scale->z = std::stof(val);
 				break;
-			case 11:
+			case 11: // local x Pos
 				temp->GetTransform()->localPosition->x = std::stof(val);
 				break;
-			case 12:
+			case 12: // local y Pos
 				temp->GetTransform()->localPosition->y = std::stof(val);
 				break;
-			case 13:
+			case 13: // local z Pos
 				temp->GetTransform()->localPosition->z = std::stof(val);
 				break;
-			case 14:
+			case 14: // local x Rot
 				temp->GetTransform()->localRotation->x = std::stof(val);
 				break;
-			case 15:
+			case 15: // local y Rot
 				temp->GetTransform()->localRotation->y = std::stof(val);
 				break;
-			case 16:
+			case 16: // local z Rot
 				temp->GetTransform()->localRotation->z = std::stof(val);
 				break;
-			case 17:
+			case 17: // local x Scale
 				temp->GetTransform()->localScale->x = std::stof(val);
 				break;
-			case 18:
+			case 18: // local y Scale
 				temp->GetTransform()->localScale->y = std::stof(val);
 				break;
-			case 19:
+			case 19: // local z Scale
 				temp->GetTransform()->localScale->z = std::stof(val);
 				break;
-			case 20:
+			case 20: // parent index
 				if (std::stoi(val) != -1)
 				{
 					this->parents.insert({ temp, std::stoi(val) });
