@@ -279,7 +279,7 @@ namespace K
 		newScene->SetLocation(location);
 		newScene->Init();
 		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
-		std::cout << "Time To Deserialize Scene (" << newScene->GetSceneName() << "): " << elapsed.count() << std::endl;
+		std::cout << "Time To Deserialize Scene (" << newScene->GetSceneName() << "): " << elapsed << std::endl;
 	}
 
 	void Deserializer::EditorDeserializer(K::Scene* newScene, std::string location) 
