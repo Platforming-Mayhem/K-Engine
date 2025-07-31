@@ -11,3 +11,4 @@ echo oLink.WorkingDirectory = "%cd%\\bin\\Debug" >> CreateShortcut.vbs
 echo oLink.Save >> CreateShortcut.vbs
 cscript CreateShortcut.vbs
 del CreateShortcut.vbs
+pause
