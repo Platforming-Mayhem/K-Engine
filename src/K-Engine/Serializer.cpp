@@ -118,8 +118,6 @@ namespace K
 				break;
 			case 1:
 				temp = new K::GameObject(name.c_str(), transform, std::stoi(val));
-			case 1: // index
-				break;
 			case 2: // x Pos
 				position->x = std::stof(val);
 				break;
