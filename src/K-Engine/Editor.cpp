@@ -328,11 +328,11 @@ namespace K
 
 						std::replace(path.begin(), path.end(), '\\', '/');
 
-						std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", path);
+						std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \"{0}\") \n", path);
 
 						fputs(cmakeCommand.c_str(), file);
 
-						cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", path);
+						cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"{0}\") \n", path);
 
 						fputs(cmakeCommand.c_str(), file);
 
@@ -477,6 +477,10 @@ namespace K
 					this->selectedGameObject = nullptr;
 
 					this->UnloadComponents();
+
+					std::string cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -DCMAKE_WARN_DEPRECATED=OFF", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
+
+					std::system(cmakelist.c_str());
 
 					std::string msvcCommand = std::format("cmake --build \"{0}\" --target Components", ASSET_DIR + "bin");
 
