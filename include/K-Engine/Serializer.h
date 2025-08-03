@@ -36,6 +36,10 @@ namespace K
 		void CreateGameObject(std::string gameObject);
 
 		void CreateGameObjectFast(std::vector<std::string>& data);
+
+		std::string LoadPrefab(std::string fileLocation);
+
+		std::vector<std::string> Split(const std::string& s, const std::string& delimiter);
 	};
 
 	struct K_API SerialiseObject

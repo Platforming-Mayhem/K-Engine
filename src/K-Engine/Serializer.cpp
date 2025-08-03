@@ -92,6 +92,33 @@ namespace K
 		outFile.close();
 	}
 
+	std::vector<std::string> Split(std::string& s, std::string& delimiter) {
+		std::vector<std::string> tokens;
+		int pos = 0;
+		std::string token;
+		while ((pos = s.find(delimiter)) != std::string::npos) {
+			token = s.substr(0, pos);
+			tokens.push_back(token);
+			s.erase(0, pos + sizeof(delimiter));
+		}
+		tokens.push_back(s);
+
+		return tokens;
+	}
+
+
+	std::string Deserializer::LoadPrefab(std::string fileLocation) {
+		std::ifstream prefabFile(fileLocation);
+		std::string prefab;
+		std::getline(prefabFile, prefab);
+		std::string prefabTransform;
+		prefabFile.close();
+
+		
+		return prefab;
+	}
+
+
 	void Deserializer::CreateGameObject(std::string gameObject) 
 	{
 		K::Vector3* position = new K::Vector3(0.0f, 0.0f, 0.0f);
@@ -108,16 +135,40 @@ namespace K
 		K::Component* currentComponent = nullptr;
 		int pos = 0;
 		int number = 0;
+		std::string prefabData;
+		bool isPrefab = false;
+		std::map<std::string, std::string> prefabOverrides;
+
+		if (gameObject.substr(0, pos = gameObject.find(",")) == "||Prefab||") {
+			isPrefab = true;
+			gameObject.erase(0, pos + sizeof(","));
+			std::string prefabPath = gameObject.substr(0, pos = gameObject.find(","));
+			prefabData = LoadPrefab(prefabPath);
+			gameObject.erase(0, pos + sizeof(","));
+			std::vector<std::string> gameObjectData =  Split(gameObject, ",");
+			for (int i = 0; i < gameObjectData.size(), i++;) {
+				
+				std::vector<std::string> temp = Split(gameObjectData[i], " ");
+				prefabOverrides[(temp[0])] = temp[1];
+			}
+		}
+
+
 		while ((pos = gameObject.find(',')) != std::string::npos)
 		{
 			std::string val = gameObject.substr(0, pos);
+			if (number <= 20 && number != 1) {
+				val = prefabOverrides[std::to_string(number)] != "" ? prefabOverrides[std::to_string(number)] : val;
+			}
+			
 			switch (number)
 			{
-			case 0:
+			case 0: // name
 				name = val;
 				break;
-			case 1:
-				temp = new K::GameObject(name.c_str(), transform, std::stoi(val));
+			case 1: // index
+				temp = new K::GameObject(name.c_str(), transform, !isPrefab ? std::stoi(val) : NULL);
+				break;
 			case 2: // x Pos
 				position->x = std::stof(val);
 				break;
@@ -200,6 +251,8 @@ namespace K
 				else 
 				{
 					//std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
+					std::string temp = /*"class K::" +*/ currentComponent->GetName() + ' - ' + componentCount;
+					val = prefabOverrides[temp] != "" ? prefabOverrides[temp] : val;
 					currentComponent->SetPropertyValues(val.c_str(), componentCount);
 					componentCount++;
 				}

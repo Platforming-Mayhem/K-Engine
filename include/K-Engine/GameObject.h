@@ -34,6 +34,8 @@ namespace K
 
 		int layer = (int)K::Layer::LayerType::Ground;
 
+		bool isPrefab = false;
+
 		GameObject(const char* name, K::Transform* transform, int index);
 
 		GameObject(const char* name, K::Transform* transform);
