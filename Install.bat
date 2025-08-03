@@ -1,7 +1,7 @@
 cd /d %~dp0
 cmake -B bin -DCMAKE_WARN_DEPRECATED=OFF
 pause
-cmake --build bin --target Editor --config Debug
+cmake --build bin --target Editor
 pause
 echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut.vbs
 echo sLinkFile = "%HOMEDRIVE%%HOMEPATH%\Desktop\K-Engine.lnk" >> CreateShortcut.vbs

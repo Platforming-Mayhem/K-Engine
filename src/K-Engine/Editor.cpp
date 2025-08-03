@@ -317,7 +317,7 @@ namespace K
 					{
 						FILE* file = fopen(cmakelist.c_str(), "w");
 
-						fputs("cmake_minimum_required(VERSION 3.8) \n"
+						fputs("cmake_minimum_required(VERSION 3.11...4.0.3-dirty) \n"
 							"set(CMAKE_CXX_STANDARD 23) \n"
 							"project(Components) \n"
 							"IF(UNIX) \n"
@@ -506,7 +506,7 @@ namespace K
 
 					std::system(cmakelist.c_str());
 
-					std::string msvcCommand = std::format("cmake --build \"{0}\"", ASSET_DIR + "bin");
+					std::string msvcCommand = std::format("cmake --build \"{0}\" --target Components", ASSET_DIR + "bin");
 
 					std::system(msvcCommand.c_str());
 
