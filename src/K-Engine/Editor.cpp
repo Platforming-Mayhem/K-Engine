@@ -1,7 +1,7 @@
 #include "K-Engine/Editor.h"
 #include <K_Engine.h>
 
-std::string ASSET_DIR = std::filesystem::current_path().parent_path().parent_path().string() + "/assets/";
+std::string ASSET_DIR = std::filesystem::current_path().parent_path().parent_path().generic_string() + "/assets/";
 
 namespace K 
 {
@@ -34,7 +34,7 @@ namespace K
 		this->window = window;
 		this->buildWindow = false;
 
-		std::string currentDir = std::filesystem::current_path().string();
+		std::string currentDir = std::filesystem::current_path().generic_string();
 		currentDir += "/assets/";
 		if (std::filesystem::is_directory(currentDir))
 		{
@@ -307,7 +307,7 @@ namespace K
 					this->updateFiles = true;
 
 					this->projectPath = projectName;
-					projectName = std::filesystem::absolute(projectName).filename().string();
+					projectName = std::filesystem::absolute(projectName).filename().generic_string();
 
 					glfwSetWindowTitle(K::window->window, projectName.c_str());
 
@@ -317,34 +317,57 @@ namespace K
 					{
 						FILE* file = fopen(cmakelist.c_str(), "w");
 
-						fputs("cmake_minimum_required(VERSION 3.8) \n"
+						fputs("cmake_minimum_required(VERSION 3.11...4.0.3-dirty) \n"
 							"set(CMAKE_CXX_STANDARD 23) \n"
-							"project(Components) \n"
-							"IF(UNIX) \n"
-							"ADD_DEFINITIONS(-D_DEBUG) \n"
-							"ENDIF() \n", file);
+							"project(Components) \n", file);
 
-						std::string path = std::filesystem::current_path().string();
+						std::string path = "";
+						std::string cmakeCommand = "";
 
-						std::replace(path.begin(), path.end(), '\\', '/');
-
-						std::string cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY {0}) \n", path);
-
-						fputs(cmakeCommand.c_str(), file);
-
-						cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY {0}) \n", path);
-
-						fputs(cmakeCommand.c_str(), file);
-
-						path = std::filesystem::current_path().parent_path().parent_path().string();
-
-						std::replace(path.begin(), path.end(), '\\', '/');
+						path = std::filesystem::current_path().parent_path().parent_path().generic_string();
 
 						cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}/bin\") \n", path);
 
 						fputs(cmakeCommand.c_str(), file);
 
-						fputs("file(GLOB ComponentSrcs CONFIGURE_DEPENDS \"components/*.cpp\") \n"
+						fputs("IF(UNIX) \n"
+							"ADD_DEFINITIONS(-D_DEBUG) \n", file);
+
+						path = std::filesystem::current_path().generic_string();
+
+						cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \"{0}\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"{0}\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						cmakeCommand = std::format("set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \"{0}\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						fputs("ENDIF() \n", file);
+
+						path = std::filesystem::current_path().parent_path().generic_string();
+
+						fputs("IF(MSVC) \n", file);
+
+						cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \"{0}\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"{0}\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						cmakeCommand = std::format("set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \"{0}\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						fputs("ENDIF() \n", file);
+
+						fputs("file(GLOB ComponentSrcs SRCS \"components/*.cpp\") \n"
 							"add_library(${PROJECT_NAME} SHARED ${ComponentSrcs}) \n"
 							"target_compile_definitions(${PROJECT_NAME} PRIVATE KC_BUILD_DLL) \n"
 							"target_link_libraries(${PROJECT_NAME} K-Engine) \n"
@@ -437,7 +460,7 @@ namespace K
 
 					std::system(msvcCommand.c_str());
 
-					msvcCommand = std::format("cmake -E copy_directory \"{0}\" \"{1}\"", std::filesystem::current_path().parent_path().string() + "/Release", this->projectPath);
+					msvcCommand = std::format("cmake -E copy_directory \"{0}\" \"{1}\"", std::filesystem::current_path().parent_path().generic_string() + "/Release", this->projectPath);
 
 					std::system(msvcCommand.c_str());
 				}
@@ -477,6 +500,12 @@ namespace K
 					this->selectedGameObject = nullptr;
 
 					this->UnloadComponents();
+
+					std::string cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -DCMAKE_WARN_DEPRECATED=OFF", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
+
+					std::cout << cmakelist << std::endl;
+
+					std::system(cmakelist.c_str());
 
 					std::string msvcCommand = std::format("cmake --build \"{0}\" --target Components", ASSET_DIR + "bin");
 
@@ -551,7 +580,7 @@ namespace K
 				this->updateFiles = true;
 			}
 
-			if (this->currentDirectory.string() != ASSET_DIR && this->currentDirectory.string() + "/" != ASSET_DIR)
+			if (this->currentDirectory.generic_string() != ASSET_DIR && this->currentDirectory.generic_string() + "/" != ASSET_DIR)
 			{
 				if (ImGui::Button("..."))
 				{
@@ -653,7 +682,7 @@ namespace K
 						else
 						{
 							K::Texture* unknown = this->preloadedTextures.at("textures/editor/unknown.png");
-							ImGui::ImageButton(file.path().string().c_str(), (void*)(intptr_t)unknown->GetID(), ImVec2(unknown->GetWidth(), unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
+							ImGui::ImageButton(file.path().generic_string().c_str(), (void*)(intptr_t)unknown->GetID(), ImVec2(unknown->GetWidth(), unknown->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
 						}
 					}
 				}
