@@ -319,12 +319,19 @@ namespace K
 
 						fputs("cmake_minimum_required(VERSION 3.11...4.0.3-dirty) \n"
 							"set(CMAKE_CXX_STANDARD 23) \n"
-							"project(Components) \n"
-							"IF(UNIX) \n"
-							"ADD_DEFINITIONS(-D_DEBUG) \n", file);
+							"project(Components) \n", file);
 
 						std::string path = "";
 						std::string cmakeCommand = "";
+
+						path = std::filesystem::current_path().parent_path().parent_path().generic_string();
+
+						cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}/bin\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						fputs("IF(UNIX) \n"
+							"ADD_DEFINITIONS(-D_DEBUG) \n", file);
 
 						path = std::filesystem::current_path().generic_string();
 
@@ -359,12 +366,6 @@ namespace K
 						fputs(cmakeCommand.c_str(), file);
 
 						fputs("ENDIF() \n", file);
-
-						path = std::filesystem::current_path().parent_path().parent_path().generic_string();
-
-						cmakeCommand = std::format("add_subdirectory(\"{0}\" \"{0}/bin\") \n", path);
-
-						fputs(cmakeCommand.c_str(), file);
 
 						fputs("file(GLOB ComponentSrcs SRCS \"components/*.cpp\") \n"
 							"add_library(${PROJECT_NAME} SHARED ${ComponentSrcs}) \n"
