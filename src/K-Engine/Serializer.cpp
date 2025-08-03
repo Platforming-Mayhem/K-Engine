@@ -22,8 +22,16 @@ namespace K
 			}
 			K::GameObject* g = it.second;
 			K::Transform* transform = g->GetTransform();
-			outFile << g->GetName();
-			outFile << "," << g->GetIndex();
+			if (g->isPrefab) {
+				outFile << "||Prefab||";
+				outFile << "," << g->prefabFileLocation;
+			}
+
+			outFile << g->isPrefab ? "0," : NULL << g->isPrefab ? "Get Prefab name" : g->GetName(); // !!!this needs to be updated to get the changed name!!!
+			if (!g->isPrefab) {
+				outFile << "," << g->GetIndex();
+			}
+			
 			outFile << "," << transform->position->x << "," << transform->position->y << "," << transform->position->z;
 			outFile << "," << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
 			outFile << "," << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z;
@@ -42,8 +50,15 @@ namespace K
 			for (int i = 0; i < numberOfComponents; i++)
 			{
 				K::Component* component = g->GetComponent(i);
-				outFile << "," << component->GetName();
-				outFile << "," << component->GetPropertyValues();
+				if (g->isPrefab) {
+					outFile << "," << component->GetName() << "-" << i;
+					outFile << "," << component->GetPropertyValues(); // may need a check for a difference in values
+				}
+				else {
+					outFile << "," << component->GetName();
+					outFile << "," << component->GetPropertyValues();
+				}
+				
 			}
 			if (i < scene->GetNumberOfObjects())
 			{

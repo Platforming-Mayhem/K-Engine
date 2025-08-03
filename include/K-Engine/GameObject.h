@@ -36,6 +36,8 @@ namespace K
 
 		bool isPrefab = false;
 
+		std::string prefabFileLocation;
+
 		GameObject(const char* name, K::Transform* transform, int index);
 
 		GameObject(const char* name, K::Transform* transform);
