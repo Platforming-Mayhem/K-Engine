@@ -68,19 +68,6 @@ namespace K
 		this->AddPreloadedTexture("textures/editor/scene.png");
 		this->AddPreloadedTexture("textures/editor/unknown.png");
 		this->AddPreloadedTexture("textures/editor/file.png");
-
-		int width, height, c;
-		unsigned char* icon = stbi_load((ASSET_DIR + "textures/watermark/watermark.png").c_str(), &width, &height, &c, 0);
-
-		GLFWimage glfwImage;
-		glfwImage.width = width;
-		glfwImage.height = height;
-		glfwImage.pixels = icon;
-
-		glfwSetWindowIcon(this->window->window, 1, &glfwImage);
-
-		stbi_image_free(icon);
-
 		#else
 		this->GetCurrentScene()->isPaused = false;
 		this->LoadComponents();
@@ -454,9 +441,11 @@ namespace K
 
 				if (ImGui::Button("Build Executable")) 
 				{
-					std::string msvcCommand = std::format("cmake --build \"{0}\"", ASSET_DIR + "bin");
+					std::string cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -DCMAKE_WARN_DEPRECATED=OFF", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
 
-					std::cout << msvcCommand << std::endl;
+					std::system(cmakelist.c_str());
+
+					std::string msvcCommand = std::format("cmake --build \"{0}\" --config Release", ASSET_DIR + "bin");
 
 					std::system(msvcCommand.c_str());
 
@@ -502,8 +491,6 @@ namespace K
 					this->UnloadComponents();
 
 					std::string cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -DCMAKE_WARN_DEPRECATED=OFF", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
-
-					std::cout << cmakelist << std::endl;
 
 					std::system(cmakelist.c_str());
 
