@@ -107,7 +107,7 @@ namespace K
 		outFile.close();
 	}
 
-	std::vector<std::string> Split(std::string& s, std::string& delimiter) {
+	std::vector<std::string> Deserializer::Split(std::string s, std::string delimiter) {
 		std::vector<std::string> tokens;
 		int pos = 0;
 		std::string token;

@@ -39,7 +39,7 @@ namespace K
 
 		std::string LoadPrefab(std::string fileLocation);
 
-		std::vector<std::string> Split(const std::string& s, const std::string& delimiter);
+		std::vector<std::string> Split(std::string s, std::string delimiter);
 	};
 
 	struct K_API SerialiseObject
