@@ -47,6 +47,11 @@ namespace K
 
 		this->viewport = new K::RenderTexture(this->window->width, this->window->height, GL_TEXTURE_2D);
 
+		//Set Window Icon
+
+		int width, height, c;
+		unsigned char* icon;
+
 		#if _DEBUG
 		//IMGUI Setup Stuffs
 		IMGUI_CHECKVERSION();
@@ -68,10 +73,21 @@ namespace K
 		this->AddPreloadedTexture("textures/editor/scene.png");
 		this->AddPreloadedTexture("textures/editor/unknown.png");
 		this->AddPreloadedTexture("textures/editor/file.png");
+		icon = stbi_load((ASSET_DIR + "textures/watermark/watermark.png").c_str(), &width, &height, &c, 0);
 		#else
 		this->GetCurrentScene()->isPaused = false;
 		this->LoadComponents();
+		icon = stbi_load((ASSET_DIR + "textures/watermark.png").c_str(), &width, &height, &c, 0);
 		#endif
+
+		GLFWimage glfwImage;
+		glfwImage.width = width;
+		glfwImage.height = height;
+		glfwImage.pixels = icon;
+
+		glfwSetWindowIcon(this->window->window, 1, &glfwImage);
+
+		stbi_image_free(icon);
 	}
 
 	Editor::~Editor()
@@ -318,6 +334,8 @@ namespace K
 						fputs(cmakeCommand.c_str(), file);
 
 						fputs("IF(UNIX) \n"
+							"option(EDITOR \"Is Editor Build\" ON) \n"
+							"IF(EDITOR) \n"
 							"ADD_DEFINITIONS(-D_DEBUG) \n", file);
 
 						path = std::filesystem::current_path().generic_string();
@@ -333,6 +351,24 @@ namespace K
 						cmakeCommand = std::format("set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \"{0}\") \n", path);
 
 						fputs(cmakeCommand.c_str(), file);
+						
+						fputs("ELSE() \n", file);
+
+						path = std::filesystem::current_path().parent_path().generic_string() + "/Release";
+
+						cmakeCommand = std::format("set(CMAKE_LIBRARY_OUTPUT_DIRECTORY \"{0}\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						cmakeCommand = std::format("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"{0}\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						cmakeCommand = std::format("set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \"{0}\") \n", path);
+
+						fputs(cmakeCommand.c_str(), file);
+
+						fputs("ENDIF() \n", file);
 
 						fputs("ENDIF() \n", file);
 
@@ -441,7 +477,7 @@ namespace K
 
 				if (ImGui::Button("Build Executable")) 
 				{
-					std::string cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -DCMAKE_WARN_DEPRECATED=OFF", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
+					std::string cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -DCMAKE_WARN_DEPRECATED=OFF -DEDITOR=OFF", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
 
 					std::system(cmakelist.c_str());
 
@@ -490,7 +526,7 @@ namespace K
 
 					this->UnloadComponents();
 
-					std::string cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -DCMAKE_WARN_DEPRECATED=OFF", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
+					std::string cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -DCMAKE_WARN_DEPRECATED=OFF -DEDITOR=ON", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
 
 					std::system(cmakelist.c_str());
 

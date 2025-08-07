@@ -79,23 +79,18 @@ namespace K
 		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
 		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
+		//Set Window Icon
+
 		int width, height, c;
-		unsigned char* icon = stbi_load((ASSET_DIR + "textures/watermark/watermark.png").c_str(), &width, &height, &c, 0);
-
-		GLFWimage glfwImage;
-		glfwImage.width = width;
-		glfwImage.height = height;
-		glfwImage.pixels = icon;
-
-		glfwSetWindowIcon(this->window, 1, &glfwImage);
-
-		stbi_image_free(icon);
+		unsigned char* icon;
 
 		#if _DEBUG
 		this->startUpSFX = new K::Audio("../../assets/audios/StartUp.wav");
 		this->startUpSFX->Play();
-		#endif
 		glfwSwapInterval(0);
+		#else
+		glfwSwapInterval(1);
+		#endif
 	}
 
 	Window::~Window()
