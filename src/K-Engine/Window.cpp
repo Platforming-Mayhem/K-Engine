@@ -79,11 +79,6 @@ namespace K
 		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
 		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-		//Set Window Icon
-
-		int width, height, c;
-		unsigned char* icon;
-
 		#if _DEBUG
 		this->startUpSFX = new K::Audio("../../assets/audios/StartUp.wav");
 		this->startUpSFX->Play();
