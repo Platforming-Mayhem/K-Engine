@@ -57,8 +57,6 @@ namespace K
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Viewport
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 		ImGui::StyleColorsDark();
@@ -224,7 +222,8 @@ namespace K
 		ImGui::SetNextWindowClass(&window_class);
 		if (ImGui::Begin("Viewport"))
 		{
-			if (ImGui::Button(this->GetCurrentScene()->isPaused ? "Play" : "Pause")) {
+			if (ImGui::Button(this->GetCurrentScene()->isPaused ? "Play" : "Pause")) 
+			{
 				this->GetCurrentScene()->isPaused = !this->GetCurrentScene()->isPaused;
 			}
 			int height = ImGui::GetWindowHeight() - ImGui::GetFrameHeight() - 2.0f;
