@@ -233,8 +233,8 @@ namespace K
 			ImGui::Image((void*)(intptr_t)this->viewport->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		
-		K::Editor::offsetX = ImGui::GetItemRectMin().x -(K::window->width - ImGui::GetMainViewport()->Size.x);
-		K::Editor::offsetY = ImGui::GetItemRectMin().y -(K::window->height - ImGui::GetMainViewport()->Size.y);
+		K::Editor::offsetX = ImGui::GetItemRectMin().x;
+		K::Editor::offsetY = ImGui::GetItemRectMin().y;
 
 		if (glfwGetMouseButton(this->window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && ImGui::IsItemHovered())
 		{
@@ -306,8 +306,6 @@ namespace K
 
 				if(loadProject)
 				{
-					this->updateFiles = true;
-
 					this->projectPath = projectName;
 					projectName = std::filesystem::absolute(projectName).filename().generic_string();
 
@@ -597,17 +595,11 @@ namespace K
 	{
 		if (ImGui::Begin("K-Engine Content Browser")) 
 		{
-			if (ImGui::Button("Reload")) 
-			{
-				this->updateFiles = true;
-			}
-
 			if (this->currentDirectory.generic_string() != ASSET_DIR && this->currentDirectory.generic_string() + "/" != ASSET_DIR)
 			{
 				if (ImGui::Button("..."))
 				{
 					this->currentDirectory = this->currentDirectory.parent_path();
-					this->updateFiles = true;
 				}
 			}
 
@@ -619,17 +611,7 @@ namespace K
 			int numberOfColumns = contentWidth / 256.0f;
 			ImGui::Columns(numberOfColumns, "Content Columns", false);
 
-			if (this->updateFiles) 
-			{
-				this->files.clear();
-				for (auto& p : std::filesystem::directory_iterator(this->currentDirectory))
-				{
-					this->files.push_back(p);
-				}
-				this->updateFiles = false;
-			}
-
-			for (auto file : this->files) 
+			for (auto& file : std::filesystem::directory_iterator(this->currentDirectory))
 			{
 				std::string relativeLocation = std::filesystem::relative(file, ASSET_DIR).generic_string();
 				if (file.is_directory())
@@ -638,7 +620,6 @@ namespace K
 					if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(temp->GetWidth(), temp->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
 					{
 						this->currentDirectory = file.path();
-						this->updateFiles = true;
 					}
 				}
 				else
@@ -726,8 +707,7 @@ namespace K
 
 		ImGuiHierarchy();
 
-		if(!ASSET_DIR.empty())
-			ImGuiContentBrowser();
+		ImGuiContentBrowser();
 
 		ImGuiViewport();
 

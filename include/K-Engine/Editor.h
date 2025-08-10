@@ -55,9 +55,6 @@ namespace K
 		bool projectLoadWindow = false;
 		bool msvcBuildWindow = false;
 		bool doesIniExist = false;
-		bool updateFiles = true;
-
-		std::vector<std::filesystem::directory_entry> files;
 
 		int selectedScene = -1;
 
