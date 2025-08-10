@@ -27,8 +27,9 @@ namespace K
 				outFile << "," << g->prefabFileLocation;
 			}
 
-			outFile << g->isPrefab ? "0," : NULL << g->isPrefab ? "Get Prefab name" : g->GetName(); // !!!this needs to be updated to get the changed name!!!
-			if (!g->isPrefab) {
+			outFile << (g->isPrefab ? "Get Prefab name" : g->GetName());
+			if (!g->isPrefab) 
+			{
 				outFile << "," << g->GetIndex();
 			}
 			
