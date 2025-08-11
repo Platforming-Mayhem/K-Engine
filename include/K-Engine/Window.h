@@ -15,6 +15,8 @@ namespace K
 		int refreshRate = 60;
 		Window(const char* windowName);
 		virtual ~Window();
+
+		static void window_size_callback(GLFWwindow* window, int width, int height);
 	};
 
 	K_API extern K::Window* window;

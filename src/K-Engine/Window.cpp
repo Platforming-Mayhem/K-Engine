@@ -77,6 +77,7 @@ namespace K
 		glDepthRange(0.0f, 1.0f);
 
 		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
+		glfwSetWindowSizeCallback(window, K::Window::window_size_callback);
 		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 		#if _DEBUG
@@ -86,6 +87,11 @@ namespace K
 		#else
 		glfwSwapInterval(1);
 		#endif
+	}
+
+	void Window::window_size_callback(GLFWwindow* window, int width, int height)
+	{
+		std::cout << width << "," << height << std::endl;
 	}
 
 	Window::~Window()
