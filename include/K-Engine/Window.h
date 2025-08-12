@@ -17,6 +17,8 @@ namespace K
 		virtual ~Window();
 
 		static void window_size_callback(GLFWwindow* window, int width, int height);
+
+		static void window_pos_callback(GLFWwindow* window, int xpos, int ypos);
 	};
 
 	K_API extern K::Window* window;

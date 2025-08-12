@@ -54,11 +54,6 @@ namespace K
 
 		glfwMakeContextCurrent(this->window);
 
-		// if (glewInit() == GLEW_OK)
-		// 	std::cout << "GLEW OK MATE" << std::endl;
-		// else
-		// 	std::cout << "Error GLEW" << std::endl;
-
 		GLenum err = glewInit();
 		std::cout << glewGetErrorString(err) << std::endl;
 
@@ -76,8 +71,10 @@ namespace K
 		glDepthMask(GL_TRUE);
 		glDepthRange(0.0f, 1.0f);
 
-		glfwSetKeyCallback(this->window, K::InputManager::key_callback);
+		glfwSetKeyCallback(window, K::InputManager::key_callback);
+		glfwSetCursorPosCallback(window, K::InputManager::cursor_position_callback);
 		glfwSetWindowSizeCallback(window, K::Window::window_size_callback);
+		glfwSetWindowPosCallback(window, K::Window::window_pos_callback);
 		//glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 		#if _DEBUG
@@ -92,6 +89,13 @@ namespace K
 	void Window::window_size_callback(GLFWwindow* window, int width, int height)
 	{
 		std::cout << width << "," << height << std::endl;
+	}
+
+	void Window::window_pos_callback(GLFWwindow* window, int xpos, int ypos)
+	{
+		std::cout << xpos << "," << ypos << std::endl;
+		K::Editor::offsetX = xpos;
+		K::Editor::offsetY = ypos;
 	}
 
 	Window::~Window()

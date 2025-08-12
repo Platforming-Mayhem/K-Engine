@@ -3,8 +3,15 @@
 namespace K 
 {
 	std::unordered_map<int, int> InputManager::keys;
+	int InputManager::xpos, InputManager::ypos;
 	K::RenderTexture* renderTex;
 	K::Material* editorMat;
+
+	void InputManager::cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+	{
+		InputManager::xpos = std::floor(xpos);
+		InputManager::ypos = std::floor(ypos);
+	}
 
 	void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
@@ -88,9 +95,7 @@ namespace K
 
 	K::Vector3 InputManager::GetMousePosition()
 	{
-		double x, y;
-		glfwGetCursorPos(K::window->window, &x, &y);
-		K::Vector3 position = K::Vector3(std::clamp(((float)x - K::Editor::offsetX) / K::Editor::windowScaleFactor, 0.0f, K::window->width), std::clamp(((float)y - K::Editor::offsetY) / K::Editor::windowScaleFactor, 0.0f, K::window->height), 0.0f);
+		K::Vector3 position = K::Vector3((K::InputManager::xpos + K::Editor::offsetX) / K::Editor::windowScaleFactor, (K::InputManager::ypos + K::Editor::offsetY) / K::Editor::windowScaleFactor, 0.0f);
 		return position;
 	}
 

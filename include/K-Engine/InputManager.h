@@ -11,7 +11,12 @@ namespace K
 	{
 	private:
 		static std::unordered_map<int, int> keys;
+
+		static int xpos, ypos;
 	public:
+
+		static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+
 		static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 		static int GetKey(int key);
