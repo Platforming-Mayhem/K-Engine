@@ -3,7 +3,8 @@
 namespace K 
 {
 	std::unordered_map<int, int> InputManager::keys;
-	int InputManager::xpos, InputManager::ypos;
+	int InputManager::xpos;
+	int InputManager::ypos;
 	K::RenderTexture* renderTex;
 	K::Material* editorMat;
 
