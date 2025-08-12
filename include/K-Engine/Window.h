@@ -13,6 +13,7 @@ namespace K
 		float width = 1920.0f;
 		float height = 1080.0f;
 		int refreshRate = 60;
+		int offsetX = 0, offsetY = 0;
 		Window(const char* windowName);
 		virtual ~Window();
 

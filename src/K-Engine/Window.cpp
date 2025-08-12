@@ -93,9 +93,8 @@ namespace K
 
 	void Window::window_pos_callback(GLFWwindow* window, int xpos, int ypos)
 	{
-		std::cout << xpos << "," << ypos << std::endl;
-		K::Editor::offsetX = xpos;
-		K::Editor::offsetY = ypos;
+		K::window->offsetX = xpos;
+		K::window->offsetY = ypos;
 	}
 
 	Window::~Window()

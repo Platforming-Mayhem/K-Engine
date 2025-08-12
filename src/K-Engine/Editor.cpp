@@ -233,16 +233,13 @@ namespace K
 			ImGui::Image((void*)(intptr_t)this->viewport->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
 		}
 
-		K::Editor::offsetX += -ImGui::GetItemRectMin().x;
-		K::Editor::offsetY += -ImGui::GetItemRectMin().y;
+		K::Editor::offsetX = -(ImGui::GetItemRectMin().x - K::window->offsetX);
+		K::Editor::offsetY = -(ImGui::GetItemRectMin().y - K::window->offsetY);
 
 		if (glfwGetMouseButton(this->window->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && ImGui::IsItemHovered())
 		{
 			K::Editor::selectedGameObject = InputManager::PickGameObject();
 		}
-
-		K::Editor::offsetX -= -ImGui::GetItemRectMin().x;
-		K::Editor::offsetY -= -ImGui::GetItemRectMin().y;
 
 		ImGui::End();
 
