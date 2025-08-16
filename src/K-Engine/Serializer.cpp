@@ -22,31 +22,42 @@ namespace K
 			}
 			K::GameObject* g = it.second;
 			K::Transform* transform = g->GetTransform();
-			if (g->isPrefab) {
-				outFile << "||Prefab||";
-				outFile << "," << g->prefabFileLocation;
-			}
 
-			outFile << (g->isPrefab ? "Get Prefab name" : g->GetName());
-			if (!g->isPrefab) 
-			{
-				outFile << "," << g->GetIndex();
+			if (g->isPrefab) {
+				outFile << "||Prefab||"; // index -2
+				outFile << "," << g->prefabFileLocation; // index -1
+				outFile << "," << "get prefab name"; // index 0
+				//no id needed // index 1
+				// transform stuff // index 2 to 19
+				if (g->parent == nullptr) // index 20
+					outFile << "," << "-1";
+				else
+					outFile << "," << g->parent->GetIndex();
+			}
+			else {
+				outFile << g->GetName(); // index 0
+				outFile << "," << g->GetIndex(); // index 1
+
+				outFile << "," << transform->position->x /*index 2*/ << "," << transform->position->y /*index 3*/ << "," << transform->position->z /*index 4*/;
+				outFile << "," << transform->rotation->x /*index 5*/ << "," << transform->rotation->y /*index 6*/ << "," << transform->rotation->z /*index 7*/;
+				outFile << "," << transform->scale->x /*index 8*/ << "," << transform->scale->y /*index 9*/ << "," << transform->scale->z /*index 10*/;
+				outFile << "," << transform->localPosition->x /*index 11*/ << "," << transform->localPosition->y /*index 12*/ << "," << transform->localPosition->z /*index 13*/;
+				outFile << "," << transform->localRotation->x /*index 14*/ << "," << transform->localRotation->y /*index 15*/ << "," << transform->localRotation->z /*index 16*/;
+				outFile << "," << transform->localScale->x /*index 17*/ << "," << transform->localScale->y /*index 18*/ << "," << transform->localScale->z /*index 19*/;
+				if (g->parent == nullptr) // index 20
+					outFile << "," << "-1";
+				else
+					outFile << "," << g->parent->GetIndex();
 			}
 			
-			outFile << "," << transform->position->x << "," << transform->position->y << "," << transform->position->z;
-			outFile << "," << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
-			outFile << "," << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z;
-			outFile << "," << transform->localPosition->x << "," << transform->localPosition->y << "," << transform->localPosition->z;
-			outFile << "," << transform->localRotation->x << "," << transform->localRotation->y << "," << transform->localRotation->z;
-			outFile << "," << transform->localScale->x << "," << transform->localScale->y << "," << transform->localScale->z;
-			if (g->parent == nullptr)
-				outFile << "," << "-1";
-			else
-				outFile << "," << g->parent->GetIndex();
+			
+			
+			
 			std::cout << g->GetName();
 			std::cout << " " << transform->position->x << "," << transform->position->y << "," << transform->position->z;
 			std::cout << " " << transform->rotation->x << "," << transform->rotation->y << "," << transform->rotation->z;
 			std::cout << " " << transform->scale->x << "," << transform->scale->y << "," << transform->scale->z << " ";
+
 			int numberOfComponents = g->GetNumberOfComponents();
 			for (int i = 0; i < numberOfComponents; i++)
 			{
@@ -159,8 +170,8 @@ namespace K
 			isPrefab = true;
 			gameObject.erase(0, pos + sizeof(","));
 			std::string prefabPath = gameObject.substr(0, pos = gameObject.find(","));
-			prefabData = LoadPrefab(prefabPath);
 			gameObject.erase(0, pos + sizeof(","));
+			prefabData = LoadPrefab(prefabPath);
 			std::vector<std::string> gameObjectData =  Split(gameObject, ",");
 			for (int i = 0; i < gameObjectData.size(), i++;) {
 				
