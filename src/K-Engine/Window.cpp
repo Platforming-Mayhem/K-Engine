@@ -24,6 +24,11 @@ namespace K
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
+		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
 		#if _DEBUG
 		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
@@ -32,10 +37,10 @@ namespace K
 		this->width = mode->width;
 		this->height = mode->height;
 		this->refreshRate = mode->refreshRate;
+		#if _DEBUG
 		this->window = glfwCreateWindow(this->width, this->height, windowName, NULL, NULL);
-
-		#if !_DEBUG
-		glfwSetWindowMonitor(K::window->window, monitor, 0, 0, this->width, this->height, this->refreshRate);
+		#else
+		this->window = glfwCreateWindow(this->width, this->height, windowName, monitor, NULL);
 		#endif
 
 		glViewport(0, 0, this->width, this->height);
@@ -80,7 +85,7 @@ namespace K
 		#if _DEBUG
 		this->startUpSFX = new K::Audio("../../assets/audios/StartUp.wav");
 		this->startUpSFX->Play();
-		glfwSwapInterval(0);
+		glfwSwapInterval(1);
 		#else
 		glfwSwapInterval(1);
 		#endif

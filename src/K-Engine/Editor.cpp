@@ -554,7 +554,7 @@ namespace K
 				ImGui::EndPopup();
 			}
 
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / (ImGui::GetIO().Framerate), (ImGui::GetIO().Framerate));
+			ImGui::Text("Application average (%.1f FPS)", (1.0f / K::Time::deltaTime()));
 
 			ImGui::Text("Active Materials: %i", K::materialManager.materials.size());
 
