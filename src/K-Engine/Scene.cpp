@@ -60,8 +60,6 @@ namespace K
 				g.second->RenderInit();
 			}
 		}
-		K::Time::startTime = glfwGetTime();
-		K::Time::endTime = K::Time::startTime;
 	}
 
 	void Scene::Delete(K::GameObject* gameObject)
@@ -158,7 +156,8 @@ namespace K
 
 	void Scene::Render() 
 	{
-		K::Time::startTime = (float)glfwGetTime();
+		K::Time::deltaTimeValue = glfwGetTime();
+		glfwSetTime(0.0);
 		for (auto temp : this->GetGameObjects())
 		{
 			if (!this->isPaused) 
@@ -167,7 +166,5 @@ namespace K
 			}
 			this->RenderLoop(temp.second);
 		}
-		K::Time::deltaTimeValue = K::Time::startTime - K::Time::endTime;
-		K::Time::endTime = K::Time::startTime;
 	}
 }
