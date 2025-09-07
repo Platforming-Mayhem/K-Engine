@@ -33,6 +33,9 @@ namespace K
 
 		while (true)
 		{
+			K::Time::deltaTimeValue = glfwGetTime();
+			glfwSetTime(0.0);
+
 			#if _DEBUG
 
 			GLenum err;
@@ -60,8 +63,6 @@ namespace K
 			K::SceneManager::currentScene->Render();
 
 			editor->GetViewport()->Unbind();
-
-			glfwSetWindowMonitor(K::window->window, glfwGetPrimaryMonitor(), 0, 0, K::window->width, K::window->height, K::window->refreshRate);
 
 			glBlitNamedFramebuffer(editor->GetViewport()->GetFramebufferID(), 0, 0, 0, editor->GetViewport()->GetWidth(), editor->GetViewport()->GetHeight(), 0, 0, editor->GetViewport()->GetWidth(), editor->GetViewport()->GetHeight(), GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 

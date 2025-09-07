@@ -1,5 +1,4 @@
 #include "K-Engine/Scene.h"
-#include "K-Engine/Time.h"
 
 namespace K 
 {
@@ -156,8 +155,6 @@ namespace K
 
 	void Scene::Render() 
 	{
-		K::Time::deltaTimeValue = glfwGetTime();
-		glfwSetTime(0.0);
 		for (auto temp : this->GetGameObjects())
 		{
 			if (!this->isPaused) 
