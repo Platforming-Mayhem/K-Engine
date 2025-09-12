@@ -228,9 +228,7 @@ namespace K
 		{
 			if (*this->position != this->previousPosition)
 			{
-				*this->localPosition = *this->position;
-				K::Matrix4x4 invert = K::QuickInverse(parent->modelMatrix);
-				K::MultiplyMatrixVector(*this->position, *this->localPosition, invert);
+				*this->localPosition = *this->position - *parent->position;
 			}
 			if (*this->rotation != this->previousRotation)
 			{

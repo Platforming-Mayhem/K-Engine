@@ -309,6 +309,10 @@ namespace K
 			glUseProgram(this->GetMaterial()->GetShader()->shader);
 
 			glUniformMatrix4fv(this->GetMaterial()->GetShader()->GetUniform("modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
+
+			glUniformMatrix4fv(this->GetMaterial()->GetShader()->GetUniform("viewMatrix"), 1, GL_FALSE, &K::Editor::viewMatrix.m[0][0]);
+
+			glUniformMatrix4fv(this->GetMaterial()->GetShader()->GetUniform("projectionMatrix"), 1, GL_FALSE, &K::Editor::projectionMatrix.m[0][0]);
 		}
 	}
 

@@ -124,7 +124,10 @@ namespace K
 	void Scene::GameLoop(K::GameObject* temp)
 	{
 		temp->Bind();
-		temp->Update();
+		if (!this->isPaused)
+		{
+			temp->Update();
+		}
 		temp->Unbind();
 	}
 
@@ -157,10 +160,10 @@ namespace K
 	{
 		for (auto temp : this->GetGameObjects())
 		{
-			if (!this->isPaused) 
-			{
-				this->GameLoop(temp.second);
-			}
+			this->GameLoop(temp.second);
+		}
+		for (auto temp : this->GetGameObjects())
+		{
 			this->RenderLoop(temp.second);
 		}
 	}

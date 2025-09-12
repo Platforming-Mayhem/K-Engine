@@ -110,16 +110,13 @@ namespace K
 	{
 		//variables
 		K::Vector3 mousePosition, rawClipPosition, clipPositionStart, worldSpaceNearPosition, worldSpaceDirection;
-		K::Matrix4x4 viewMatrix, projectionMatrix, viewProjectionMatrix, invVPMatrix;
+		K::Matrix4x4 viewProjectionMatrix, invVPMatrix;
 
 		mousePosition = K::InputManager::GetMousePosition();
 		rawClipPosition = K::InputManager::ConvertToClipPosition(mousePosition);
 		clipPositionStart = K::Vector3(rawClipPosition.x, rawClipPosition.y, -1.0f);
 
-		viewMatrix = *K::Editor::viewMatrix;
-		projectionMatrix = *K::Editor::projectionMatrix;
-
-		viewProjectionMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(viewMatrix, projectionMatrix);
+		viewProjectionMatrix = K::Matrix4x4::Matrix_MultiplyMatrix(K::Editor::viewMatrix, K::Editor::projectionMatrix);
 		invVPMatrix = K::QuickInverse(viewProjectionMatrix);
 
 		K::MultiplyMatrixVector(clipPositionStart, worldSpaceNearPosition, invVPMatrix);

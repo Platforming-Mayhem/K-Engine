@@ -10,9 +10,9 @@ namespace K
 	float K::Editor::offsetY = 0.0f;
 	std::filesystem::path K::Editor::currentDirectory;
 
-	K::Matrix4x4* K::Editor::projectionMatrix;
+	K::Matrix4x4 K::Editor::projectionMatrix;
 
-	K::Matrix4x4* K::Editor::viewMatrix;
+	K::Matrix4x4 K::Editor::viewMatrix;
 
 	K::Vector3* K::Editor::cameraPosition;
 

@@ -85,7 +85,7 @@ namespace K
 		#if _DEBUG
 		this->startUpSFX = new K::Audio("../../assets/audios/StartUp.wav");
 		this->startUpSFX->Play();
-		glfwSwapInterval(1);
+		glfwSwapInterval(0);
 		#else
 		glfwSwapInterval(1);
 		#endif

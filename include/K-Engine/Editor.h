@@ -72,9 +72,9 @@ namespace K
 
 		static K::GameObject* selectedGameObject;
 
-		static K::Matrix4x4* projectionMatrix;
+		static K::Matrix4x4 projectionMatrix;
 
-		static K::Matrix4x4* viewMatrix;
+		static K::Matrix4x4 viewMatrix;
 
 		static K::Vector3* cameraPosition;
 
