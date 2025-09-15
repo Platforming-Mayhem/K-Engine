@@ -308,6 +308,11 @@ namespace K
 		{
 			glUseProgram(this->GetMaterial()->GetShader()->shader);
 
+			float bgColor[4];
+			glGetFloatv(GL_COLOR_CLEAR_VALUE, bgColor);
+
+			glUniform3f(this->GetMaterial()->GetShader()->GetUniform("fogColour"), bgColor[0], bgColor[1], bgColor[2]);
+
 			glUniformMatrix4fv(this->GetMaterial()->GetShader()->GetUniform("modelMatrix"), 1, GL_FALSE, &this->GetTransform()->modelMatrix.m[0][0]);
 
 			glUniformMatrix4fv(this->GetMaterial()->GetShader()->GetUniform("viewMatrix"), 1, GL_FALSE, &K::Editor::viewMatrix.m[0][0]);
