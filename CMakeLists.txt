@@ -28,6 +28,12 @@ add_subdirectory(vendors/STB)
 add_subdirectory(vendors/MiniAudio)
 add_subdirectory(vendors/NativeFileDialog-Extended)
 
+set(ASSIMP_INJECT_DEBUG_POSTFIX OFF)
+set(ASSIMP_INSTALL OFF)
+set(ASSIMP_BUILD_TESTS OFF)
+
+add_subdirectory(vendors/ASSIMP)
+
 add_library(${PROJECT_NAME} SHARED 
 src/K-Engine/Application.cpp
 src/K-Engine/Editor.cpp
@@ -51,10 +57,11 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE K_BUILD_DLL)
 
 target_link_libraries(${PROJECT_NAME} OpenGL::GLU)
 target_link_libraries(${PROJECT_NAME} glfw)
+target_link_libraries(${PROJECT_NAME} libglew_shared)
 target_link_libraries(${PROJECT_NAME} IMGUI)
 target_link_libraries(${PROJECT_NAME} stb)
+target_link_libraries(${PROJECT_NAME} assimp)
 target_link_libraries(${PROJECT_NAME} nfd)
-target_link_libraries(${PROJECT_NAME} libglew_shared)
 target_link_libraries(${PROJECT_NAME} miniaudio)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src)
