@@ -121,50 +121,50 @@ namespace K
 		outFile.close();
 	}
 
-	void Serializer::TimmySerializer(K::Scene* scene, std::string file) {
-		std::string name = location;
-		name.replace(name.begin() + name.find(".JAWS"), name.end(), ".BJAWS");
-		std::ofstream outFile;
-		outFile.open(name.c_str(), std::ios::binary | std::ofstream::trunc);
-		if (!outFile)
-		{
-			std::cerr << "Error - unable to open output file " << name.c_str() << std::endl;
-			exit(1);
-		}
-		std::map<std::string, std::string> gs;
-		for (auto it : scene->GetGameObjects()) 
-		{
-			K::GameObject* g = it.second;
-			K::Transform* t = g->GetTransform()
-			
-			if (g->isPrefab) {
-				gs.insert("isPrefab", "hallo"); // check if this key exists and if so this is a prefab
-				gs.insert("PrefabFileLocation", g->prefabFileLocation);
-			}
-			
-			gs.insert("Name", std::to_string(g->GetName()));
-			gs.insert("Index", std::to_string(g->GetIndex()));
-			gs.insert("TransformPos", std::to_string(t->position));
-			gs.insert("TransformRotation", std::to_string(t->rotation));
-			gs.insert("TransformScale", std::to_string(t->scale));
-			gs.insert("TransformLocalPosition", std::to_string(t->localPosition));
-			gs.insert("TransformLocalRotation", std::to_string(t->localRotation));
-			gs.insert("TransformLocalScale", std::to_string(t->localScale));
+	//void Serializer::TimmySerializer(K::Scene* scene, std::string file) {
+	//	std::string name = location;
+	//	name.replace(name.begin() + name.find(".JAWS"), name.end(), ".BJAWS");
+	//	std::ofstream outFile;
+	//	outFile.open(name.c_str(), std::ios::binary | std::ofstream::trunc);
+	//	if (!outFile)
+	//	{
+	//		std::cerr << "Error - unable to open output file " << name.c_str() << std::endl;
+	//		exit(1);
+	//	}
+	//	std::map<std::string, std::string> gs;
+	//	for (auto it : scene->GetGameObjects()) 
+	//	{
+	//		K::GameObject* g = it.second;
+	//		K::Transform* t = g->GetTransform()
+	//		
+	//		if (g->isPrefab) {
+	//			gs.insert("isPrefab", "hallo"); // check if this key exists and if so this is a prefab
+	//			gs.insert("PrefabFileLocation", g->prefabFileLocation);
+	//		}
+	//		
+	//		gs.insert("Name", std::to_string(g->GetName()));
+	//		gs.insert("Index", std::to_string(g->GetIndex()));
+	//		gs.insert("TransformPos", std::to_string(t->position));
+	//		gs.insert("TransformRotation", std::to_string(t->rotation));
+	//		gs.insert("TransformScale", std::to_string(t->scale));
+	//		gs.insert("TransformLocalPosition", std::to_string(t->localPosition));
+	//		gs.insert("TransformLocalRotation", std::to_string(t->localRotation));
+	//		gs.insert("TransformLocalScale", std::to_string(t->localScale));
 
 
-			//TODO
-			/*
-			store gs into game object // this should be as easy as creating a variable in gameobject
-			store gs into file
-			read gs from file
-			load gs into gameobject
-			*/
+	//		//TODO
+	//		/*
+	//		store gs into game object // this should be as easy as creating a variable in gameobject
+	//		store gs into file
+	//		read gs from file
+	//		load gs into gameobject
+	//		*/
 
-		}
+	//	}
 
 
 
-	}
+	//}
 
 	std::vector<std::string> Deserializer::Split(std::string s, std::string delimiter) {
 		std::vector<std::string> tokens;
@@ -180,15 +180,15 @@ namespace K
 		return tokens;
 	}
 
-void Serializer::SavePrefab() {
-	k::GameObject g = it.second;
-	std::ifstream prefabFile(g->prefabFileLocation);
-	
-
-	
-	
-	
-}
+//void Serializer::SavePrefab() {
+//	k::GameObject g = it.second;
+//	std::ifstream prefabFile(g->prefabFileLocation);
+//	
+//
+//	
+//	
+//	
+//}
 
 
 	std::string Deserializer::LoadPrefab(std::string fileLocation) {
