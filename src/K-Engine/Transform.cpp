@@ -95,6 +95,12 @@ namespace K
 		this->y = y;
 	}
 
+	K::Vector2::Vector2()
+	{
+		this->x = 0.0f;
+		this->y = 0.0f;
+	}
+
 	K::Vector3::Vector3() 
 	{
 		this->x = 0.0f;
