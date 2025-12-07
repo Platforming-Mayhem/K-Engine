@@ -71,6 +71,7 @@ namespace K
 		this->AddPreloadedTexture("textures/editor/scene.png");
 		this->AddPreloadedTexture("textures/editor/unknown.png");
 		this->AddPreloadedTexture("textures/editor/file.png");
+		this->AddPreloadedTexture("textures/editor/model.png");
 		icon = stbi_load((ASSET_DIR + "textures/watermark/watermark.png").c_str(), &width, &height, &c, 0);
 		#else
 		this->GetCurrentScene()->isPaused = false;
@@ -679,6 +680,23 @@ namespace K
 							{
 								std::string file = relativeLocation;
 								ImGui::SetDragDropPayload("_SCENE", file.c_str(), file.size() + 1);
+								ImGui::Text(file.c_str());
+								ImGui::EndDragDropSource();
+							}
+						}
+						else if (file.path().extension() == ".fbx") 
+						{
+							K::Texture* model = this->preloadedTextures.at("textures/editor/model.png");
+							if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)model->GetID(), ImVec2(model->GetWidth(), model->GetWidth()), ImVec2(0, 1), ImVec2(1, 0)))
+							{
+								K::Editor::GetCurrentScene()->CreateEmptyScene();
+								this->selectedGameObject = nullptr;
+								K::Deserializer deserialize = K::Deserializer(K::SceneManager::currentScene, relativeLocation);
+							}
+							if (ImGui::BeginDragDropSource())
+							{
+								std::string file = relativeLocation;
+								ImGui::SetDragDropPayload("_MODEL", file.c_str(), file.size() + 1);
 								ImGui::Text(file.c_str());
 								ImGui::EndDragDropSource();
 							}
