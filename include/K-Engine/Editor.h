@@ -31,6 +31,7 @@ namespace K
 	class K_API Editor
 	{
 	private:
+		std::vector<std::string> editorTextures;
 		std::string sceneName;
 		std::string projectPath;
 
@@ -86,7 +87,7 @@ namespace K
 
 		virtual ~Editor();
 
-		void AddPreloadedTexture(std::string location);
+		void AddPreloadedTexture(std::string location, bool isEditorTexture);
 
 		void LoadPreloadedTextures();
 

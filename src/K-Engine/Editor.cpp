@@ -68,10 +68,13 @@ namespace K
 
 		ImGui_ImplGlfw_InitForOpenGL(this->window->window, true);
 		ImGui_ImplOpenGL3_Init("#version 330 compatibility");
-		this->AddPreloadedTexture("textures/editor/scene.png");
-		this->AddPreloadedTexture("textures/editor/unknown.png");
-		this->AddPreloadedTexture("textures/editor/file.png");
-		this->AddPreloadedTexture("textures/editor/model.png");
+
+		//Editor Textures
+		this->AddPreloadedTexture("textures/editor/scene.png", true);
+		this->AddPreloadedTexture("textures/editor/unknown.png", true);
+		this->AddPreloadedTexture("textures/editor/file.png", true);
+		this->AddPreloadedTexture("textures/editor/model.png", true);
+
 		icon = stbi_load((ASSET_DIR + "textures/watermark/watermark.png").c_str(), &width, &height, &c, 0);
 		#else
 		this->GetCurrentScene()->isPaused = false;
@@ -579,8 +582,10 @@ namespace K
 		}
 	}
 
-	void Editor::AddPreloadedTexture(std::string location) 
+	void Editor::AddPreloadedTexture(std::string location, bool isEditorTexture = false) 
 	{
+		if (isEditorTexture)
+			this->editorTextures.push_back(location);
 		this->preloadedTextures.insert({ location, new K::Texture(location.c_str()) });
 	}
 
@@ -602,6 +607,28 @@ namespace K
 				if (ImGui::Button("..."))
 				{
 					this->currentDirectory = this->currentDirectory.parent_path();
+					std::vector<std::string> texturesToDelete;
+					for (auto it : this->preloadedTextures)
+					{
+						bool isEditorTex = false;
+						for (auto tex : this->editorTextures)
+						{
+							if (it.first == tex)
+							{
+								isEditorTex = true;
+								break;
+							}
+						}
+						if (!isEditorTex)
+						{
+							texturesToDelete.push_back(it.first);
+						}
+					}
+					for (auto tex : texturesToDelete) 
+					{
+						delete this->preloadedTextures.at(tex);
+						this->preloadedTextures.erase(tex);
+					}
 				}
 			}
 
@@ -622,6 +649,28 @@ namespace K
 					if (ImGui::ImageButton(relativeLocation.c_str(), (void*)(intptr_t)temp->GetViewID(), ImVec2(temp->GetWidth(), temp->GetHeight()), ImVec2(0, 1), ImVec2(1, 0)))
 					{
 						this->currentDirectory = file.path();
+						std::vector<std::string> texturesToDelete;
+						for (auto it : this->preloadedTextures)
+						{
+							bool isEditorTex = false;
+							for (auto tex : this->editorTextures)
+							{
+								if (it.first == tex)
+								{
+									isEditorTex = true;
+									break;
+								}
+							}
+							if (!isEditorTex)
+							{
+								texturesToDelete.push_back(it.first);
+							}
+						}
+						for (auto tex : texturesToDelete)
+						{
+							delete this->preloadedTextures.at(tex);
+							this->preloadedTextures.erase(tex);
+						}
 					}
 				}
 				else
