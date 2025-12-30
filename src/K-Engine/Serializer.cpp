@@ -63,7 +63,7 @@ namespace K
 						std::cerr << "Error - unable to find component Info in gameobject" << component->GetName() << std::endl;
 						exit(1); // might be a little extreme
 					}
-					std::vector<int> varsToSave = prefabVarToSave.find(component->GetName());
+					std::vector<int> varsToSave = prefabVarToSave.find(component->GetName())->second;
 					// need to have a filter on what we save and what we load from the prefab
 					outFile << "," << component->GetName();
 					
