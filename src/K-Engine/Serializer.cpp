@@ -28,29 +28,22 @@ namespace K
 			if (g->isPrefab) {
 				outFile << "||Prefab||"; // index -2
 				outFile << "," << g->prefabFileLocation; // index -1
-				outFile << "," << "get prefab name"; // index 0
-				//no id needed // index 1
-				// transform stuff // index 2 to 19
-				if (g->parent == nullptr) // index 20
-					outFile << "," << "-1";
-				else
-					outFile << "," << g->parent->GetIndex();
 			}
-			else {
-				outFile << g->GetName(); // index 0
-				outFile << "," << g->GetIndex(); // index 1
+			
+			outFile << g->GetName(); // index 0
+			outFile << "," << g->GetIndex(); // index 1
 
-				outFile << "," << transform->position->x /*index 2*/ << "," << transform->position->y /*index 3*/ << "," << transform->position->z /*index 4*/;
-				outFile << "," << transform->rotation->x /*index 5*/ << "," << transform->rotation->y /*index 6*/ << "," << transform->rotation->z /*index 7*/;
-				outFile << "," << transform->scale->x /*index 8*/ << "," << transform->scale->y /*index 9*/ << "," << transform->scale->z /*index 10*/;
-				outFile << "," << transform->localPosition->x /*index 11*/ << "," << transform->localPosition->y /*index 12*/ << "," << transform->localPosition->z /*index 13*/;
-				outFile << "," << transform->localRotation->x /*index 14*/ << "," << transform->localRotation->y /*index 15*/ << "," << transform->localRotation->z /*index 16*/;
-				outFile << "," << transform->localScale->x /*index 17*/ << "," << transform->localScale->y /*index 18*/ << "," << transform->localScale->z /*index 19*/;
-				if (g->parent == nullptr) // index 20
-					outFile << "," << "-1";
-				else
-					outFile << "," << g->parent->GetIndex();
-			}
+			outFile << "," << transform->position->x /*index 2*/ << "," << transform->position->y /*index 3*/ << "," << transform->position->z /*index 4*/;
+			outFile << "," << transform->rotation->x /*index 5*/ << "," << transform->rotation->y /*index 6*/ << "," << transform->rotation->z /*index 7*/;
+			outFile << "," << transform->scale->x /*index 8*/ << "," << transform->scale->y /*index 9*/ << "," << transform->scale->z /*index 10*/;
+			outFile << "," << transform->localPosition->x /*index 11*/ << "," << transform->localPosition->y /*index 12*/ << "," << transform->localPosition->z /*index 13*/;
+			outFile << "," << transform->localRotation->x /*index 14*/ << "," << transform->localRotation->y /*index 15*/ << "," << transform->localRotation->z /*index 16*/;
+			outFile << "," << transform->localScale->x /*index 17*/ << "," << transform->localScale->y /*index 18*/ << "," << transform->localScale->z /*index 19*/;
+			if (g->parent == nullptr) // index 20
+				outFile << "," << "-1";
+			else
+				outFile << "," << g->parent->GetIndex();
+		
 			
 			
 			
@@ -65,8 +58,24 @@ namespace K
 			{
 				K::Component* component = g->GetComponent(i);
 				if (g->isPrefab) {
-					outFile << "," << component->GetName() << "-" << i;
-					outFile << "," << component->GetPropertyValues(); // may need a check for a difference in values
+					std::map<std::string, std::vector<int>> prefabVarToSave = g->prefabComponentSave;
+					if (!prefabVarToSave.contains(component->GetName())) {
+						std::cerr << "Error - unable to find component Info in gameobject" << component->GetName() << std::endl;
+						exit(1); // might be a little extreme
+					}
+					std::vector<int> varsToSave = prefabVarToSave.find(component->GetName());
+					// need to have a filter on what we save and what we load from the prefab
+					outFile << "," << component->GetName();
+					
+					std::vector<std::string> propertyValues = Serializer::Split(component->GetPropertyValues(), ",");
+					for (int j = 0; j < propertyValues.size(); j++) {
+						if (varsToSave[j] == 1) {
+							outFile << "," << propertyValues[j];
+						}else {
+							outFile << "," << "||PrefabData||";
+						}
+					}
+					//outFile << "," << component->GetPropertyValues(); // may need a check for a difference in values
 				}
 				else {
 					outFile << "," << component->GetName();
@@ -166,7 +175,7 @@ namespace K
 
 	//}
 
-	std::vector<std::string> Deserializer::Split(std::string s, std::string delimiter) {
+	std::vector<std::string> Serializer::Split(std::string s, std::string delimiter) {
 		std::vector<std::string> tokens;
 		int pos = 0;
 		std::string token;
@@ -221,6 +230,7 @@ namespace K
 		int number = 0;
 		std::string prefabData;
 		bool isPrefab = false;
+		std::string prefabFileLocation;
 		std::map<std::string, std::string> prefabOverrides;
 
 		if (gameObject.substr(0, pos = gameObject.find(",")) == "||Prefab||") {
@@ -229,10 +239,10 @@ namespace K
 			std::string prefabPath = gameObject.substr(0, pos = gameObject.find(","));
 			gameObject.erase(0, pos + sizeof(","));
 			prefabData = LoadPrefab(prefabPath);
-			std::vector<std::string> gameObjectData =  Split(gameObject, ",");
+			std::vector<std::string> gameObjectData =  Serializer::Split(gameObject, ",");
 			for (int i = 0; i < gameObjectData.size(), i++;) {
 				
-				std::vector<std::string> temp = Split(gameObjectData[i], " ");
+				std::vector<std::string> temp = Serializer::Split(gameObjectData[i], " ");
 				prefabOverrides[(temp[0])] = temp[1];
 			}
 		}
@@ -247,11 +257,23 @@ namespace K
 			
 			switch (number)
 			{
+			case -1:
+				prefabFileLocation = val;
+				break;
 			case 0: // name
+				if (val == "||Prefab||") {
+					// prefab data
+					isPrefab = true;
+					number = -2;
+				}
 				name = val;
 				break;
 			case 1: // index
 				temp = new K::GameObject(name.c_str(), transform, !isPrefab ? std::stoi(val) : NULL);
+				if (isPrefab) {
+					temp->isPrefab = isPrefab;
+					temp->prefabFileLocation=prefabFileLocation;
+				}
 				break;
 			case 2: // x Pos
 				position->x = std::stof(val);
@@ -324,6 +346,10 @@ namespace K
 						currentComponent = pos->second->create();
 						temp->AddComponent(currentComponent);
 						componentCount = 0;
+						if (isPrefab) {
+							std::map<std::string, std::vector<int>> pcs;
+							temp->prefabComponentSave = pcs;
+						}
 						//std::cout << "Creating " << currentComponent->GetName() << std::endl;
 					}
 					else 
@@ -335,8 +361,12 @@ namespace K
 				else 
 				{
 					//std::cout << "Setting Values of " << currentComponent->GetName() << " to: " << val << std::endl;
-					std::string temp = /*"class K::" +*/ currentComponent->GetName() + ' - ' + componentCount;
-					val = prefabOverrides[temp] != "" ? prefabOverrides[temp] : val;
+					std::string cName = /*"class K::" +*/ currentComponent->GetName();
+					//val = prefabOverrides[cName] != "" ? prefabOverrides[cName] : val;
+					temp->prefabComponentSave.at(currentComponent->GetName())[componentCount] = ((val == "||PrefabData||") ? 0 : 1);
+					if (val == "||PrefabData||") {
+						// get data from prefab file
+					}
 					currentComponent->SetPropertyValues(val.c_str(), componentCount);
 					componentCount++;
 				}
