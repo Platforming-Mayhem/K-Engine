@@ -269,7 +269,7 @@ namespace K
 				name = val;
 				break;
 			case 1: // index
-				temp = new K::GameObject(name.c_str(), transform, !isPrefab ? std::stoi(val) : NULL);
+				temp = new K::GameObject(name.c_str(), transform, !isPrefab ? std::stoi(val) : 0);
 				if (isPrefab) {
 					temp->isPrefab = isPrefab;
 					temp->prefabFileLocation=prefabFileLocation;
