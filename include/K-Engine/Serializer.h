@@ -8,7 +8,7 @@ namespace K
 	{
 	public:
 		Serializer(K::Scene* scene, std::string location);
-
+		std::vector<std::string> Split(std::string s, std::string delimiter);
 		void RunTimeSerialize(K::Scene* scene, std::string location);
 	};
 
@@ -39,7 +39,7 @@ namespace K
 
 		std::string LoadPrefab(std::string fileLocation);
 
-		std::vector<std::string> Split(std::string s, std::string delimiter);
+		
 	};
 
 	struct K_API SerialiseObject

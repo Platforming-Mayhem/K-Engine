@@ -38,6 +38,8 @@ namespace K
 
 		std::string prefabFileLocation;
 
+		std::map<std::string, std::vector<int>> prefabComponentSave; // 1 indicates saving to the scene
+
 		GameObject(const char* name, K::Transform* transform, int index);
 
 		GameObject(const char* name, K::Transform* transform);
