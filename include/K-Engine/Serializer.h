@@ -8,7 +8,7 @@ namespace K
 	{
 	public:
 		Serializer(K::Scene* scene, std::string location);
-		std::vector<std::string> Split(std::string s, std::string delimiter);
+		static std::vector<std::string> Split(std::string s, std::string delimiter);
 		void RunTimeSerialize(K::Scene* scene, std::string location);
 	};
 
