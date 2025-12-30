@@ -90,11 +90,18 @@ namespace K
 		glfwSetWindowIcon(this->window->window, 1, &glfwImage);
 
 		stbi_image_free(icon);
+
+		if (NFD_Init() != NFD_OKAY) 
+		{
+			std::cout << NFD_GetError() << std::endl;
+		}
 	}
 
 	Editor::~Editor()
 	{
 		this->UnloadComponents();
+
+		NFD_Quit();
 
 		#if _DEBUG
 		ImGui_ImplOpenGL3_Shutdown();
@@ -286,27 +293,25 @@ namespace K
 
 				bool loadProject = false;
 
-				if (NFD_Init()) 
+				nfdpickfolderu8args_t args = {0};
+				NFD_GetNativeWindowFromGLFWWindow(this->window->window, &args.parentWindow);
+				nfdresult_t result = NFD_PickFolderU8_With(&location, &args);
+				if (result == NFD_OKAY)
 				{
-					nfdresult_t result = NFD_PickFolderU8(&location, NULL);
-					if (result == NFD_OKAY)
+					ASSET_DIR = location;
+					ASSET_DIR += "/assets/";
+					if (!std::filesystem::is_directory(ASSET_DIR))
 					{
-						ASSET_DIR = location;
-						ASSET_DIR += "/assets/";
-						if (!std::filesystem::is_directory(ASSET_DIR))
-						{
-							std::filesystem::create_directory(ASSET_DIR);
-						}
-						K::Editor::SetDirectory(ASSET_DIR);
-						projectName = location;
-						NFD_FreePathU8(location);
-						loadProject = true;
+						std::filesystem::create_directory(ASSET_DIR);
 					}
-					else if (result == NFD_CANCEL)
-					{
-						loadProject = false;
-					}
-					NFD_Quit();
+					K::Editor::SetDirectory(ASSET_DIR);
+					projectName = location;
+					NFD_FreePathU8(location);
+					loadProject = true;
+				}
+				else if (result == NFD_CANCEL)
+				{
+					loadProject = false;
 				}
 
 				if(loadProject)
