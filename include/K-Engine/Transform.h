@@ -139,6 +139,15 @@ namespace K
 			return temp;
 		}
 
+		K::Vector3 operator / (const float& other)
+		{
+			K::Vector3 temp = *this;
+			temp.x /= other;
+			temp.y /= other;
+			temp.z /= other;
+			return temp;
+		}
+
 		K::Vector3 operator * (const float& other)
 		{
 			K::Vector3 temp = *this;
