@@ -298,7 +298,7 @@ namespace K
 				nfdresult_t result = NFD_PickFolderU8_With(&location, &args);
 				if (result == NFD_OKAY)
 				{
-					ASSET_DIR = location;
+					ASSET_DIR = std::filesystem::path(location).generic_string();
 					ASSET_DIR += "/assets/";
 					if (!std::filesystem::is_directory(ASSET_DIR))
 					{
@@ -609,6 +609,7 @@ namespace K
 		{
 			if (this->currentDirectory.generic_string() != ASSET_DIR && this->currentDirectory.generic_string() + "/" != ASSET_DIR)
 			{
+				std::cout << ASSET_DIR << ":" << this->currentDirectory.generic_string() << std::endl;
 				if (ImGui::Button("..."))
 				{
 					this->currentDirectory = this->currentDirectory.parent_path();
