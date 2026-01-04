@@ -609,7 +609,6 @@ namespace K
 		{
 			if (this->currentDirectory.generic_string() != ASSET_DIR && this->currentDirectory.generic_string() + "/" != ASSET_DIR)
 			{
-				std::cout << ASSET_DIR << ":" << this->currentDirectory.generic_string() << std::endl;
 				if (ImGui::Button("..."))
 				{
 					this->currentDirectory = this->currentDirectory.parent_path();
