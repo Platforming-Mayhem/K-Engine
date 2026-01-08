@@ -66,11 +66,13 @@ namespace K
 				K::Component* component = g->GetComponent(i);
 				if (g->isPrefab) {
 					outFile << "," << component->GetName() << "-" << i;
-					outFile << "," << component->GetPropertyValues(); // may need a check for a difference in values
+					if (component->GetPropertyValues()[0] != '\0')
+						outFile << "," << component->GetPropertyValues(); // may need a check for a difference in values
 				}
 				else {
 					outFile << "," << component->GetName();
-					outFile << "," << component->GetPropertyValues();
+					if(component->GetPropertyValues()[0] != '\0')
+						outFile << "," << component->GetPropertyValues();
 				}
 				
 			}
