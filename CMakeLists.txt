@@ -31,6 +31,7 @@ add_subdirectory(vendors/NativeFileDialog-Extended)
 set(ASSIMP_INJECT_DEBUG_POSTFIX OFF)
 set(ASSIMP_INSTALL OFF)
 set(ASSIMP_BUILD_TESTS OFF)
+set(ASSIMP_BUILD_ZLIB ON)
 
 add_subdirectory(vendors/ASSIMP)
 
