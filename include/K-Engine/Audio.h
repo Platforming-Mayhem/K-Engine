@@ -7,12 +7,15 @@ namespace K
 	{
 	private:
 		ma_sound loadedAudio;
+		ma_waveform waveform;
 		bool isLooping = false;
 	public:
 
 		Audio(const char* path, bool isLooping = false);
 
-		void Play();
+		Audio(float frequency, float amplitude);
+
+		void Play(bool replay = true);
 
 		void Stop();
 
