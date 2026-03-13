@@ -5,6 +5,13 @@ namespace K
 
 	float Time::deltaTime()
 	{
-		return K::Time::deltaTimeValue;
+		if (K::Time::deltaTimeValue < 1.0f / 30.0f) 
+		{
+			return K::Time::deltaTimeValue;
+		}
+		else 
+		{
+			return 1.0f / 30.0f;
+		}
 	}
 }
