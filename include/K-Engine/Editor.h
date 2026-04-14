@@ -132,7 +132,7 @@ namespace K
 	{
 		Register()
 		{
-			K::IFactory tempFactory = K::Factory<T>();
+			K::IFactory* tempFactory = new K::Factory<T>;
 			std::string tempName = typeid(T).name();
 
 			#if __unix__
@@ -141,7 +141,7 @@ namespace K
 
 			std::cout << demangledName << std::endl;
 
-			K::Editor::lst().insert({ demangledName, &tempFactory });
+			K::Editor::lst().insert({ demangledName, tempFactory });
 			#else
 			K::Editor::lst().insert({ tempName, tempFactory });
 			#endif
