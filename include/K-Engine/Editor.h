@@ -13,6 +13,11 @@ namespace K
 		virtual K::Component* create() = 0; 
 
 		virtual const char* getName() = 0;
+
+		virtual ~IFactory()
+		{
+			std::cout << "IFactory Destroyed" << std::endl;
+		}
 	};
 
 	template< typename Type > struct Factory : public IFactory
@@ -149,6 +154,14 @@ namespace K
 
 		~Register()
 		{
+			std::string tempName = typeid(T).name();
+			#if __unix__
+			int status;
+			std::string demangledName = std::string("class ") + abi::__cxa_demangle(tempName.c_str(), NULL, NULL, &status);
+			delete K::Editor::lst().at(tempName);
+			#else
+			delete K::Editor::lst().at(tempName);
+			#endif
 			std::cout << "Destructed Register Class" << std::endl;
 		}
 	};

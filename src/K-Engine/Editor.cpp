@@ -150,7 +150,7 @@ namespace K
 		}
 
 		#elif __unix__
-		this->componentsLibrary = dlopen("./libComponents.so", RTLD_NOW);
+		this->componentsLibrary = dlopen("./libComponents.so", RTLD_NOW | RTLD_LOCAL);
 		if (this->componentsLibrary)
 		{
 			std::cout << "Found Library" << std::endl;
