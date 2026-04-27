@@ -133,12 +133,37 @@ namespace K
 		static K::Scene* GetCurrentScene();
 	};
 
+	class ComponentManager
+	{
+		private:
+
+		ComponentManager(){}
+
+		~ComponentManager(){}
+
+		static ComponentManager* componentManager;
+
+		public:
+
+		std::vector<void*> registerLibrary;
+		
+		ComponentManager(ComponentManager &other) = delete;
+
+		void operator=(const ComponentManager&) = delete;
+
+		static ComponentManager* GetInstance();
+	};
+
 	template<typename T> struct Register
 	{
 		Register()
 		{
 			K::IFactory* tempFactory = new K::Factory<T>;
 			std::string tempName = typeid(T).name();
+
+			ComponentManager* comp = ComponentManager::GetInstance();
+
+			comp->registerLibrary.push_back(this);
 
 			#if __unix__
 			int status;
@@ -166,5 +191,5 @@ namespace K
 		}
 	};
 
-	#define REGISTER(Type) Register<Type> s_##Type##Registered;
+	#define REGISTER(Type) Register<Type>* s_##Type##Registered = new Register<Type>();
 }

@@ -22,6 +22,15 @@ namespace K
 
 	std::vector<K::GameObject*> K::Editor::deleteArray;
 
+	K::ComponentManager* K::ComponentManager::componentManager = nullptr;
+
+	K::ComponentManager* K::ComponentManager::GetInstance()
+	{
+		if(componentManager == nullptr)
+			componentManager = new K::ComponentManager();
+		return componentManager;
+	}
+
 	std::unordered_map<std::string, IFactory*>& K::Editor::lst() 
 	{
 		static std::unordered_map<std::string, IFactory*> temp;
@@ -124,7 +133,13 @@ namespace K
 		if (this->componentsLibrary != NULL) 
 		{
 			std::cout << "Unloading components..." << std::endl;
-			K::Editor::lst().clear();
+			
+			ComponentManager* comp = ComponentManager::GetInstance();
+			for(auto a : comp->registerLibrary)
+			{
+				delete a;
+			}
+			comp->registerLibrary.clear();
 			#ifdef _WIN32
 			FreeLibrary(this->componentsLibrary);
 			#elif __unix__
