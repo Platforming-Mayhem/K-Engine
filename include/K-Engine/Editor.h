@@ -16,7 +16,7 @@ namespace K
 
 		virtual ~IFactory()
 		{
-			std::cout << "IFactory Destroyed" << std::endl;
+			//std::cout << "IFactory Destroyed" << std::endl;
 		}
 	};
 
@@ -133,35 +133,54 @@ namespace K
 		static K::Scene* GetCurrentScene();
 	};
 
-	class ComponentManager
+	struct ParentRegister
+	{
+		virtual ~ParentRegister(){}
+	};
+
+	class K_API ComponentManager
 	{
 		private:
 
 		ComponentManager(){}
 
-		~ComponentManager(){}
-
-		static ComponentManager* componentManager;
+		~ComponentManager()
+		{
+			std::cout << "Destroy Component Manager" << std::endl;
+		}
 
 		public:
 
-		std::vector<void*> registerLibrary;
+		static ComponentManager* componentManager;
+
+		std::vector<ParentRegister*> registerLibrary;
 		
 		ComponentManager(ComponentManager &other) = delete;
 
 		void operator=(const ComponentManager&) = delete;
 
-		static ComponentManager* GetInstance();
+		static ComponentManager* GetInstance() 
+		{
+			if (K::ComponentManager::componentManager == nullptr)
+				K::ComponentManager::componentManager = new K::ComponentManager();
+			return K::ComponentManager::componentManager;
+		}
+
+		static void RemoveInstance() 
+		{
+			delete K::ComponentManager::componentManager;
+			K::ComponentManager::componentManager = nullptr;
+		}
 	};
 
-	template<typename T> struct Register
+	template<typename T> struct Register : ParentRegister
 	{
 		Register()
 		{
 			K::IFactory* tempFactory = new K::Factory<T>;
 			std::string tempName = typeid(T).name();
 
-			ComponentManager* comp = ComponentManager::GetInstance();
+			K::ComponentManager* comp = K::ComponentManager::GetInstance();
 
 			comp->registerLibrary.push_back(this);
 
@@ -183,11 +202,14 @@ namespace K
 			#if __unix__
 			int status;
 			std::string demangledName = std::string("class ") + abi::__cxa_demangle(tempName.c_str(), NULL, NULL, &status);
-			delete K::Editor::lst().at(tempName);
+			delete K::Editor::lst().at(demangledName);
+			K::Editor::lst().erase(demangledName);
+			std::cout << "Destructed Register Class:" << demangledName << std::endl;
 			#else
 			delete K::Editor::lst().at(tempName);
+			K::Editor::lst().erase(tempName);
+			std::cout << "Destructed Register Class:" << tempName << std::endl;
 			#endif
-			std::cout << "Destructed Register Class" << std::endl;
 		}
 	};
 

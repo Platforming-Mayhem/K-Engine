@@ -24,13 +24,6 @@ namespace K
 
 	K::ComponentManager* K::ComponentManager::componentManager = nullptr;
 
-	K::ComponentManager* K::ComponentManager::GetInstance()
-	{
-		if(componentManager == nullptr)
-			componentManager = new K::ComponentManager();
-		return componentManager;
-	}
-
 	std::unordered_map<std::string, IFactory*>& K::Editor::lst() 
 	{
 		static std::unordered_map<std::string, IFactory*> temp;
@@ -124,6 +117,7 @@ namespace K
 		this->preloadedTextures.clear();
 		#endif
 
+		K::ComponentManager::RemoveInstance();
 		delete this->viewport;
 		delete this->window;
 	}
@@ -134,7 +128,7 @@ namespace K
 		{
 			std::cout << "Unloading components..." << std::endl;
 			
-			ComponentManager* comp = ComponentManager::GetInstance();
+			K::ComponentManager* comp = K::ComponentManager::GetInstance();
 			for(auto a : comp->registerLibrary)
 			{
 				delete a;
