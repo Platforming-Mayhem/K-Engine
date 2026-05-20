@@ -137,7 +137,15 @@ namespace K
 			#ifdef _WIN32
 			FreeLibrary(this->componentsLibrary);
 			#elif __unix__
-			dlclose(this->componentsLibrary);
+			int val = dlclose(this->componentsLibrary);
+			if(val != 0)
+				std::cout << "Failed to close dynamic library" << std::endl;
+			char *errstr;
+
+
+			errstr = dlerror();
+			if (errstr != NULL)
+				printf ("A dynamic linking error occurred: (%s)\n", errstr);
 			#endif
 			std::cout << "Unloaded components" << std::endl;
 		}
@@ -160,7 +168,7 @@ namespace K
 
 		#elif __unix__
 		this->componentsLibrary = dlopen("./libComponents.so", RTLD_NOW | RTLD_LOCAL);
-		if (this->componentsLibrary)
+		if (this->componentsLibrary != NULL)
 		{
 			std::cout << "Found Library" << std::endl;
 		}
@@ -332,7 +340,7 @@ namespace K
 
 					std::string cmakelist = ASSET_DIR + "CMakeLists.txt";
 
-					if (!std::filesystem::exists(cmakelist) || !std::filesystem::exists(ASSET_DIR + "bin"))
+					if (!std::filesystem::exists(cmakelist))
 					{
 						FILE* file = fopen(cmakelist.c_str(), "w");
 
@@ -415,7 +423,10 @@ namespace K
 							"ENDIF()", file);
 
 						fclose(file);
+					}
 
+					if(!std::filesystem::exists(ASSET_DIR + "bin"))
+					{
 						cmakelist = std::format("cmake -B \"{0}\" -S \"{1}\" -DCMAKE_WARN_DEPRECATED=OFF", ASSET_DIR + "bin", ASSET_DIR.substr(0, ASSET_DIR.size() - 1));
 
 						std::cout << cmakelist << std::endl;
