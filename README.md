@@ -30,7 +30,7 @@ This engine supports PNGs, JPEGs and Animated GIFs.
 Just run either the "Recompile-and-start.bat"(for Windows) or the "Recompile-and-start.sh"(for Linux).
 
 When creating a project with K-Engine, choose an empty folder and the file directory will automatically be setup.
-A CMakeLists.txt file will be created within said directory and any .h or .cpp file will be automatically be built and linked to the K-Engine solution.
+A CMakeLists.txt file will be created within said directory and any .h or .cpp file will be automatically built and linked to the K-Engine solution.
 
 # Examples
 
