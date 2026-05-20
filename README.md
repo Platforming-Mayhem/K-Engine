@@ -17,6 +17,8 @@ C++23 or Higher
 
 [Modified version of STB_Image](https://github.com/nothings/stb/blob/master/stb_image.h)
 
+[ASSIMP](https://github.com/assimp/assimp)
+
 # Overview
 
 The design of this engine is highly inspired by Unity.
