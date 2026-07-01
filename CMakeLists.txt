@@ -28,13 +28,6 @@ add_subdirectory(vendors/STB)
 add_subdirectory(vendors/MiniAudio)
 add_subdirectory(vendors/NativeFileDialog-Extended)
 
-set(ASSIMP_INJECT_DEBUG_POSTFIX OFF)
-set(ASSIMP_INSTALL OFF)
-set(ASSIMP_BUILD_TESTS OFF)
-set(ASSIMP_BUILD_ZLIB ON)
-
-add_subdirectory(vendors/ASSIMP)
-
 add_library(${PROJECT_NAME} SHARED 
 src/K-Engine/Application.cpp
 src/K-Engine/Editor.cpp
