@@ -54,7 +54,6 @@ target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} libglew_shared)
 target_link_libraries(${PROJECT_NAME} IMGUI)
 target_link_libraries(${PROJECT_NAME} stb)
-target_link_libraries(${PROJECT_NAME} assimp)
 target_link_libraries(${PROJECT_NAME} nfd)
 target_link_libraries(${PROJECT_NAME} miniaudio)
 
